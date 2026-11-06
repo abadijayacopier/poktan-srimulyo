@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#065f46">
+  <meta name="description" content="Dashboard Alokasi RDKK MT III 2026 - Kelompok Tani Sri Mulyo, Desa Kediren, Magetan.">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg">
+  <link rel="apple-touch-icon" href="/icons/icon-192.svg">
   <title>Dashboard Alokasi RDKK MT3 2026 - POKTAN SRI MULYO</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -32,6 +37,9 @@
         </div>
       </div>
       <div class="flex flex-wrap items-center gap-2 no-print">
+        <button id="install-app-btn" onclick="installPWA()" class="hidden px-3 py-1.5 bg-white text-emerald-800 hover:bg-emerald-50 rounded-lg text-sm font-semibold transition items-center gap-1.5 shadow-sm">
+          <i class="fa-solid fa-download"></i> Install App
+        </button>
         <button onclick="bukaModalKloter()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium text-white transition flex items-center gap-1.5 shadow-sm">
           <i class="fa-solid fa-user-plus"></i> Input Kloter
         </button>
@@ -761,5 +769,55 @@
       }, 15000);
     };
   </script>
+
+  <script>
+    // PWA: registrasi service worker dan tombol instalasi
+    let deferredInstallPrompt = null;
+    const installButton = document.getElementById('install-app-btn');
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch((error) => {
+          console.warn('Service Worker gagal didaftarkan:', error);
+        });
+      });
+    }
+
+    if (!isStandalone && installButton) {
+      installButton.classList.remove('hidden');
+      installButton.classList.add('inline-flex');
+    } else if (installButton) {
+      installButton.remove();
+    }
+
+    window.addEventListener('beforeinstallprompt', (event) => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      if (installButton) installButton.classList.remove('hidden');
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredInstallPrompt = null;
+      if (installButton) installButton.remove();
+    });
+
+    async function installPWA() {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        await deferredInstallPrompt.userChoice;
+        deferredInstallPrompt = null;
+        return;
+      }
+
+      const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+      if (isIOS) {
+        alert('Untuk memasang aplikasi: tekan tombol Bagikan di Safari, lalu pilih “Add to Home Screen / Tambahkan ke Layar Utama”.');
+      } else {
+        alert('Jika tombol instal belum muncul, buka menu browser (⋮), lalu pilih “Install app” atau “Instal aplikasi”. Pastikan situs dibuka melalui HTTPS.');
+      }
+    }
+  </script>
+
 </body>
 </html>
