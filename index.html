@@ -23,47 +23,59 @@
     @media (min-width: 1024px) {
       #chartGudang { min-width: 0; }
     }
+    .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom, 0); }
+    @media (max-width: 639px) {
+      header .max-w-7xl { gap: 12px; }
+      #sync-badge { flex-shrink: 0; }
+      #content { gap: 1rem; }
+      #content section { scroll-margin-top: 1rem; }
+      #content .rounded-xl { border-radius: 14px; }
+      #content .shadow-sm { box-shadow: 0 1px 3px rgba(15,23,42,.06); }
+      #content .p-5 { padding: 1rem; }
+      #content h2 { line-height: 1.35; }
+      #content #chartGudang { max-height: 100%; }
+    }
     @media print {
       .no-print { display: none !important; }
       body { background: white !important; font-size: 11px; }
     }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen pb-14">
+<body class="bg-slate-50 text-slate-800 min-h-screen pb-16 sm:pb-14">
 
   <!-- Header -->
   <header class="bg-emerald-800 text-white shadow-lg sticky top-0 z-30">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-3">
-      <div class="flex items-center space-x-3">
-        <i class="fa-solid fa-wheat-awn text-2xl text-emerald-300"></i>
+    <div class="max-w-7xl mx-auto w-full px-4 py-3 md:py-4 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3 md:gap-4">
+      <div class="flex items-center space-x-3 min-w-0 w-full md:w-auto">
+        <i class="fa-solid fa-wheat-awn text-2xl sm:text-3xl text-emerald-300 shrink-0"></i>
         <div>
-          <h1 class="text-xl font-bold tracking-tight flex items-center gap-2">
+          <h1 class="text-base sm:text-xl font-bold tracking-tight flex flex-wrap items-center gap-x-2 gap-y-1 leading-tight">
             KELOMPOK TANI "SRI MULYO"
             <span id="sync-badge" class="text-[10px] bg-emerald-600/80 text-emerald-100 px-2 py-0.5 rounded-full font-normal tracking-normal border border-emerald-500 no-print">
               <i class="fa-solid fa-circle text-[6px] text-emerald-300 animate-pulse mr-1"></i>Live Sync
             </span>
           </h1>
-          <p class="text-xs text-emerald-200">Desa Kediren, Kec. Lembeyan, Kab. Magetan &bull; Alokasi RDKK MT III - 2026 - Powered by Supriyanto</p>
+          <p class="text-[10px] sm:text-xs text-emerald-200 leading-relaxed mt-1"><span>Desa Kediren, Kec. Lembeyan, Kab. Magetan &bull; Alokasi RDKK MT III - 2026</span><span class="hidden sm:inline"> &bull; Powered by Supriyanto</span></p>
         </div>
       </div>
-      <div class="flex flex-wrap items-center gap-2 no-print">
-        <button id="install-app-btn" onclick="installPWA()" class="hidden px-3 py-1.5 bg-white text-emerald-800 hover:bg-emerald-50 rounded-lg text-sm font-semibold transition items-center gap-1.5 shadow-sm">
+      <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 w-full md:w-auto no-print">
+        <button id="install-app-btn" onclick="installPWA()" class="hidden w-full md:w-auto justify-center px-3 py-2 md:py-1.5 bg-white text-emerald-800 hover:bg-emerald-50 rounded-lg text-xs sm:text-sm font-semibold transition items-center gap-1.5 shadow-sm">
           <i class="fa-solid fa-download"></i> Install App
         </button>
-        <button onclick="bukaModalKloter()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium text-white transition flex items-center gap-1.5 shadow-sm">
+        <button onclick="bukaModalKloter()" class="w-full md:w-auto justify-center px-3 py-2 md:py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-xs sm:text-sm font-semibold text-white transition flex items-center gap-1.5 shadow-sm">
           <i class="fa-solid fa-user-plus"></i> Input Kloter
         </button>
-        <button onclick="loadData(false)" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-600 rounded-lg text-sm font-medium transition flex items-center gap-1.5 shadow-sm">
+        <button onclick="loadData(false)" class="w-full md:w-auto justify-center px-3 py-2 md:py-1.5 bg-emerald-700 hover:bg-emerald-600 rounded-lg text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 shadow-sm">
           <i id="refresh-icon" class="fa-solid fa-rotate"></i> Refresh
         </button>
-        <button onclick="window.print()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 rounded-lg text-sm font-medium text-slate-900 transition flex items-center gap-1.5 shadow-sm">
+        <button onclick="window.print()" class="w-full md:w-auto justify-center px-3 py-2 md:py-1.5 bg-amber-500 hover:bg-amber-600 rounded-lg text-xs sm:text-sm font-semibold text-slate-900 transition flex items-center gap-1.5 shadow-sm">
           <i class="fa-solid fa-print"></i> Cetak Laporan
         </button>
       </div>
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+  <main class="max-w-7xl mx-auto w-full px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
 
     <!-- Loading Awal -->
     <div id="loading" class="text-center py-16">
@@ -74,7 +86,7 @@
     <div id="content" class="hidden space-y-6">
 
       <!-- 1. KPI Cards (DP, Sisa Bayar, Sisa Sak Dibulatkan) -->
-      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         
         <!-- DP Pembayaran Kios -->
         <div class="bg-white p-5 rounded-xl border-2 border-emerald-500 shadow-sm flex items-center gap-4">
@@ -127,7 +139,7 @@
       </section>
 
       <!-- 2. Status Drop Gudang (Angka Bulat Utuh) -->
-      <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <section class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         
         <!-- Grafik -->
         <div class="min-w-0 w-full overflow-hidden bg-white p-5 rounded-xl border border-slate-200 shadow-sm lg:col-span-1 flex flex-col">
@@ -871,8 +883,8 @@
 
 
   <!-- Footer kredit pengembang -->
-  <footer id="footer-credit-fixed" class="fixed bottom-0 inset-x-0 z-40 bg-emerald-950 text-emerald-100 border-t border-emerald-700/70 shadow-[0_-4px_12px_rgba(0,0,0,0.08)] no-print">
-    <div class="max-w-7xl mx-auto px-4 py-2 text-center text-[11px] sm:text-xs tracking-wide">
+  <footer id="footer-credit-fixed" class="fixed bottom-0 inset-x-0 z-40 bg-emerald-950 text-emerald-100 border-t border-emerald-700/70 shadow-[0_-4px_12px_rgba(0,0,0,0.08)] no-print safe-area-bottom">
+    <div class="max-w-7xl mx-auto px-3 py-2.5 sm:py-2 text-center text-[10px] sm:text-xs tracking-wide">
       Developed by <span class="font-semibold text-white">Supriyanto</span>
       <span class="mx-1 text-emerald-400">•</span>
       <span class="font-semibold text-white">Abadi Jaya</span>
