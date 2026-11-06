@@ -23,6 +23,9 @@
     @media (min-width: 1024px) {
       #chartGudang { min-width: 0; }
     }
+    .auth-locked header, .auth-locked main, .auth-locked #footer-credit-fixed { visibility: hidden; }
+    #login-screen { background: radial-gradient(circle at 20% 15%, rgba(16,185,129,.16), transparent 35%), linear-gradient(145deg,#f0fdf4,#f8fafc 55%,#ecfdf5); }
+    .login-card { box-shadow: 0 24px 70px rgba(6,78,59,.13); }
     .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom, 0); }
     @media (max-width: 639px) {
       header .max-w-7xl { gap: 12px; }
@@ -41,7 +44,47 @@
     }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen pb-16 sm:pb-14">
+<body class="auth-locked bg-slate-50 text-slate-800 min-h-screen pb-16 sm:pb-14">
+
+
+  <!-- Login / autentikasi aplikasi -->
+  <section id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto">
+    <div class="login-card w-full max-w-md bg-white border border-emerald-100 rounded-3xl p-6 sm:p-8">
+      <div class="flex flex-col items-center text-center mb-7">
+        <div class="w-20 h-20 rounded-2xl bg-emerald-800 flex items-center justify-center shadow-lg shadow-emerald-900/20 mb-4">
+          <i class="fa-solid fa-wheat-awn text-4xl text-emerald-200"></i>
+        </div>
+        <p class="text-xs font-bold tracking-[.2em] uppercase text-emerald-700">Portal Anggota & Pengurus</p>
+        <h1 class="text-2xl font-black text-slate-800 mt-2">POKTAN SRI MULYO</h1>
+        <p class="text-sm text-slate-500 mt-1">Desa Kediren · Lembeyan · Magetan</p>
+      </div>
+      <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label for="login-username" class="block text-xs font-bold text-slate-600 mb-1.5">USERNAME</label>
+          <div class="relative">
+            <i class="fa-solid fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input id="login-username" name="username" autocomplete="username" required class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm" placeholder="Masukkan username">
+          </div>
+        </div>
+        <div>
+          <label for="login-password" class="block text-xs font-bold text-slate-600 mb-1.5">PASSWORD</label>
+          <div class="relative">
+            <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input id="login-password" name="password" type="password" autocomplete="current-password" required class="w-full pl-10 pr-12 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm" placeholder="Masukkan password">
+            <button type="button" onclick="toggleLoginPassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-emerald-700 p-1" aria-label="Tampilkan password"><i id="password-eye" class="fa-solid fa-eye"></i></button>
+          </div>
+        </div>
+        <div id="login-error" class="hidden rounded-xl border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm text-rose-700" role="alert"></div>
+        <button id="login-submit" type="submit" class="w-full rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white py-3 font-bold text-sm shadow-lg shadow-emerald-900/15 transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-right-to-bracket"></i> Masuk Dashboard
+        </button>
+      </form>
+      <div class="mt-6 pt-5 border-t border-slate-100 text-center">
+        <p class="text-[11px] text-slate-400">Akses dilindungi · POKTAN SRI MULYO</p>
+        <p class="text-[11px] text-slate-400 mt-1">Developed by <strong class="text-slate-500">Supriyanto · Abadi Jaya</strong> © 2026</p>
+      </div>
+    </div>
+  </section>
 
   <!-- Header -->
   <header class="bg-emerald-800 text-white shadow-lg sticky top-0 z-30">
@@ -62,7 +105,11 @@
         <button id="install-app-btn" onclick="installPWA()" class="hidden w-full md:w-auto justify-center px-3 py-2 md:py-1.5 bg-white text-emerald-800 hover:bg-emerald-50 rounded-lg text-xs sm:text-sm font-semibold transition items-center gap-1.5 shadow-sm">
           <i class="fa-solid fa-download"></i> Install App
         </button>
-        <button onclick="bukaModalKloter()" class="w-full md:w-auto justify-center px-3 py-2 md:py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-xs sm:text-sm font-semibold text-white transition flex items-center gap-1.5 shadow-sm">
+        <span id="user-role-badge" class="hidden px-2.5 py-2 rounded-lg bg-emerald-900/60 text-emerald-50 text-[11px] font-bold text-center"></span>
+        <button id="logout-button" onclick="logoutUser()" class="hidden w-full md:w-auto justify-center px-3 py-2 md:py-1.5 bg-emerald-950 hover:bg-emerald-900 rounded-lg text-xs sm:text-sm font-semibold transition items-center gap-1.5 border border-emerald-600">
+          <i class="fa-solid fa-right-from-bracket"></i> Keluar
+        </button>
+        <button data-admin-only onclick="bukaModalKloter()" class="w-full md:w-auto justify-center px-3 py-2 md:py-1.5 bg-blue-600 hover:bg-blue-500 rounded-lg text-xs sm:text-sm font-semibold text-white transition flex items-center gap-1.5 shadow-sm">
           <i class="fa-solid fa-user-plus"></i> Input Kloter
         </button>
         <button onclick="loadData(false)" class="w-full md:w-auto justify-center px-3 py-2 md:py-1.5 bg-emerald-700 hover:bg-emerald-600 rounded-lg text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 shadow-sm">
@@ -211,7 +258,7 @@
           <h2 class="text-base font-bold text-slate-700 flex items-center gap-2">
             <i class="fa-solid fa-list-check text-emerald-600"></i> Rekapitulasi Alokasi Kloter Surat Kuasa (1 - 10)
           </h2>
-          <button onclick="bukaModalKloter()" class="no-print text-xs px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg font-semibold transition flex items-center gap-1.5">
+          <button data-admin-only onclick="bukaModalKloter()" class="no-print text-xs px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg font-semibold transition flex items-center gap-1.5">
             <i class="fa-solid fa-plus"></i> Tambah Anggota ke Kloter
           </button>
         </div>
@@ -350,6 +397,117 @@
     let isFetching = false;
     let petaniTerpilih = null;
 
+
+    // =====================================================
+    // LOGIN & ROLE ACCESS CONTROL
+    // Sesi disimpan di sessionStorage; validasi dan role dilakukan server-side.
+    // =====================================================
+    let authSession = null;
+
+    async function authApi(payload) {
+      const response = await fetch(GAS_API_URL, {
+        method: 'POST',
+        redirect: 'follow',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      return await response.json();
+    }
+
+    async function initializeAuth() {
+      const savedToken = sessionStorage.getItem('poktan_session_token');
+      const savedUser = sessionStorage.getItem('poktan_session_user');
+      if (!savedToken) return showLogin();
+
+      try {
+        const result = await authApi({ action: 'validateSession', token: savedToken });
+        if (!result.sukses) throw new Error('Sesi tidak berlaku');
+        authSession = { token: savedToken, username: savedUser || result.username || '', role: result.role };
+        enterDashboard();
+      } catch (error) {
+        sessionStorage.removeItem('poktan_session_token');
+        sessionStorage.removeItem('poktan_session_user');
+        showLogin('Sesi berakhir. Silakan masuk kembali.');
+      }
+    }
+
+    async function handleLogin(event) {
+      event.preventDefault();
+      const username = document.getElementById('login-username').value.trim();
+      const password = document.getElementById('login-password').value;
+      const button = document.getElementById('login-submit');
+      const errorBox = document.getElementById('login-error');
+      button.disabled = true;
+      button.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Memeriksa akun...';
+      errorBox.classList.add('hidden');
+
+      try {
+        const result = await authApi({ action: 'login', username, password });
+        if (!result.sukses || !result.token) throw new Error(result.pesan || 'Username atau password salah.');
+        authSession = { token: result.token, username: result.username || username, role: result.role };
+        sessionStorage.setItem('poktan_session_token', result.token);
+        sessionStorage.setItem('poktan_session_user', authSession.username);
+        document.getElementById('login-password').value = '';
+        enterDashboard();
+      } catch (error) {
+        errorBox.textContent = error.message || 'Login gagal. Periksa koneksi.';
+        errorBox.classList.remove('hidden');
+      } finally {
+        button.disabled = false;
+        button.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk Dashboard';
+      }
+    }
+
+    function enterDashboard() {
+      if (!authSession) return showLogin();
+      document.body.classList.remove('auth-locked');
+      document.getElementById('login-screen').classList.add('hidden');
+      const isAdmin = authSession.role === 'admin';
+      document.querySelectorAll('[data-admin-only]').forEach(el => el.classList.toggle('hidden', !isAdmin));
+      const badge = document.getElementById('user-role-badge');
+      badge.textContent = (authSession.username || 'Pengguna') + (isAdmin ? ' · ADMIN' : ' · READ ONLY');
+      badge.classList.remove('hidden');
+      document.getElementById('logout-button').classList.remove('hidden');
+      document.getElementById('logout-button').classList.add('inline-flex');
+      loadData(false);
+    }
+
+    function showLogin(message) {
+      authSession = null;
+      document.body.classList.add('auth-locked');
+      document.getElementById('login-screen').classList.remove('hidden');
+      const errorBox = document.getElementById('login-error');
+      if (message) {
+        errorBox.textContent = message;
+        errorBox.classList.remove('hidden');
+      } else {
+        errorBox.classList.add('hidden');
+      }
+    }
+
+    function forceLogout(message) {
+      sessionStorage.removeItem('poktan_session_token');
+      sessionStorage.removeItem('poktan_session_user');
+      authSession = null;
+      if (myChart) { myChart.destroy(); myChart = null; }
+      globalData = null;
+      document.getElementById('content').classList.add('hidden');
+      showLogin(message || 'Silakan masuk kembali.');
+    }
+
+    async function logoutUser() {
+      const token = authSession && authSession.token;
+      try { if (token) await authApi({ action: 'logout', token }); } catch (_) {}
+      forceLogout('Anda sudah keluar dari aplikasi.');
+    }
+
+    function toggleLoginPassword() {
+      const input = document.getElementById('login-password');
+      const eye = document.getElementById('password-eye');
+      input.type = input.type === 'password' ? 'text' : 'password';
+      eye.className = input.type === 'password' ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash';
+    }
+
     // Data Cadangan Pratinjau (Jika API belum di-deploy ulang ke versi JSON)
     const FALLBACK_DEMO_DATA = {
       ringkasan: {
@@ -444,9 +602,12 @@
 
       // Mode 2: Berjalan di Vercel (Fetch ke REST API Google Apps Script)
       try {
-        const res = await fetch(`${GAS_API_URL}?action=getData&t=${Date.now()}`, {
-          method: 'GET',
-          redirect: 'follow'
+        if (!authSession || !authSession.token) { isFetching = false; return; }
+        const res = await fetch(GAS_API_URL, {
+          method: 'POST',
+          redirect: 'follow',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'getData', token: authSession.token })
         });
         const json = await res.json();
         isFetching = false;
@@ -462,8 +623,12 @@
       } catch (err) {
         isFetching = false;
         if (refreshIcon) refreshIcon.classList.remove('fa-spin');
-        console.warn('Menggunakan data pratinjau (Pastikan Code.gs sudah di-deploy versi baru):', err);
-        renderDashboard(globalData || FALLBACK_DEMO_DATA);
+        console.warn('Gagal memuat data dashboard:', err);
+        if (String(err.message || '').toLowerCase().includes('sesi') || String(err.message || '').toLowerCase().includes('login')) {
+          forceLogout('Sesi berakhir. Silakan masuk kembali.');
+        } else if (!isSilent) {
+          alert('Gagal mengambil data. Periksa koneksi dan deployment backend Apps Script.');
+        }
       }
     }
 
@@ -661,6 +826,7 @@
     // FITUR INPUT KLOTER & VALIDASI ANTI-NIK GANDA
     // =====================================================
     function bukaModalKloter() {
+      if (!authSession || authSession.role !== 'admin') { alert('Akses ditolak. Fitur ini khusus administrator.'); return; }
       document.getElementById('modalKloter').classList.remove('hidden');
       document.getElementById('inputCariPetani').value = '';
       document.getElementById('infoValidasi').classList.add('hidden');
@@ -794,6 +960,7 @@
           },
           body: JSON.stringify({
             action: 'tambahKloter',
+            token: authSession ? authSession.token : '',
             nik: petaniTerpilih.nik,
             kloterTujuan: kloterTujuan
           })
@@ -823,11 +990,11 @@
     }
 
     window.onload = function() {
-      loadData(false);
+      initializeAuth();
 
-      // Sinkronisasi otomatis setiap 15 detik
+      // Sinkronisasi otomatis setiap 15 detik hanya saat sesi aktif
       setInterval(function() {
-        loadData(true);
+        if (authSession && authSession.token) loadData(true);
       }, 15000);
     };
   </script>

@@ -1,96 +1,142 @@
 /**
  * ============================================================================
- * BACKEND GOOGLE APPS SCRIPT - POKTAN "SRI MULYO" (SUPPORT VERCEL & GAS WEB APP)
+ * BACKEND GOOGLE APPS SCRIPT - POKTAN "SRI MULYO"
+ * Autentikasi server-side + role admin/read-only.
  * ============================================================================
- * URL Endpoint Anda:
- * https://script.google.com/macros/s/AKfycbyI-Rl8FvNANmtg-Y6VoxyTWdIa1B8mEVK8huDbpSso0dcO1dPkCaXPwN6Dxq6QWXga/exec
  */
 
-/**
- * Menangani request GET:
- * - Jika dipanggil dari Vercel (?action=getData atau ?action=tambahKloter), kembalikan JSON.
- * - Jika dibuka langsung di browser tanpa parameter action, tampilkan halaman HTML (atau JSON jika Index tidak ada).
- */
+const SESSION_TTL_SECONDS = 21600; // 6 jam
+
 function doGet(e) {
+  const action = (e && e.parameter && e.parameter.action) ? String(e.parameter.action) : '';
+  if (action === 'getData' || action === 'tambahKloter' || (e && e.parameter && e.parameter.format === 'json')) {
+    return createJsonResponse({ sukses: false, pesan: 'Akses API wajib melalui sesi login.' });
+  }
   try {
-    const action = (e && e.parameter && e.parameter.action) ? String(e.parameter.action) : '';
-
-    // 1. Endpoint API GET Data untuk Vercel
-    if (action === 'getData' || (e && e.parameter && e.parameter.format === 'json')) {
-      const data = getDashboardData();
-      return createJsonResponse({
-        sukses: true,
-        data: data
-      });
-    }
-
-    // 2. Endpoint Alternatif Simpan Kloter via GET (jika diperlukan)
-    if (action === 'tambahKloter') {
-      const nik = e.parameter.nik || '';
-      const kloterTujuan = e.parameter.kloterTujuan || '';
-      const hasil = tambahPetaniKeKloter(nik, kloterTujuan);
-      return createJsonResponse(hasil);
-    }
-
-    // 3. Jika dibuka langsung lewat link /exec di browser
-    try {
-      return HtmlService.createTemplateFromFile('Index')
-        .evaluate()
-        .setTitle('Dashboard RDKK MT3 2026 - POKTAN SRI MULYO')
-        .addMetaTag('viewport', 'width=device-width, initial-scale=1')
-        .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
-    } catch (htmlErr) {
-      // Jika file Index.html tidak ada di Apps Script (karena sudah pindah ke Vercel), langsung tampilkan JSON
-      return createJsonResponse({
-        sukses: true,
-        data: getDashboardData()
-      });
-    }
+    return HtmlService.createTemplateFromFile('Index')
+      .evaluate()
+      .setTitle('Dashboard RDKK MT3 2026 - POKTAN SRI MULYO')
+      .addMetaTag('viewport', 'width=device-width, initial-scale=1')
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
   } catch (err) {
-    return createJsonResponse({
-      sukses: false,
-      pesan: err.message || String(err)
-    });
+    return createJsonResponse({ sukses: false, pesan: 'Dashboard tersedia melalui portal Vercel.' });
   }
 }
 
-/**
- * Menangani request POST dari Vercel (menggunakan Content-Type: text/plain agar bebas blokir CORS)
- */
 function doPost(e) {
   try {
-    const rawBody = (e && e.postData && e.postData.contents) ? e.postData.contents : '{}';
-    const payload = JSON.parse(rawBody);
-    const action = payload.action || '';
+    const payload = JSON.parse((e && e.postData && e.postData.contents) || '{}');
+    const action = String(payload.action || '');
 
-    if (action === 'tambahKloter') {
-      const hasil = tambahPetaniKeKloter(payload.nik, payload.kloterTujuan);
-      return createJsonResponse(hasil);
+    if (action === 'login') {
+      return createJsonResponse(loginUser_(payload.username, payload.password));
     }
+
+    if (action === 'validateSession') {
+      const role = getSessionRole_(payload.token);
+      return createJsonResponse(role
+        ? { sukses: true, role: role }
+        : { sukses: false, pesan: 'Sesi login sudah berakhir.' });
+    }
+
+    if (action === 'logout') {
+      if (payload.token) CacheService.getScriptCache().remove('poktan_session_' + payload.token);
+      return createJsonResponse({ sukses: true });
+    }
+
+    const role = getSessionRole_(payload.token);
+    if (!role) return createJsonResponse({ sukses: false, pesan: 'Sesi login tidak valid atau sudah berakhir. Silakan login kembali.' });
 
     if (action === 'getData') {
-      return createJsonResponse({
-        sukses: true,
-        data: getDashboardData()
-      });
+      return createJsonResponse({ sukses: true, role: role, data: getDashboardData() });
     }
 
-    throw new Error('Action tidak dikenali: ' + action);
+    if (action === 'tambahKloter') {
+      if (role !== 'admin') return createJsonResponse({ sukses: false, pesan: 'Akses ditolak. Hanya administrator yang dapat mengubah data.' });
+      return createJsonResponse(tambahPetaniKeKloter(payload.nik, payload.kloterTujuan));
+    }
+
+    return createJsonResponse({ sukses: false, pesan: 'Action tidak dikenali.' });
   } catch (err) {
-    return createJsonResponse({
-      sukses: false,
-      pesan: err.message || String(err)
-    });
+    return createJsonResponse({ sukses: false, pesan: err.message || String(err) });
   }
 }
 
-/**
- * Helper untuk membungkus output JSON agar bisa dibaca oleh Vercel (CORS-friendly)
- */
 function createJsonResponse(obj) {
-  return ContentService
-    .createTextOutput(JSON.stringify(obj))
+  return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+/**
+ * Jalankan SATU KALI dari Apps Script editor.
+ * Masukkan admin123 dan giarno123 saat diminta.
+ * Password disimpan sebagai salted SHA-256 hash di Script Properties,
+ * bukan ditanam di HTML atau source code.
+ */
+function setupLoginCredentials() {
+  const ui = SpreadsheetApp.getUi();
+  const adminPrompt = ui.prompt('Setup akun administrator', 'Masukkan password untuk username admin:', ui.ButtonSet.OK_CANCEL);
+  if (adminPrompt.getSelectedButton() !== ui.Button.OK) return;
+  const adminPassword = adminPrompt.getResponseText();
+  if (!adminPassword || adminPassword.length < 8) throw new Error('Password admin minimal 8 karakter.');
+
+  const readPrompt = ui.prompt('Setup akun read-only', 'Masukkan password untuk username giarno:', ui.ButtonSet.OK_CANCEL);
+  if (readPrompt.getSelectedButton() !== ui.Button.OK) return;
+  const readPassword = readPrompt.getResponseText();
+  if (!readPassword || readPassword.length < 8) throw new Error('Password giarno minimal 8 karakter.');
+
+  const props = PropertiesService.getScriptProperties();
+  savePasswordHash_(props, 'ADMIN', adminPassword);
+  savePasswordHash_(props, 'GIARNO', readPassword);
+  CacheService.getScriptCache().removeAll(['poktan_login_fail_admin', 'poktan_login_fail_giarno']);
+  ui.alert('Berhasil', 'Hash password admin dan giarno sudah tersimpan. Silakan deploy ulang Web App.', ui.ButtonSet.OK);
+}
+
+function savePasswordHash_(props, key, password) {
+  const salt = Utilities.getUuid() + Utilities.getUuid();
+  const digest = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, salt + ':' + password, Utilities.Charset.UTF_8);
+  props.setProperties({
+    ['POKTAN_' + key + '_SALT']: salt,
+    ['POKTAN_' + key + '_HASH']: Utilities.base64Encode(digest)
+  }, false);
+}
+
+function loginUser_(username, password) {
+  const user = String(username || '').trim().toLowerCase();
+  const pass = String(password || '');
+  const config = {
+    admin: { key: 'ADMIN', role: 'admin' },
+    giarno: { key: 'GIARNO', role: 'readonly' }
+  }[user];
+  if (!config || !pass) return { sukses: false, pesan: 'Username atau password salah.' };
+
+  const cache = CacheService.getScriptCache();
+  const failKey = 'poktan_login_fail_' + user;
+  const failures = Number(cache.get(failKey) || 0);
+  if (failures >= 8) return { sukses: false, pesan: 'Terlalu banyak percobaan. Coba lagi setelah 10 menit.' };
+
+  const props = PropertiesService.getScriptProperties();
+  const salt = props.getProperty('POKTAN_' + config.key + '_SALT');
+  const expected = props.getProperty('POKTAN_' + config.key + '_HASH');
+  if (!salt || !expected) return { sukses: false, pesan: 'Akun belum diaktifkan. Administrator perlu menjalankan setupLoginCredentials() di Apps Script.' };
+
+  const digest = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, salt + ':' + pass, Utilities.Charset.UTF_8);
+  const actual = Utilities.base64Encode(digest);
+  if (actual !== expected) {
+    cache.put(failKey, String(failures + 1), 600);
+    return { sukses: false, pesan: 'Username atau password salah.' };
+  }
+
+  cache.remove(failKey);
+  const token = Utilities.getUuid() + '-' + Utilities.getUuid();
+  cache.put('poktan_session_' + token, config.role, SESSION_TTL_SECONDS);
+  return { sukses: true, token: token, username: user, role: config.role, expiresIn: SESSION_TTL_SECONDS };
+}
+
+function getSessionRole_(token) {
+  if (!token || String(token).length > 100) return null;
+  const role = CacheService.getScriptCache().get('poktan_session_' + token);
+  return role === 'admin' || role === 'readonly' ? role : null;
 }
 
 /**
