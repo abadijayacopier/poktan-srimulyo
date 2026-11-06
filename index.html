@@ -109,10 +109,7 @@
         </div>
       </div>
       <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 w-full md:w-auto no-print">
-        <button id="install-app-btn" onclick="installPWA()" class="hidden w-full md:w-auto justify-center px-3 py-2 md:py-1.5 bg-white text-emerald-800 hover:bg-emerald-50 rounded-lg text-xs sm:text-sm font-semibold transition items-center gap-1.5 shadow-sm">
-          <i class="fa-solid fa-download"></i> Install App
-        </button>
-        <span id="user-role-badge" class="hidden px-2.5 py-2 rounded-lg bg-emerald-900/60 text-emerald-50 text-[11px] font-bold text-center"></span>
+<span id="user-role-badge" class="hidden px-2.5 py-2 rounded-lg bg-emerald-900/60 text-emerald-50 text-[11px] font-bold text-center"></span>
         <button id="logout-button" onclick="logoutUser()" class="mobile-dock-action hidden w-full md:w-auto justify-center px-3 py-2 md:py-1.5 bg-emerald-950 hover:bg-emerald-900 rounded-lg text-xs sm:text-sm font-semibold transition items-center gap-1.5 border border-emerald-600">
           <i class="fa-solid fa-right-from-bracket"></i> Keluar
         </button>
@@ -472,7 +469,13 @@
       const isAdmin = authSession.role === 'admin';
       document.querySelectorAll('[data-admin-only]').forEach(el => el.classList.toggle('hidden', !isAdmin));
       const badge = document.getElementById('user-role-badge');
-      badge.textContent = (authSession.username || 'Pengguna') + (isAdmin ? ' · ADMIN' : ' · READ ONLY');
+      const hour = new Date().getHours();
+      const greeting = hour >= 4 && hour < 11 ? 'Selamat pagi' :
+                       hour >= 11 && hour < 15 ? 'Selamat siang' :
+                       hour >= 15 && hour < 18 ? 'Selamat sore' : 'Selamat malam';
+      const displayName = isAdmin ? 'Admin' : 'Giarno';
+      badge.innerHTML = '<i class="fa-regular fa-sun mr-1.5"></i>' + greeting + ', ' + displayName;
+      badge.setAttribute('aria-label', greeting + ', ' + displayName);
       badge.classList.remove('hidden');
       document.getElementById('logout-button').classList.remove('hidden');
       document.getElementById('logout-button').classList.add('inline-flex');
