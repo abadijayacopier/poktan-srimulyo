@@ -514,10 +514,11 @@
       showLogin(message || 'Silakan masuk kembali.');
     }
 
-    async function logoutUser() {
+    function logoutUser() {
       const token = authSession && authSession.token;
-      try { if (token) await authApi({ action: 'logout', token }); } catch (_) {}
+      // Tutup sesi di perangkat seketika; penghapusan token server berjalan di belakang.
       forceLogout('Anda sudah keluar dari aplikasi.');
+      if (token) authApi({ action: 'logout', token }).catch(() => {});
     }
 
     function toggleLoginPassword() {
@@ -622,12 +623,20 @@
       // Mode 2: Berjalan di Vercel (Fetch ke REST API Google Apps Script)
       try {
         if (!authSession || !authSession.token) { isFetching = false; return; }
-        const res = await fetch(GAS_API_URL, {
-          method: 'POST',
-          redirect: 'follow',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'getData', token: authSession.token })
-        });
+        const controller = new AbortController();
+        const requestTimeout = setTimeout(() => controller.abort(), 15000);
+        let res;
+        try {
+          res = await fetch(GAS_API_URL, {
+            method: 'POST',
+            redirect: 'follow',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'getData', token: authSession.token }),
+            signal: controller.signal
+          });
+        } finally {
+          clearTimeout(requestTimeout);
+        }
         const json = await res.json();
         isFetching = false;
         if (refreshIcon) refreshIcon.classList.remove('fa-spin');
@@ -683,41 +692,33 @@
 
       // Render Tabel Drop Gudang
       const tbodyDrop = document.getElementById('table-drop-body');
-      tbodyDrop.innerHTML = '';
-      data.dropGudang.forEach(item => {
-        tbodyDrop.innerHTML += `
-          <tr class="hover:bg-slate-50">
-            <td class="py-2.5 px-3 font-semibold text-slate-700">${item.jenis}</td>
-            <td class="py-2.5 px-3 text-right font-mono">${formatNumber(item.alokasiSak)} Sak</td>
-            <td class="py-2.5 px-3 text-right font-mono text-emerald-700 font-bold">${formatNumber(item.terkirimSak)} Sak</td>
-            <td class="py-2.5 px-3 text-right font-mono font-bold text-rose-700 bg-amber-50">${formatNumber(item.sisaSak)} Sak</td>
-            <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-xs bg-amber-100 text-amber-800 font-medium">${item.statusDrop}</span></td>
-            <td class="py-2.5 px-3 text-right font-mono font-medium">${formatRupiah(item.total)}</td>
-          </tr>
-        `;
-      });
+      tbodyDrop.innerHTML = data.dropGudang.map(item => `
+        <tr class="hover:bg-slate-50">
+          <td class="py-2.5 px-3 font-semibold text-slate-700">${item.jenis}</td>
+          <td class="py-2.5 px-3 text-right font-mono">${formatNumber(item.alokasiSak)} Sak</td>
+          <td class="py-2.5 px-3 text-right font-mono text-emerald-700 font-bold">${formatNumber(item.terkirimSak)} Sak</td>
+          <td class="py-2.5 px-3 text-right font-mono font-bold text-rose-700 bg-amber-50">${formatNumber(item.sisaSak)} Sak</td>
+          <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-xs bg-amber-100 text-amber-800 font-medium">${item.statusDrop}</span></td>
+          <td class="py-2.5 px-3 text-right font-mono font-medium">${formatRupiah(item.total)}</td>
+        </tr>
+      `).join('');
 
       // Chart
       renderChart(data.dropGudang);
 
       // Kloter
       const tbodyKloter = document.getElementById('table-kloter-body');
-      tbodyKloter.innerHTML = '';
-      data.kloter.forEach(k => {
-        if (k.jumlahPetani > 0) {
-          tbodyKloter.innerHTML += `
-            <tr class="hover:bg-slate-50">
-              <td class="py-2 px-3 font-semibold text-emerald-800">${k.kloter}</td>
-              <td class="py-2 px-3">${k.pemberiKuasa}</td>
-              <td class="py-2 px-3 text-slate-500">${k.penerimaKuasa}</td>
-              <td class="py-2 px-3 text-center font-bold text-slate-700">${k.jumlahPetani}</td>
-              <td class="py-2 px-3 text-right font-mono">${formatNumber(k.urea)}</td>
-              <td class="py-2 px-3 text-right font-mono">${formatNumber(k.npk)}</td>
-              <td class="py-2 px-3 text-right font-mono">${formatNumber(k.organik)}</td>
-            </tr>
-          `;
-        }
-      });
+      tbodyKloter.innerHTML = data.kloter.filter(k => k.jumlahPetani > 0).map(k => `
+        <tr class="hover:bg-slate-50">
+          <td class="py-2 px-3 font-semibold text-emerald-800">${k.kloter}</td>
+          <td class="py-2 px-3">${k.pemberiKuasa}</td>
+          <td class="py-2 px-3 text-slate-500">${k.penerimaKuasa}</td>
+          <td class="py-2 px-3 text-center font-bold text-slate-700">${k.jumlahPetani}</td>
+          <td class="py-2 px-3 text-right font-mono">${formatNumber(k.urea)}</td>
+          <td class="py-2 px-3 text-right font-mono">${formatNumber(k.npk)}</td>
+          <td class="py-2 px-3 text-right font-mono">${formatNumber(k.organik)}</td>
+        </tr>
+      `).join('');
 
       filterPetani();
     }
@@ -810,34 +811,31 @@
       const q = document.getElementById('searchInput').value.toLowerCase();
       const statusFilter = document.getElementById('statusFilter').value;
       const tbody = document.getElementById('table-petani-body');
-      tbody.innerHTML = '';
-
       let count = 0;
-      globalData.petani.forEach(p => {
+
+      const rows = globalData.petani.filter(p => {
         const matchSearch = p.nik.includes(q) || p.nama.toLowerCase().includes(q);
         const matchStatus = !statusFilter || p.status.includes(statusFilter);
-
-        if (matchSearch && matchStatus) {
-          count++;
-          const badgeClass = p.status.includes('Kloter') 
-            ? 'bg-emerald-100 text-emerald-800' 
-            : 'bg-slate-100 text-slate-700';
-
-          tbody.innerHTML += `
-            <tr class="hover:bg-slate-50">
-              <td class="py-1.5 px-3 text-center text-slate-400">${p.no}</td>
-              <td class="py-1.5 px-3 font-mono text-xs">${p.nik}</td>
-              <td class="py-1.5 px-3 font-medium text-slate-800">${p.nama}</td>
-              <td class="py-1.5 px-3"><span class="px-2 py-0.5 rounded text-xs font-semibold ${badgeClass}">${p.status}</span></td>
-              <td class="py-1.5 px-3 text-slate-500 text-xs">${p.penerimaKuasa}</td>
-              <td class="py-1.5 px-3 text-right font-mono">${p.urea}</td>
-              <td class="py-1.5 px-3 text-right font-mono">${p.npk}</td>
-              <td class="py-1.5 px-3 text-right font-mono">${p.organik}</td>
-            </tr>
-          `;
-        }
+        return matchSearch && matchStatus;
+      }).map(p => {
+        count++;
+        const badgeClass = p.status.includes('Kloter')
+          ? 'bg-emerald-100 text-emerald-800'
+          : 'bg-slate-100 text-slate-700';
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="py-1.5 px-3 text-center text-slate-400">${p.no}</td>
+            <td class="py-1.5 px-3 font-mono text-xs">${p.nik}</td>
+            <td class="py-1.5 px-3 font-medium text-slate-800">${p.nama}</td>
+            <td class="py-1.5 px-3"><span class="px-2 py-0.5 rounded text-xs font-semibold ${badgeClass}">${p.status}</span></td>
+            <td class="py-1.5 px-3 text-slate-500 text-xs">${p.penerimaKuasa}</td>
+            <td class="py-1.5 px-3 text-right font-mono">${p.urea}</td>
+            <td class="py-1.5 px-3 text-right font-mono">${p.npk}</td>
+            <td class="py-1.5 px-3 text-right font-mono">${p.organik}</td>
+          </tr>
+        `;
       });
-
+      tbody.innerHTML = rows.join('');
       document.getElementById('countFiltered').innerText = `Menampilkan ${count} dari ${globalData.petani.length} anggota`;
     }
 
@@ -852,12 +850,8 @@
       document.getElementById('btnSimpanKloter').disabled = true;
 
       const dl = document.getElementById('daftarPetaniList');
-      dl.innerHTML = '';
-      if (globalData && globalData.petani) {
-        globalData.petani.forEach(p => {
-          dl.innerHTML += `<option value="${p.nik}">${p.nama} — [${p.status}]</option>`;
-        });
-      }
+      dl.innerHTML = (globalData && globalData.petani ? globalData.petani : [])
+        .map(p => `<option value="${p.nik}">${p.nama} — [${p.status}]</option>`).join('');
       document.getElementById('inputCariPetani').focus();
     }
 
@@ -971,19 +965,27 @@
 
       // Mode 2: Jika dijalankan dari Vercel (POST JSON via text/plain agar bebas CORS preflight)
       try {
-        const response = await fetch(GAS_API_URL, {
-          method: 'POST',
-          redirect: 'follow',
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8'
-          },
-          body: JSON.stringify({
+        const saveController = new AbortController();
+        const saveTimeout = setTimeout(() => saveController.abort(), 20000);
+        let response;
+        try {
+          response = await fetch(GAS_API_URL, {
+            method: 'POST',
+            redirect: 'follow',
+            headers: {
+              'Content-Type': 'text/plain;charset=utf-8'
+            },
+            signal: saveController.signal,
+            body: JSON.stringify({
             action: 'tambahKloter',
             token: authSession ? authSession.token : '',
             nik: petaniTerpilih.nik,
             kloterTujuan: kloterTujuan
-          })
-        });
+            })
+          });
+        } finally {
+          clearTimeout(saveTimeout);
+        }
 
         const res = await response.json();
         btnSimpan.innerHTML = '<i class="fa-solid fa-check"></i> Tambahkan ke Kloter';
@@ -1011,10 +1013,12 @@
     window.onload = function() {
       initializeAuth();
 
-      // Sinkronisasi otomatis setiap 15 detik hanya saat sesi aktif
+      // Sinkronisasi lebih ringan: 60 detik dan hanya ketika tab sedang aktif.
       setInterval(function() {
-        if (authSession && authSession.token) loadData(true);
-      }, 15000);
+        if (authSession && authSession.token && document.visibilityState === 'visible' && !isFetching) {
+          loadData(true);
+        }
+      }, 60000);
     };
   </script>
 
