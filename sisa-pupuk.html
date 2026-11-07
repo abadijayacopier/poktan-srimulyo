@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rekapitulasi & Formula Alokasi Sisa Pupuk - Poktan Sri Mulyo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-4 sm:p-6 lg:p-8 font-sans selection:bg-emerald-500 selection:text-white">
+
+  <!-- Container Utama -->
+  <div class="max-w-6xl mx-auto space-y-6">
+
+    <!-- Top Header & Breadcrumb -->
+    <header class="bg-slate-800/80 backdrop-blur-md border border-slate-700/80 rounded-2xl p-5 sm:p-6 shadow-xl relative overflow-hidden">
+      <div class="absolute -right-16 -top-16 w-56 h-56 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-16 -bottom-16 w-56 h-56 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+        <div>
+          <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-emerald-400 mb-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            Sheet: Alokasi Pembagian · MT3 2026
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-white flex items-center gap-3">
+            <span class="p-2.5 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white shadow-lg shadow-emerald-900/40 text-lg">
+              <i class="fa-solid fa-calculator"></i>
+            </span>
+            Rekap & Formula Sisa Pupuk Terakhir
+          </h1>
+          <p class="text-sm text-slate-400 mt-1">
+            Kelompok Tani Sri Mulyo · Desa Kediren, Kec. Lembeyan, Kab. Magetan
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2.5 self-start sm:self-center">
+          <a href="index.html" class="px-4 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold transition flex items-center gap-2 border border-slate-600">
+            <i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard
+          </a>
+          <a href="https://docs.google.com/spreadsheets/d/1c7R1klPcFSZ7W1PLaZyayZxBUOrVyLh-Lwc24Cf6CEY/edit" target="_blank" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center gap-2 shadow-sm">
+            <i class="fa-solid fa-table"></i> Buka Google Sheet
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- KPI Grand Total Card: Target Sisa Pupuk Terakhir (Baris 249) -->
+    <div class="bg-gradient-to-br from-emerald-900/50 via-slate-800/90 to-teal-950/60 border border-emerald-500/30 rounded-2xl p-6 shadow-2xl relative">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">
+            <i class="fa-solid fa-flag-checkered"></i> Hasil Akhir (Baris 247 - 249)
+          </div>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-white">Target Sisa Pupuk Pengajuan + Pembagian</h2>
+          <p class="text-xs text-slate-300 mt-0.5">
+            Formula Sheet: <code class="bg-slate-900/80 px-2 py-0.5 rounded text-emerald-300 font-mono text-xs">= Target Penyisaan (G245) + Sisa Pembagian Petani (G241)</code>
+          </p>
+        </div>
+        <div class="text-left md:text-right">
+          <span class="text-xs text-slate-400 uppercase font-semibold">Total Sisa Pupuk Cadangan</span>
+          <div class="text-3xl sm:text-4xl font-black text-emerald-400 tracking-tight">71 SAK</div>
+        </div>
+      </div>
+
+      <!-- 3 Pilar Pupuk Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <!-- Urea -->
+        <div class="bg-slate-800/90 border border-emerald-500/40 rounded-xl p-4 shadow-lg hover:border-emerald-400 transition">
+          <div class="flex items-center justify-between text-xs text-slate-400 font-bold uppercase">
+            <span>Urea (50 kg)</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono text-[11px]">Sel G249</span>
+          </div>
+          <div class="mt-2 flex items-baseline justify-between">
+            <span class="text-3xl sm:text-4xl font-black text-emerald-400 font-mono">32</span>
+            <span class="text-sm font-bold text-slate-400">SAK</span>
+          </div>
+          <div class="mt-3 pt-3 border-t border-slate-700/60 text-xs text-slate-400 flex items-center justify-between">
+            <span>Rincian Formula:</span>
+            <span class="font-mono text-emerald-300 font-semibold">= 17 + 15</span>
+          </div>
+        </div>
+
+        <!-- Phonska -->
+        <div class="bg-slate-800/90 border border-amber-500/40 rounded-xl p-4 shadow-lg hover:border-amber-400 transition">
+          <div class="flex items-center justify-between text-xs text-slate-400 font-bold uppercase">
+            <span>Phonska (50 kg)</span>
+            <span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-mono text-[11px]">Sel H249</span>
+          </div>
+          <div class="mt-2 flex items-baseline justify-between">
+            <span class="text-3xl sm:text-4xl font-black text-amber-400 font-mono">23</span>
+            <span class="text-sm font-bold text-slate-400">SAK</span>
+          </div>
+          <div class="mt-3 pt-3 border-t border-slate-700/60 text-xs text-slate-400 flex items-center justify-between">
+            <span>Rincian Formula:</span>
+            <span class="font-mono text-amber-300 font-semibold">= 8 + 15</span>
+          </div>
+        </div>
+
+        <!-- Organik -->
+        <div class="bg-slate-800/90 border border-teal-500/40 rounded-xl p-4 shadow-lg hover:border-teal-400 transition">
+          <div class="flex items-center justify-between text-xs text-slate-400 font-bold uppercase">
+            <span>Organik (40 kg)</span>
+            <span class="px-2 py-0.5 rounded bg-teal-500/10 text-teal-400 font-mono text-[11px]">Sel I249</span>
+          </div>
+          <div class="mt-2 flex items-baseline justify-between">
+            <span class="text-3xl sm:text-4xl font-black text-teal-400 font-mono">16</span>
+            <span class="text-sm font-bold text-slate-400">SAK</span>
+          </div>
+          <div class="mt-3 pt-3 border-t border-slate-700/60 text-xs text-slate-400 flex items-center justify-between">
+            <span>Rincian Formula:</span>
+            <span class="font-mono text-teal-300 font-semibold">= 5 + 11</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alur Dekonstruksi Formula (Visual Stepper Flow) -->
+    <section class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-6 shadow-xl space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-700/80 pb-4">
+        <div>
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-diagram-project text-emerald-400"></i>
+            Dekonstruksi Alur & Logika Rumus
+          </h3>
+          <p class="text-xs text-slate-400 mt-0.5">Penjelasan bertingkat bagaimana angka sisa pupuk dihitung dari data input sheet</p>
+        </div>
+        <span class="px-3 py-1 rounded-lg bg-slate-700 text-xs font-medium text-slate-300">
+          Spreadsheet Baris 232 → 249
+        </span>
+      </div>
+
+      <!-- Step 1: Pengajuan PPL -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center bg-slate-900/60 p-4 rounded-xl border border-slate-700/60">
+        <div class="lg:col-span-4">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 font-bold text-xs flex items-center justify-center">1</span>
+            <h4 class="text-sm font-bold text-white">Pengajuan ke PPL Lembeyan</h4>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">
+            Diambil dari sheet <span class="text-blue-300 font-mono">'ALOKASI ERDKK'</span> baris 196 lalu dibagi ukuran sak (50kg / 40kg).
+          </p>
+          <div class="mt-2 text-xs font-mono text-slate-400 space-y-0.5 bg-slate-950/50 p-2 rounded">
+            <div>Urea: <code class="text-blue-300">='ALOKASI ERDKK'!O196/50</code></div>
+            <div>Phonska: <code class="text-blue-300">='ALOKASI ERDKK'!P196/50</code></div>
+            <div>Organik: <code class="text-blue-300">='ALOKASI ERDKK'!Q196/40</code></div>
+          </div>
+        </div>
+        <div class="lg:col-span-8 grid grid-cols-3 gap-2">
+          <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 text-center">
+            <div class="text-[11px] text-slate-400 font-semibold">Urea (G234)</div>
+            <div class="text-lg font-mono font-black text-white">287 <span class="text-xs font-normal text-slate-400">SAK</span></div>
+            <div class="text-[10px] text-slate-500">14.350 kg</div>
+          </div>
+          <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 text-center">
+            <div class="text-[11px] text-slate-400 font-semibold">Phonska (H234)</div>
+            <div class="text-lg font-mono font-black text-white">261 <span class="text-xs font-normal text-slate-400">SAK</span></div>
+            <div class="text-[10px] text-slate-500">13.050 kg</div>
+          </div>
+          <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 text-center">
+            <div class="text-[11px] text-slate-400 font-semibold">Organik (I234)</div>
+            <div class="text-lg font-mono font-black text-white">255 <span class="text-xs font-normal text-slate-400">SAK</span></div>
+            <div class="text-[10px] text-slate-500">10.200 kg</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Arrow Down Separator -->
+      <div class="flex justify-center -my-3 text-slate-500">
+        <i class="fa-solid fa-arrow-down"></i>
+      </div>
+
+      <!-- Step 2: Pembagian Pupuk ke Petani -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center bg-slate-900/60 p-4 rounded-xl border border-slate-700/60">
+        <div class="lg:col-span-4">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xs flex items-center justify-center">2</span>
+            <h4 class="text-sm font-bold text-white">Pembagian Pupuk ke Petani (e-RDKK)</h4>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">
+            Total jatah pupuk yang didistribusikan ke seluruh petani yang sah terdaftar di e-RDKK.
+          </p>
+          <div class="mt-2 text-xs font-mono text-slate-400 space-y-0.5 bg-slate-950/50 p-2 rounded">
+            <div>Urea: <code class="text-amber-300">=O2 (=P2/50)</code></div>
+            <div>Phonska: <code class="text-amber-300">=O3 (=P3/50)</code></div>
+            <div>Organik: <code class="text-amber-300">=O4 (=P4/40)</code></div>
+          </div>
+        </div>
+        <div class="lg:col-span-8 grid grid-cols-3 gap-2">
+          <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 text-center">
+            <div class="text-[11px] text-slate-400 font-semibold">Urea (G238)</div>
+            <div class="text-lg font-mono font-black text-white">270 <span class="text-xs font-normal text-slate-400">SAK</span></div>
+            <div class="text-[10px] text-slate-500">13.500 kg</div>
+          </div>
+          <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 text-center">
+            <div class="text-[11px] text-slate-400 font-semibold">Phonska (H238)</div>
+            <div class="text-lg font-mono font-black text-white">253 <span class="text-xs font-normal text-slate-400">SAK</span></div>
+            <div class="text-[10px] text-slate-500">12.650 kg</div>
+          </div>
+          <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 text-center">
+            <div class="text-[11px] text-slate-400 font-semibold">Organik (I238)</div>
+            <div class="text-lg font-mono font-black text-white">250 <span class="text-xs font-normal text-slate-400">SAK</span></div>
+            <div class="text-[10px] text-slate-500">10.000 kg</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Arrow Down Separator -->
+      <div class="flex justify-center -my-3 text-slate-500">
+        <i class="fa-solid fa-arrow-down"></i>
+      </div>
+
+      <!-- Step 3: Dua Komponen Penyisaan -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Komponen A: Target Penyisaan Non-ERDKK -->
+        <div class="bg-slate-900/80 p-4 rounded-xl border border-purple-500/30">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 font-bold text-xs flex items-center justify-center">A</span>
+            <h4 class="text-sm font-bold text-white">Target Sisa untuk Non-ERDKK</h4>
+          </div>
+          <p class="text-xs text-slate-400 mb-3">
+            Selisih kuota pengajuan ke PPL dengan pupuk teralokasi ke petani:
+            <code class="text-purple-300 font-mono">= Pengajuan - Pembagian</code>
+          </p>
+          <div class="grid grid-cols-3 gap-2">
+            <div class="bg-slate-800 p-2.5 rounded text-center">
+              <div class="text-[10px] text-slate-400">G245 (Urea)</div>
+              <div class="font-mono font-bold text-purple-300">17 SAK</div>
+              <div class="text-[9px] text-slate-500">287 - 270</div>
+            </div>
+            <div class="bg-slate-800 p-2.5 rounded text-center">
+              <div class="text-[10px] text-slate-400">H245 (Phonska)</div>
+              <div class="font-mono font-bold text-purple-300">8 SAK</div>
+              <div class="text-[9px] text-slate-500">261 - 253</div>
+            </div>
+            <div class="bg-slate-800 p-2.5 rounded text-center">
+              <div class="text-[10px] text-slate-400">I245 (Organik)</div>
+              <div class="font-mono font-bold text-purple-300">5 SAK</div>
+              <div class="text-[9px] text-slate-500">255 - 250</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Komponen B: Sisa Semua Pupuk yang Dibagikan -->
+        <div class="bg-slate-900/80 p-4 rounded-xl border border-cyan-500/30">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 font-bold text-xs flex items-center justify-center">B</span>
+            <h4 class="text-sm font-bold text-white">Sisa Pupuk Pembagian ke Petani</h4>
+          </div>
+          <p class="text-xs text-slate-400 mb-3">
+            Sisa fisik pupuk yang belum diambil / sisa operasional distribusi:
+            <code class="text-cyan-300 font-mono">= J204 - J228</code>
+          </p>
+          <div class="grid grid-cols-3 gap-2">
+            <div class="bg-slate-800 p-2.5 rounded text-center">
+              <div class="text-[10px] text-slate-400">G241 (Urea)</div>
+              <div class="font-mono font-bold text-cyan-300">15 SAK</div>
+              <div class="text-[9px] text-slate-500">29 - 14</div>
+            </div>
+            <div class="bg-slate-800 p-2.5 rounded text-center">
+              <div class="text-[10px] text-slate-400">H241 (Phonska)</div>
+              <div class="font-mono font-bold text-cyan-300">15 SAK</div>
+              <div class="text-[9px] text-slate-500">28 - 13</div>
+            </div>
+            <div class="bg-slate-800 p-2.5 rounded text-center">
+              <div class="text-[10px] text-slate-400">I241 (Organik)</div>
+              <div class="font-mono font-bold text-cyan-300">11 SAK</div>
+              <div class="text-[9px] text-slate-500">24 - 13</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Arrow Down Separator -->
+      <div class="flex justify-center -my-3 text-emerald-400 font-bold text-sm tracking-wide">
+        <span class="bg-slate-900 px-3 py-1 rounded-full border border-emerald-500/30">KOMPONEN A + KOMPONEN B = SISA PUPUK TERAKHIR</span>
+      </div>
+
+      <!-- Final Equation Box -->
+      <div class="bg-emerald-950/40 border border-emerald-500/40 p-4 rounded-xl flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-equals"></i>
+          </div>
+          <div>
+            <div class="text-sm font-bold text-white">Penjumlahan Final (Baris 247-249)</div>
+            <div class="text-xs text-slate-400 font-mono">Urea: 17 + 15 = 32 SAK | Phonska: 8 + 15 = 23 SAK | Organik: 5 + 11 = 16 SAK</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="px-3.5 py-1.5 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-mono text-xs font-bold">
+            Total Sisa Cadangan: 71 SAK
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Rangkuman Status Petani Pengambilan & KTP (Kiri Bawah di Sheet) -->
+    <section class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-6 shadow-xl">
+      <h3 class="text-base font-bold text-white mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-users-viewfinder text-teal-400"></i>
+        Status Verifikasi & Pengambilan Petani
+      </h3>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-700/60">
+          <div class="text-[11px] text-slate-400 font-semibold truncate">Sudah Ambil & Setor KTP</div>
+          <div class="text-xl font-bold font-mono text-emerald-400 mt-1">140 <span class="text-xs text-slate-400 font-normal">Petani</span></div>
+        </div>
+        <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-700/60">
+          <div class="text-[11px] text-slate-400 font-semibold truncate">Foto di Kios</div>
+          <div class="text-xl font-bold font-mono text-cyan-400 mt-1">13 <span class="text-xs text-slate-400 font-normal">Petani</span></div>
+        </div>
+        <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-700/60">
+          <div class="text-[11px] text-slate-400 font-semibold truncate">Sudah Ambil, Belum KTP</div>
+          <div class="text-xl font-bold font-mono text-amber-400 mt-1">4 <span class="text-xs text-slate-400 font-normal">Petani</span></div>
+        </div>
+        <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-700/60">
+          <div class="text-[11px] text-slate-400 font-semibold truncate">Belum Ambil, Ada KTP</div>
+          <div class="text-xl font-bold font-mono text-indigo-400 mt-1">9 <span class="text-xs text-slate-400 font-normal">Petani</span></div>
+        </div>
+        <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-700/60">
+          <div class="text-[11px] text-slate-400 font-semibold truncate">Belum Setor KTP</div>
+          <div class="text-xl font-bold font-mono text-rose-400 mt-1">22 <span class="text-xs text-slate-400 font-normal">Petani</span></div>
+        </div>
+        <div class="bg-slate-900/60 p-3.5 rounded-xl border border-emerald-500/40 bg-emerald-950/20">
+          <div class="text-[11px] text-emerald-400 font-semibold truncate">Total Sudah Ambil</div>
+          <div class="text-xl font-bold font-mono text-emerald-300 mt-1">157 <span class="text-xs text-emerald-500 font-normal">Petani</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Info -->
+    <footer class="text-center text-xs text-slate-500 pb-4">
+      Data disinkronkan dari Google Spreadsheet Poktan Sri Mulyo · Alokasi Pembagian MT3 2026
+    </footer>
+
+  </div>
+
+</body>
+</html>
