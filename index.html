@@ -467,31 +467,75 @@
             </div>
           </div>
 
-          <!-- Quick Stat KPI Pills for Alokasi Table -->
-          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 pt-2">
-            <button type="button" onclick="setAlokasiCardFilter('')" class="alokasi-kpi p-3 rounded-xl border border-slate-200 bg-slate-50 text-left hover:bg-slate-100 transition">
-              <div class="text-[10px] font-bold uppercase text-slate-500">Total Anggota</div>
-              <div id="alokasi-count" class="text-xl font-black text-slate-900 mt-0.5">0</div>
+          <!-- Quick Stat KPI Cards for Alokasi Pembagian (Style Mirip Ringkasan Dashboard Pro) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-2">
+            
+            <!-- 1. Total Anggota -->
+            <button type="button" onclick="setAlokasiCardFilter('')" 
+                    class="alokasi-kpi bg-white p-4 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md hover:border-slate-300 transition text-left flex items-center gap-3.5 group">
+              <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-xl shrink-0 group-hover:bg-slate-200 transition">
+                <i class="fa-solid fa-users"></i>
+              </div>
+              <div class="min-w-0">
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Total Anggota</div>
+                <div id="alokasi-count" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">0</div>
+                <div class="text-[11px] text-slate-400 truncate">Semua data alokasi</div>
+              </div>
             </button>
-            <div class="p-3 rounded-xl border border-violet-200 bg-violet-50/50 text-left">
-              <div class="text-[10px] font-bold uppercase text-violet-700">Sisa Pupuk Gudang</div>
-              <div class="text-xs font-bold text-slate-800 mt-1 flex flex-wrap gap-1">
-                <span>U:<b id="sisa-pupuk-urea">—</b></span>
-                <span>P:<b id="sisa-pupuk-phonska">—</b></span>
-                <span>O:<b id="sisa-pupuk-organik">—</b></span>
+
+            <!-- 2. Sisa Pupuk Gudang -->
+            <div class="bg-white p-4 rounded-2xl border border-violet-200/90 shadow-sm flex items-center gap-3.5">
+              <div class="w-12 h-12 rounded-xl bg-violet-50 text-violet-700 flex items-center justify-center text-xl shrink-0">
+                <i class="fa-solid fa-warehouse"></i>
+              </div>
+              <div class="min-w-0">
+                <div class="text-[10px] font-bold uppercase tracking-wider text-violet-700">Sisa Pupuk Gudang</div>
+                <div class="text-xs font-black text-slate-900 tracking-tight mt-0.5 flex flex-wrap items-center gap-1.5">
+                  <span class="bg-violet-50 text-violet-900 px-1.5 py-0.5 rounded border border-violet-100 font-mono">U:<b id="sisa-pupuk-urea">—</b></span>
+                  <span class="bg-violet-50 text-violet-900 px-1.5 py-0.5 rounded border border-violet-100 font-mono">P:<b id="sisa-pupuk-phonska">—</b></span>
+                  <span class="bg-violet-50 text-violet-900 px-1.5 py-0.5 rounded border border-violet-100 font-mono">O:<b id="sisa-pupuk-organik">—</b></span>
+                </div>
+                <div class="text-[11px] text-violet-500 truncate mt-0.5">Stok fisik tersisa</div>
               </div>
             </div>
-            <button type="button" onclick="setAlokasiCardFilter('SUDAH')" class="alokasi-kpi p-3 rounded-xl border border-emerald-200 bg-emerald-50/50 text-left hover:bg-emerald-100/50 transition">
-              <div class="text-[10px] font-bold uppercase text-emerald-700">Sudah Ambil</div>
-              <div id="alokasi-sudah" class="text-xl font-black text-emerald-800 mt-0.5">0</div>
+
+            <!-- 3. Sudah Ambil -->
+            <button type="button" onclick="setAlokasiCardFilter('SUDAH')" 
+                    class="alokasi-kpi bg-white p-4 rounded-2xl border border-emerald-200/90 shadow-sm hover:shadow-md hover:border-emerald-300 transition text-left flex items-center gap-3.5 group">
+              <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl shrink-0 group-hover:bg-emerald-100 transition">
+                <i class="fa-solid fa-circle-check"></i>
+              </div>
+              <div class="min-w-0">
+                <div class="text-[10px] font-bold uppercase tracking-wider text-emerald-700">Sudah Ambil</div>
+                <div id="alokasi-sudah" class="text-xl sm:text-2xl font-black text-emerald-800 tracking-tight">0</div>
+                <div class="text-[11px] text-emerald-600 truncate">Petani selesai ambil</div>
+              </div>
             </button>
-            <button type="button" onclick="setAlokasiCardFilter('BELUM')" class="alokasi-kpi p-3 rounded-xl border border-amber-200 bg-amber-50/50 text-left hover:bg-amber-100/50 transition">
-              <div class="text-[10px] font-bold uppercase text-amber-700">Belum Ambil</div>
-              <div id="alokasi-belum" class="text-xl font-black text-amber-800 mt-0.5">0</div>
+
+            <!-- 4. Belum Ambil -->
+            <button type="button" onclick="setAlokasiCardFilter('BELUM')" 
+                    class="alokasi-kpi bg-white p-4 rounded-2xl border border-amber-200/90 shadow-sm hover:shadow-md hover:border-amber-300 transition text-left flex items-center gap-3.5 group">
+              <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center text-xl shrink-0 group-hover:bg-amber-100 transition">
+                <i class="fa-solid fa-clock"></i>
+              </div>
+              <div class="min-w-0">
+                <div class="text-[10px] font-bold uppercase tracking-wider text-amber-700">Belum Ambil</div>
+                <div id="alokasi-belum" class="text-xl sm:text-2xl font-black text-amber-800 tracking-tight">0</div>
+                <div class="text-[11px] text-amber-600 truncate">Menunggu penebusan</div>
+              </div>
             </button>
-            <button type="button" onclick="setAlokasiCardFilter('KTP')" class="alokasi-kpi col-span-2 sm:col-span-1 p-3 rounded-xl border border-blue-200 bg-blue-50/50 text-left hover:bg-blue-100/50 transition">
-              <div class="text-[10px] font-bold uppercase text-blue-700">Belum Setor KTP</div>
-              <div id="alokasi-lainnya" class="text-xl font-black text-blue-800 mt-0.5">0</div>
+
+            <!-- 5. Belum Setor KTP -->
+            <button type="button" onclick="setAlokasiCardFilter('KTP')" 
+                    class="alokasi-kpi bg-white p-4 rounded-2xl border border-blue-200/90 shadow-sm hover:shadow-md hover:border-blue-300 transition text-left flex items-center gap-3.5 group">
+              <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl shrink-0 group-hover:bg-blue-100 transition">
+                <i class="fa-solid fa-id-card"></i>
+              </div>
+              <div class="min-w-0">
+                <div class="text-[10px] font-bold uppercase tracking-wider text-blue-700">Belum Setor KTP</div>
+                <div id="alokasi-lainnya" class="text-xl sm:text-2xl font-black text-blue-800 tracking-tight">0</div>
+                <div class="text-[11px] text-blue-600 truncate">Berkas KTP belum ada</div>
+              </div>
             </button>
           </div>
         </div>
@@ -1044,7 +1088,7 @@
     function changeAlStatus(row,option,checked){const input=document.querySelector('[data-row="'+row+'"][data-col="5"]');let values=alStatusList(input.value);values=checked?(values.includes(option)?values:[...values,option]):values.filter(x=>x!==option);input.value=values.join(', ');const tr=input.closest('tr');const details=tr.querySelector('details');const holder=document.createElement('div');holder.innerHTML=renderAlStatusPicker(row,input.value);details.replaceWith(holder.firstElementChild);}
     function alokasiStatusCategory(r){const labels=alStatusList(r.values[5]).map(x=>x.toUpperCase());if(labels.includes('SUDAH AMBIL'))return 'SUDAH';if(labels.includes('BELUM AMBIL'))return 'BELUM';if(labels.includes('BELUM SETOR KTP'))return 'KTP';return 'LAINNYA';}
     function setAlokasiCardFilter(category){document.getElementById('al-status-filter').value=category;renderAlokasiTable();}
-    function renderAlokasiTable(){const q=(document.getElementById('al-search').value||'').trim().toLowerCase(),st=document.getElementById('al-status-filter').value;const filtered=alokasiRows.filter(r=>{const matchText=!q||r.values.some(v=>String(v??'').toLowerCase().includes(q));return matchText&&(!st||alokasiStatusCategory(r)===st);});const total=filtered.length;document.getElementById('alokasi-count').textContent=alokasiRows.length;const sudah=alokasiRows.filter(r=>alokasiStatusCategory(r)==='SUDAH').length,belum=alokasiRows.filter(r=>alokasiStatusCategory(r)==='BELUM').length,lainnya=alokasiRows.filter(r=>alokasiStatusCategory(r)==='KTP').length;const sisaRow=alokasiAllRows.find(r=>(r.values||[]).some(v=>String(v??'').toUpperCase().includes('SISA P')));const fmtSisa=v=>v===undefined||v===null||v===''?'—':String(v).match(/SAK/i)?String(v):String(v)+' Sak';document.getElementById('sisa-pupuk-urea').textContent=sisaRow?fmtSisa(sisaRow.values[9]):'—';document.getElementById('sisa-pupuk-phonska').textContent=sisaRow?fmtSisa(sisaRow.values[10]):'—';document.getElementById('sisa-pupuk-organik').textContent=sisaRow?fmtSisa(sisaRow.values[11]):'—';document.getElementById('alokasi-sudah').textContent=sudah;document.getElementById('alokasi-belum').textContent=belum;document.getElementById('alokasi-lainnya').textContent=lainnya;document.querySelectorAll('.alokasi-kpi').forEach((el,i)=>{const active=['','SUDAH','BELUM','KTP'][i]===st;el.classList.toggle('ring-2',active);el.classList.toggle('ring-offset-2',active);});document.getElementById('alokasi-empty').classList.toggle('hidden',total>0);document.getElementById('al-page-info').textContent=total?('Menampilkan seluruh '+total+' data petani'):'Tidak ada data';document.getElementById('alokasi-tbody').innerHTML=filtered.map((r,ri)=>{const rowBg=ri%2===0?'bg-white':'bg-slate-50/70';return '<tr class="group '+rowBg+' hover:!bg-emerald-50/70 transition-colors">'+r.values.map((v,i)=>{const width=i===0?'w-[46px] min-w-[46px]':i===1?'w-[130px] min-w-[130px]':i===2?'w-[140px] min-w-[140px]':i===3?'w-[80px] min-w-[80px]':i===4?'w-[80px] min-w-[80px]':i===5?'w-[170px] min-w-[170px]':i>=6&&i<=8?'w-[80px] min-w-[80px]':i>=9&&i<=11?'w-[84px] min-w-[84px]':i===12?'w-[100px] min-w-[100px]':'w-[140px] min-w-[140px]';const locked=i===3||i===6||i===7||i===8;const align=i===0||(i>=9&&i<=11)?'text-center':(i>=6&&i<=8)||i===12?'text-right':'text-left';if(i===5)return '<td class="'+width+' border-b border-r border-slate-200/90 px-2 py-1.5 align-middle bg-inherit">'+renderAlStatusPicker(r.row,v)+'</td>';return '<td class="'+width+' border-b border-r border-slate-200/90 px-2 py-1.5 align-middle bg-inherit"><input data-row="'+r.row+'" data-col="'+i+'" value="'+escAl(v)+'" title="'+escAl(v)+(locked?' · Hanya baca':'')+'" aria-label="'+(['No','NIK','Nama','Lahan Revisi (hanya baca)','Revisi Lahan Asli','Status','Urea (hanya baca)','Phonska (hanya baca)','Organik (hanya baca)','Sak Urea','Sak Phonska','Sak Organik','Uang','Keterangan'][i])+'" class="w-full min-w-0 rounded-md border '+(locked?'border-slate-200/60 bg-slate-100/70 text-slate-500 cursor-not-allowed':'border-slate-200/80 bg-white hover:border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-slate-800 shadow-2xs')+' px-2 py-1 text-[12px] leading-snug outline-none '+align+' '+(i===0?'font-semibold text-slate-500':i===1?'font-mono tracking-tight text-slate-700':i===2?'font-bold text-slate-900':i>=6&&i<=11?'font-semibold text-slate-800':i===12?'font-bold text-emerald-800':'')+'" '+(i===0||locked?'readonly tabindex="-1"':'')+'></td>';}).join('')+'<td class="w-[90px] min-w-[90px] border-b border-slate-200/90 px-2 py-1.5 align-middle bg-inherit no-print"><div class="flex flex-nowrap items-center justify-center gap-1.5"><button type="button" title="Edit baris" aria-label="Edit baris" onclick="editAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 shadow-2xs transition"><i class="fa-solid fa-pen-to-square text-[11px]"></i></button><button type="button" title="Simpan perubahan" aria-label="Simpan perubahan" onclick="saveAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-700 text-white shadow-2xs hover:bg-emerald-800 transition"><i class="fa-solid fa-floppy-disk text-[11px]"></i></button>'+(alokasiJenis==='NON_ERDKK'?'<button type="button" title="Hapus data" aria-label="Hapus data" onclick="deleteAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-rose-600 text-white hover:bg-rose-700 shadow-2xs transition"><i class="fa-solid fa-trash text-[11px]"></i></button>':'')+'</div></td></tr>';}).join('');}
+    function renderAlokasiTable(){const q=(document.getElementById('al-search').value||'').trim().toLowerCase(),st=document.getElementById('al-status-filter').value;const filtered=alokasiRows.filter(r=>{const matchText=!q||r.values.some(v=>String(v??'').toLowerCase().includes(q));return matchText&&(!st||alokasiStatusCategory(r)===st);});const total=filtered.length;document.getElementById('alokasi-count').textContent=alokasiRows.length;const sudah=alokasiRows.filter(r=>alokasiStatusCategory(r)==='SUDAH').length,belum=alokasiRows.filter(r=>alokasiStatusCategory(r)==='BELUM').length,lainnya=alokasiRows.filter(r=>alokasiStatusCategory(r)==='KTP').length;const sisaRow=alokasiAllRows.find(r=>(r.values||[]).some(v=>String(v??'').toUpperCase().includes('SISA P')));const fmtSisa=v=>v===undefined||v===null||v===''?'—':String(v).match(/SAK/i)?String(v):String(v)+' Sak';document.getElementById('sisa-pupuk-urea').textContent=sisaRow?fmtSisa(sisaRow.values[9]):'—';document.getElementById('sisa-pupuk-phonska').textContent=sisaRow?fmtSisa(sisaRow.values[10]):'—';document.getElementById('sisa-pupuk-organik').textContent=sisaRow?fmtSisa(sisaRow.values[11]):'—';document.getElementById('alokasi-sudah').textContent=sudah;document.getElementById('alokasi-belum').textContent=belum;document.getElementById('alokasi-lainnya').textContent=lainnya;document.querySelectorAll('.alokasi-kpi').forEach((el,i)=>{const active=['','SUDAH','BELUM','KTP'][i]===st;el.classList.toggle('ring-2',active);el.classList.toggle('ring-emerald-600',active);el.classList.toggle('border-emerald-600',active);});document.getElementById('alokasi-empty').classList.toggle('hidden',total>0);document.getElementById('al-page-info').textContent=total?('Menampilkan seluruh '+total+' data petani'):'Tidak ada data';document.getElementById('alokasi-tbody').innerHTML=filtered.map((r,ri)=>{const rowBg=ri%2===0?'bg-white':'bg-slate-50/70';return '<tr class="group '+rowBg+' hover:!bg-emerald-50/70 transition-colors">'+r.values.map((v,i)=>{const width=i===0?'w-[46px] min-w-[46px]':i===1?'w-[130px] min-w-[130px]':i===2?'w-[140px] min-w-[140px]':i===3?'w-[80px] min-w-[80px]':i===4?'w-[80px] min-w-[80px]':i===5?'w-[170px] min-w-[170px]':i>=6&&i<=8?'w-[80px] min-w-[80px]':i>=9&&i<=11?'w-[84px] min-w-[84px]':i===12?'w-[100px] min-w-[100px]':'w-[140px] min-w-[140px]';const locked=i===3||i===6||i===7||i===8;const align=i===0||(i>=9&&i<=11)?'text-center':(i>=6&&i<=8)||i===12?'text-right':'text-left';if(i===5)return '<td class="'+width+' border-b border-r border-slate-200/90 px-2 py-1.5 align-middle bg-inherit">'+renderAlStatusPicker(r.row,v)+'</td>';return '<td class="'+width+' border-b border-r border-slate-200/90 px-2 py-1.5 align-middle bg-inherit"><input data-row="'+r.row+'" data-col="'+i+'" value="'+escAl(v)+'" title="'+escAl(v)+(locked?' · Hanya baca':'')+'" aria-label="'+(['No','NIK','Nama','Lahan Revisi (hanya baca)','Revisi Lahan Asli','Status','Urea (hanya baca)','Phonska (hanya baca)','Organik (hanya baca)','Sak Urea','Sak Phonska','Sak Organik','Uang','Keterangan'][i])+'" class="w-full min-w-0 rounded-md border '+(locked?'border-slate-200/60 bg-slate-100/70 text-slate-500 cursor-not-allowed':'border-slate-200/80 bg-white hover:border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-slate-800 shadow-2xs')+' px-2 py-1 text-[12px] leading-snug outline-none '+align+' '+(i===0?'font-semibold text-slate-500':i===1?'font-mono tracking-tight text-slate-700':i===2?'font-bold text-slate-900':i>=6&&i<=11?'font-semibold text-slate-800':i===12?'font-bold text-emerald-800':'')+'" '+(i===0||locked?'readonly tabindex="-1"':'')+'></td>';}).join('')+'<td class="w-[90px] min-w-[90px] border-b border-slate-200/90 px-2 py-1.5 align-middle bg-inherit no-print"><div class="flex flex-nowrap items-center justify-center gap-1.5"><button type="button" title="Edit baris" aria-label="Edit baris" onclick="editAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 shadow-2xs transition"><i class="fa-solid fa-pen-to-square text-[11px]"></i></button><button type="button" title="Simpan perubahan" aria-label="Simpan perubahan" onclick="saveAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-700 text-white shadow-2xs hover:bg-emerald-800 transition"><i class="fa-solid fa-floppy-disk text-[11px]"></i></button>'+(alokasiJenis==='NON_ERDKK'?'<button type="button" title="Hapus data" aria-label="Hapus data" onclick="deleteAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-rose-600 text-white hover:bg-rose-700 shadow-2xs transition"><i class="fa-solid fa-trash text-[11px]"></i></button>':'')+'</div></td></tr>';}).join('');}
     function editAlokasiRow(row){const first=document.querySelector('[data-row="'+row+'"][data-col="1"]');if(first){first.focus();first.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});}showAlokasiToast('Mode edit: ubah kolom yang diperlukan, lalu tekan ikon Simpan.');}
     async function saveAlokasiRow(row){const values=Array(14).fill('');document.querySelectorAll('[data-row="'+row+'"][data-col]').forEach(e=>values[+e.dataset.col]=e.value);const btn=document.querySelector('button[onclick="saveAlokasiRow('+row+')"]');if(btn){btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-circle-notch fa-spin mr-1"></i>Menyimpan';}try{await alokasiApi('saveAlokasi',{row,values});const idx=alokasiRows.findIndex(x=>x.row===row);if(idx>=0)alokasiRows[idx].values=values;const allIdx=alokasiAllRows.findIndex(x=>x.row===row);if(allIdx>=0)alokasiAllRows[allIdx].values=values;renderAlokasiTable();showAlokasiToast('Perubahan berhasil disimpan ke Google Sheet.');}catch(e){showAlokasiToast(e.message,'error');if(btn){btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-floppy-disk mr-1"></i>Simpan';}}}
     function confirmAlokasiDelete(nama){return new Promise(resolve=>{let modal=document.getElementById('al-delete-confirm');if(!modal){modal=document.createElement('div');modal.id='al-delete-confirm';modal.className='fixed inset-0 z-[150] hidden items-center justify-center bg-slate-950/50 p-4';modal.innerHTML='<div class="w-full max-w-sm rounded-2xl bg-white p-5 shadow-2xl"><div class="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-rose-100 text-rose-600"><i class="fa-solid fa-trash"></i></div><h3 class="text-base font-bold text-slate-900">Hapus data petani?</h3><p id="al-delete-message" class="mt-2 text-sm leading-relaxed text-slate-600"></p><div class="mt-5 flex justify-end gap-2"><button type="button" id="al-delete-cancel" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600">Batal</button><button type="button" id="al-delete-yes" class="rounded-lg bg-rose-600 px-4 py-2 text-sm font-bold text-white hover:bg-rose-700">Ya, hapus</button></div></div>';document.body.appendChild(modal);}modal.querySelector('#al-delete-message').textContent='Hapus '+nama+' dari daftar Non-e-RDKK? Data pada Google Sheet akan dihapus.';modal.classList.remove('hidden');modal.classList.add('flex');const finish=value=>{modal.classList.add('hidden');modal.classList.remove('flex');modal.querySelector('#al-delete-cancel').onclick=null;modal.querySelector('#al-delete-yes').onclick=null;resolve(value);};modal.querySelector('#al-delete-cancel').onclick=()=>finish(false);modal.querySelector('#al-delete-yes').onclick=()=>finish(true);});}
