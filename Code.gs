@@ -51,6 +51,19 @@ function doPost(e) {
       return createJsonResponse({ sukses: true, role: role, data: getDashboardData() });
     }
 
+    if (action === 'getAlokasi') {
+      if (role !== 'admin') return createJsonResponse({ sukses: false, pesan: 'Akses ditolak. Halaman Alokasi khusus administrator.' });
+      return createJsonResponse(getAlokasiPembagian_());
+    }
+    if (action === 'saveAlokasi') {
+      if (role !== 'admin') return createJsonResponse({ sukses: false, pesan: 'Akses ditolak. Hanya administrator dapat mengubah alokasi.' });
+      return createJsonResponse(saveAlokasiPembagian_(payload.row, payload.values));
+    }
+    if (action === 'addAlokasi') {
+      if (role !== 'admin') return createJsonResponse({ sukses: false, pesan: 'Akses ditolak. Hanya administrator dapat menambah alokasi.' });
+      return createJsonResponse(addAlokasiPembagian_(payload.values));
+    }
+
     if (action === 'tambahKloter') {
       if (role !== 'admin') return createJsonResponse({ sukses: false, pesan: 'Akses ditolak. Hanya administrator yang dapat mengubah data.' });
       return createJsonResponse(tambahPetaniKeKloter(payload.nik, payload.kloterTujuan));
@@ -435,4 +448,59 @@ function tambahPetaniKeKloter(nik, kloterTujuan) {
   } finally {
     lock.releaseLock();
   }
+}
+
+/**
+ * Modul Alokasi Pembagian: sheet ALOKASI PEMBAGIAN, kolom A:N.
+ * Seluruh operasi dipanggil setelah pemeriksaan token dan role admin pada doPost.
+ */
+function getAlokasiPembagian_() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('ALOKASI PEMBAGIAN');
+  if (!sheet) throw new Error("Tab 'ALOKASI PEMBAGIAN' tidak ditemukan. Pastikan nama tab sama persis.");
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return { sukses: true, rows: [] };
+  const values = sheet.getRange(2, 1, lastRow - 1, 14).getDisplayValues();
+  const rows = values.map((row, i) => ({ row: i + 2, values: row })).filter(item => item.values.some(v => String(v).trim() !== ''));
+  return { sukses: true, rows: rows };
+}
+
+function saveAlokasiPembagian_(rowNumber, values) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('ALOKASI PEMBAGIAN');
+    if (!sheet) throw new Error("Tab 'ALOKASI PEMBAGIAN' tidak ditemukan.");
+    const row = Number(rowNumber);
+    if (!Number.isInteger(row) || row < 2 || row > sheet.getLastRow()) throw new Error('Nomor baris tidak valid.');
+    if (!Array.isArray(values) || values.length !== 14) throw new Error('Format data harus berisi 14 kolom (A:N).');
+    const safe = values.map((v, i) => {
+      const value = String(v == null ? '' : v).trim();
+      return i === 1 ? "'" + value : value; // NIK dipaksa sebagai teks agar angka nol awal tidak hilang.
+    });
+    sheet.getRange(row, 1, 1, 14).setValues([safe]);
+    SpreadsheetApp.flush();
+    return { sukses: true, pesan: 'Data alokasi berhasil diperbarui.', row: row };
+  } finally { lock.releaseLock(); }
+}
+
+function addAlokasiPembagian_(values) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('ALOKASI PEMBAGIAN');
+    if (!sheet) throw new Error("Tab 'ALOKASI PEMBAGIAN' tidak ditemukan.");
+    if (!Array.isArray(values) || values.length !== 14) throw new Error('Format data harus berisi 14 kolom (A:N).');
+    const nik = String(values[1] || '').trim();
+    const nama = String(values[2] || '').trim();
+    if (!nik || !nama) throw new Error('NIK dan nama wajib diisi.');
+    const lastRow = Math.max(sheet.getLastRow(), 1);
+    const nextRow = lastRow + 1;
+    const existing = lastRow >= 2 ? sheet.getRange(2, 2, lastRow - 1, 1).getDisplayValues().flat() : [];
+    if (existing.some(v => String(v).trim() === nik)) throw new Error('NIK sudah terdaftar pada halaman alokasi.');
+    const nextNo = Math.max(0, ...sheet.getRange(2, 1, Math.max(lastRow - 1, 1), 1).getValues().flat().map(Number).filter(Number.isFinite)) + 1;
+    const safe = values.map((v, i) => i === 0 ? nextNo : (i === 1 ? "'" + String(v || '').trim() : String(v == null ? '' : v).trim()));
+    sheet.getRange(nextRow, 1, 1, 14).setValues([safe]);
+    SpreadsheetApp.flush();
+    return { sukses: true, pesan: 'Data alokasi baru berhasil ditambahkan.', row: nextRow };
+  } finally { lock.releaseLock(); }
 }
