@@ -124,7 +124,7 @@
         </button>
         <button data-admin-only onclick="openAlokasiPage()" class="hidden desktop-action-btn w-full md:w-auto justify-center px-4 py-2.5 bg-amber-500 hover:bg-amber-600 rounded-xl text-sm font-bold text-slate-950 transition flex items-center gap-2 shadow-sm whitespace-nowrap"><i class="fa-solid fa-table-list"></i> Alokasi Pembagian</button>
 
-        <button onclick="loadData(false)" class="mobile-dock-action desktop-action-btn w-full md:w-auto justify-center px-4 py-2.5 bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] rounded-xl text-sm font-semibold transition flex items-center gap-2 shadow-sm whitespace-nowrap">
+        <button onclick="refreshCurrentPage(false)" class="mobile-dock-action desktop-action-btn w-full md:w-auto justify-center px-4 py-2.5 bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] rounded-xl text-sm font-semibold transition flex items-center gap-2 shadow-sm whitespace-nowrap">
           <i id="refresh-icon" class="fa-solid fa-rotate"></i> Refresh
         </button>
         <button onclick="window.print()" class="mobile-dock-action desktop-action-btn hidden sm:flex w-full md:w-auto justify-center px-4 py-2.5 bg-amber-500 hover:bg-amber-600 active:scale-[0.98] rounded-xl text-sm font-bold text-slate-950 transition items-center gap-2 shadow-sm whitespace-nowrap">
@@ -525,8 +525,10 @@
     function openAlokasiPage(){if(!authSession||authSession.role!=='admin'){alert('Halaman ini khusus Admin.');return;}document.getElementById('content').classList.add('hidden');document.getElementById('alokasi-page').classList.remove('hidden');document.getElementById('mobile-action-dock').classList.add('hidden');loadAlokasi();window.scrollTo(0,0);}
     function closeAlokasiPage(){document.getElementById('alokasi-page').classList.add('hidden');document.getElementById('content').classList.remove('hidden');document.getElementById('mobile-action-dock').classList.remove('hidden');window.scrollTo(0,0);}
     function gotoRekapKloter(){closeAlokasiPage();requestAnimationFrame(()=>document.getElementById('rekap-kloter-section')?.scrollIntoView({behavior:'smooth',block:'start'}));}
+    // Refresh mengikuti halaman yang sedang dibuka, bukan selalu kembali ke dashboard kloter.
+    function refreshCurrentPage(isSilent=false){if(!document.getElementById('alokasi-page').classList.contains('hidden'))return loadAlokasi();return loadData(isSilent);}
     async function alokasiApi(action,extra={}){if(!authSession||authSession.role!=='admin')throw Error('Akses ditolak.');const r=await fetch(GAS_API_URL,{method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,token:authSession.token,...extra})});const j=await r.json();if(!j.sukses)throw Error(j.pesan||'Permintaan gagal');return j;}
-    async function loadAlokasi(){if(alokasiBusy||!authSession||authSession.role!=='admin')return;alokasiBusy=true;document.getElementById('alokasi-loading').classList.remove('hidden');try{const j=await alokasiApi('getAlokasi');alokasiRows=j.rows||[];alokasiPage=1;renderAlokasiTable();}catch(e){alert(e.message);}finally{alokasiBusy=false;document.getElementById('alokasi-loading').classList.add('hidden');}}
+    async function loadAlokasi(){if(alokasiBusy||!authSession||authSession.role!=='admin')return;alokasiBusy=true;document.getElementById('alokasi-loading').classList.remove('hidden');try{const j=await alokasiApi('getAlokasi');alokasiRows=j.rows||[];renderAlokasiTable();}catch(e){alert(e.message);}finally{alokasiBusy=false;document.getElementById('alokasi-loading').classList.add('hidden');}}
     function escAl(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
     const ALOKASI_STATUS_OPTIONS=['SUDAH AMBIL','BELUM AMBIL','SETOR KTP','BELUM SETOR KTP','FOTO DI KIOS','SURAT KUASA','SUDAH BAYAR'];
     function alStatusList(value){return String(value||'').split(/[,;|]+/).map(x=>x.trim()).filter(Boolean);}
@@ -1032,7 +1034,7 @@
       // Sinkronisasi lebih ringan: 60 detik dan hanya ketika tab sedang aktif.
       setInterval(function() {
         if (authSession && authSession.token && document.visibilityState === 'visible' && !isFetching) {
-          loadData(true);
+          refreshCurrentPage(true);
         }
       }, 60000);
     };
