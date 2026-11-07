@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="h-full bg-slate-100">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#065f46">
   <meta name="description" content="Dashboard Alokasi RDKK MT III 2026 - Kelompok Tani Sri Mulyo, Desa Kediren, Magetan.">
   <link rel="manifest" href="/manifest.webmanifest">
-  <meta name="theme-color" content="#065f46">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -14,466 +13,757 @@
   <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
   <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png">
   <title>Dashboard Alokasi RDKK MT3 2026 - POKTAN SRI MULYO</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
-    /* Menjaga grafik Chart.js tetap berada di dalam kartu pada layar desktop */
-    #chartGudang {
-      display: block;
-      width: 100% !important;
-      max-width: 100%;
-      height: 100% !important;
+    :root {
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
     }
-    @media (min-width: 1024px) {
-      #chartGudang { min-width: 0; }
+    body {
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-tap-highlight-color: transparent;
     }
-    .auth-locked header, .auth-locked main, .auth-locked #footer-credit-fixed { visibility: hidden; }
-    #login-screen { background: radial-gradient(circle at 20% 15%, rgba(16,185,129,.16), transparent 35%), linear-gradient(145deg,#f0fdf4,#f8fafc 55%,#ecfdf5); }
-    .login-card { box-shadow: 0 24px 70px rgba(6,78,59,.13); }
-    #mobile-action-dock { bottom: calc(42px + env(safe-area-inset-bottom, 0px)); }
-    @media (max-width: 639px) { #alokasi-page { padding-bottom: 5rem !important; } main { padding-bottom: 5rem; } }
-    @media (max-width: 639px) {
-      header .mobile-dock-action { display: none !important; }
-      #mobile-action-dock button { min-height: 48px; }
+    .font-mono {
+      font-family: var(--font-mono);
     }
-    @media (min-width: 640px) { #mobile-action-dock { display: none !important; } }
-    @media print { #mobile-action-dock { display: none !important; } }
-    @media (min-width: 1024px) {
-      .desktop-action-bar { gap: 0.625rem; flex-shrink: 0; }
-      .desktop-action-btn { min-height: 44px; letter-spacing: .01em; }
-      .desktop-action-btn i { font-size: .95rem; }
+
+    /* Auth locking */
+    .auth-locked header, 
+    .auth-locked #app-container, 
+    .auth-locked #mobile-bottom-bar,
+    .auth-locked #desktop-sidebar {
+      display: none !important;
     }
-    @media (min-width: 640px) and (max-width: 1023px) {
-      .desktop-action-bar { justify-content: flex-end; }
-      .desktop-action-btn { min-height: 42px; }
+
+    /* Native app-like scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
-    .app-header { box-shadow:0 4px 18px rgba(6,78,59,.16); }
-    .main-action-nav { background:rgba(248,250,252,.94); border-bottom:1px solid #e2e8f0; }
-    .nav-card { min-height:58px; width:100%; }
-    .nav-action { display:inline-flex; transition:transform .18s ease,box-shadow .18s ease; }
-    .nav-action:active { transform:scale(.97); }
-    @media(min-width:1024px) { .nav-card { justify-content:space-between; } }
-    .nav-logout { color:#fff; background:#064e3b; border:1px solid #047857; }
-    .nav-allocation { color:#111827; background:#f59e0b; box-shadow:0 2px 5px rgba(245,158,11,.18); }
-    .nav-refresh { color:#fff; background:#047857; }
-    .nav-print { color:#111827; background:#fbbf24; }
-    @media(max-width:639px) {
-      .main-action-nav { background:rgba(248,250,252,.96); padding:0 10px 10px; border-bottom:1px solid #e8edf3; }
-      .main-action-nav > div { padding:0 !important; }
-      .nav-card { display:flex; flex-wrap:wrap; align-items:center; border:1px solid #e7edf3; border-radius:20px; padding:10px; gap:10px; background:rgba(255,255,255,.96); box-shadow:0 5px 18px rgba(31,50,72,.06); }
-      #user-role-badge:not(.hidden) { display:flex !important; flex:1 0 100%; justify-content:center; font-size:12px; font-weight:650; padding:10px 12px; border-radius:14px; color:#426b5d; background:#edf7f2; border:1px solid #dceee4; }
-      .nav-actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); width:100%; min-width:100%; flex:1 0 100%; gap:9px; overflow:visible; }
-      .nav-action:not(.hidden) { display:inline-flex !important; min-width:0; width:100%; min-height:48px; padding:10px 9px; font-size:13px; font-weight:650; line-height:1.2; border-radius:15px; justify-content:center; gap:8px; white-space:normal; box-shadow:none !important; border:1px solid transparent; }
-      .nav-action:not(.hidden) i { font-size:15px; opacity:.88; }
-      .nav-action span { white-space:normal; text-align:center; }
-      .nav-logout { color:#536174; background:#f1f4f8; border-color:#e5eaf0 !important; }
-      .nav-allocation { color:#80602b; background:#fbf5e8; border-color:#efe2c5 !important; }
-      .nav-kloter { color:#655b86 !important; background:#f3f0fa !important; border-color:#e5def3 !important; }
-      .nav-refresh { color:#46715d; background:#edf5ef; border-color:#dcebe0 !important; }
-      .nav-print { display:none !important; }
-      #mobile-action-dock { display:none !important; }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
     }
-    @media(display-mode:standalone) {
-      body { padding-top:env(safe-area-inset-top,0); }
-      .main-action-nav { box-shadow:0 5px 16px rgba(15,23,42,.07); }
-      .nav-card { border-color:#d1fae5; box-shadow:0 5px 18px rgba(6,78,59,.08); }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
     }
-    /* Mobile portrait toolbar: override utility flex classes and reserve full-width rows. */
-    @media screen and (max-width:639px) and (orientation:portrait) {
-      #main-action-nav { position:sticky; top:0; z-index:60; }
-      #main-action-nav .nav-card { display:flex !important; flex-direction:column !important; flex-wrap:nowrap !important; align-items:stretch !important; width:100%; gap:10px; padding:10px; }
-      #main-action-nav #user-role-badge:not(.hidden) { display:flex !important; flex:0 0 auto !important; width:100%; min-height:44px; align-items:center; justify-content:center; white-space:normal; }
-      #main-action-nav .nav-actions { display:grid !important; flex:0 0 auto !important; grid-template-columns:repeat(2,minmax(0,1fr)) !important; grid-auto-rows:minmax(50px,auto); width:100% !important; min-width:0 !important; gap:8px !important; }
-      #main-action-nav .nav-action:not(.hidden) { display:flex !important; flex-direction:row !important; align-items:center; justify-content:center; width:100% !important; min-width:0 !important; min-height:50px; height:auto !important; padding:10px 7px !important; gap:7px; font-size:clamp(12px,3.4vw,14px) !important; line-height:1.2; white-space:normal !important; text-align:center; }
-      #main-action-nav .nav-action:not(.hidden) i { flex:0 0 auto; font-size:15px; }
-      #main-action-nav .nav-action span { display:block; flex:0 1 auto; min-width:0; white-space:normal !important; overflow-wrap:normal !important; word-break:normal !important; text-align:center; }
-      #main-action-nav .nav-print { display:none !important; }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
     }
-    @media screen and (max-width:360px) and (orientation:portrait) {
-      #main-action-nav .nav-action:not(.hidden) { font-size:11px !important; padding:9px 5px !important; gap:5px; }
-      #main-action-nav .nav-action:not(.hidden) i { font-size:13px; }
+
+    /* Active Tab Styling */
+    .nav-active {
+      background-color: #065f46 !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 12px rgba(6, 95, 70, 0.25);
     }
-    /* Portrait dashboard KPI cards use full width so currency and totals stay on one line. */
-    @media screen and (orientation:portrait) and (max-width:900px) {
-      #dashboard-kpi-grid { display:grid !important; grid-template-columns:minmax(0,1fr) !important; gap:12px !important; }
-      #dashboard-kpi-grid > div { display:flex !important; flex-direction:row !important; align-items:center; width:100%; min-width:0; min-height:112px; padding:16px !important; gap:14px !important; }
-      #dashboard-kpi-grid > div > div:first-child { flex:0 0 56px; width:56px; height:56px; }
-      #dashboard-kpi-grid > div > div:nth-child(2) { flex:1 1 auto; min-width:0; width:calc(100% - 70px); }
-      #dashboard-kpi-grid > div > div:nth-child(2) > div:nth-child(2) { font-size:clamp(22px,5.8vw,32px) !important; line-height:1.12; white-space:normal; overflow-wrap:anywhere; word-break:normal; }
-      #dashboard-kpi-grid > div > div:nth-child(2) > div:first-child { font-size:clamp(11px,3vw,13px); line-height:1.3; }
-      #dashboard-kpi-grid > div > div:nth-child(2) > div:last-child { font-size:12px; line-height:1.35; }
+    .nav-active i {
+      color: #a7f3d0 !important;
     }
-    /* Prevent labels/cards from clipping at narrow widths or large system fonts. */
-    .nav-card, .nav-actions, .nav-action, .nav-action span, #user-role-badge { box-sizing:border-box; }
-    .nav-action { height:auto; max-width:100%; overflow:visible; }
-    .nav-action span { min-width:0; max-width:100%; overflow-wrap:anywhere; word-break:normal; text-overflow:clip; }
-    #user-role-badge { min-width:0; max-width:100%; white-space:normal; overflow-wrap:anywhere; text-align:center; }
-    @media(max-width:380px) {
-      .nav-card { padding:8px; gap:7px; }
-      .nav-actions { grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; }
-      .nav-action:not(.hidden) { min-height:50px; padding:9px 6px; gap:5px; font-size:clamp(10px,3.1vw,12px); line-height:1.25; }
-      .nav-action:not(.hidden) i { flex:0 0 auto; font-size:13px; }
-      .nav-action span { flex:0 1 auto; }
+    .mobile-nav-item.nav-active {
+      color: #047857 !important;
+      background-color: transparent !important;
+      box-shadow: none !important;
     }
-    @media(min-width:381px) and (max-width:639px) {
-      .nav-action:not(.hidden) { font-size:clamp(11px,3.2vw,13px); }
+    .mobile-nav-item.nav-active .nav-icon-wrapper {
+      background-color: #ecfdf5 !important;
+      color: #065f46 !important;
+      transform: translateY(-2px);
     }
-    /* Native-app feel for PWA landscape & fullscreen */
-    @media (display-mode:standalone) and (orientation:landscape), (display-mode:fullscreen) and (orientation:landscape) {
-      .app-header { position:relative !important; }
-      #main-action-nav { position:sticky !important; top:0 !important; z-index:50; }
-      #main-action-nav .nav-card { min-height:46px; flex-wrap:nowrap; padding:6px 10px; gap:8px; border-radius:16px; }
-      #main-action-nav #user-role-badge:not(.hidden) { display:inline-flex !important; flex:0 0 auto; min-width:0; padding:6px 10px; font-size:11px; }
-      #main-action-nav .nav-actions { display:flex !important; flex-direction:row !important; flex:1 1 auto; min-width:0; overflow-x:auto; overflow-y:hidden; scrollbar-width:none; gap:6px; }
-      #main-action-nav .nav-actions::-webkit-scrollbar { display:none; }
-      #main-action-nav .nav-action:not(.hidden) { display:inline-flex !important; min-width:auto; min-height:38px; height:38px; padding:6px 12px; font-size:11px; white-space:nowrap; border-radius:10px; }
-      #main-action-nav .nav-action span { white-space:nowrap; overflow:visible; text-overflow:clip; }
-      #main-action-nav .nav-logout { color:#536174; background:#f1f4f8; border:1px solid #e5eaf0; }
-      #main-action-nav .nav-allocation { color:#80602b; background:#fbf5e8; border:1px solid #efe2c5; }
-      #main-action-nav .nav-kloter { color:#655b86 !important; background:#f3f0fa !important; border:1px solid #e5def3; }
-      #main-action-nav .nav-refresh { color:#46715d; background:#edf5ef; border:1px solid #dcebe0; }
-      #alokasi-table-scroll { max-height:calc(100dvh - 230px); padding-bottom:3.25rem; }
-      #footer-credit-fixed { font-size:10px; }
-      body { padding-bottom:4rem; }
+    .mobile-nav-item.nav-active .nav-label {
+      font-weight: 700 !important;
+      color: #065f46 !important;
     }
-    /* Table columns scroll horizontally together like a standard spreadsheet table */
-    #alokasi-table-scroll { position:relative; overscroll-behavior:contain; }
-    #alokasi-table-scroll thead th { position:sticky; top:0; z-index:20; background:#f1f5f9; left:auto; }
-    /* Responsive allocation table: compact columns and readable wrapped headings */
-    #alokasi-tbody td { overflow:hidden; }
-    #alokasi-tbody input { text-overflow:ellipsis; }
-    #alokasi-tbody td:nth-child(4), #alokasi-tbody td:nth-child(5) { padding-left:6px; padding-right:6px; }
-    #alokasi-tbody td:nth-child(4) input, #alokasi-tbody td:nth-child(5) input { font-size:12px; padding-left:5px; padding-right:5px; }
-    #alokasi-tbody td:nth-child(n+7):nth-child(-n+12) input { text-align:center; font-weight:600; }
-    #alokasi-tbody td:nth-child(6) { white-space:normal; }
-    @media(max-width:767px) { #alokasi-tbody input { font-size:11px; } #alokasi-tbody td { padding-left:5px; padding-right:5px; } }
-    /* PWA portrait: empat kartu KPI dalam kisi 2 x 2 */
-    @media (display-mode: standalone) and (max-width: 639px), (display-mode: fullscreen) and (max-width: 639px) {
-      #dashboard-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
-      #dashboard-kpi-grid > div { min-width: 0; min-height: 112px; padding: .75rem; gap: .55rem; border-radius: 14px; }
-      #dashboard-kpi-grid > div > div:first-child { width: 2.35rem; height: 2.35rem; flex: 0 0 2.35rem; font-size: 1.05rem; border-radius: .65rem; }
-      #dashboard-kpi-grid > div > div:last-child { min-width: 0; }
-      #dashboard-kpi-grid > div > div:last-child > div:first-child { font-size: 9px; line-height: 1.25; letter-spacing: .035em; }
-      #dashboard-kpi-grid > div > div:last-child > div:nth-child(2) { font-size: clamp(1.15rem, 5vw, 1.5rem); line-height: 1.2; overflow-wrap: anywhere; }
-      #dashboard-kpi-grid > div > div:last-child > div:nth-child(3) { font-size: 9px; line-height: 1.3; }
+
+    /* Safe Area insets */
+    .safe-top {
+      padding-top: env(safe-area-inset-top, 0);
     }
-    .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom, 0); }
-    @media (max-width: 639px) {
-      header .max-w-7xl { gap: 12px; }
-      #sync-badge { flex-shrink: 0; }
-      #content { gap: 1rem; }
-      #content section { scroll-margin-top: 1rem; }
-      #content .rounded-xl { border-radius: 14px; }
-      #content .shadow-sm { box-shadow: 0 1px 3px rgba(15,23,42,.06); }
-      #content .p-5 { padding: 1rem; }
-      #content h2 { line-height: 1.35; }
-      #content #chartGudang { max-height: 100%; }
+    .safe-bottom {
+      padding-bottom: env(safe-area-inset-bottom, 0);
     }
+    #mobile-bottom-bar {
+      padding-bottom: calc(6px + env(safe-area-inset-bottom, 0));
+    }
+
+    /* Table columns sticky and sleek */
+    #alokasi-table-scroll {
+      position: relative;
+      overscroll-behavior: contain;
+    }
+    #alokasi-table-scroll thead th {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: #f8fafc;
+    }
+
+    /* Print styles */
     @media print {
       .no-print { display: none !important; }
-      body { background: white !important; font-size: 11px; }
+      body { background: white !important; font-size: 10pt; }
+      #app-container { margin: 0 !important; padding: 0 !important; }
     }
   </style>
 </head>
-<body class="auth-locked bg-slate-50 text-slate-800 min-h-screen pb-28 sm:pb-14">
+<body class="auth-locked h-full bg-slate-50 text-slate-800 antialiased flex flex-col">
 
+  <!-- ========================================== -->
+  <!-- 1. LOGIN SCREEN (MODERN AUTH EXPERIENCE)  -->
+  <!-- ========================================== -->
+  <section id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gradient-to-br from-emerald-900 via-slate-900 to-slate-950 overflow-y-auto">
+    <div class="w-full max-w-md bg-white/95 backdrop-blur-xl border border-white/20 rounded-3xl p-7 sm:p-9 shadow-2xl relative overflow-hidden">
+      <!-- Glow effect decoration -->
+      <div class="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-teal-500/20 rounded-full blur-3xl pointer-events-none"></div>
 
-  <!-- Login / autentikasi aplikasi -->
-  <section id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto">
-    <div class="login-card w-full max-w-md bg-white border border-emerald-100 rounded-3xl p-6 sm:p-8">
-      <div class="flex flex-col items-center text-center mb-7">
-        <div class="w-20 h-20 rounded-2xl bg-emerald-800 flex items-center justify-center shadow-lg shadow-emerald-900/20 mb-4">
-          <i class="fa-solid fa-wheat-awn text-4xl text-emerald-200"></i>
+      <div class="flex flex-col items-center text-center mb-7 relative z-10">
+        <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-emerald-800 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-900/30 mb-4 ring-4 ring-emerald-50">
+          <i class="fa-solid fa-wheat-awn text-3xl text-emerald-100"></i>
         </div>
-        <p class="text-xs font-bold tracking-[.2em] uppercase text-emerald-700">Portal Anggota & Pengurus</p>
-        <h1 class="text-2xl font-black text-slate-800 mt-2">POKTAN SRI MULYO</h1>
-        <p class="text-sm text-slate-500 mt-1">Desa Kediren · Lembeyan · Magetan</p>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-[11px] font-bold tracking-wider uppercase border border-emerald-100 mb-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+          Portal Mandiri & Pengurus
+        </span>
+        <h1 class="text-2xl font-black text-slate-900 tracking-tight">POKTAN SRI MULYO</h1>
+        <p class="text-xs text-slate-500 font-medium mt-1">Desa Kediren · Lembeyan · Magetan</p>
       </div>
-      <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+
+      <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4 relative z-10">
         <div>
-          <label for="login-username" class="block text-xs font-bold text-slate-600 mb-1.5">USERNAME</label>
+          <label for="login-username" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Username</label>
           <div class="relative">
-            <i class="fa-solid fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-            <input id="login-username" name="username" autocomplete="username" required class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm" placeholder="Masukkan username">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
+              <i class="fa-solid fa-user"></i>
+            </span>
+            <input id="login-username" name="username" autocomplete="username" required
+                   class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50/80 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-600 text-sm transition" 
+                   placeholder="Masukkan username Anda">
           </div>
         </div>
+
         <div>
-          <label for="login-password" class="block text-xs font-bold text-slate-600 mb-1.5">PASSWORD</label>
+          <label for="login-password" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Password</label>
           <div class="relative">
-            <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-            <input id="login-password" name="password" type="password" autocomplete="current-password" required class="w-full pl-10 pr-12 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm" placeholder="Masukkan password">
-            <button type="button" onclick="toggleLoginPassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-emerald-700 p-1" aria-label="Tampilkan password"><i id="password-eye" class="fa-solid fa-eye"></i></button>
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
+              <i class="fa-solid fa-lock"></i>
+            </span>
+            <input id="login-password" name="password" type="password" autocomplete="current-password" required
+                   class="w-full pl-10 pr-12 py-3 rounded-xl border border-slate-200 bg-slate-50/80 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-600 text-sm transition" 
+                   placeholder="Masukkan password Anda">
+            <button type="button" onclick="toggleLoginPassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-emerald-700 p-1 transition" aria-label="Tampilkan password">
+              <i id="password-eye" class="fa-solid fa-eye text-sm"></i>
+            </button>
           </div>
         </div>
-        <div id="login-error" class="hidden rounded-xl border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm text-rose-700" role="alert"></div>
-        <button id="login-submit" type="submit" class="w-full rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white py-3 font-bold text-sm shadow-lg shadow-emerald-900/15 transition flex items-center justify-center gap-2">
-          <i class="fa-solid fa-right-to-bracket"></i> Masuk Dashboard
+
+        <div id="login-error" class="hidden rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs font-medium text-rose-700 flex items-center gap-2" role="alert">
+          <i class="fa-solid fa-circle-exclamation shrink-0 text-rose-500"></i>
+          <span></span>
+        </div>
+
+        <button id="login-submit" type="submit" 
+                class="w-full rounded-xl bg-emerald-700 hover:bg-emerald-800 active:scale-[0.99] text-white py-3.5 font-bold text-sm shadow-lg shadow-emerald-800/25 transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span>Masuk ke Dashboard</span>
         </button>
       </form>
-      <div class="mt-6 pt-5 border-t border-slate-100 text-center">
-        <p class="text-[11px] text-slate-400">Akses dilindungi · POKTAN SRI MULYO</p>
-        <p class="text-[11px] text-slate-400 mt-1">Developed by <strong class="text-slate-500">Supriyanto · Abadi Jaya</strong> © 2026</p>
+
+      <div class="mt-7 pt-5 border-t border-slate-100 text-center relative z-10">
+        <p class="text-[11px] text-slate-400">Akses Terenkripsi & Terintegrasi Google Spreadsheet</p>
+        <p class="text-[11px] text-slate-500 mt-1">Developed by <strong class="text-slate-700">Supriyanto · Abadi Jaya</strong> © 2026</p>
       </div>
     </div>
   </section>
 
-  <!-- Header utama -->
-  <header class="app-header bg-emerald-800 text-white sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto w-full px-4 py-3 md:py-4">
-      <div class="flex items-center space-x-3 min-w-0">
-        <i class="fa-solid fa-wheat-awn text-2xl sm:text-3xl text-emerald-300 shrink-0"></i>
+  <!-- ========================================== -->
+  <!-- 2. MODERN TOP HEADER BAR                  -->
+  <!-- ========================================== -->
+  <header class="bg-white border-b border-slate-200/80 sticky top-0 z-40 safe-top no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Brand & Info -->
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-800 to-emerald-600 flex items-center justify-center text-white shadow-md shadow-emerald-800/20 shrink-0">
+          <i class="fa-solid fa-wheat-awn text-lg text-emerald-200"></i>
+        </div>
         <div class="min-w-0">
-          <h1 class="text-base sm:text-xl font-bold tracking-tight flex flex-wrap items-center gap-x-2 gap-y-1 leading-tight">KELOMPOK TANI "SRI MULYO" <span id="sync-badge" class="text-[10px] bg-emerald-600/80 text-emerald-100 px-2 py-0.5 rounded-full font-normal tracking-normal border border-emerald-500 no-print"><i class="fa-solid fa-circle text-[6px] text-emerald-300 animate-pulse mr-1"></i>Live Sync</span></h1>
-          <p class="text-[10px] sm:text-xs text-emerald-200 leading-relaxed mt-1"><span>Desa Kediren, Kec. Lembeyan, Kab. Magetan &bull; Alokasi RDKK MT III - 2026</span><span class="hidden sm:inline"> &bull; Powered by Supriyanto</span></p>
+          <div class="flex items-center gap-2">
+            <h1 class="text-sm sm:text-base font-extrabold text-slate-900 tracking-tight truncate">POKTAN SRI MULYO</h1>
+            <span id="sync-badge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              Live Sync
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-500 truncate hidden sm:block">Alokasi RDKK MT III 2026 · Desa Kediren, Kec. Lembeyan, Kab. Magetan</p>
         </div>
       </div>
+
+      <!-- Desktop Navigation Tabs (Tablet/Desktop) -->
+      <nav class="hidden md:flex items-center gap-1 bg-slate-100/80 p-1 rounded-xl border border-slate-200">
+        <button type="button" data-nav-tab="overview" onclick="setActiveTab('overview')" 
+                class="nav-active px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-2">
+          <i class="fa-solid fa-chart-pie text-slate-400"></i>
+          <span>Ringkasan</span>
+        </button>
+        <button type="button" data-nav-tab="alokasi" data-admin-only onclick="setActiveTab('alokasi')" 
+                class="hidden px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-2">
+          <i class="fa-solid fa-table-list text-slate-400"></i>
+          <span>Alokasi Sheet</span>
+        </button>
+        <button type="button" data-nav-tab="kloter" onclick="setActiveTab('kloter')" 
+                class="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-2">
+          <i class="fa-solid fa-list-check text-slate-400"></i>
+          <span>Rekap Kloter</span>
+        </button>
+        <button type="button" data-nav-tab="petani" onclick="setActiveTab('petani')" 
+                class="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-2">
+          <i class="fa-solid fa-address-book text-slate-400"></i>
+          <span>Daftar e-RDKK</span>
+        </button>
+      </nav>
+
+      <!-- Right Header Actions (User Role, Refresh, Print, Logout) -->
+      <div class="flex items-center gap-2 shrink-0">
+        <span id="user-role-badge" class="hidden px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold sm:inline-flex items-center gap-1.5">
+          <i class="fa-solid fa-user-check text-emerald-600"></i>
+          <span>User</span>
+        </span>
+
+        <button onclick="refreshCurrentPage(false)" title="Refresh data dari Google Sheets"
+                class="w-9 h-9 sm:w-auto sm:px-3 sm:py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition flex items-center justify-center gap-1.5 active:scale-95 shadow-sm">
+          <i id="refresh-icon" class="fa-solid fa-rotate text-emerald-700"></i>
+          <span class="hidden sm:inline">Refresh</span>
+        </button>
+
+        <button onclick="window.print()" title="Cetak / PDF"
+                class="hidden lg:flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition active:scale-95 shadow-sm">
+          <i class="fa-solid fa-print text-amber-600"></i>
+          <span>Cetak</span>
+        </button>
+
+        <button id="logout-button" onclick="logoutUser()" title="Keluar dari akun"
+                class="hidden w-9 h-9 sm:w-auto sm:px-3 sm:py-2 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 text-xs font-bold transition items-center justify-center gap-1.5 active:scale-95">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span class="hidden sm:inline">Keluar</span>
+        </button>
+      </div>
+
     </div>
   </header>
-  <nav id="main-action-nav" class="main-action-nav no-print sticky top-[76px] sm:top-[88px] z-30" aria-label="Menu utama">
-    <div class="max-w-7xl mx-auto px-3 sm:px-4 py-2">
-      <div class="nav-card flex items-center gap-2 p-2 rounded-2xl border border-emerald-100 bg-white/95 shadow-md backdrop-blur">
-        <span id="user-role-badge" class="hidden shrink-0 px-3 py-2 rounded-xl bg-emerald-50 text-emerald-800 text-xs font-bold whitespace-nowrap"></span>
-        <div class="nav-actions flex items-center gap-2 min-w-0 flex-1">
-          <button id="logout-button" onclick="logoutUser()" class="hidden nav-action nav-logout justify-center px-3 sm:px-4 py-2.5 rounded-xl text-sm font-semibold items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar</span></button>
-          <button data-admin-only onclick="openAlokasiPage()" class="hidden nav-action nav-allocation justify-center px-3 sm:px-4 py-2.5 rounded-xl text-sm font-bold items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-table-list"></i><span>Alokasi Pembagian</span></button>
-          <button onclick="gotoRekapKloter()" class="nav-action nav-kloter justify-center px-3 sm:px-4 py-2.5 rounded-xl text-sm font-bold items-center gap-2 whitespace-nowrap bg-violet-600 text-white hover:bg-violet-700 shadow-sm"><i class="fa-solid fa-list-check"></i><span>Rekap Kloter</span></button>
-          <button onclick="refreshCurrentPage(false)" class="nav-action nav-refresh justify-center px-3 sm:px-4 py-2.5 rounded-xl text-sm font-semibold items-center gap-2 whitespace-nowrap"><i id="refresh-icon" class="fa-solid fa-rotate"></i><span>Refresh</span></button>
-          <button onclick="window.print()" class="nav-action nav-print hidden sm:flex justify-center px-3 sm:px-4 py-2.5 rounded-xl text-sm font-bold items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-print"></i><span>Cetak Laporan</span></button>
+
+  <!-- ========================================== -->
+  <!-- 3. MAIN WORKSPACE / VIEWS CONTAINER       -->
+  <!-- ========================================== -->
+  <div id="app-container" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-5 sm:py-6 pb-24 md:pb-10 space-y-6">
+
+    <!-- Loading State -->
+    <div id="loading" class="text-center py-24">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-700 mb-4 ring-8 ring-emerald-50/50 animate-pulse">
+        <i class="fa-solid fa-circle-notch fa-spin text-3xl"></i>
+      </div>
+      <h3 class="text-base font-bold text-slate-800">Menghubungkan ke Google Sheets...</h3>
+      <p class="mt-1 text-xs text-slate-500">Memuat alokasi pupuk, status drop gudang, dan rekapitulasi kloter</p>
+    </div>
+
+    <!-- Active Content Area -->
+    <div id="content" class="hidden space-y-6">
+
+      <!-- ======================================================== -->
+      <!-- TAB 1: OVERVIEW & DROP GUDANG                            -->
+      <!-- ======================================================== -->
+      <div id="view-overview" class="space-y-6">
+        
+        <!-- Welcome Hero Banner -->
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-800 via-teal-800 to-slate-900 text-white p-5 sm:p-7 shadow-lg shadow-emerald-950/10">
+          <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="space-y-1">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 text-emerald-200 text-xs font-semibold backdrop-blur-sm border border-white/10">
+                <i class="fa-solid fa-seedling"></i> Musim Tanam III - 2026
+              </span>
+              <h2 class="text-xl sm:text-2xl font-black tracking-tight">Monitoring Alokasi & Drop Pupuk Bersubsidi</h2>
+              <p class="text-xs sm:text-sm text-emerald-100/80">Pantau kuota alokasi, realisasi kiriman gudang, dan tagihan keuangan secara terpadu tanpa perlu membuka spreadsheet.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 shrink-0">
+              <button data-admin-only onclick="setActiveTab('alokasi')" class="hidden px-4 py-2.5 rounded-xl bg-white text-emerald-900 hover:bg-emerald-50 text-xs font-bold transition shadow-sm flex items-center gap-2">
+                <i class="fa-solid fa-sliders"></i> Buka Editor Sheet
+              </button>
+              <button onclick="setActiveTab('kloter')" class="px-4 py-2.5 rounded-xl bg-emerald-700/80 hover:bg-emerald-700 text-white border border-emerald-500/30 text-xs font-bold transition flex items-center gap-2">
+                <i class="fa-solid fa-list-check"></i> Lihat Kloter
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="hidden lg:flex items-center gap-2 shrink-0 rounded-xl border border-emerald-100 bg-emerald-50/80 px-4 py-2.5 text-xs text-emerald-800">
-          <span class="relative flex h-2.5 w-2.5"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-50"></span><span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-600"></span></span>
-          <span class="font-bold">Google Sheet Terhubung</span><span class="text-emerald-600">•</span><span class="text-emerald-700">Sinkronisasi data aktif</span>
+
+        <!-- 4 Top KPI Metric Cards -->
+        <section id="dashboard-kpi-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          
+          <!-- DP / Pembayaran Kios -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-2xl shrink-0">
+              <i class="fa-solid fa-hand-holding-dollar"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">DP / Titipan Kios</div>
+              <div id="kpi-dp" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight truncate">Rp 0</div>
+              <div class="text-xs text-slate-500 truncate">Total tagihan: <span id="kpi-tagihan" class="font-semibold text-slate-700">Rp 0</span></div>
+            </div>
+          </div>
+
+          <!-- Sisa Tagihan Kios -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-2xl shrink-0">
+              <i class="fa-solid fa-file-invoice-dollar"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-rose-600">Sisa Tagihan Kios</div>
+              <div id="kpi-sisa-bayar" class="text-xl sm:text-2xl font-black text-rose-600 tracking-tight truncate">Rp 0</div>
+              <div class="text-xs text-rose-500 font-medium">Kekurangan bayar ke kios</div>
+            </div>
+          </div>
+
+          <!-- Sisa Sak Belum Kirim -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center text-2xl shrink-0">
+              <i class="fa-solid fa-boxes-packing"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-amber-700">Sisa Belum Kirim</div>
+              <div id="kpi-sisa-sak" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight truncate">0 Sak</div>
+              <div class="text-xs text-slate-500">Satuan fisik kemasan sak</div>
+            </div>
+          </div>
+
+          <!-- Anggota Masuk Kloter -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-2xl shrink-0">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-blue-700">Masuk Kloter</div>
+              <div id="kpi-total-petani" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight truncate">0 Petani</div>
+              <div class="text-xs text-slate-500"><span id="kpi-persen-kloter" class="text-emerald-600 font-bold">0%</span> dari total anggota e-RDKK</div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- Drop Gudang: Grafik & Tabel Realisasi -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          <!-- Chart -->
+          <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <i class="fa-solid fa-chart-column text-emerald-600"></i> Perbandingan Kuota vs Realisasi
+                </h3>
+              </div>
+              <p class="text-xs text-slate-500 mb-4">Jumlah sak fisik (Urea, Phonska, Organik)</p>
+            </div>
+            <div class="relative w-full h-64 overflow-hidden">
+              <canvas id="chartGudang" class="block w-full max-w-full"></canvas>
+            </div>
+            <p class="text-[11px] text-slate-400 text-center mt-3">Diperbarui otomatis saat sheet berubah</p>
+          </div>
+
+          <!-- Table Drop Gudang -->
+          <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-sm lg:col-span-2 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <i class="fa-solid fa-warehouse text-emerald-600"></i> Rekap Drop Gudang dari Kios
+                </h3>
+                <span class="text-xs text-slate-400">Kemasan Sak Fisik</span>
+              </div>
+              <p class="text-xs text-slate-500 mb-4">Rincian status pengiriman barang dari kios ke gudang Poktan Sri Mulyo</p>
+
+              <div class="overflow-x-auto rounded-xl border border-slate-200">
+                <table class="w-full text-left text-sm border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50 text-slate-700 text-xs font-bold uppercase border-b border-slate-200">
+                      <th class="py-3 px-3.5">Jenis Pupuk</th>
+                      <th class="py-3 px-3.5 text-right">Alokasi (Sak)</th>
+                      <th class="py-3 px-3.5 text-right text-emerald-700">Diterima</th>
+                      <th class="py-3 px-3.5 text-right text-rose-700 bg-rose-50/50">Belum Kirim</th>
+                      <th class="py-3 px-3.5">Status Kios</th>
+                      <th class="py-3 px-3.5 text-right">Total Tagihan</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table-drop-body" class="divide-y divide-slate-100 text-xs"></tbody>
+                  <tfoot class="bg-slate-50 font-bold border-t-2 border-slate-200 text-xs">
+                    <tr>
+                      <td class="py-3 px-3.5 uppercase text-slate-700">Total Pengiriman</td>
+                      <td id="foot-alokasi" class="py-3 px-3.5 text-right font-mono">0 Sak</td>
+                      <td id="foot-terkirim" class="py-3 px-3.5 text-right font-mono text-emerald-700">0 Sak</td>
+                      <td id="foot-sisa" class="py-3 px-3.5 text-right font-mono text-rose-700 bg-rose-50/70">0 Sak</td>
+                      <td id="foot-persen" class="py-3 px-3.5 text-emerald-700 font-bold">-</td>
+                      <td id="foot-tagihan" class="py-3 px-3.5 text-right font-mono text-slate-900">Rp 0</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+
+            <!-- Mini Summary Pill -->
+            <div class="mt-4 p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-wrap items-center justify-between text-xs gap-3">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span class="text-slate-600">Total DP Masuk:</span>
+                <strong id="banner-dp" class="font-mono text-emerald-700 text-sm">Rp 0</strong>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                <span class="text-slate-600">Kekurangan Kios:</span>
+                <strong id="banner-sisa" class="font-mono text-rose-600 text-sm">Rp 0</strong>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- TAB 2: ALOKASI PEMBAGIAN (SPREADSHEET-LIKE INTERACTION)  -->
+      <!-- ======================================================== -->
+      <div id="view-alokasi" class="hidden space-y-5">
+        
+        <!-- Header Section -->
+        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[10px] font-extrabold uppercase tracking-wide">ADMINISTRATOR</span>
+                <span class="text-xs text-slate-400">Sheet: Alokasi Pembagian</span>
+              </div>
+              <h2 id="alokasi-page-title" class="text-lg font-black text-slate-900">Alokasi Pembagian e-RDKK MT3 2026</h2>
+              <p id="alokasi-page-subtitle" class="text-xs text-slate-500">Ubah status, lahan, atau alokasi sak pupuk secara instan ke Google Sheets</p>
+            </div>
+
+            <!-- Sub Tab: e-RDKK vs Non e-RDKK -->
+            <div class="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl border border-slate-200">
+              <button id="tab-alokasi-erdkk" type="button" onclick="switchAlokasiType('ERDKK')" 
+                      class="rounded-lg bg-emerald-700 text-white px-3.5 py-2 text-xs font-bold transition shadow-sm flex items-center gap-1.5">
+                <i class="fa-solid fa-users"></i>
+                <span>e-RDKK</span>
+              </button>
+              <button id="tab-alokasi-nonerdkk" type="button" onclick="switchAlokasiType('NON_ERDKK')" 
+                      class="rounded-lg bg-transparent text-slate-600 hover:text-slate-900 px-3.5 py-2 text-xs font-bold transition flex items-center gap-1.5">
+                <i class="fa-solid fa-users-gear"></i>
+                <span>Non-e-RDKK</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Stat KPI Pills for Alokasi Table -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 pt-2">
+            <button type="button" onclick="setAlokasiCardFilter('')" class="alokasi-kpi p-3 rounded-xl border border-slate-200 bg-slate-50 text-left hover:bg-slate-100 transition">
+              <div class="text-[10px] font-bold uppercase text-slate-500">Total Anggota</div>
+              <div id="alokasi-count" class="text-xl font-black text-slate-900 mt-0.5">0</div>
+            </button>
+            <div class="p-3 rounded-xl border border-violet-200 bg-violet-50/50 text-left">
+              <div class="text-[10px] font-bold uppercase text-violet-700">Sisa Pupuk Gudang</div>
+              <div class="text-xs font-bold text-slate-800 mt-1 flex flex-wrap gap-1">
+                <span>U:<b id="sisa-pupuk-urea">—</b></span>
+                <span>P:<b id="sisa-pupuk-phonska">—</b></span>
+                <span>O:<b id="sisa-pupuk-organik">—</b></span>
+              </div>
+            </div>
+            <button type="button" onclick="setAlokasiCardFilter('SUDAH')" class="alokasi-kpi p-3 rounded-xl border border-emerald-200 bg-emerald-50/50 text-left hover:bg-emerald-100/50 transition">
+              <div class="text-[10px] font-bold uppercase text-emerald-700">Sudah Ambil</div>
+              <div id="alokasi-sudah" class="text-xl font-black text-emerald-800 mt-0.5">0</div>
+            </button>
+            <button type="button" onclick="setAlokasiCardFilter('BELUM')" class="alokasi-kpi p-3 rounded-xl border border-amber-200 bg-amber-50/50 text-left hover:bg-amber-100/50 transition">
+              <div class="text-[10px] font-bold uppercase text-amber-700">Belum Ambil</div>
+              <div id="alokasi-belum" class="text-xl font-black text-amber-800 mt-0.5">0</div>
+            </button>
+            <button type="button" onclick="setAlokasiCardFilter('KTP')" class="alokasi-kpi col-span-2 sm:col-span-1 p-3 rounded-xl border border-blue-200 bg-blue-50/50 text-left hover:bg-blue-100/50 transition">
+              <div class="text-[10px] font-bold uppercase text-blue-700">Belum Setor KTP</div>
+              <div id="alokasi-lainnya" class="text-xl font-black text-blue-800 mt-0.5">0</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sheet Table Card -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+          
+          <!-- Filters & Action Toolbar -->
+          <div class="p-4 sm:p-5 border-b border-slate-200/80 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+            <div class="flex-1 flex flex-wrap items-center gap-2">
+              <div class="relative flex-1 min-w-[200px]">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input id="al-search" oninput="alokasiPage=1;renderAlokasiTable()" 
+                       class="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 outline-none transition" 
+                       placeholder="Cari NIK, nama petani, status...">
+              </div>
+              <select id="al-status-filter" onchange="alokasiPage=1;renderAlokasiTable()" 
+                      class="px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-700 bg-white focus:outline-none">
+                <option value="">Semua Status</option>
+                <option value="SUDAH">Sudah Ambil</option>
+                <option value="BELUM">Belum Ambil</option>
+                <option value="KTP">Belum Setor KTP</option>
+              </select>
+              <select id="al-page-size" onchange="alokasiPage=1;renderAlokasiTable()" 
+                      class="px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-700 bg-white focus:outline-none">
+                <option value="15">15 / hal</option>
+                <option value="25" selected>25 / hal</option>
+                <option value="50">50 / hal</option>
+                <option value="100">100 / hal</option>
+              </select>
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0">
+              <button type="button" onclick="openAddAlokasiModal()" 
+                      class="w-full sm:w-auto px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm">
+                <i class="fa-solid fa-user-plus"></i>
+                <span>Tambah Petani</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Loading Overlay inside Table -->
+          <div id="alokasi-loading" class="hidden p-8 text-center bg-slate-50 border-b border-slate-200">
+            <i class="fa-solid fa-circle-notch fa-spin text-2xl text-emerald-700"></i>
+            <p class="text-xs font-semibold text-slate-700 mt-2">Memperbarui lembar Alokasi...</p>
+          </div>
+
+          <!-- The Full Interactive Spreadsheet Table -->
+          <div id="alokasi-table-scroll" class="overflow-x-auto max-h-[640px] border-b border-slate-200">
+            <table class="w-full min-w-[1360px] table-fixed border-separate border-spacing-0 text-left text-xs">
+              <colgroup>
+                <col style="width:46px">
+                <col style="width:130px">
+                <col style="width:140px">
+                <col style="width:80px">
+                <col style="width:80px">
+                <col style="width:170px">
+                <col style="width:76px">
+                <col style="width:82px">
+                <col style="width:82px">
+                <col style="width:78px">
+                <col style="width:88px">
+                <col style="width:88px">
+                <col style="width:100px">
+                <col style="width:140px">
+                <col style="width:90px">
+              </colgroup>
+              <thead class="sticky top-0 z-20 bg-slate-100 text-slate-700">
+                <tr>
+                  <th class="border-b border-slate-200 px-3 py-3 text-left font-bold uppercase">No</th>
+                  <th class="border-b border-slate-200 px-3 py-3 text-left font-bold uppercase">NIK</th>
+                  <th class="border-b border-slate-200 px-3 py-3 text-left font-bold uppercase">Nama Petani</th>
+                  <th class="border-b border-slate-200 px-3 py-3 text-left font-bold uppercase">Lahan Rev</th>
+                  <th class="border-b border-slate-200 px-3 py-3 text-left font-bold uppercase">Lahan Asli</th>
+                  <th class="border-b border-slate-200 px-3 py-3 text-left font-bold uppercase">Status</th>
+                  <th class="border-b border-slate-200 px-3 py-3 text-left font-bold uppercase">Urea</th>
+                  <th class="border-b border-slate-200 px-3 py-3 text-left font-bold uppercase">Phonska</th>
+                  <th class="border-b border-slate-200 px-3 py-3 text-left font-bold uppercase">Organik</th>
+                  <th class="border-b border-slate-200 px-3 py-3 text-left font-bold uppercase">Sak Urea</th>
+                  <th class="border-b border-slate-200 px-3 py-3 text-left font-bold uppercase">Sak Phonska</th>
+                  <th class="border-b border-slate-200 px-3 py-3 text-left font-bold uppercase">Sak Org</th>
+                  <th class="border-b border-slate-200 px-3 py-3 text-left font-bold uppercase">Uang (Rp)</th>
+                  <th class="border-b border-slate-200 px-3 py-3 text-left font-bold uppercase">Keterangan</th>
+                  <th class="border-b border-slate-200 px-3 py-3 text-center font-bold uppercase">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="alokasi-tbody" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+
+          <!-- Empty State -->
+          <div id="alokasi-empty" class="hidden p-12 text-center">
+            <i class="fa-solid fa-folder-open text-3xl text-slate-300 mb-2"></i>
+            <h4 class="text-sm font-bold text-slate-700">Data tidak ditemukan</h4>
+            <p class="text-xs text-slate-400 mt-1">Coba sesuaikan kata kunci pencarian atau filter status.</p>
+          </div>
+
+          <!-- Pagination Bar -->
+          <div class="p-4 border-t border-slate-200/80 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500">
+            <span id="al-page-info">Menampilkan data...</span>
+            <div id="al-pagination" class="flex items-center gap-1"></div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- TAB 3: REKAPITULASI KLOTER 1 - 10                        -->
+      <!-- ======================================================== -->
+      <div id="view-kloter" class="hidden space-y-5">
+        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="px-2.5 py-0.5 rounded-md bg-purple-100 text-purple-800 text-[10px] font-extrabold uppercase">SURAT KUASA</span>
+              <span class="text-xs text-slate-400">Sheet: Kloter</span>
+            </div>
+            <h2 class="text-lg font-black text-slate-900">Rekapitulasi Alokasi Kloter Surat Kuasa (1 - 10)</h2>
+            <p class="text-xs text-slate-500">Daftar perwakilan penerima dan jumlah petani dalam setiap rombongan kloter</p>
+          </div>
+          <button data-admin-only onclick="bukaModalKloter()" 
+                  class="hidden px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm shrink-0">
+            <i class="fa-solid fa-plus"></i>
+            <span>Tambah Anggota ke Kloter</span>
+          </button>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-slate-50 text-slate-700 font-bold uppercase border-b border-slate-200">
+                  <th class="py-3 px-4">Kloter</th>
+                  <th class="py-3 px-4">Pemberi Kuasa (Perwakilan)</th>
+                  <th class="py-3 px-4">Penerima Kuasa</th>
+                  <th class="py-3 px-4 text-center">Jumlah Petani</th>
+                  <th class="py-3 px-4 text-right">Urea (Kg)</th>
+                  <th class="py-3 px-4 text-right">NPK (Kg)</th>
+                  <th class="py-3 px-4 text-right">Organik (Kg)</th>
+                </tr>
+              </thead>
+              <tbody id="table-kloter-body" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
         </div>
       </div>
+
+      <!-- ======================================================== -->
+      <!-- TAB 4: DAFTAR SELURUH ANGGOTA e-RDKK                    -->
+      <!-- ======================================================== -->
+      <div id="view-petani" class="hidden space-y-5">
+        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="px-2.5 py-0.5 rounded-md bg-blue-100 text-blue-800 text-[10px] font-extrabold uppercase">DATA ANGGOTA</span>
+                <span class="text-xs text-slate-400">Sheet: e-RDKK</span>
+              </div>
+              <h2 id="label-petani-header" class="text-lg font-black text-slate-900">Daftar Anggota e-RDKK</h2>
+              <p class="text-xs text-slate-500">Pencarian real-time berdasarkan NIK, Nama Petani, atau Status Penebusan</p>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="relative w-full sm:w-64">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" id="searchInput" onkeyup="filterPetani()" placeholder="Ketik NIK atau Nama..."
+                       class="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 outline-none">
+              </div>
+              <select id="statusFilter" onchange="filterPetani()"
+                      class="px-3 py-2 border border-slate-200 rounded-xl text-xs bg-white text-slate-700 focus:outline-none">
+                <option value="">Semua Status</option>
+                <option value="Kloter">Semua Kloter</option>
+                <option value="Mandiri">Penebusan Mandiri/Belum</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+          <div class="overflow-x-auto max-h-[640px]">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="sticky top-0 bg-slate-100 border-b border-slate-200 font-bold uppercase text-slate-700">
+                <tr>
+                  <th class="py-3 px-3 text-center w-12">No</th>
+                  <th class="py-3 px-3">NIK</th>
+                  <th class="py-3 px-3">Nama Petani</th>
+                  <th class="py-3 px-3">Status</th>
+                  <th class="py-3 px-3">Penerima Kuasa</th>
+                  <th class="py-3 px-3 text-right">Urea (Kg)</th>
+                  <th class="py-3 px-3 text-right">NPK (Kg)</th>
+                  <th class="py-3 px-3 text-right">Organik (Kg)</th>
+                </tr>
+              </thead>
+              <tbody id="table-petani-body" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+          <div class="p-4 border-t border-slate-200 flex justify-between text-xs text-slate-500">
+            <span id="countFiltered">Menampilkan 0 data</span>
+            <span>POKTAN SRI MULYO · DESA KEDIREN</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 4. NATIVE ANDROID BOTTOM NAVIGATION BAR    -->
+  <!-- ========================================== -->
+  <nav id="mobile-bottom-bar" class="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur-lg border-t border-slate-200/80 shadow-[0_-8px_25px_rgba(15,23,42,0.06)] no-print">
+    <div class="grid grid-cols-4 px-2 pt-1.5 pb-1">
+      
+      <!-- Tab 1: Ringkasan -->
+      <button type="button" data-nav-tab="overview" onclick="setActiveTab('overview')"
+              class="mobile-nav-item nav-active flex flex-col items-center justify-center py-1 px-1 transition text-slate-500">
+        <span class="nav-icon-wrapper w-9 h-9 rounded-xl flex items-center justify-center transition mb-1 bg-transparent">
+          <i class="fa-solid fa-chart-pie text-lg"></i>
+        </span>
+        <span class="nav-label text-[10px] font-semibold tracking-tight">Ringkasan</span>
+      </button>
+
+      <!-- Tab 2: Alokasi Sheet -->
+      <button type="button" data-nav-tab="alokasi" data-admin-only onclick="setActiveTab('alokasi')"
+              class="hidden mobile-nav-item flex flex-col items-center justify-center py-1 px-1 transition text-slate-500">
+        <span class="nav-icon-wrapper w-9 h-9 rounded-xl flex items-center justify-center transition mb-1 bg-transparent">
+          <i class="fa-solid fa-table-list text-lg"></i>
+        </span>
+        <span class="nav-label text-[10px] font-semibold tracking-tight">Alokasi</span>
+      </button>
+
+      <!-- Tab 3: Kloter -->
+      <button type="button" data-nav-tab="kloter" onclick="setActiveTab('kloter')"
+              class="mobile-nav-item flex flex-col items-center justify-center py-1 px-1 transition text-slate-500">
+        <span class="nav-icon-wrapper w-9 h-9 rounded-xl flex items-center justify-center transition mb-1 bg-transparent">
+          <i class="fa-solid fa-list-check text-lg"></i>
+        </span>
+        <span class="nav-label text-[10px] font-semibold tracking-tight">Kloter</span>
+      </button>
+
+      <!-- Tab 4: Petani e-RDKK -->
+      <button type="button" data-nav-tab="petani" onclick="setActiveTab('petani')"
+              class="mobile-nav-item flex flex-col items-center justify-center py-1 px-1 transition text-slate-500">
+        <span class="nav-icon-wrapper w-9 h-9 rounded-xl flex items-center justify-center transition mb-1 bg-transparent">
+          <i class="fa-solid fa-address-book text-lg"></i>
+        </span>
+        <span class="nav-label text-[10px] font-semibold tracking-tight">e-RDKK</span>
+      </button>
+
     </div>
   </nav>
 
-  <main class="max-w-7xl mx-auto w-full px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
+  <!-- ========================================== -->
+  <!-- 5. MODALS & TOAST NOTIFICATIONS            -->
+  <!-- ========================================== -->
 
-    <!-- Loading Awal -->
-    <div id="loading" class="text-center py-16">
-      <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-emerald-600 border-t-transparent"></div>
-      <p class="mt-4 text-slate-500 font-medium">Memuat data alokasi pupuk dari Google Sheets...</p>
-    </div>
-
-    <div id="content" class="hidden space-y-6">
-
-      <!-- 1. KPI Cards (DP, Sisa Bayar, Sisa Sak Dibulatkan) -->
-      <section id="dashboard-kpi-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        
-        <!-- DP Pembayaran Kios -->
-        <div class="bg-white p-5 rounded-xl border-2 border-emerald-500 shadow-sm flex items-center gap-4">
-          <div class="w-12 h-12 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl">
-            <i class="fa-solid fa-hand-holding-dollar"></i>
-          </div>
-          <div>
-            <div class="text-xs font-bold uppercase tracking-wider text-emerald-700">DP / Titipan ke Kios</div>
-            <div id="kpi-dp" class="text-2xl font-black text-emerald-800">Rp 0</div>
-            <div class="text-xs text-slate-500">Dari tagihan <span id="kpi-tagihan" class="font-semibold text-slate-700">Rp 0</span></div>
-          </div>
-        </div>
-
-        <!-- Sisa Tagihan Kios -->
-        <div class="bg-white p-5 rounded-xl border-2 border-rose-400 shadow-sm flex items-center gap-4">
-          <div class="w-12 h-12 shrink-0 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center text-xl">
-            <i class="fa-solid fa-file-invoice-dollar"></i>
-          </div>
-          <div>
-            <div class="text-xs font-bold uppercase tracking-wider text-rose-700">Sisa Tagihan Kios</div>
-            <div id="kpi-sisa-bayar" class="text-2xl font-black text-rose-600">Rp 0</div>
-            <div class="text-xs text-rose-500 font-medium">Kekurangan bayar ke Kios</div>
-          </div>
-        </div>
-
-        <!-- Sisa Sak Belum Dikirim (Dibulatkan) -->
-        <div class="bg-white p-5 rounded-xl border-2 border-amber-400 shadow-sm flex items-center gap-4">
-          <div class="w-12 h-12 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center text-xl">
-            <i class="fa-solid fa-boxes-packing"></i>
-          </div>
-          <div>
-            <div class="text-xs font-bold uppercase tracking-wider text-amber-800">Sisa Sak Belum Kirim</div>
-            <div id="kpi-sisa-sak" class="text-2xl font-black text-amber-900">0 Sak</div>
-            <div class="text-xs text-slate-500">Dibulatkan ke sak fisik utuh</div>
-          </div>
-        </div>
-
-        <!-- Total Masuk Kloter -->
-        <div class="bg-white p-5 rounded-xl border-2 border-blue-400 shadow-sm flex items-center gap-4">
-          <div class="w-12 h-12 shrink-0 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-xl">
-            <i class="fa-solid fa-users"></i>
-          </div>
-          <div>
-            <div class="text-xs font-bold uppercase tracking-wider text-blue-700">Petani Masuk Kloter</div>
-            <div id="kpi-total-petani" class="text-2xl font-black text-slate-800">0 Petani</div>
-            <div class="text-xs text-slate-500"><span id="kpi-persen-kloter" class="text-emerald-600 font-bold">0%</span> dari total anggota e-RDKK</div>
-          </div>
-        </div>
-
-      </section>
-
-      <!-- 2. Status Drop Gudang (Angka Bulat Utuh) -->
-      <section class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-        
-        <!-- Grafik -->
-        <div class="min-w-0 w-full overflow-hidden bg-white p-5 rounded-xl border border-slate-200 shadow-sm lg:col-span-1 flex flex-col">
-          <h2 class="text-base font-bold text-slate-700 flex items-center gap-2 mb-3">
-            <i class="fa-solid fa-chart-column text-emerald-600"></i> Drop Gudang (Sak Fisik)
-          </h2>
-          <div class="relative w-full min-w-0 h-64 overflow-hidden">
-            <canvas id="chartGudang" class="block w-full max-w-full"></canvas>
-          </div>
-          <p class="text-xs text-slate-400 text-center mt-3">Perbandingan Kuota vs Realisasi Kirim ke Gudang Poktan</p>
-        </div>
-
-        <!-- Tabel Drop Kios -->
-        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm lg:col-span-2">
-          <div class="flex justify-between items-center mb-4">
-            <div>
-              <h2 class="text-base font-bold text-slate-700 flex items-center gap-2">
-                <i class="fa-solid fa-warehouse text-emerald-600"></i> Status Drop Pengiriman Kios ke Gudang
-              </h2>
-              <p class="text-xs text-slate-400">Jumlah sak telah dibulatkan sesuai satuan fisik utuh kemasan sak</p>
-            </div>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm border-collapse">
-              <thead>
-                <tr class="bg-slate-100 text-slate-700 border-b border-slate-200 text-xs uppercase font-semibold">
-                  <th class="py-2.5 px-3">Jenis Pupuk</th>
-                  <th class="py-2.5 px-3 text-right">Alokasi Pengajuan (Sak)</th>
-                  <th class="py-2.5 px-3 text-right">Diterima Gudang</th>
-                  <th class="py-2.5 px-3 text-right bg-amber-50 text-amber-900 font-bold">Belum Kirim</th>
-                  <th class="py-2.5 px-3">Status Kios</th>
-                  <th class="py-2.5 px-3 text-right">Total Bayar Pupuk Diterima (Rp)</th>
-                </tr>
-              </thead>
-              <tbody id="table-drop-body" class="divide-y divide-slate-100"></tbody>
-              <tfoot class="bg-slate-50 font-semibold border-t-2 border-slate-200 text-xs">
-                <tr>
-                  <td class="py-2.5 px-3 uppercase">Total Pengiriman</td>
-                  <td id="foot-alokasi" class="py-2.5 px-3 text-right font-mono">0 Sak</td>
-                  <td id="foot-terkirim" class="py-2.5 px-3 text-right font-mono text-emerald-700">0 Sak</td>
-                  <td id="foot-sisa" class="py-2.5 px-3 text-right font-mono text-rose-700 bg-amber-100 font-bold">0 Sak</td>
-                  <td id="foot-persen" class="py-2.5 px-3 text-emerald-700 font-bold">-</td>
-                  <td id="foot-tagihan" class="py-2.5 px-3 text-right font-mono text-slate-800">Rp 0</td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-          
-          <!-- Banner Kasir / Keuangan -->
-          <div class="mt-4 p-3 bg-emerald-50 rounded-lg border border-emerald-200 flex flex-wrap justify-between items-center text-xs text-emerald-950 gap-2">
-            <div>
-              <i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i>
-              <strong>Uang Sudah Disetor / Dititipkan (DP):</strong> 
-              <span id="banner-dp" class="font-mono font-bold text-emerald-800 text-sm ml-1">Rp 0</span>
-            </div>
-            <div>
-              <i class="fa-solid fa-circle-exclamation text-rose-500 mr-1"></i>
-              <strong>Sisa Tagihan Kios:</strong> 
-              <span id="banner-sisa" class="font-mono font-bold text-rose-700 text-sm ml-1">Rp 0</span>
-            </div>
-          </div>
-        </div>
-
-      </section>
-
-      <!-- 3. Rekap 10 Kloter -->
-      <section id="rekap-kloter-section" class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
-          <h2 class="text-base font-bold text-slate-700 flex items-center gap-2">
-            <i class="fa-solid fa-list-check text-emerald-600"></i> Rekapitulasi Alokasi Kloter Surat Kuasa (1 - 10)
-          </h2>
-          <button data-admin-only onclick="bukaModalKloter()" class="no-print text-xs px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg font-semibold transition flex items-center gap-1.5">
-            <i class="fa-solid fa-plus"></i> Tambah Anggota ke Kloter
-          </button>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm border-collapse">
-            <thead>
-              <tr class="bg-emerald-50 text-emerald-900 border-b border-emerald-200 text-xs uppercase font-semibold">
-                <th class="py-2.5 px-3">Kloter</th>
-                <th class="py-2.5 px-3">Pemberi Kuasa (Perwakilan)</th>
-                <th class="py-2.5 px-3">Penerima Kuasa</th>
-                <th class="py-2.5 px-3 text-center">Petani</th>
-                <th class="py-2.5 px-3 text-right">Urea (Kg)</th>
-                <th class="py-2.5 px-3 text-right">NPK (Kg)</th>
-                <th class="py-2.5 px-3 text-right">Organik (Kg)</th>
-              </tr>
-            </thead>
-            <tbody id="table-kloter-body" class="divide-y divide-slate-100"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- 4. Pencarian Petani -->
-      <section class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4 no-print">
-          <div>
-            <h2 class="text-base font-bold text-slate-700 flex items-center gap-2">
-              <i class="fa-solid fa-id-card text-emerald-600"></i> <span id="label-petani-header">Daftar Anggota e-RDKK</span>
-            </h2>
-            <p class="text-xs text-slate-400">Pencarian real-time berdasarkan NIK, Nama, atau Status Kloter</p>
-          </div>
-          
-          <div class="flex flex-wrap gap-2 w-full md:w-auto">
-            <div class="relative flex-1 md:w-64">
-              <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
-              <input type="text" id="searchInput" onkeyup="filterPetani()" placeholder="Cari NIK / Nama Petani..."
-                     class="w-full pl-8 pr-3 py-1.5 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-            </div>
-            <select id="statusFilter" onchange="filterPetani()"
-                    class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-              <option value="">Semua Status</option>
-              <option value="Kloter">Semua Kloter</option>
-              <option value="Mandiri">Penebusan Mandiri/Belum</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="overflow-x-auto max-h-96 overflow-y-auto border border-slate-200 rounded-lg">
-          <table class="w-full text-left text-sm border-collapse">
-            <thead class="sticky top-0 bg-slate-100 border-b border-slate-200 text-xs uppercase font-semibold text-slate-600">
-              <tr>
-                <th class="py-2 px-3 text-center w-12">No</th>
-                <th class="py-2 px-3">NIK</th>
-                <th class="py-2 px-3">Nama Petani</th>
-                <th class="py-2 px-3">Status</th>
-                <th class="py-2 px-3">Penerima Kuasa</th>
-                <th class="py-2 px-3 text-right">Urea (Kg)</th>
-                <th class="py-2 px-3 text-right">NPK (Kg)</th>
-                <th class="py-2 px-3 text-right">Organik (Kg)</th>
-              </tr>
-            </thead>
-            <tbody id="table-petani-body" class="divide-y divide-slate-100"></tbody>
-          </table>
-        </div>
-        <div class="mt-2 text-xs text-slate-400 flex justify-between">
-          <span id="countFiltered">Menampilkan 0 data</span>
-          <span>POKTAN SRI MULYO - DESA KEDIREN</span>
-        </div>
-      </section>
-
-    </div>
-  </main>
-
-  <!-- Modal Form Input Kloter dengan Validasi Anti-Duplikat NIK -->
-  <div id="modalKloter" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs hidden z-50 flex items-center justify-center p-4 no-print">
-    <div class="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-200">
-      <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+  <!-- Modal Form Input Kloter -->
+  <div id="modalKloter" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs hidden z-[100] flex items-center justify-center p-4 no-print">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-200 animate-[fadeIn_.2s_ease-out]">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="font-extrabold text-slate-900 text-sm flex items-center gap-2">
           <i class="fa-solid fa-file-shield text-emerald-600"></i> Input Anggota ke Surat Kuasa Kloter
         </h3>
-        <button onclick="tutupModalKloter()" class="text-slate-400 hover:text-slate-600">
+        <button onclick="tutupModalKloter()" class="text-slate-400 hover:text-slate-600 p-1">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
 
       <!-- Pilih Kloter Tujuan -->
       <div>
-        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">1. Pilih Kloter Tujuan</label>
-        <select id="inputKloterTujuan" onchange="cekValidasiPetani()" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">1. Pilih Kloter Tujuan</label>
+        <select id="inputKloterTujuan" onchange="cekValidasiPetani()" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30">
           <option value="Kloter 1">Kloter 1</option>
           <option value="Kloter 2">Kloter 2</option>
           <option value="Kloter 3">Kloter 3</option>
@@ -489,32 +779,88 @@
 
       <!-- Cari NIK / Nama Petani -->
       <div>
-        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">2. Ketik NIK atau Nama Petani</label>
+        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">2. Ketik NIK atau Nama Petani</label>
         <input type="text" id="inputCariPetani" oninput="cekValidasiPetani()" list="daftarPetaniList"
-               placeholder="Ketik NIK atau Nama (contoh: SUKIMAN / HARJO BOWOH)..."
-               class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+               placeholder="Ketik NIK atau Nama..."
+               class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500/30">
         <datalist id="daftarPetaniList"></datalist>
-        <p class="text-[11px] text-slate-400 mt-1">Sistem otomatis mengecek apakah NIK sudah terdaftar di kloter lain.</p>
+        <p class="text-[11px] text-slate-400 mt-1">Sistem otomatis memverifikasi anti-duplikasi NIK pada kloter lain.</p>
       </div>
 
       <!-- Kotak Info Hasil Validasi -->
-      <div id="infoValidasi" class="hidden p-3.5 rounded-lg text-xs leading-relaxed"></div>
+      <div id="infoValidasi" class="hidden p-3.5 rounded-xl text-xs leading-relaxed"></div>
 
       <!-- Tombol Aksi -->
-      <div class="flex justify-end gap-2 pt-2 border-t">
-        <button onclick="tutupModalKloter()" class="px-4 py-2 rounded-lg text-sm bg-slate-100 text-slate-600 hover:bg-slate-200 font-medium">
+      <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+        <button onclick="tutupModalKloter()" class="px-4 py-2.5 rounded-xl text-xs bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold">
           Batal
         </button>
         <button id="btnSimpanKloter" onclick="prosesSimpanKloter()" disabled
-                class="px-4 py-2 rounded-lg text-sm font-semibold bg-emerald-600 text-white hover:bg-emerald-700 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed transition flex items-center gap-1.5">
+                class="px-4 py-2.5 rounded-xl text-xs font-bold bg-emerald-700 text-white hover:bg-emerald-800 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed transition flex items-center gap-1.5 shadow-sm">
           <i class="fa-solid fa-check"></i> Tambahkan ke Kloter
         </button>
       </div>
     </div>
   </div>
 
+  <!-- Modal Tambah Petani Baru ke Alokasi -->
+  <div id="add-alokasi-modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4" onclick="if(event.target===this)closeAddAlokasiModal()">
+    <section role="dialog" aria-modal="true" aria-labelledby="add-alokasi-title" class="w-full max-w-lg overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl animate-[fadeIn_.2s_ease-out]">
+      <div class="flex items-center justify-between border-b border-slate-100 bg-emerald-50/70 px-5 py-4">
+        <div class="flex items-center gap-3">
+          <span class="grid h-10 w-10 place-items-center rounded-xl bg-emerald-700 text-white text-base shadow-sm">
+            <i class="fa-solid fa-user-plus"></i>
+          </span>
+          <div>
+            <h3 id="add-alokasi-title" class="font-bold text-slate-800 text-sm">Tambah Anggota ke Sheet</h3>
+            <p class="text-xs text-slate-500">Lengkapi data dasar petani</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeAddAlokasiModal()" class="text-slate-400 hover:text-slate-700 p-1" aria-label="Tutup">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <form class="space-y-4 p-5" onsubmit="event.preventDefault();addAlokasi()">
+        <div>
+          <label for="al-new-nik" class="mb-1 block text-xs font-bold text-slate-600 uppercase">NIK <span class="text-slate-400 font-normal">(opsional)</span></label>
+          <input id="al-new-nik" inputmode="numeric" maxlength="20" class="w-full rounded-xl border border-slate-200 py-2.5 px-3 text-xs outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" placeholder="16 digit NIK">
+        </div>
+        <div>
+          <label for="al-new-nama" class="mb-1 block text-xs font-bold text-slate-600 uppercase">Nama Lengkap <span class="text-rose-500">*</span></label>
+          <input id="al-new-nama" required class="w-full rounded-xl border border-slate-200 py-2.5 px-3 text-xs outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" placeholder="Nama petani sesuai KTP">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="al-new-lahan" class="mb-1 block text-xs font-bold text-slate-600 uppercase">Luas Lahan (Ha)</label>
+            <input id="al-new-lahan" type="number" min="0" step=".01" class="w-full rounded-xl border border-slate-200 py-2.5 px-3 text-xs outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" placeholder="0.25">
+          </div>
+          <div>
+            <label for="al-new-status" class="mb-1 block text-xs font-bold text-slate-600 uppercase">Status Awal</label>
+            <input id="al-new-status" class="w-full rounded-xl border border-slate-200 py-2.5 px-3 text-xs outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" placeholder="BELUM AMBIL">
+          </div>
+        </div>
+        <p class="rounded-xl bg-slate-50 px-3 py-2 text-[11px] text-slate-500">
+          <i class="fa-solid fa-circle-info mr-1 text-emerald-600"></i> Baris baru akan ditambahkan langsung ke Google Sheets.
+        </p>
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeAddAlokasiModal()" class="rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50">Batal</button>
+          <button id="al-add-btn" type="submit" class="rounded-xl bg-emerald-700 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-emerald-800">Simpan ke Sheet</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <div id="alokasi-toast" class="hidden" role="status" aria-live="polite"></div>
+
+  <!-- Legacy container compatibility for scripts expecting #alokasi-page -->
+  <div id="alokasi-page" class="hidden"></div>
+  <div id="rekap-kloter-section" class="hidden"></div>
+
+  <!-- ========================================== -->
+  <!-- 6. APPLICATION JAVASCRIPT CODE            -->
+  <!-- ========================================== -->
   <script>
-    // =========================================================================
+// =========================================================================
     // URL API GOOGLE APPS SCRIPT POKTAN SRI MULYO (UNTUK VERCEL)
     // =========================================================================
     const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyI-Rl8FvNANmtg-Y6VoxyTWdIa1B8mEVK8huDbpSso0dcO1dPkCaXPwN6Dxq6QWXga/exec';
@@ -607,7 +953,7 @@
       badge.classList.remove('hidden');
       document.getElementById('logout-button').classList.remove('hidden');
       document.getElementById('logout-button').classList.add('inline-flex');
-      loadData(false);
+      loadData(false); setActiveTab("overview");
     }
 
     function showLogin(message) {
@@ -642,11 +988,11 @@
 
 
     let alokasiRows=[], alokasiAllRows=[], alokasiBusy=false, alokasiPage=1, alokasiJenis="ERDKK";
-    function openAlokasiPage(){if(!authSession||authSession.role!=='admin'){alert('Halaman ini khusus Admin.');return;}document.getElementById('content').classList.add('hidden');document.getElementById('alokasi-page').classList.remove('hidden');document.getElementById('mobile-action-dock').classList.add('hidden');switchAlokasiType('ERDKK',false);if(!alokasiAllRows.length)loadAlokasi();window.scrollTo(0,0);}
-    function closeAlokasiPage(){document.getElementById('alokasi-page').classList.add('hidden');document.getElementById('content').classList.remove('hidden');document.getElementById('mobile-action-dock').classList.remove('hidden');window.scrollTo(0,0);}
-    function gotoRekapKloter(){closeAlokasiPage();requestAnimationFrame(()=>document.getElementById('rekap-kloter-section')?.scrollIntoView({behavior:'smooth',block:'start'}));}
+    function openAlokasiPage(){ setActiveTab("alokasi"); }document.getElementById('content').classList.add('hidden');document.getElementById('alokasi-page').classList.remove('hidden');document.getElementById('mobile-action-dock').classList.add('hidden');switchAlokasiType('ERDKK',false);if(!alokasiAllRows.length)loadAlokasi();window.scrollTo(0,0);}
+    function closeAlokasiPage(){ setActiveTab("overview"); }
+    function gotoRekapKloter(){ setActiveTab("kloter"); }));}
     // Refresh mengikuti halaman yang sedang dibuka, bukan selalu kembali ke dashboard kloter.
-    function refreshCurrentPage(isSilent=false){if(!document.getElementById('alokasi-page').classList.contains('hidden'))return loadAlokasi();return loadData(isSilent);}
+    function refreshCurrentPage(isSilent=false){ if(currentActiveTab === "alokasi") return loadAlokasi(); return loadData(isSilent); }
     function applyAlokasiPartition(){const nonStart=Number(alokasiMeta?.nonErdkkStart)||208,nonEnd=Number(alokasiMeta?.nonErdkkEnd)||222;alokasiRows=alokasiJenis==='ERDKK'?alokasiAllRows.filter(r=>r.row>=2&&r.row<=195):alokasiAllRows.filter(r=>r.row>=nonStart&&r.row<=nonEnd&&String(r.values?.[2]||'').trim()!=='');alokasiPage=1;document.getElementById('al-search').value='';document.getElementById('al-status-filter').value='';document.getElementById('alokasi-page-title').textContent=alokasiJenis==='ERDKK'?'Alokasi Pembagian e-RDKK MT3 2026':'Alokasi Pembagian Petani Non-e-RDKK';document.getElementById('alokasi-page-subtitle').textContent=alokasiJenis==='ERDKK'?'Data petani e-RDKK sampai YUWONO':'Data petani Non-e-RDKK pada bagian setelah daftar e-RDKK';document.getElementById('tab-alokasi-erdkk').className=alokasiJenis==='ERDKK'?'rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2.5 text-sm font-bold text-emerald-800':'rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-600';document.getElementById('tab-alokasi-nonerdkk').className=alokasiJenis==='NON_ERDKK'?'rounded-xl border border-blue-300 bg-blue-50 px-4 py-2.5 text-sm font-bold text-blue-800':'rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-600';renderAlokasiTable();}
     function switchAlokasiType(type,rerender=true){alokasiJenis=type;if(rerender&&alokasiAllRows.length)applyAlokasiPartition();else if(alokasiAllRows.length)applyAlokasiPartition();}
     async function alokasiApi(action,extra={}){if(!authSession||authSession.role!=='admin')throw Error('Akses ditolak.');const r=await fetch(GAS_API_URL,{method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,token:authSession.token,...extra})});const j=await r.json();if(!j.sukses)throw Error(j.pesan||'Permintaan gagal');return j;}
@@ -1168,140 +1514,89 @@
         }
       }, 60000);
     };
+  
+
+
+    // =========================================================================
+    // ENHANCED APP NAVIGATION & MODERN UI CONTROLLER
+    // =========================================================================
+    let currentActiveTab = 'overview';
+
+    function setActiveTab(tab) {
+      currentActiveTab = tab;
+      
+      // Update Tab Buttons (Desktop & Mobile)
+      document.querySelectorAll('[data-nav-tab]').forEach(btn => {
+        const isTarget = btn.getAttribute('data-nav-tab') === tab;
+        if (isTarget) {
+          btn.classList.add('nav-active');
+          btn.setAttribute('aria-selected', 'true');
+        } else {
+          btn.classList.remove('nav-active');
+          btn.setAttribute('aria-selected', 'false');
+        }
+      });
+
+      // Show/Hide Main Sections
+      const views = {
+        overview: document.getElementById('view-overview'),
+        alokasi: document.getElementById('view-alokasi'),
+        kloter: document.getElementById('view-kloter'),
+        petani: document.getElementById('view-petani')
+      };
+
+      for (const [key, el] of Object.entries(views)) {
+        if (!el) continue;
+        if (key === tab) {
+          el.classList.remove('hidden');
+        } else {
+          el.classList.add('hidden');
+        }
+      }
+
+      // If switching to alokasi, ensure partition & data loaded
+      if (tab === 'alokasi') {
+        if (!authSession || authSession.role !== 'admin') {
+          alert('Halaman Alokasi khusus untuk Administrator.');
+          setActiveTab('overview');
+          return;
+        }
+        if (!alokasiAllRows.length) loadAlokasi();
+        else applyAlokasiPartition();
+      }
+
+      // Smooth scroll to top of content
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Adapt legacy navigation calls to the new tab router
+    function openAlokasiPage() {
+      setActiveTab('alokasi');
+    }
+    function closeAlokasiPage() {
+      setActiveTab('overview');
+    }
+    function gotoRekapKloter() {
+      setActiveTab('kloter');
+    }
+
   </script>
 
+  <!-- PWA Service Worker & Install controller -->
   <script>
-    // PWA: registrasi service worker dan tombol instalasi
     let deferredInstallPrompt = null;
-    const installButton = document.getElementById('install-app-btn');
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch((error) => {
-          console.warn('Service Worker gagal didaftarkan:', error);
+        navigator.serviceWorker.register('/sw.js').catch(err => {
+          console.warn('SW registration failed:', err);
         });
       });
     }
-
-    if (!isStandalone && installButton) {
-      installButton.classList.remove('hidden');
-      installButton.classList.add('inline-flex');
-    } else if (installButton) {
-      installButton.remove();
-    }
-
-    window.addEventListener('beforeinstallprompt', (event) => {
-      event.preventDefault();
-      deferredInstallPrompt = event;
-      if (installButton) installButton.classList.remove('hidden');
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
     });
-
-    window.addEventListener('appinstalled', () => {
-      deferredInstallPrompt = null;
-      if (installButton) installButton.remove();
-    });
-
-    async function installPWA() {
-      if (deferredInstallPrompt) {
-        deferredInstallPrompt.prompt();
-        await deferredInstallPrompt.userChoice;
-        deferredInstallPrompt = null;
-        return;
-      }
-
-      const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-      if (isIOS) {
-        alert('Untuk memasang aplikasi: tekan tombol Bagikan di Safari, lalu pilih “Add to Home Screen / Tambahkan ke Layar Utama”.');
-      } else {
-        alert('Jika tombol instal belum muncul, buka menu browser (⋮), lalu pilih “Install app” atau “Instal aplikasi”. Pastikan situs dibuka melalui HTTPS.');
-      }
-    }
   </script>
-
-
-
-
-
-  <main id="alokasi-page" class="hidden max-w-7xl mx-auto w-full px-4 pt-3 pb-6 space-y-4 sm:pt-4">
-    <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div class="flex flex-wrap items-center justify-between gap-4">
-        <div><div class="flex items-center gap-2"><span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800">ADMIN ONLY</span><span class="text-xs text-slate-400">DATA TERHUBUNG GOOGLE SHEET</span></div><h2 id="alokasi-page-title" class="mt-2 text-base font-bold text-slate-700">Alokasi Pembagian e-RDKK MT3 2026</h2><p id="alokasi-page-subtitle" class="mt-1 text-sm text-slate-500">Kelola alokasi pupuk petani terdaftar e-RDKK</p></div>
-        <div class="flex flex-wrap gap-2"><button id="tab-alokasi-erdkk" type="button" onclick="switchAlokasiType('ERDKK')" class="rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2.5 text-sm font-bold text-emerald-800"><i class="fa-solid fa-users mr-1"></i> e-RDKK</button><button id="tab-alokasi-nonerdkk" type="button" onclick="switchAlokasiType('NON_ERDKK')" class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-600"><i class="fa-solid fa-users-gear mr-1"></i> Non-e-RDKK</button></div>
-      </div>
-      <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
-        <button type="button" onclick="setAlokasiCardFilter('')" aria-label="Tampilkan semua petani" class="alokasi-kpi flex min-h-[116px] w-full items-center gap-4 rounded-xl border-2 border-slate-200 bg-white p-4 text-left shadow-sm transition hover:shadow-md">
-          <span class="grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-600 text-2xl"><i class="fa-solid fa-users"></i></span>
-          <div class="min-w-0"><div class="text-xs font-bold uppercase tracking-wide text-slate-500">Total Petani</div><div id="alokasi-count" class="mt-1 text-3xl font-extrabold leading-tight tracking-tight text-slate-800">0</div><p class="mt-1 text-xs text-slate-400">Data terdaftar</p></div>
-        </button>
-        <div class="flex min-h-[116px] w-full items-center gap-4 rounded-xl border-2 border-violet-300 bg-white p-4 shadow-sm">
-          <span class="grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-violet-100 text-violet-700 text-2xl"><i class="fa-solid fa-wheat-awn"></i></span>
-          <div class="min-w-0 flex-1"><div class="text-xs font-bold uppercase tracking-wide text-violet-700">Sisa Pupuk</div><div class="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-sm font-extrabold text-slate-800"><span>Urea <b id="sisa-pupuk-urea">—</b></span><span>Phonska <b id="sisa-pupuk-phonska">—</b></span><span>Organik <b id="sisa-pupuk-organik">—</b></span></div><p class="mt-1 text-xs text-violet-700/70">Sesuai keterangan Alokasi Pembagian</p></div>
-        </div>
-        <button type="button" onclick="setAlokasiCardFilter('SUDAH')" aria-label="Filter sudah ambil" class="alokasi-kpi flex min-h-[116px] w-full items-center gap-4 rounded-xl border-2 border-emerald-300 bg-white p-4 text-left shadow-sm transition hover:shadow-md">
-          <span class="grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-emerald-100 text-emerald-700 text-2xl"><i class="fa-solid fa-circle-check"></i></span>
-          <div class="min-w-0"><div class="text-xs font-bold uppercase tracking-wide text-emerald-700">Sudah Ambil</div><div id="alokasi-sudah" class="mt-1 text-3xl font-extrabold leading-tight tracking-tight text-emerald-800">0</div><p class="mt-1 text-xs text-emerald-700/70">Petani sudah menerima</p></div>
-        </button>
-        <button type="button" onclick="setAlokasiCardFilter('BELUM')" aria-label="Filter belum ambil" class="alokasi-kpi flex min-h-[116px] w-full items-center gap-4 rounded-xl border-2 border-amber-300 bg-white p-4 text-left shadow-sm transition hover:shadow-md">
-          <span class="grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-amber-100 text-amber-700 text-2xl"><i class="fa-solid fa-clock"></i></span>
-          <div class="min-w-0"><div class="text-xs font-bold uppercase tracking-wide text-amber-700">Belum Ambil</div><div id="alokasi-belum" class="mt-1 text-3xl font-extrabold leading-tight tracking-tight text-amber-800">0</div><p class="mt-1 text-xs text-amber-700/70">Menunggu pengambilan</p></div>
-        </button>
-        <button type="button" onclick="setAlokasiCardFilter('KTP')" aria-label="Filter belum setor KTP" class="alokasi-kpi flex min-h-[116px] w-full items-center gap-4 rounded-xl border-2 border-blue-300 bg-white p-4 text-left shadow-sm transition hover:shadow-md">
-          <span class="grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-blue-100 text-blue-700 text-2xl"><i class="fa-solid fa-clipboard-list"></i></span>
-          <div class="min-w-0"><div class="text-xs font-bold uppercase tracking-wide text-blue-700">Belum Setor KTP</div><div id="alokasi-lainnya" class="mt-1 text-3xl font-extrabold leading-tight tracking-tight text-blue-800">0</div><p class="mt-1 text-xs text-blue-700/70">Petani belum menyerahkan KTP</p></div>
-        </button>      </div>
-    </section>
-        <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-      <div class="border-b border-slate-100 p-5"><div class="flex flex-wrap items-center justify-between gap-3"><div><h3 class="text-base font-bold text-slate-700"><i class="fa-solid fa-table-list mr-2 text-emerald-700"></i>Daftar Alokasi Pembagian</h3><p class="mt-1 text-xs text-slate-500">Cari, filter, dan ubah data petani secara langsung</p></div><div class="flex flex-wrap items-center gap-2"><span class="rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700"><i class="fa-solid fa-cloud mr-1"></i> Sinkron Google Sheet</span><button type="button" onclick="openAddAlokasiModal()" class="inline-flex items-center gap-2 rounded-xl bg-emerald-700 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-800 active:scale-[.98]"><i class="fa-solid fa-user-plus"></i><span>Tambah Petani</span></button></div></div>
-        <div class="mt-4 grid grid-cols-1 gap-2 md:grid-cols-[minmax(220px,520px)_190px_130px] md:justify-start no-print"><div class="relative"><i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i><input id="al-search" oninput="alokasiPage=1;renderAlokasiTable()" class="w-full rounded-xl border border-slate-200 py-2.5 pl-9 pr-3 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" placeholder="Cari NIK, nama, status, keterangan..."></div><select id="al-status-filter" onchange="alokasiPage=1;renderAlokasiTable()" class="rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-slate-600 outline-none focus:border-emerald-500"><option value="">Semua status</option><option value="SUDAH">Sudah ambil</option><option value="BELUM">Belum ambil</option><option value="KTP">Belum setor KTP</option></select><select id="al-page-size" onchange="alokasiPage=1;renderAlokasiTable()" class="rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-slate-600 outline-none focus:border-emerald-500"><option value="10">10 baris / halaman</option><option value="25" selected>25 baris / halaman</option><option value="50">50 baris / halaman</option><option value="100">100 baris / halaman</option></select></div>
-      </div>
-      <div id="alokasi-loading" class="hidden fixed inset-0 z-[80] flex items-center justify-center bg-slate-950/35 backdrop-blur-[2px] px-4" role="status" aria-live="polite"><div class="w-full max-w-xs rounded-2xl border border-emerald-100 bg-white px-7 py-8 text-center shadow-2xl"><span class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-emerald-50 text-emerald-700"><i class="fa-solid fa-circle-notch fa-spin text-3xl"></i></span><p class="mt-4 text-base font-extrabold text-slate-800">Memuat Alokasi Pembagian</p><p class="mt-1 text-xs text-slate-500">Mengambil data terbaru dari Google Sheet...</p></div></div>
-      <div class="mx-5 mb-5 overflow-hidden rounded-xl border border-slate-200 shadow-sm"><div id="alokasi-table-scroll" class="max-h-[620px] overflow-auto"><table class="w-full min-w-[1360px] table-fixed border-separate border-spacing-0 text-left text-sm"><colgroup><col style="width:42px"><col style="width:126px"><col style="width:132px"><col style="width:78px"><col style="width:78px"><col style="width:166px"><col style="width:76px"><col style="width:82px"><col style="width:82px"><col style="width:78px"><col style="width:88px"><col style="width:88px"><col style="width:100px"><col style="width:142px"><col style="width:88px"></colgroup><thead class="sticky top-0 z-20 bg-slate-100 text-slate-700"><tr><th class="border-b border-slate-200 px-2 py-3 text-left text-[11px] uppercase tracking-wide font-extrabold leading-tight whitespace-normal break-words">No</th><th class="border-b border-slate-200 px-2 py-3 text-left text-[11px] uppercase tracking-wide font-extrabold leading-tight whitespace-normal break-words">NIK</th><th class="border-b border-slate-200 px-2 py-3 text-left text-[11px] uppercase tracking-wide font-extrabold leading-tight whitespace-normal break-words">Nama</th><th class="border-b border-slate-200 px-2 py-3 text-left text-[11px] uppercase tracking-wide font-extrabold leading-tight whitespace-normal break-words">Lahan Revisi</th><th class="border-b border-slate-200 px-2 py-3 text-left text-[11px] uppercase tracking-wide font-extrabold leading-tight whitespace-normal break-words">Revisi Lahan Asli</th><th class="border-b border-slate-200 px-2 py-3 text-left text-[11px] uppercase tracking-wide font-extrabold leading-tight whitespace-normal break-words">Status</th><th class="border-b border-slate-200 px-2 py-3 text-left text-[11px] uppercase tracking-wide font-extrabold leading-tight whitespace-normal break-words">Urea</th><th class="border-b border-slate-200 px-2 py-3 text-left text-[11px] uppercase tracking-wide font-extrabold leading-tight whitespace-normal break-words">Phonska</th><th class="border-b border-slate-200 px-2 py-3 text-left text-[11px] uppercase tracking-wide font-extrabold leading-tight whitespace-normal break-words">Organik</th><th class="border-b border-slate-200 px-2 py-3 text-left text-[11px] uppercase tracking-wide font-extrabold leading-tight whitespace-normal break-words">Sak Urea</th><th class="border-b border-slate-200 px-2 py-3 text-left text-[11px] uppercase tracking-wide font-extrabold leading-tight whitespace-normal break-words">Sak Phonska</th><th class="border-b border-slate-200 px-2 py-3 text-left text-[11px] uppercase tracking-wide font-extrabold leading-tight whitespace-normal break-words">Sak Organik</th><th class="border-b border-slate-200 px-2 py-3 text-left text-[11px] uppercase tracking-wide font-extrabold leading-tight whitespace-normal break-words">Uang</th><th class="border-b border-slate-200 px-2 py-3 text-left text-[11px] uppercase tracking-wide font-extrabold leading-tight whitespace-normal break-words">Keterangan</th><th class="border-b border-slate-200 px-2 py-3 text-left text-[11px] uppercase tracking-wide font-extrabold leading-tight whitespace-normal break-words">Aksi</th></tr></thead><tbody id="alokasi-tbody" class="divide-y divide-slate-100 [&>tr:nth-child(even)]:bg-slate-50 [&>tr:hover]:bg-emerald-50/60"></tbody></table></div></div>
-      <div id="alokasi-empty" class="hidden px-5 py-12 text-center"><span class="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-slate-100 text-slate-400"><i class="fa-solid fa-folder-open text-xl"></i></span><p class="mt-3 font-semibold text-slate-600">Data tidak ditemukan</p><p class="mt-1 text-xs text-slate-400">Ubah kata pencarian atau filter status.</p></div>
-      <div class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 px-5 py-4"><p id="al-page-info" class="text-xs text-slate-500">Menampilkan 0 data</p><div id="al-pagination" class="flex flex-wrap items-center gap-1 no-print"></div></div>
-    </section>
-  </main>
-  <div id="add-alokasi-modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center bg-slate-950/50 backdrop-blur-sm p-4" onclick="if(event.target===this)closeAddAlokasiModal()">
-    <section role="dialog" aria-modal="true" aria-labelledby="add-alokasi-title" class="w-full max-w-xl overflow-hidden rounded-2xl border border-emerald-100 bg-white shadow-2xl animate-[fadeIn_.2s_ease-out]">
-      <div class="flex items-center justify-between border-b border-slate-100 bg-emerald-50/70 px-5 py-4"><div class="flex items-center gap-3"><span class="grid h-11 w-11 place-items-center rounded-xl bg-emerald-700 text-white text-lg shadow-sm"><i class="fa-solid fa-user-plus"></i></span><div><h3 id="add-alokasi-title" class="font-extrabold text-slate-800">Tambah Petani Baru</h3><p class="text-xs text-slate-500">Lengkapi data dasar anggota</p></div></div><button type="button" onclick="closeAddAlokasiModal()" class="grid h-9 w-9 place-items-center rounded-lg text-slate-400 hover:bg-white hover:text-slate-700" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button></div>
-      <form class="space-y-4 p-5" onsubmit="event.preventDefault();addAlokasi()">
-        <div><label for="al-new-nik" class="mb-1.5 block text-xs font-bold text-slate-600">NIK <span class="text-slate-400">(opsional)</span></label><div class="relative"><i class="fa-solid fa-id-card absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i><input id="al-new-nik" inputmode="numeric" maxlength="20" class="w-full rounded-xl border border-slate-200 py-3 pl-10 pr-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" placeholder="Masukkan NIK petani"></div></div>
-        <div><label for="al-new-nama" class="mb-1.5 block text-xs font-bold text-slate-600">NAMA PETANI <span class="text-rose-500">*</span></label><div class="relative"><i class="fa-solid fa-user absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i><input id="al-new-nama" required class="w-full rounded-xl border border-slate-200 py-3 pl-10 pr-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" placeholder="Nama lengkap petani"></div></div>
-        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2"><div><label for="al-new-lahan" class="mb-1.5 block text-xs font-bold text-slate-600">LAHAN (HA)</label><div class="relative"><i class="fa-solid fa-ruler-combined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i><input id="al-new-lahan" type="number" min="0" step=".01" class="w-full rounded-xl border border-slate-200 py-3 pl-10 pr-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" placeholder="Contoh: 0.25"></div></div><div><label for="al-new-status" class="mb-1.5 block text-xs font-bold text-slate-600">STATUS AWAL</label><div class="relative"><i class="fa-solid fa-list-check absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i><input id="al-new-status" class="w-full rounded-xl border border-slate-200 py-3 pl-10 pr-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" placeholder="Opsional"></div></div></div>
-        <p class="rounded-xl bg-slate-50 px-3 py-2 text-xs text-slate-500"><i class="fa-solid fa-circle-info mr-1 text-emerald-600"></i> Data akan ditambahkan sebagai baris baru di Google Sheet. Kolom alokasi pupuk dan jumlah sak dapat dilengkapi setelah tersimpan.</p>
-        <div class="flex flex-col-reverse gap-2 border-t border-slate-100 pt-4 sm:flex-row sm:justify-end"><button type="button" onclick="closeAddAlokasiModal()" class="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50"><i class="fa-solid fa-xmark mr-1"></i> Batal</button><button id="al-add-btn" type="submit" class="rounded-xl bg-emerald-700 px-5 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-emerald-800 disabled:cursor-wait disabled:opacity-60"><i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Data</button></div>
-      </form>
-    </section>
-  </div>
-  <div id="alokasi-toast" class="hidden" role="status" aria-live="polite"></div>
-
-  <!-- Floating action dock: empat aksi utama untuk layar HP -->
-  <nav id="mobile-action-dock" aria-label="Aksi cepat dashboard" class="fixed z-50 left-3 right-3 sm:hidden no-print">
-    <div class="mx-auto max-w-xl rounded-2xl border border-white/70 bg-white/95 backdrop-blur-xl shadow-[0_12px_35px_rgba(15,23,42,0.22)] px-2 py-2 flex items-stretch gap-1">
-      <button data-admin-only onclick="bukaModalKloter()" class="hidden flex-1 min-w-0 rounded-xl py-2 px-1 flex-col items-center justify-center gap-1 bg-blue-600 text-white active:scale-95 transition">
-        <i class="fa-solid fa-user-plus text-lg"></i><span class="text-[10px] font-bold leading-none">Input</span>
-      </button>
-      <button onclick="loadData(false)" class="flex-1 min-w-0 rounded-xl py-2 px-1 flex flex-col items-center justify-center gap-1 text-emerald-800 hover:bg-emerald-50 active:scale-95 transition">
-        <i class="fa-solid fa-rotate text-lg"></i><span class="text-[10px] font-bold leading-none">Refresh</span>
-      </button>
-      <button onclick="window.print()" class="flex-1 min-w-0 rounded-xl py-2 px-1 flex flex-col items-center justify-center gap-1 text-amber-700 hover:bg-amber-50 active:scale-95 transition">
-        <i class="fa-solid fa-print text-lg"></i><span class="text-[10px] font-bold leading-none">Cetak</span>
-      </button>
-      <button onclick="logoutUser()" class="flex-1 min-w-0 rounded-xl py-2 px-1 flex flex-col items-center justify-center gap-1 text-rose-700 hover:bg-rose-50 active:scale-95 transition">
-        <i class="fa-solid fa-right-from-bracket text-lg"></i><span class="text-[10px] font-bold leading-none">Keluar</span>
-      </button>
-    </div>
-  </nav>
-
-  <!-- Footer kredit pengembang -->
-  <footer id="footer-credit-fixed" class="fixed bottom-0 inset-x-0 z-40 bg-emerald-950 text-emerald-100 border-t border-emerald-700/70 shadow-[0_-4px_12px_rgba(0,0,0,0.08)] no-print safe-area-bottom">
-    <div class="max-w-7xl mx-auto px-3 py-2.5 sm:py-2 text-center text-[10px] sm:text-xs tracking-wide">
-      Developed by <span class="font-semibold text-white">Supriyanto</span>
-      <span class="mx-1 text-emerald-400">•</span>
-      <span class="font-semibold text-white">Abadi Jaya</span>
-      <span class="mx-1 text-emerald-400">©</span> 2026
-    </div>
-  </footer>
 
 </body>
 </html>
