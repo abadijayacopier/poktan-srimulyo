@@ -477,7 +477,10 @@ function saveAlokasiPembagian_(rowNumber, values) {
       const value = String(v == null ? '' : v).trim();
       return i === 1 ? "'" + value : value; // NIK dipaksa sebagai teks agar angka nol awal tidak hilang.
     });
-    sheet.getRange(row, 1, 1, 14).setValues([safe]);
+    // Kolom G:I (Urea, Phonska, Organik) dikunci: jangan pernah ditulis dari aplikasi.
+    // Simpan hanya A:F dan J:N agar nilai maupun formula pada G:I tetap utuh.
+    sheet.getRange(row, 1, 1, 6).setValues([safe.slice(0, 6)]);
+    sheet.getRange(row, 10, 1, 5).setValues([safe.slice(9, 14)]);
     SpreadsheetApp.flush();
     return { sukses: true, pesan: 'Data alokasi berhasil diperbarui.', row: row };
   } finally { lock.releaseLock(); }
