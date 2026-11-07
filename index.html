@@ -79,6 +79,27 @@
       .main-action-nav { box-shadow:0 5px 16px rgba(15,23,42,.07); }
       .nav-card { border-color:#d1fae5; box-shadow:0 5px 18px rgba(6,78,59,.08); }
     }
+    /* Prevent labels/cards from clipping at narrow widths or large system fonts. */
+    .nav-card, .nav-actions, .nav-action, .nav-action span, #user-role-badge { box-sizing:border-box; }
+    .nav-action { height:auto; max-width:100%; overflow:visible; }
+    .nav-action span { min-width:0; max-width:100%; overflow-wrap:anywhere; word-break:normal; text-overflow:clip; }
+    #user-role-badge { min-width:0; max-width:100%; white-space:normal; overflow-wrap:anywhere; text-align:center; }
+    @media(max-width:380px) {
+      .nav-card { padding:8px; gap:7px; }
+      .nav-actions { grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; }
+      .nav-action:not(.hidden) { min-height:50px; padding:9px 6px; gap:5px; font-size:clamp(10px,3.1vw,12px); line-height:1.25; }
+      .nav-action:not(.hidden) i { flex:0 0 auto; font-size:13px; }
+      .nav-action span { flex:0 1 auto; }
+    }
+    @media(min-width:381px) and (max-width:639px) {
+      .nav-action:not(.hidden) { font-size:clamp(11px,3.2vw,13px); }
+    }
+    @media (display-mode:standalone) and (orientation:landscape), (display-mode:fullscreen) and (orientation:landscape) {
+      #main-action-nav .nav-action:not(.hidden) { min-height:46px; height:auto; padding:8px 7px; font-size:clamp(10px,1.5vw,12px); line-height:1.25; }
+      #main-action-nav .nav-action span { overflow-wrap:anywhere; white-space:normal; }
+      #main-action-nav #user-role-badge:not(.hidden) { min-width:0; max-width:100%; white-space:normal; }
+    }
+
     /* Native-app feel for PWA: muted controls, no clipped horizontal toolbar. */
     @media (display-mode:standalone) and (orientation:landscape), (display-mode:fullscreen) and (orientation:landscape) {
       #main-action-nav .nav-card { display:flex; flex-wrap:wrap; gap:8px; padding:9px; border-radius:17px; }
