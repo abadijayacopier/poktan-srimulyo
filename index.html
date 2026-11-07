@@ -229,8 +229,8 @@
         </button>
         <button type="button" data-nav-tab="petani" onclick="setActiveTab('petani')" 
                 class="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-2">
-          <i class="fa-solid fa-address-book text-slate-400"></i>
-          <span>Daftar e-RDKK</span>
+          <i class="fa-solid fa-file-signature text-slate-400"></i>
+          <span>Daftar Surat Kuasa</span>
         </button>
       </nav>
 
@@ -701,17 +701,17 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div class="flex items-center gap-2 mb-1">
-                <span class="px-2.5 py-0.5 rounded-md bg-blue-100 text-blue-800 text-[10px] font-extrabold uppercase">DATA ANGGOTA</span>
+                <span class="px-2.5 py-0.5 rounded-md bg-blue-100 text-blue-800 text-[10px] font-extrabold uppercase">SURAT KUASA</span>
                 <span class="text-xs text-slate-400">Sheet: e-RDKK</span>
               </div>
-              <h2 id="label-petani-header" class="text-lg font-black text-slate-900">Daftar Anggota e-RDKK</h2>
-              <p class="text-xs text-slate-500">Pencarian real-time berdasarkan NIK, Nama Petani, atau Status Penebusan</p>
+              <h2 id="label-petani-header" class="text-lg font-black text-slate-900">Daftar Surat Kuasa</h2>
+              <p class="text-xs text-slate-500">Pencarian real-time berdasarkan Surat Kuasa / Kloter Pengajuan BPP Lembeyan</p>
             </div>
             
             <div class="flex flex-wrap items-center gap-2">
               <div class="relative w-full sm:w-64">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                <input type="text" id="searchInput" onkeyup="filterPetani()" placeholder="Ketik NIK atau Nama..."
+                <input type="text" id="searchInput" onkeyup="filterPetani()" placeholder="Ketik NIK, Nama, Kloter..."
                        class="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 outline-none">
               </div>
               <select id="statusFilter" onchange="filterPetani()"
@@ -727,9 +727,9 @@
         <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden p-5 sm:p-6 space-y-4">
           <div class="flex items-center justify-between">
             <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-              <i class="fa-solid fa-address-book text-emerald-600"></i> Tabel Database Petani e-RDKK MT3 2026
+              <i class="fa-solid fa-file-signature text-emerald-600"></i> Tabel Database Surat Kuasa Petani & Rombongan Kloter
             </h3>
-            <span class="text-xs text-slate-400">Sinkronisasi Otomatis Google Sheets</span>
+            <span class="text-xs text-slate-400">Pengajuan BPP Lembeyan MT3 2026</span>
           </div>
 
           <div class="overflow-x-auto rounded-xl border border-slate-200 max-h-[640px]">
@@ -793,13 +793,13 @@
         <span class="nav-label text-[10px] font-semibold tracking-tight">Kloter</span>
       </button>
 
-      <!-- Tab 4: Petani e-RDKK -->
+      <!-- Tab 4: Daftar Surat Kuasa -->
       <button type="button" data-nav-tab="petani" onclick="setActiveTab('petani')"
               class="mobile-nav-item flex flex-col items-center justify-center py-1 px-1 transition text-slate-500">
         <span class="nav-icon-wrapper w-9 h-9 rounded-xl flex items-center justify-center transition mb-1 bg-transparent">
-          <i class="fa-solid fa-address-book text-lg"></i>
+          <i class="fa-solid fa-file-signature text-lg"></i>
         </span>
-        <span class="nav-label text-[10px] font-semibold tracking-tight">e-RDKK</span>
+        <span class="nav-label text-[10px] font-semibold tracking-tight">Surat Kuasa</span>
       </button>
 
     </div>
@@ -1243,7 +1243,7 @@
 
       const r = data.ringkasan;
 
-      document.getElementById('label-petani-header').innerText = `Daftar Anggota e-RDKK (${r.totalPetani} Petani)`;
+      document.getElementById('label-petani-header').innerText = `Daftar Surat Kuasa (${r.totalPetani} Petani)`;
 
       // KPI Card
       document.getElementById('kpi-dp').innerText = formatRupiah(r.dpDisetor);
@@ -1398,7 +1398,10 @@
       let count = 0;
 
       const rows = globalData.petani.filter(p => {
-        const matchSearch = p.nik.includes(q) || p.nama.toLowerCase().includes(q);
+        const matchSearch = p.nik.includes(q) || 
+                            p.nama.toLowerCase().includes(q) || 
+                            String(p.status || '').toLowerCase().includes(q) ||
+                            String(p.penerimaKuasa || '').toLowerCase().includes(q);
         const matchStatus = !statusFilter || p.status.includes(statusFilter);
         return matchSearch && matchStatus;
       }).map(p => {
