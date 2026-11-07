@@ -929,8 +929,12 @@
         enterDashboard();
       } catch (error) {
         console.error('Login error:', error);
-        errorBox.querySelector('span').textContent = error.message || 'Login gagal. Periksa koneksi atau username/password.';
+        const msg = error.message || 'Login gagal. Periksa koneksi atau username/password.';
+        const span = errorBox.querySelector('span');
+        if (span) span.textContent = msg;
+        else errorBox.textContent = msg;
         errorBox.classList.remove('hidden');
+        alert('Gagal Masuk: ' + msg);
       } finally {
         button.disabled = false;
         button.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> <span>Masuk ke Dashboard</span>';
