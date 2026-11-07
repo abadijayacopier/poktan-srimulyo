@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#065f46">
   <meta name="description" content="Dashboard Alokasi RDKK MT III 2026 - Kelompok Tani Sri Mulyo, Desa Kediren, Magetan.">
-  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="manifest" href="/manifest.webmanifest">\n  <meta name="theme-color" content="#065f46">\n  <meta name="mobile-web-app-capable" content="yes">\n  <meta name="apple-mobile-web-app-capable" content="yes">\n  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n  <meta name="apple-mobile-web-app-title" content="Poktan Sri Mulyo">
   <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
   <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png">
   <title>Dashboard Alokasi RDKK MT3 2026 - POKTAN SRI MULYO</title>
@@ -41,6 +41,29 @@
     @media (min-width: 640px) and (max-width: 1023px) {
       .desktop-action-bar { justify-content: flex-end; }
       .desktop-action-btn { min-height: 42px; }
+    }
+    .app-header { box-shadow:0 4px 18px rgba(6,78,59,.16); }
+    .main-action-nav { background:rgba(248,250,252,.94); border-bottom:1px solid #e2e8f0; }
+    .nav-card { min-height:58px; }
+    .nav-action { display:inline-flex; transition:transform .18s ease,box-shadow .18s ease; }
+    .nav-action:active { transform:scale(.97); }
+    .nav-logout { color:#fff; background:#064e3b; border:1px solid #047857; }
+    .nav-allocation { color:#111827; background:#f59e0b; box-shadow:0 2px 5px rgba(245,158,11,.18); }
+    .nav-refresh { color:#fff; background:#047857; }
+    .nav-print { color:#111827; background:#fbbf24; }
+    @media(max-width:639px) {
+      .nav-card { border-radius:0 0 16px 16px; padding:7px; gap:6px; }
+      .nav-actions { overflow-x:auto; scrollbar-width:none; }
+      .nav-actions::-webkit-scrollbar { display:none; }
+      .nav-action { min-height:42px; padding:9px 11px; font-size:11px; border-radius:11px; }
+      .nav-action span { white-space:nowrap; }
+      #user-role-badge { font-size:10px; padding:8px; }
+      #mobile-action-dock { display:none !important; }
+    }
+    @media(display-mode:standalone) {
+      body { padding-top:env(safe-area-inset-top,0); }
+      .main-action-nav { box-shadow:0 5px 16px rgba(15,23,42,.07); }
+      .nav-card { border-color:#d1fae5; box-shadow:0 5px 18px rgba(6,78,59,.08); }
     }
     .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom, 0); }
     @media (max-width: 639px) {
@@ -102,37 +125,31 @@
     </div>
   </section>
 
-  <!-- Header -->
-  <header class="bg-emerald-800 text-white shadow-lg sticky top-0 z-30">
-    <div class="max-w-7xl mx-auto w-full px-4 py-3 md:py-4 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3 md:gap-4">
-      <div class="flex items-center space-x-3 min-w-0 w-full md:w-auto">
+  <!-- Header utama -->
+  <header class="app-header bg-emerald-800 text-white sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto w-full px-4 py-3 md:py-4">
+      <div class="flex items-center space-x-3 min-w-0">
         <i class="fa-solid fa-wheat-awn text-2xl sm:text-3xl text-emerald-300 shrink-0"></i>
-        <div>
-          <h1 class="text-base sm:text-xl font-bold tracking-tight flex flex-wrap items-center gap-x-2 gap-y-1 leading-tight">
-            KELOMPOK TANI "SRI MULYO"
-            <span id="sync-badge" class="text-[10px] bg-emerald-600/80 text-emerald-100 px-2 py-0.5 rounded-full font-normal tracking-normal border border-emerald-500 no-print">
-              <i class="fa-solid fa-circle text-[6px] text-emerald-300 animate-pulse mr-1"></i>Live Sync
-            </span>
-          </h1>
+        <div class="min-w-0">
+          <h1 class="text-base sm:text-xl font-bold tracking-tight flex flex-wrap items-center gap-x-2 gap-y-1 leading-tight">KELOMPOK TANI "SRI MULYO" <span id="sync-badge" class="text-[10px] bg-emerald-600/80 text-emerald-100 px-2 py-0.5 rounded-full font-normal tracking-normal border border-emerald-500 no-print"><i class="fa-solid fa-circle text-[6px] text-emerald-300 animate-pulse mr-1"></i>Live Sync</span></h1>
           <p class="text-[10px] sm:text-xs text-emerald-200 leading-relaxed mt-1"><span>Desa Kediren, Kec. Lembeyan, Kab. Magetan &bull; Alokasi RDKK MT III - 2026</span><span class="hidden sm:inline"> &bull; Powered by Supriyanto</span></p>
         </div>
       </div>
-      <div class="flex flex-wrap lg:flex-nowrap items-center justify-end gap-2 w-full md:w-auto no-print desktop-action-bar">
-<span id="user-role-badge" class="hidden px-3 py-2 rounded-xl bg-emerald-900/60 text-emerald-50 text-xs font-bold text-center whitespace-nowrap"></span>
-        <button id="logout-button" onclick="logoutUser()" class="mobile-dock-action desktop-action-btn hidden w-full md:w-auto justify-center px-4 py-2.5 bg-emerald-950 hover:bg-emerald-900 active:scale-[0.98] rounded-xl text-sm font-semibold transition items-center gap-2 border border-emerald-600 shadow-sm whitespace-nowrap">
-          <i class="fa-solid fa-right-from-bracket"></i> Keluar
-        </button>
-        <button data-admin-only onclick="openAlokasiPage()" class="hidden desktop-action-btn w-full md:w-auto justify-center px-4 py-2.5 bg-amber-500 hover:bg-amber-600 rounded-xl text-sm font-bold text-slate-950 transition flex items-center gap-2 shadow-sm whitespace-nowrap"><i class="fa-solid fa-table-list"></i> Alokasi Pembagian</button>
-
-        <button onclick="refreshCurrentPage(false)" class="mobile-dock-action desktop-action-btn w-full md:w-auto justify-center px-4 py-2.5 bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] rounded-xl text-sm font-semibold transition flex items-center gap-2 shadow-sm whitespace-nowrap">
-          <i id="refresh-icon" class="fa-solid fa-rotate"></i> Refresh
-        </button>
-        <button onclick="window.print()" class="mobile-dock-action desktop-action-btn hidden sm:flex w-full md:w-auto justify-center px-4 py-2.5 bg-amber-500 hover:bg-amber-600 active:scale-[0.98] rounded-xl text-sm font-bold text-slate-950 transition items-center gap-2 shadow-sm whitespace-nowrap">
-          <i class="fa-solid fa-print"></i> Cetak Laporan
-        </button>
-      </div>
     </div>
   </header>
+  <nav id="main-action-nav" class="main-action-nav no-print sticky top-[76px] sm:top-[88px] z-30" aria-label="Menu utama">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4 py-2">
+      <div class="nav-card flex items-center gap-2 p-2 rounded-2xl border border-emerald-100 bg-white/95 shadow-md backdrop-blur">
+        <span id="user-role-badge" class="hidden shrink-0 px-3 py-2 rounded-xl bg-emerald-50 text-emerald-800 text-xs font-bold whitespace-nowrap"></span>
+        <div class="nav-actions flex items-center gap-2 min-w-0 flex-1">
+          <button id="logout-button" onclick="logoutUser()" class="hidden nav-action nav-logout justify-center px-3 sm:px-4 py-2.5 rounded-xl text-sm font-semibold items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar</span></button>
+          <button data-admin-only onclick="openAlokasiPage()" class="hidden nav-action nav-allocation justify-center px-3 sm:px-4 py-2.5 rounded-xl text-sm font-bold items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-table-list"></i><span>Alokasi Pembagian</span></button>
+          <button onclick="refreshCurrentPage(false)" class="nav-action nav-refresh justify-center px-3 sm:px-4 py-2.5 rounded-xl text-sm font-semibold items-center gap-2 whitespace-nowrap"><i id="refresh-icon" class="fa-solid fa-rotate"></i><span>Refresh</span></button>
+          <button onclick="window.print()" class="nav-action nav-print hidden sm:flex justify-center px-3 sm:px-4 py-2.5 rounded-xl text-sm font-bold items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-print"></i><span>Cetak Laporan</span></button>
+        </div>
+      </div>
+    </div>
+  </nav>
 
   <main class="max-w-7xl mx-auto w-full px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
 

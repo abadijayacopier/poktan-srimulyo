@@ -1,5 +1,5 @@
-const CACHE_NAME = "poktan-srimulyo-v20";
-const APP_SHELL = ["/", "/manifest.webmanifest", "/icons/icon-192.png", "/icons/icon-512.svg"];
+const CACHE_NAME = "poktan-srimulyo-v21";
+const APP_SHELL = ["/", "/manifest.webmanifest", "/icons/poktan.svg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

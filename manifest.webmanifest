@@ -1,0 +1,24 @@
+{
+  "id": "/",
+  "name": "POKTAN SRI MULYO",
+  "short_name": "Poktan Sri Mulyo",
+  "description": "Dashboard Kelompok Tani Sri Mulyo Desa Kediren",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "any",
+  "background_color": "#f8fafc",
+  "theme_color": "#065f46",
+  "icons": [
+    {
+      "src": "/icons/poktan.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
