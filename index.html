@@ -539,47 +539,57 @@
             <p class="text-xs font-semibold text-slate-700 mt-2">Memperbarui lembar Alokasi...</p>
           </div>
 
-          <!-- The Full Interactive Spreadsheet Table -->
-          <div id="alokasi-table-scroll" class="overflow-x-auto max-h-[640px] border-b border-slate-200">
-            <table class="w-full min-w-[1360px] table-fixed border-separate border-spacing-0 text-left text-xs">
-              <colgroup>
-                <col style="width:46px">
-                <col style="width:130px">
-                <col style="width:140px">
-                <col style="width:80px">
-                <col style="width:80px">
-                <col style="width:170px">
-                <col style="width:76px">
-                <col style="width:82px">
-                <col style="width:82px">
-                <col style="width:78px">
-                <col style="width:88px">
-                <col style="width:88px">
-                <col style="width:100px">
-                <col style="width:140px">
-                <col style="width:90px">
-              </colgroup>
-              <thead class="sticky top-0 z-20 bg-slate-100 text-slate-700 shadow-xs">
-                <tr class="divide-x divide-slate-200 border-b border-slate-200">
-                  <th class="bg-slate-100 px-3 py-3 text-center font-bold uppercase tracking-wider text-[11px] text-slate-600">No</th>
-                  <th class="bg-slate-100 px-3 py-3 text-left font-bold uppercase tracking-wider text-[11px] text-slate-600">NIK</th>
-                  <th class="bg-slate-100 px-3 py-3 text-left font-bold uppercase tracking-wider text-[11px] text-slate-600">Nama Petani</th>
-                  <th class="bg-slate-100 px-2.5 py-3 text-center font-bold uppercase tracking-wider text-[11px] text-slate-600">Lahan Rev</th>
-                  <th class="bg-slate-100 px-2.5 py-3 text-center font-bold uppercase tracking-wider text-[11px] text-slate-600">Lahan Asli</th>
-                  <th class="bg-slate-100 px-3 py-3 text-left font-bold uppercase tracking-wider text-[11px] text-slate-600">Status</th>
-                  <th class="bg-slate-100 px-2 py-3 text-right font-bold uppercase tracking-wider text-[11px] text-slate-600">Urea</th>
-                  <th class="bg-slate-100 px-2 py-3 text-right font-bold uppercase tracking-wider text-[11px] text-slate-600">Phonska</th>
-                  <th class="bg-slate-100 px-2 py-3 text-right font-bold uppercase tracking-wider text-[11px] text-slate-600">Organik</th>
-                  <th class="bg-slate-100 px-2 py-3 text-center font-bold uppercase tracking-wider text-[11px] text-slate-600">Sak Urea</th>
-                  <th class="bg-slate-100 px-2 py-3 text-center font-bold uppercase tracking-wider text-[11px] text-slate-600">Sak Phonska</th>
-                  <th class="bg-slate-100 px-2 py-3 text-center font-bold uppercase tracking-wider text-[11px] text-slate-600">Sak Org</th>
-                  <th class="bg-slate-100 px-3 py-3 text-right font-bold uppercase tracking-wider text-[11px] text-slate-600">Uang (Rp)</th>
-                  <th class="bg-slate-100 px-3 py-3 text-left font-bold uppercase tracking-wider text-[11px] text-slate-600">Keterangan</th>
-                  <th class="bg-slate-100 px-3 py-3 text-center font-bold uppercase tracking-wider text-[11px] text-slate-600">Aksi</th>
-                </tr>
-              </thead>
-              <tbody id="alokasi-tbody"></tbody>
-            </table>
+          <!-- Table Inner Card -->
+          <div class="p-4 sm:p-6 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-table-cells text-emerald-600"></i> Lembar Data Alokasi Pupuk & Penebusan
+              </h3>
+              <span class="text-xs text-slate-400">Sinkronisasi Langsung ke Google Sheets</span>
+            </div>
+
+            <!-- The Full Interactive Spreadsheet Table -->
+            <div id="alokasi-table-scroll" class="overflow-x-auto max-h-[640px] rounded-xl border border-slate-200">
+              <table class="w-full min-w-[1360px] table-fixed border-separate border-spacing-0 text-left text-xs">
+                <colgroup>
+                  <col style="width:46px">
+                  <col style="width:130px">
+                  <col style="width:140px">
+                  <col style="width:80px">
+                  <col style="width:80px">
+                  <col style="width:170px">
+                  <col style="width:76px">
+                  <col style="width:82px">
+                  <col style="width:82px">
+                  <col style="width:78px">
+                  <col style="width:88px">
+                  <col style="width:88px">
+                  <col style="width:100px">
+                  <col style="width:140px">
+                  <col style="width:90px">
+                </colgroup>
+                <thead class="sticky top-0 z-20 bg-slate-50 text-slate-700">
+                  <tr class="divide-x divide-slate-200 border-b border-slate-200 text-slate-700 text-xs font-bold uppercase">
+                    <th class="bg-slate-50 px-3 py-3 text-center">No</th>
+                    <th class="bg-slate-50 px-3 py-3 text-left">NIK</th>
+                    <th class="bg-slate-50 px-3 py-3 text-left">Nama Petani</th>
+                    <th class="bg-slate-50 px-2.5 py-3 text-center">Lahan Rev</th>
+                    <th class="bg-slate-50 px-2.5 py-3 text-center">Lahan Asli</th>
+                    <th class="bg-slate-50 px-3 py-3 text-left">Status</th>
+                    <th class="bg-slate-50 px-2 py-3 text-right">Urea</th>
+                    <th class="bg-slate-50 px-2 py-3 text-right">Phonska</th>
+                    <th class="bg-slate-50 px-2 py-3 text-right">Organik</th>
+                    <th class="bg-slate-50 px-2 py-3 text-center font-bold text-slate-800">Sak Urea</th>
+                    <th class="bg-slate-50 px-2 py-3 text-center font-bold text-slate-800">Sak Phonska</th>
+                    <th class="bg-slate-50 px-2 py-3 text-center font-bold text-slate-800">Sak Org</th>
+                    <th class="bg-slate-50 px-3 py-3 text-right">Uang (Rp)</th>
+                    <th class="bg-slate-50 px-3 py-3 text-left">Keterangan</th>
+                    <th class="bg-slate-50 px-3 py-3 text-center">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="alokasi-tbody"></tbody>
+              </table>
+            </div>
           </div>
 
           <!-- Empty State -->
@@ -619,21 +629,28 @@
           </button>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs border-collapse">
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden p-5 sm:p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-list-check text-emerald-600"></i> Tabel Rekapitulasi Rombongan Kloter 1 – 10
+            </h3>
+            <span class="text-xs text-slate-400">Total 10 Kloter Surat Kuasa</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-200">
+            <table class="w-full text-left text-sm border-collapse">
               <thead>
-                <tr class="bg-slate-50 text-slate-700 font-bold uppercase border-b border-slate-200">
-                  <th class="py-3 px-4">Kloter</th>
-                  <th class="py-3 px-4">Pemberi Kuasa (Perwakilan)</th>
-                  <th class="py-3 px-4">Penerima Kuasa</th>
-                  <th class="py-3 px-4 text-center">Jumlah Petani</th>
-                  <th class="py-3 px-4 text-right">Urea (Kg)</th>
-                  <th class="py-3 px-4 text-right">NPK (Kg)</th>
-                  <th class="py-3 px-4 text-right">Organik (Kg)</th>
+                <tr class="bg-slate-50 text-slate-700 text-xs font-bold uppercase border-b border-slate-200">
+                  <th class="py-3 px-3.5">Kloter</th>
+                  <th class="py-3 px-3.5">Pemberi Kuasa (Perwakilan)</th>
+                  <th class="py-3 px-3.5">Penerima Kuasa</th>
+                  <th class="py-3 px-3.5 text-center">Status Petani</th>
+                  <th class="py-3 px-3.5 text-right">Urea (Kg)</th>
+                  <th class="py-3 px-3.5 text-right">NPK (Kg)</th>
+                  <th class="py-3 px-3.5 text-right">Organik (Kg)</th>
                 </tr>
               </thead>
-              <tbody id="table-kloter-body" class="divide-y divide-slate-100"></tbody>
+              <tbody id="table-kloter-body" class="divide-y divide-slate-100 text-xs"></tbody>
             </table>
           </div>
         </div>
@@ -670,27 +687,34 @@
           </div>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-          <div class="overflow-x-auto max-h-[640px]">
-            <table class="w-full text-left text-xs border-collapse">
-              <thead class="sticky top-0 bg-slate-100 border-b border-slate-200 font-bold uppercase text-slate-700">
-                <tr>
-                  <th class="py-3 px-3 text-center w-12">No</th>
-                  <th class="py-3 px-3">NIK</th>
-                  <th class="py-3 px-3">Nama Petani</th>
-                  <th class="py-3 px-3">Status</th>
-                  <th class="py-3 px-3">Penerima Kuasa</th>
-                  <th class="py-3 px-3 text-right">Urea (Kg)</th>
-                  <th class="py-3 px-3 text-right">NPK (Kg)</th>
-                  <th class="py-3 px-3 text-right">Organik (Kg)</th>
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden p-5 sm:p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-address-book text-emerald-600"></i> Tabel Database Petani e-RDKK MT3 2026
+            </h3>
+            <span class="text-xs text-slate-400">Sinkronisasi Otomatis Google Sheets</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-200 max-h-[640px]">
+            <table class="w-full text-left text-sm border-collapse">
+              <thead class="sticky top-0 z-10">
+                <tr class="bg-slate-50 text-slate-700 text-xs font-bold uppercase border-b border-slate-200">
+                  <th class="py-3 px-3.5 text-center w-14">No</th>
+                  <th class="py-3 px-3.5">NIK</th>
+                  <th class="py-3 px-3.5">Nama Petani</th>
+                  <th class="py-3 px-3.5">Status Penebusan</th>
+                  <th class="py-3 px-3.5">Penerima Kuasa</th>
+                  <th class="py-3 px-3.5 text-right">Urea (Kg)</th>
+                  <th class="py-3 px-3.5 text-right">NPK (Kg)</th>
+                  <th class="py-3 px-3.5 text-right">Organik (Kg)</th>
                 </tr>
               </thead>
-              <tbody id="table-petani-body" class="divide-y divide-slate-100"></tbody>
+              <tbody id="table-petani-body" class="divide-y divide-slate-100 text-xs"></tbody>
             </table>
           </div>
-          <div class="p-4 border-t border-slate-200 flex justify-between text-xs text-slate-500">
-            <span id="countFiltered">Menampilkan 0 data</span>
-            <span>POKTAN SRI MULYO · DESA KEDIREN</span>
+          <div class="pt-2 flex flex-wrap items-center justify-between text-xs text-slate-500 gap-2 border-t border-slate-100">
+            <span id="countFiltered" class="font-semibold text-slate-600">Menampilkan 0 data</span>
+            <span class="font-medium text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-100">POKTAN SRI MULYO · DESA KEDIREN</span>
           </div>
         </div>
       </div>
@@ -1222,19 +1246,27 @@
       // Chart
       renderChart(data.dropGudang);
 
-      // Kloter
+      // Kloter 1 - 10 (Menampilkan seluruh 10 kloter termasuk kloter 9 & 10)
       const tbodyKloter = document.getElementById('table-kloter-body');
-      tbodyKloter.innerHTML = data.kloter.filter(k => k.jumlahPetani > 0).map(k => `
-        <tr class="hover:bg-slate-50">
-          <td class="py-2 px-3 font-semibold text-emerald-800">${k.kloter}</td>
-          <td class="py-2 px-3">${k.pemberiKuasa}</td>
-          <td class="py-2 px-3 text-slate-500">${k.penerimaKuasa}</td>
-          <td class="py-2 px-3 text-center font-bold text-slate-700">${k.jumlahPetani}</td>
-          <td class="py-2 px-3 text-right font-mono">${formatNumber(k.urea)}</td>
-          <td class="py-2 px-3 text-right font-mono">${formatNumber(k.npk)}</td>
-          <td class="py-2 px-3 text-right font-mono">${formatNumber(k.organik)}</td>
+      tbodyKloter.innerHTML = data.kloter.map(k => {
+        const hasPetani = k.jumlahPetani > 0;
+        const statusBadge = hasPetani 
+          ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800"><i class="fa-solid fa-check text-[9px] mr-1"></i>' + k.jumlahPetani + ' Petani</span>'
+          : '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-500">Belum Ada Anggota</span>';
+        return `
+        <tr class="hover:bg-slate-50/80 transition-colors">
+          <td class="py-3 px-3.5 font-bold text-slate-900 flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg ${hasPetani ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'} flex items-center justify-center text-[11px] font-black shrink-0">${k.no}</span>
+            <span>${k.kloter}</span>
+          </td>
+          <td class="py-3 px-3.5 font-semibold text-slate-800">${k.pemberiKuasa !== '-' ? k.pemberiKuasa : '<span class="text-slate-400 font-normal italic">—</span>'}</td>
+          <td class="py-3 px-3.5 text-slate-500">${k.penerimaKuasa !== '-' ? k.penerimaKuasa : '<span class="text-slate-400 font-normal italic">—</span>'}</td>
+          <td class="py-3 px-3.5 text-center">${statusBadge}</td>
+          <td class="py-3 px-3.5 text-right font-mono font-semibold ${k.urea > 0 ? 'text-slate-800' : 'text-slate-400'}">${formatNumber(k.urea)} Kg</td>
+          <td class="py-3 px-3.5 text-right font-mono font-semibold ${k.npk > 0 ? 'text-slate-800' : 'text-slate-400'}">${formatNumber(k.npk)} Kg</td>
+          <td class="py-3 px-3.5 text-right font-mono font-semibold ${k.organik > 0 ? 'text-slate-800' : 'text-slate-400'}">${formatNumber(k.organik)} Kg</td>
         </tr>
-      `).join('');
+      `}).join('');
 
       filterPetani();
     }
@@ -1335,19 +1367,20 @@
         return matchSearch && matchStatus;
       }).map(p => {
         count++;
-        const badgeClass = p.status.includes('Kloter')
+        const isKloter = p.status.includes('Kloter');
+        const badgeClass = isKloter
           ? 'bg-emerald-100 text-emerald-800'
-          : 'bg-slate-100 text-slate-700';
+          : 'bg-amber-100 text-amber-800';
         return `
-          <tr class="hover:bg-slate-50">
-            <td class="py-1.5 px-3 text-center text-slate-400">${p.no}</td>
-            <td class="py-1.5 px-3 font-mono text-xs">${p.nik}</td>
-            <td class="py-1.5 px-3 font-medium text-slate-800">${p.nama}</td>
-            <td class="py-1.5 px-3"><span class="px-2 py-0.5 rounded text-xs font-semibold ${badgeClass}">${p.status}</span></td>
-            <td class="py-1.5 px-3 text-slate-500 text-xs">${p.penerimaKuasa}</td>
-            <td class="py-1.5 px-3 text-right font-mono">${p.urea}</td>
-            <td class="py-1.5 px-3 text-right font-mono">${p.npk}</td>
-            <td class="py-1.5 px-3 text-right font-mono">${p.organik}</td>
+          <tr class="hover:bg-slate-50/80 transition-colors">
+            <td class="py-3 px-3.5 text-center font-bold text-slate-500">${p.no}</td>
+            <td class="py-3 px-3.5 font-mono text-slate-700 tracking-tight">${p.nik}</td>
+            <td class="py-3 px-3.5 font-bold text-slate-900">${p.nama}</td>
+            <td class="py-3 px-3.5"><span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${badgeClass}">${p.status}</span></td>
+            <td class="py-3 px-3.5 text-slate-500">${p.penerimaKuasa !== '-' ? p.penerimaKuasa : '<span class="text-slate-400 italic">—</span>'}</td>
+            <td class="py-3 px-3.5 text-right font-mono font-semibold ${p.urea > 0 ? 'text-slate-800' : 'text-slate-400'}">${formatNumber(p.urea)} Kg</td>
+            <td class="py-3 px-3.5 text-right font-mono font-semibold ${p.npk > 0 ? 'text-slate-800' : 'text-slate-400'}">${formatNumber(p.npk)} Kg</td>
+            <td class="py-3 px-3.5 text-right font-mono font-semibold ${p.organik > 0 ? 'text-slate-800' : 'text-slate-400'}">${formatNumber(p.organik)} Kg</td>
           </tr>
         `;
       });
