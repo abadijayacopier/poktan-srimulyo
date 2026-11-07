@@ -479,7 +479,8 @@ function saveAlokasiPembagian_(rowNumber, values) {
     });
     // Kolom G:I (Urea, Phonska, Organik) dikunci: jangan pernah ditulis dari aplikasi.
     // Simpan hanya A:F dan J:N agar nilai maupun formula pada G:I tetap utuh.
-    sheet.getRange(row, 1, 1, 6).setValues([safe.slice(0, 6)]);
+    sheet.getRange(row, 1, 1, 3).setValues([safe.slice(0, 3)]); // A:C, tanpa kolom D (Lahan Revisi)
+    sheet.getRange(row, 5, 1, 2).setValues([safe.slice(4, 6)]); // E:F, Revisi Lahan Asli dan Status
     sheet.getRange(row, 10, 1, 5).setValues([safe.slice(9, 14)]);
     SpreadsheetApp.flush();
     return { sukses: true, pesan: 'Data alokasi berhasil diperbarui.', row: row };
