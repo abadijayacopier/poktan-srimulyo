@@ -1160,7 +1160,11 @@
         <div><div class="flex items-center gap-2"><span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800">ADMIN ONLY</span><span class="text-xs text-slate-400">DATA TERHUBUNG GOOGLE SHEET</span></div><h2 id="alokasi-page-title" class="mt-2 text-base font-bold text-slate-700">Alokasi Pembagian e-RDKK MT3 2026</h2><p id="alokasi-page-subtitle" class="mt-1 text-sm text-slate-500">Kelola alokasi pupuk petani terdaftar e-RDKK</p></div>
         <div class="flex flex-wrap gap-2"><button id="tab-alokasi-erdkk" type="button" onclick="switchAlokasiType('ERDKK')" class="rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2.5 text-sm font-bold text-emerald-800"><i class="fa-solid fa-users mr-1"></i> e-RDKK</button><button id="tab-alokasi-nonerdkk" type="button" onclick="switchAlokasiType('NON_ERDKK')" class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-600"><i class="fa-solid fa-users-gear mr-1"></i> Non-e-RDKK</button></div>
       </div>
-      <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
+        <button type="button" onclick="setAlokasiCardFilter('')" aria-label="Tampilkan semua petani" class="alokasi-kpi flex min-h-[116px] w-full items-center gap-4 rounded-xl border-2 border-slate-200 bg-white p-4 text-left shadow-sm transition hover:shadow-md">
+          <span class="grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-600 text-2xl"><i class="fa-solid fa-users"></i></span>
+          <div class="min-w-0"><div class="text-xs font-bold uppercase tracking-wide text-slate-500">Total Petani</div><div id="alokasi-count" class="mt-1 text-3xl font-extrabold leading-tight tracking-tight text-slate-800">0</div><p class="mt-1 text-xs text-slate-400">Data terdaftar</p></div>
+        </button>
         <div class="flex min-h-[116px] w-full items-center gap-4 rounded-xl border-2 border-violet-300 bg-white p-4 shadow-sm">
           <span class="grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-violet-100 text-violet-700 text-2xl"><i class="fa-solid fa-wheat-awn"></i></span>
           <div class="min-w-0 flex-1"><div class="text-xs font-bold uppercase tracking-wide text-violet-700">Sisa Pupuk</div><div class="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-sm font-extrabold text-slate-800"><span>Urea <b id="sisa-pupuk-urea">—</b></span><span>Phonska <b id="sisa-pupuk-phonska">—</b></span><span>Organik <b id="sisa-pupuk-organik">—</b></span></div><p class="mt-1 text-xs text-violet-700/70">Sesuai keterangan Alokasi Pembagian</p></div>
@@ -1176,9 +1180,7 @@
         <button type="button" onclick="setAlokasiCardFilter('KTP')" aria-label="Filter belum setor KTP" class="alokasi-kpi flex min-h-[116px] w-full items-center gap-4 rounded-xl border-2 border-blue-300 bg-white p-4 text-left shadow-sm transition hover:shadow-md">
           <span class="grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-blue-100 text-blue-700 text-2xl"><i class="fa-solid fa-clipboard-list"></i></span>
           <div class="min-w-0"><div class="text-xs font-bold uppercase tracking-wide text-blue-700">Belum Setor KTP</div><div id="alokasi-lainnya" class="mt-1 text-3xl font-extrabold leading-tight tracking-tight text-blue-800">0</div><p class="mt-1 text-xs text-blue-700/70">Petani belum menyerahkan KTP</p></div>
-        </div>
-        </button>
-      </div>
+        </button>      </div>
     </section>
         <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
       <div class="border-b border-slate-100 p-5"><div class="flex flex-wrap items-center justify-between gap-3"><div><h3 class="text-base font-bold text-slate-700"><i class="fa-solid fa-table-list mr-2 text-emerald-700"></i>Daftar Alokasi Pembagian</h3><p class="mt-1 text-xs text-slate-500">Cari, filter, dan ubah data petani secara langsung</p></div><div class="flex flex-wrap items-center gap-2"><span class="rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700"><i class="fa-solid fa-cloud mr-1"></i> Sinkron Google Sheet</span><button type="button" onclick="openAddAlokasiModal()" class="inline-flex items-center gap-2 rounded-xl bg-emerald-700 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-800 active:scale-[.98]"><i class="fa-solid fa-user-plus"></i><span>Tambah Petani</span></button></div></div>
