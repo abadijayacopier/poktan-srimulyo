@@ -1005,47 +1005,99 @@
   </div>
 
   <!-- Modal Tambah Petani Baru ke Alokasi -->
-  <div id="add-alokasi-modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4" onclick="if(event.target===this)closeAddAlokasiModal()">
-    <section role="dialog" aria-modal="true" aria-labelledby="add-alokasi-title" class="w-full max-w-lg overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl animate-[fadeIn_.2s_ease-out]">
+  <div id="add-alokasi-modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto" onclick="if(event.target===this)closeAddAlokasiModal()">
+    <section role="dialog" aria-modal="true" aria-labelledby="add-alokasi-title" class="w-full max-w-lg my-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl animate-[fadeIn_.2s_ease-out]">
       <div class="flex items-center justify-between border-b border-slate-100 bg-emerald-50/70 px-5 py-4">
         <div class="flex items-center gap-3">
           <span class="grid h-10 w-10 place-items-center rounded-xl bg-emerald-700 text-white text-base shadow-sm">
             <i class="fa-solid fa-user-plus"></i>
           </span>
           <div>
-            <h3 id="add-alokasi-title" class="font-bold text-slate-800 text-sm">Tambah Anggota ke Sheet</h3>
-            <p class="text-xs text-slate-500">Lengkapi data dasar petani</p>
+            <h3 id="add-alokasi-title" class="font-bold text-slate-800 text-sm">Tambah Petani Non-eRDKK Baru</h3>
+            <p class="text-xs text-slate-500">Otomatis disisipkan di bawah baris TRI WAHYUNI</p>
           </div>
         </div>
         <button type="button" onclick="closeAddAlokasiModal()" class="text-slate-400 hover:text-slate-700 p-1" aria-label="Tutup">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
-      <form class="space-y-4 p-5" onsubmit="event.preventDefault();addAlokasi()">
-        <div>
-          <label for="al-new-nik" class="mb-1 block text-xs font-bold text-slate-600 uppercase">NIK <span class="text-slate-400 font-normal">(opsional)</span></label>
-          <input id="al-new-nik" inputmode="numeric" maxlength="20" class="w-full rounded-xl border border-slate-200 py-2.5 px-3 text-xs outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" placeholder="16 digit NIK">
-        </div>
-        <div>
-          <label for="al-new-nama" class="mb-1 block text-xs font-bold text-slate-600 uppercase">Nama Lengkap <span class="text-rose-500">*</span></label>
-          <input id="al-new-nama" required class="w-full rounded-xl border border-slate-200 py-2.5 px-3 text-xs outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" placeholder="Nama petani sesuai KTP">
-        </div>
-        <div class="grid grid-cols-2 gap-3">
+      <form class="space-y-3.5 p-5" onsubmit="event.preventDefault();addAlokasi()">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label for="al-new-lahan" class="mb-1 block text-xs font-bold text-slate-600 uppercase">Luas Lahan (Ha)</label>
-            <input id="al-new-lahan" type="number" min="0" step=".01" class="w-full rounded-xl border border-slate-200 py-2.5 px-3 text-xs outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" placeholder="0.25">
+            <label for="al-new-nama" class="mb-1 block text-xs font-bold text-slate-700 uppercase">Nama Petani <span class="text-rose-500">*</span></label>
+            <input id="al-new-nama" required class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" placeholder="Nama lengkap petani">
           </div>
           <div>
-            <label for="al-new-status" class="mb-1 block text-xs font-bold text-slate-600 uppercase">Status Awal</label>
-            <input id="al-new-status" class="w-full rounded-xl border border-slate-200 py-2.5 px-3 text-xs outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" placeholder="BELUM AMBIL">
+            <label for="al-new-nik" class="mb-1 block text-xs font-bold text-slate-700 uppercase">NIK <span class="text-slate-400 font-normal">(opsional)</span></label>
+            <input id="al-new-nik" inputmode="numeric" maxlength="20" class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" placeholder="16 digit NIK">
           </div>
         </div>
-        <p class="rounded-xl bg-slate-50 px-3 py-2 text-[11px] text-slate-500">
-          <i class="fa-solid fa-circle-info mr-1 text-emerald-600"></i> Baris baru akan ditambahkan langsung ke Google Sheets.
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="al-new-blok" class="mb-1 block text-xs font-bold text-slate-700 uppercase">Blok Sawah / Alamat</label>
+            <input id="al-new-blok" class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" placeholder="Contoh: MBAMBUNG, SETEKEK">
+          </div>
+          <div>
+            <label for="al-new-lahan" class="mb-1 block text-xs font-bold text-slate-700 uppercase">Luas Lahan Asli (Ha)</label>
+            <input id="al-new-lahan" type="text" class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" placeholder="Contoh: 0,14">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="al-new-status-usulan" class="mb-1 block text-xs font-bold text-slate-700 uppercase">Status Usulan</label>
+            <select id="al-new-status-usulan" class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 bg-white">
+              <option value="SUDAH MASUK USULAN">SUDAH MASUK USULAN</option>
+              <option value="PENGAJUAN DATA BARU" selected>PENGAJUAN DATA BARU</option>
+              <option value="BELUM USULAN">BELUM USULAN</option>
+              <option value="USULAN TAMBAHAN">USULAN TAMBAHAN</option>
+            </select>
+          </div>
+          <div>
+            <label for="al-new-status" class="mb-1 block text-xs font-bold text-slate-700 uppercase">Status Pengambilan</label>
+            <input id="al-new-status" class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" placeholder="SDH AMBIL / BELUM AMBIL">
+          </div>
+        </div>
+
+        <!-- Alokasi Sak Fisik (Urea, Phonska, Organik) -->
+        <div class="rounded-xl border border-slate-200/90 bg-slate-50/70 p-3 space-y-2">
+          <label class="block text-xs font-bold text-slate-700 uppercase">Alokasi Pupuk Fisik (Sak)</label>
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <span class="text-[10px] text-slate-500 font-semibold">Sak Urea</span>
+              <input id="al-new-sak-urea" type="number" min="0" step="1" class="w-full rounded-lg border border-slate-200 bg-white py-1.5 px-2 text-xs text-center outline-none focus:border-emerald-500 font-mono" placeholder="0">
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-500 font-semibold">Sak Phonska</span>
+              <input id="al-new-sak-phonska" type="number" min="0" step="1" class="w-full rounded-lg border border-slate-200 bg-white py-1.5 px-2 text-xs text-center outline-none focus:border-emerald-500 font-mono" placeholder="0">
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-500 font-semibold">Sak Organik</span>
+              <input id="al-new-sak-organik" type="number" min="0" step="1" class="w-full rounded-lg border border-slate-200 bg-white py-1.5 px-2 text-xs text-center outline-none focus:border-emerald-500 font-mono" placeholder="0">
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="al-new-uang" class="mb-1 block text-xs font-bold text-slate-700 uppercase">Jumlah Uang (Rp)</label>
+            <input id="al-new-uang" type="number" step="1000" class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 font-mono" placeholder="Contoh: 250000">
+          </div>
+          <div>
+            <label for="al-new-ket" class="mb-1 block text-xs font-bold text-slate-700 uppercase">Keterangan / Lokasi</label>
+            <input id="al-new-ket" class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100" placeholder="Contoh: SAWAH KULON OMAH">
+          </div>
+        </div>
+
+        <p class="rounded-xl bg-emerald-50/80 border border-emerald-100 px-3 py-2 text-[11px] text-emerald-800">
+          <i class="fa-solid fa-circle-check mr-1 text-emerald-600"></i> Baris baru akan disisipkan otomatis di Google Sheet tepat setelah baris <b>TRI WAHYUNI</b> sehingga formula total sak & sisa tetap terjaga.
         </p>
-        <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
           <button type="button" onclick="closeAddAlokasiModal()" class="rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50">Batal</button>
-          <button id="al-add-btn" type="submit" class="rounded-xl bg-emerald-700 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-emerald-800">Simpan ke Sheet</button>
+          <button id="al-add-btn" type="submit" class="rounded-xl bg-emerald-700 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-emerald-800 transition">
+            <i class="fa-solid fa-floppy-disk mr-1.5"></i> Simpan ke Sheet
+          </button>
         </div>
       </form>
     </section>
@@ -1337,10 +1389,88 @@
     async function saveAlokasiRow(row){const values=Array(14).fill('');document.querySelectorAll('[data-row="'+row+'"][data-col]').forEach(e=>values[+e.dataset.col]=e.value);const btn=document.querySelector('button[onclick="saveAlokasiRow('+row+')"]');if(btn){btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-circle-notch fa-spin mr-1"></i>Menyimpan';}try{await alokasiApi('saveAlokasi',{row,values});const idx=alokasiRows.findIndex(x=>x.row===row);if(idx>=0)alokasiRows[idx].values=values;const allIdx=alokasiAllRows.findIndex(x=>x.row===row);if(allIdx>=0)alokasiAllRows[allIdx].values=values;renderAlokasiTable();showAlokasiToast('Perubahan berhasil disimpan ke Google Sheet.');}catch(e){showAlokasiToast(e.message,'error');if(btn){btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-floppy-disk mr-1"></i>Simpan';}}}
     function confirmAlokasiDelete(nama){return new Promise(resolve=>{let modal=document.getElementById('al-delete-confirm');if(!modal){modal=document.createElement('div');modal.id='al-delete-confirm';modal.className='fixed inset-0 z-[150] hidden items-center justify-center bg-slate-950/50 p-4';modal.innerHTML='<div class="w-full max-w-sm rounded-2xl bg-white p-5 shadow-2xl"><div class="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-rose-100 text-rose-600"><i class="fa-solid fa-trash"></i></div><h3 class="text-base font-bold text-slate-900">Hapus data petani?</h3><p id="al-delete-message" class="mt-2 text-sm leading-relaxed text-slate-600"></p><div class="mt-5 flex justify-end gap-2"><button type="button" id="al-delete-cancel" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600">Batal</button><button type="button" id="al-delete-yes" class="rounded-lg bg-rose-600 px-4 py-2 text-sm font-bold text-white hover:bg-rose-700">Ya, hapus</button></div></div>';document.body.appendChild(modal);}modal.querySelector('#al-delete-message').textContent='Hapus '+nama+' dari daftar Non-e-RDKK? Data pada Google Sheet akan dihapus.';modal.classList.remove('hidden');modal.classList.add('flex');const finish=value=>{modal.classList.add('hidden');modal.classList.remove('flex');modal.querySelector('#al-delete-cancel').onclick=null;modal.querySelector('#al-delete-yes').onclick=null;resolve(value);};modal.querySelector('#al-delete-cancel').onclick=()=>finish(false);modal.querySelector('#al-delete-yes').onclick=()=>finish(true);});}
     async function deleteAlokasiRow(row){if(alokasiJenis!=='NON_ERDKK'){showAlokasiToast('Hanya data Non-e-RDKK yang dapat dihapus.','error');return;}const item=alokasiRows.find(x=>x.row===row);const nama=item?.values?.[2]||'petani ini';if(!await confirmAlokasiDelete(nama))return;try{await alokasiApi('deleteAlokasi',{row});await loadAlokasi();showAlokasiToast('Data '+nama+' berhasil dihapus dari Google Sheet.');}catch(e){showAlokasiToast(e.message,'error');}}
-    function openAddAlokasiModal(){const modal=document.getElementById('add-alokasi-modal');modal.classList.remove('hidden');document.body.classList.add('overflow-hidden');setTimeout(()=>document.getElementById('al-new-nik').focus(),80);}
-    function closeAddAlokasiModal(reset=false){document.getElementById('add-alokasi-modal').classList.add('hidden');document.body.classList.remove('overflow-hidden');if(reset)['al-new-nik','al-new-nama','al-new-lahan','al-new-status'].forEach(id=>document.getElementById(id).value='');}
+    function openAddAlokasiModal(){const modal=document.getElementById('add-alokasi-modal');modal.classList.remove('hidden');document.body.classList.add('overflow-hidden');setTimeout(()=>document.getElementById('al-new-nama').focus(),80);}
+    function closeAddAlokasiModal(reset=false){
+      document.getElementById('add-alokasi-modal').classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+      if(reset){
+        ['al-new-nik','al-new-nama','al-new-blok','al-new-lahan','al-new-status','al-new-sak-urea','al-new-sak-phonska','al-new-sak-organik','al-new-uang','al-new-ket'].forEach(id=>{
+          const el = document.getElementById(id);
+          if (el) el.value = '';
+        });
+        const usulan = document.getElementById('al-new-status-usulan');
+        if (usulan) usulan.value = 'PENGAJUAN DATA BARU';
+      }
+    }
     function showAlokasiToast(message,type='success'){const host=document.getElementById('alokasi-toast');const success=type==='success';host.innerHTML='<div class="flex items-start gap-3"><span class="mt-0.5 text-xl '+(success?'text-emerald-600':'text-rose-600')+'"><i class="fa-solid '+(success?'fa-circle-check':'fa-circle-xmark')+'"></i></span><div><p class="text-sm font-bold '+(success?'text-emerald-900':'text-rose-900')+'">'+(success?'Berhasil':'Belum berhasil')+'</p><p class="mt-0.5 text-xs text-slate-600">'+escAl(message)+'</p></div><button onclick="this.parentElement.parentElement.classList.add(\'hidden\')" class="ml-3 text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button></div>';host.className='fixed right-4 top-24 z-[120] w-[min( calc(100vw - 2rem), 360px)] rounded-xl border '+(success?'border-emerald-200 bg-white':'border-rose-200 bg-white')+' p-4 shadow-xl animate-[fadeIn_.2s_ease-out]';}
-    async function addAlokasi(){const nik=document.getElementById('al-new-nik').value.trim(),nama=document.getElementById('al-new-nama').value.trim();if(!nama){showAlokasiToast('Nama petani wajib diisi.','error');return;}const b=document.getElementById('al-add-btn');b.disabled=true;b.innerHTML='<i class="fa-solid fa-circle-notch fa-spin mr-1"></i> Menyimpan...';try{await alokasiApi('addAlokasi',{values:['',nik,nama,document.getElementById('al-new-lahan').value,'',document.getElementById('al-new-status').value,'','','','','','','','']});closeAddAlokasiModal(true);await loadAlokasi();showAlokasiToast('Data '+nama+' berhasil ditambahkan ke Google Sheet.','success');}catch(e){showAlokasiToast(e.message||'Gagal menyimpan data.','error');}finally{b.disabled=false;b.innerHTML='<i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Data';}}
+    async function addAlokasi(){
+      const nama = document.getElementById('al-new-nama').value.trim();
+      if(!nama){
+        showAlokasiToast('Nama petani wajib diisi.','error');
+        return;
+      }
+      const nik = document.getElementById('al-new-nik').value.trim();
+      const blok = document.getElementById('al-new-blok').value.trim();
+      const lahan = document.getElementById('al-new-lahan').value.trim();
+      const statusUsulan = document.getElementById('al-new-status-usulan').value.trim();
+      const statusAmbil = document.getElementById('al-new-status').value.trim() || 'BELUM AMBIL';
+      const sakU = document.getElementById('al-new-sak-urea').value.trim();
+      const sakP = document.getElementById('al-new-sak-phonska').value.trim();
+      const sakO = document.getElementById('al-new-sak-organik').value.trim();
+      const uang = document.getElementById('al-new-uang').value.trim();
+      const ket = document.getElementById('al-new-ket').value.trim();
+
+      const b=document.getElementById('al-add-btn');
+      b.disabled=true;
+      b.innerHTML='<i class="fa-solid fa-circle-notch fa-spin mr-1"></i> Menyimpan...';
+
+      // Susunan Kolom ALOKASI PEMBAGIAN:
+      // Index 0: No (A)
+      // Index 1: NIK (B)
+      // Index 2: Nama (C)
+      // Index 3: Blok Sawah (D)
+      // Index 4: Revisi Lahan Asli (E)
+      // Index 5: Status Usulan / Status (F)
+      // Index 6: Urea Kg (G)
+      // Index 7: Phonska Kg (H)
+      // Index 8: Organik Kg (I)
+      // Index 9: Sak Urea (J)
+      // Index 10: Sak Phonska (K)
+      // Index 11: Sak Organik (L)
+      // Index 12: Jumlah Uang (M)
+      // Index 13: Keterangan (N)
+      const values = [
+        '', // No
+        nik, // NIK
+        nama, // Nama
+        blok, // Blok Sawah
+        lahan, // revisi lahan asli
+        statusUsulan || statusAmbil, // Status Usulan
+        '', // Urea kg
+        '', // Phonska kg
+        '', // Organik kg
+        sakU ? Number(sakU) : '', // Sak Urea
+        sakP ? Number(sakP) : '', // Sak Phonska
+        sakO ? Number(sakO) : '', // Sak Organik
+        uang ? Number(uang) : '', // Jumlah Uang
+        ket || statusAmbil // Keterangan
+      ];
+
+      try{
+        await alokasiApi('addAlokasi',{
+          targetRow: 'AFTER_TRI_WAHYUNI',
+          values: values
+        });
+        closeAddAlokasiModal(true);
+        await loadAlokasi();
+        showAlokasiToast('Data '+nama+' berhasil disisipkan tepat di bawah TRI WAHYUNI.','success');
+      }catch(e){
+        showAlokasiToast(e.message||'Gagal menyimpan data.','error');
+      }finally{
+        b.disabled=false;
+        b.innerHTML='<i class="fa-solid fa-floppy-disk mr-1.5"></i> Simpan ke Sheet';
+      }
+    }
         function toggleLoginPassword() {
       const input = document.getElementById('login-password');
       const eye = document.getElementById('password-eye');
