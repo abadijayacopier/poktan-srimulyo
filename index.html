@@ -168,6 +168,7 @@
         <div class="nav-actions flex items-center gap-2 min-w-0 flex-1">
           <button id="logout-button" onclick="logoutUser()" class="hidden nav-action nav-logout justify-center px-3 sm:px-4 py-2.5 rounded-xl text-sm font-semibold items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar</span></button>
           <button data-admin-only onclick="openAlokasiPage()" class="hidden nav-action nav-allocation justify-center px-3 sm:px-4 py-2.5 rounded-xl text-sm font-bold items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-table-list"></i><span>Alokasi Pembagian</span></button>
+          <button onclick="gotoRekapKloter()" class="nav-action nav-kloter justify-center px-3 sm:px-4 py-2.5 rounded-xl text-sm font-bold items-center gap-2 whitespace-nowrap bg-violet-600 text-white hover:bg-violet-700 shadow-sm"><i class="fa-solid fa-list-check"></i><span>Rekap Kloter</span></button>
           <button onclick="refreshCurrentPage(false)" class="nav-action nav-refresh justify-center px-3 sm:px-4 py-2.5 rounded-xl text-sm font-semibold items-center gap-2 whitespace-nowrap"><i id="refresh-icon" class="fa-solid fa-rotate"></i><span>Refresh</span></button>
           <button onclick="window.print()" class="nav-action nav-print hidden sm:flex justify-center px-3 sm:px-4 py-2.5 rounded-xl text-sm font-bold items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-print"></i><span>Cetak Laporan</span></button>
         </div>
