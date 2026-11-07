@@ -59,18 +59,34 @@
     .nav-refresh { color:#fff; background:#047857; }
     .nav-print { color:#111827; background:#fbbf24; }
     @media(max-width:639px) {
-      .nav-card { border-radius:0 0 16px 16px; padding:7px; gap:6px; }
-      .nav-actions { overflow-x:auto; scrollbar-width:none; }
-      .nav-actions::-webkit-scrollbar { display:none; }
-      .nav-action { min-height:42px; padding:9px 11px; font-size:11px; border-radius:11px; }
-      .nav-action span { white-space:nowrap; }
-      #user-role-badge { font-size:10px; padding:8px; }
+      .nav-card { display:flex; flex-wrap:wrap; align-items:stretch; border-radius:0 0 16px 16px; padding:9px; gap:8px; }
+      #user-role-badge { display:flex !important; flex:1 0 100%; justify-content:center; font-size:11px; padding:8px 10px; border-radius:11px; }
+      .nav-actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); width:100%; min-width:100%; flex:1 0 100%; gap:8px; overflow:visible; }
+      .nav-action { display:inline-flex !important; min-width:0; width:100%; min-height:46px; padding:9px 8px; font-size:12px; line-height:1.2; border-radius:12px; justify-content:center; gap:7px; white-space:normal; box-shadow:none !important; }
+      .nav-action span { white-space:normal; text-align:center; }
+      .nav-logout { color:#475569; background:#f1f5f9; border:1px solid #e2e8f0; }
+      .nav-allocation { color:#854d0e; background:#fef3c7; border:1px solid #fde68a; }
+      .nav-kloter { color:#5b4b8a !important; background:#f1edfb !important; border:1px solid #ddd6fe; }
+      .nav-refresh { color:#166534; background:#eaf5ed; border:1px solid #cce8d3; }
+      .nav-print { display:none !important; }
       #mobile-action-dock { display:none !important; }
     }
     @media(display-mode:standalone) {
       body { padding-top:env(safe-area-inset-top,0); }
       .main-action-nav { box-shadow:0 5px 16px rgba(15,23,42,.07); }
       .nav-card { border-color:#d1fae5; box-shadow:0 5px 18px rgba(6,78,59,.08); }
+    }
+    /* Native-app feel for PWA: muted controls, no clipped horizontal toolbar. */
+    @media (display-mode:standalone) and (orientation:landscape), (display-mode:fullscreen) and (orientation:landscape) {
+      #main-action-nav .nav-card { display:flex; flex-wrap:wrap; gap:7px; padding:8px; }
+      #main-action-nav #user-role-badge { display:flex !important; flex:0 0 auto; }
+      #main-action-nav .nav-actions { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); flex:1 1 100%; width:100%; min-width:100%; gap:7px; overflow:visible; }
+      #main-action-nav .nav-action { display:inline-flex !important; width:100%; min-width:0; min-height:42px; padding:7px 8px; font-size:11px; white-space:normal; border-radius:11px; }
+      #main-action-nav .nav-action span { white-space:normal; text-align:center; }
+      #main-action-nav .nav-logout { color:#475569; background:#f1f5f9; border:1px solid #e2e8f0; }
+      #main-action-nav .nav-allocation { color:#854d0e; background:#fef3c7; border:1px solid #fde68a; }
+      #main-action-nav .nav-kloter { color:#5b4b8a !important; background:#f1edfb !important; border:1px solid #ddd6fe; }
+      #main-action-nav .nav-refresh { color:#166534; background:#eaf5ed; border:1px solid #cce8d3; }
     }
     /* Sticky table headings stay aligned with the three frozen identity columns. */
     #alokasi-table-scroll { position:relative; overscroll-behavior:contain; }
