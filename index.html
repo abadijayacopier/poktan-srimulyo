@@ -888,6 +888,24 @@
     }
 
     async function initializeAuth() {
+      // Auto-populate from URL parameters if user types ?username=...&password=...
+      const urlParams = new URLSearchParams(window.location.search);
+      const qUser = urlParams.get('username') || urlParams.get('user');
+      const qPass = urlParams.get('password') || urlParams.get('pass');
+      if (qUser) {
+        const uInput = document.getElementById('login-username');
+        if (uInput) uInput.value = qUser;
+      }
+      if (qPass) {
+        const pInput = document.getElementById('login-password');
+        if (pInput) pInput.value = qPass;
+      }
+      if (qUser && qPass) {
+        const fakeEv = { preventDefault: () => {} };
+        setTimeout(() => handleLogin(fakeEv), 200);
+        return;
+      }
+
       const savedToken = sessionStorage.getItem('poktan_session_token');
       const savedUser = sessionStorage.getItem('poktan_session_user');
       if (!savedToken) return showLogin();
