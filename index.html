@@ -479,13 +479,18 @@
 
       try {
         const result = await authApi({ action: 'validateSession', token: savedToken });
-        if (!result.sukses) throw new Error('Sesi tidak berlaku');
+        if (!result.sukses) {
+          sessionStorage.removeItem('poktan_session_token');
+          sessionStorage.removeItem('poktan_session_user');
+          showLogin(result.pesan || 'Sesi sudah berakhir. Silakan masuk kembali.');
+          return;
+        }
         authSession = { token: savedToken, username: savedUser || result.username || '', role: result.role };
         enterDashboard();
       } catch (error) {
-        sessionStorage.removeItem('poktan_session_token');
-        sessionStorage.removeItem('poktan_session_user');
-        showLogin('Sesi berakhir. Silakan masuk kembali.');
+        // Gangguan jaringan/server bukan berarti token sesi tidak sah.
+        // Pertahankan token agar pengguna tidak dipaksa login ulang akibat kegagalan sementara.
+        showLogin('Belum dapat memeriksa sesi karena koneksi/server bermasalah. Token tetap disimpan; muat ulang halaman untuk mencoba lagi.');
       }
     }
 
