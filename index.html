@@ -5,7 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#065f46">
   <meta name="description" content="Dashboard Alokasi RDKK MT III 2026 - Kelompok Tani Sri Mulyo, Desa Kediren, Magetan.">
-  <link rel="manifest" href="/manifest.webmanifest">\n  <meta name="theme-color" content="#065f46">\n  <meta name="mobile-web-app-capable" content="yes">\n  <meta name="apple-mobile-web-app-capable" content="yes">\n  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n  <meta name="apple-mobile-web-app-title" content="Poktan Sri Mulyo">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#065f46">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Poktan Sri Mulyo">
   <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
   <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png">
   <title>Dashboard Alokasi RDKK MT3 2026 - POKTAN SRI MULYO</title>
@@ -66,7 +71,15 @@
       .main-action-nav { box-shadow:0 5px 16px rgba(15,23,42,.07); }
       .nav-card { border-color:#d1fae5; box-shadow:0 5px 18px rgba(6,78,59,.08); }
     }
-    /* Responsive allocation table: compact columns and readable wrapped headings */\n    #alokasi-tbody td { overflow:hidden; }\n    #alokasi-tbody input { text-overflow:ellipsis; }\n    #alokasi-tbody td:nth-child(4), #alokasi-tbody td:nth-child(5) { padding-left:6px; padding-right:6px; }\n    #alokasi-tbody td:nth-child(4) input, #alokasi-tbody td:nth-child(5) input { font-size:12px; padding-left:5px; padding-right:5px; }\n    #alokasi-tbody td:nth-child(n+7):nth-child(-n+12) input { text-align:center; font-weight:600; }\n    #alokasi-tbody td:nth-child(6) { white-space:normal; }\n    @media(max-width:767px) { #alokasi-tbody input { font-size:11px; } #alokasi-tbody td { padding-left:5px; padding-right:5px; } }\n    /* PWA portrait: empat kartu KPI dalam kisi 2 x 2 */
+    /* Responsive allocation table: compact columns and readable wrapped headings */
+    #alokasi-tbody td { overflow:hidden; }
+    #alokasi-tbody input { text-overflow:ellipsis; }
+    #alokasi-tbody td:nth-child(4), #alokasi-tbody td:nth-child(5) { padding-left:6px; padding-right:6px; }
+    #alokasi-tbody td:nth-child(4) input, #alokasi-tbody td:nth-child(5) input { font-size:12px; padding-left:5px; padding-right:5px; }
+    #alokasi-tbody td:nth-child(n+7):nth-child(-n+12) input { text-align:center; font-weight:600; }
+    #alokasi-tbody td:nth-child(6) { white-space:normal; }
+    @media(max-width:767px) { #alokasi-tbody input { font-size:11px; } #alokasi-tbody td { padding-left:5px; padding-right:5px; } }
+    /* PWA portrait: empat kartu KPI dalam kisi 2 x 2 */
     @media (display-mode: standalone) and (max-width: 639px), (display-mode: fullscreen) and (max-width: 639px) {
       #dashboard-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
       #dashboard-kpi-grid > div { min-width: 0; min-height: 112px; padding: .75rem; gap: .55rem; border-radius: 14px; }
