@@ -382,7 +382,7 @@
         </section>
 
         <!-- Quick Navigation Shortcuts (Overview Actions) -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           <button type="button" onclick="setActiveTab('dropgudang')" class="p-3.5 bg-white rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-sm hover:border-emerald-300 transition text-left group">
             <div class="flex items-center justify-between mb-1">
               <span class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-sm group-hover:scale-105 transition"><i class="fa-solid fa-warehouse"></i></span>
@@ -415,6 +415,14 @@
             <div class="text-xs font-bold text-slate-800">Daftar Surat Kuasa</div>
             <div class="text-[10px] text-slate-400">BPP Lembeyan MT3 2026</div>
           </button>
+          <a href="sisa-pupuk.html" class="p-3.5 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-xl border border-emerald-300/80 shadow-2xs hover:shadow-sm hover:border-emerald-500 transition text-left group">
+            <div class="flex items-center justify-between mb-1">
+              <span class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-sm group-hover:scale-105 transition"><i class="fa-solid fa-calculator"></i></span>
+              <i class="fa-solid fa-arrow-right text-[11px] text-emerald-600 group-hover:translate-x-0.5 transition"></i>
+            </div>
+            <div class="text-xs font-bold text-emerald-950">Sisa Pupuk Terakhir</div>
+            <div class="text-[10px] text-emerald-700 font-medium">Formula & Target 71 Sak</div>
+          </a>
         </div>
 
       </div>
@@ -878,7 +886,7 @@
   <!-- 4. NATIVE ANDROID BOTTOM NAVIGATION BAR    -->
   <!-- ========================================== -->
   <nav id="mobile-bottom-bar" class="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur-lg border-t border-slate-200/80 shadow-[0_-8px_25px_rgba(15,23,42,0.06)] no-print">
-    <div class="grid grid-cols-5 px-1 pt-1.5 pb-1">
+    <div class="grid grid-cols-6 px-1 pt-1.5 pb-1">
       
       <!-- Tab 1: Ringkasan -->
       <button type="button" data-nav-tab="overview" onclick="setActiveTab('overview')"
@@ -924,6 +932,15 @@
         </span>
         <span class="nav-label text-[9px] font-semibold tracking-tight">Surat Kuasa</span>
       </button>
+
+      <!-- Tab 6: Sisa Pupuk Halaman Baru -->
+      <a href="sisa-pupuk.html"
+         class="mobile-nav-item flex flex-col items-center justify-center py-1 px-0.5 transition text-emerald-700">
+        <span class="nav-icon-wrapper w-8 h-8 rounded-xl flex items-center justify-center transition mb-0.5 bg-emerald-50 text-emerald-600">
+          <i class="fa-solid fa-calculator text-base"></i>
+        </span>
+        <span class="nav-label text-[9px] font-bold tracking-tight text-emerald-800">Sisa Pupuk</span>
+      </a>
 
     </div>
   </nav>
