@@ -119,41 +119,27 @@
     @media(min-width:381px) and (max-width:639px) {
       .nav-action:not(.hidden) { font-size:clamp(11px,3.2vw,13px); }
     }
+    /* Native-app feel for PWA landscape & fullscreen */
     @media (display-mode:standalone) and (orientation:landscape), (display-mode:fullscreen) and (orientation:landscape) {
-      #main-action-nav .nav-action:not(.hidden) { min-height:46px; height:auto; padding:8px 7px; font-size:clamp(10px,1.5vw,12px); line-height:1.25; }
-      #main-action-nav .nav-action span { overflow-wrap:anywhere; white-space:normal; }
-      #main-action-nav #user-role-badge:not(.hidden) { min-width:0; max-width:100%; white-space:normal; }
-    }
-
-    /* Native-app feel for PWA: muted controls, no clipped horizontal toolbar. */
-    @media (display-mode:standalone) and (orientation:landscape), (display-mode:fullscreen) and (orientation:landscape) {
-      #main-action-nav .nav-card { display:flex; flex-wrap:wrap; gap:8px; padding:9px; border-radius:17px; }
-      #main-action-nav #user-role-badge:not(.hidden) { display:flex !important; flex:0 0 auto; }
-      #main-action-nav .nav-actions { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); flex:1 1 100%; width:100%; min-width:100%; gap:8px; overflow:visible; }
-      #main-action-nav .nav-action:not(.hidden) { display:inline-flex !important; width:100%; min-width:0; min-height:42px; padding:7px 8px; font-size:11px; white-space:normal; border-radius:12px; }
-      #main-action-nav .nav-action span { white-space:normal; text-align:center; }
+      .app-header { position:relative !important; }
+      #main-action-nav { position:sticky !important; top:0 !important; z-index:50; }
+      #main-action-nav .nav-card { min-height:46px; flex-wrap:nowrap; padding:6px 10px; gap:8px; border-radius:16px; }
+      #main-action-nav #user-role-badge:not(.hidden) { display:inline-flex !important; flex:0 0 auto; min-width:0; padding:6px 10px; font-size:11px; }
+      #main-action-nav .nav-actions { display:flex !important; flex-direction:row !important; flex:1 1 auto; min-width:0; overflow-x:auto; overflow-y:hidden; scrollbar-width:none; gap:6px; }
+      #main-action-nav .nav-actions::-webkit-scrollbar { display:none; }
+      #main-action-nav .nav-action:not(.hidden) { display:inline-flex !important; min-width:auto; min-height:38px; height:38px; padding:6px 12px; font-size:11px; white-space:nowrap; border-radius:10px; }
+      #main-action-nav .nav-action span { white-space:nowrap; overflow:visible; text-overflow:clip; }
       #main-action-nav .nav-logout { color:#536174; background:#f1f4f8; border:1px solid #e5eaf0; }
       #main-action-nav .nav-allocation { color:#80602b; background:#fbf5e8; border:1px solid #efe2c5; }
       #main-action-nav .nav-kloter { color:#655b86 !important; background:#f3f0fa !important; border:1px solid #e5def3; }
       #main-action-nav .nav-refresh { color:#46715d; background:#edf5ef; border:1px solid #dcebe0; }
-    }
-    /* Table columns scroll horizontally together like a standard spreadsheet table. */
-    #alokasi-table-scroll { position:relative; overscroll-behavior:contain; }
-    #alokasi-table-scroll thead th { position:sticky; top:0; z-index:20; background:#f1f5f9; }
-    #alokasi-table-scroll thead th { left:auto; }
-    /* PWA landscape: header scrolls naturally; action bar pins neatly below it. */
-    @media (display-mode:standalone) and (orientation:landscape), (display-mode:fullscreen) and (orientation:landscape) {
-      .app-header { position:relative !important; }
-      #main-action-nav { position:sticky !important; top:0 !important; z-index:50; }
-      #main-action-nav .nav-card { min-height:48px; flex-wrap:nowrap; padding:.35rem; gap:.4rem; }
-      #main-action-nav .nav-actions { min-width:0; overflow-x:auto; overflow-y:hidden; scrollbar-width:none; }
-      #main-action-nav .nav-actions::-webkit-scrollbar { display:none; }
-      #main-action-nav .nav-action { min-height:38px; padding:7px 10px; font-size:11px; }
-      #main-action-nav #user-role-badge { padding:6px 8px; font-size:10px; }
       #alokasi-table-scroll { max-height:calc(100dvh - 230px); padding-bottom:3.25rem; }
       #footer-credit-fixed { font-size:10px; }
       body { padding-bottom:4rem; }
     }
+    /* Table columns scroll horizontally together like a standard spreadsheet table */
+    #alokasi-table-scroll { position:relative; overscroll-behavior:contain; }
+    #alokasi-table-scroll thead th { position:sticky; top:0; z-index:20; background:#f1f5f9; left:auto; }
     /* Responsive allocation table: compact columns and readable wrapped headings */
     #alokasi-tbody td { overflow:hidden; }
     #alokasi-tbody input { text-overflow:ellipsis; }
