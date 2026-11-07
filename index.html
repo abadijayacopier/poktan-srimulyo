@@ -311,54 +311,66 @@
           </div>
         </div>
 
-        <!-- 4 Top KPI Metric Cards -->
-        <section id="dashboard-kpi-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- 5 Top KPI Metric Cards (Termasuk Petani Mandiri/Belum & Total Sak) -->
+        <section id="dashboard-kpi-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
           
-          <!-- DP / Pembayaran Kios -->
-          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-4">
-            <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-2xl shrink-0">
+          <!-- 1. DP / Pembayaran Kios -->
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl shrink-0">
               <i class="fa-solid fa-hand-holding-dollar"></i>
             </div>
             <div class="min-w-0">
-              <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">DP / Titipan Kios</div>
-              <div id="kpi-dp" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight truncate">Rp 0</div>
-              <div class="text-xs text-slate-500 truncate">Total tagihan: <span id="kpi-tagihan" class="font-semibold text-slate-700">Rp 0</span></div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-emerald-700">DP / Titipan Kios</div>
+              <div id="kpi-dp" class="text-lg sm:text-xl font-black text-slate-900 tracking-tight truncate">Rp 0</div>
+              <div class="text-[11px] text-slate-500 truncate">Tagihan: <span id="kpi-tagihan" class="font-semibold text-slate-700">Rp 0</span></div>
             </div>
           </div>
 
-          <!-- Sisa Tagihan Kios -->
-          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-4">
-            <div class="w-14 h-14 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-2xl shrink-0">
+          <!-- 2. Sisa Tagihan Kios -->
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl shrink-0">
               <i class="fa-solid fa-file-invoice-dollar"></i>
             </div>
             <div class="min-w-0">
-              <div class="text-[11px] font-bold uppercase tracking-wider text-rose-600">Sisa Tagihan Kios</div>
-              <div id="kpi-sisa-bayar" class="text-xl sm:text-2xl font-black text-rose-600 tracking-tight truncate">Rp 0</div>
-              <div class="text-xs text-rose-500 font-medium">Kekurangan bayar ke kios</div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-rose-600">Sisa Tagihan Kios</div>
+              <div id="kpi-sisa-bayar" class="text-lg sm:text-xl font-black text-rose-600 tracking-tight truncate">Rp 0</div>
+              <div class="text-[11px] text-rose-500 font-medium truncate">Kekurangan bayar kios</div>
             </div>
           </div>
 
-          <!-- Sisa Sak Belum Kirim -->
-          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-4">
-            <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center text-2xl shrink-0">
+          <!-- 3. Sisa Sak Belum Kirim -->
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center text-xl shrink-0">
               <i class="fa-solid fa-boxes-packing"></i>
             </div>
             <div class="min-w-0">
-              <div class="text-[11px] font-bold uppercase tracking-wider text-amber-700">Sisa Belum Kirim</div>
-              <div id="kpi-sisa-sak" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight truncate">0 Sak</div>
-              <div class="text-xs text-slate-500">Satuan fisik kemasan sak</div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-amber-700">Sisa Belum Kirim</div>
+              <div id="kpi-sisa-sak" class="text-lg sm:text-xl font-black text-slate-900 tracking-tight truncate">0 Sak</div>
+              <div class="text-[11px] text-slate-500 truncate">Dari total <span id="kpi-total-alokasi-sak" class="font-semibold text-slate-700">0</span> sak</div>
             </div>
           </div>
 
-          <!-- Anggota Masuk Kloter -->
-          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-4">
-            <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-2xl shrink-0">
+          <!-- 4. Anggota Masuk Kloter -->
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl shrink-0">
               <i class="fa-solid fa-users"></i>
             </div>
             <div class="min-w-0">
-              <div class="text-[11px] font-bold uppercase tracking-wider text-blue-700">Masuk Kloter</div>
-              <div id="kpi-total-petani" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight truncate">0 Petani</div>
-              <div class="text-xs text-slate-500"><span id="kpi-persen-kloter" class="text-emerald-600 font-bold">0%</span> dari total anggota e-RDKK</div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-blue-700">Masuk Kloter</div>
+              <div id="kpi-total-petani" class="text-lg sm:text-xl font-black text-slate-900 tracking-tight truncate">0 Petani</div>
+              <div class="text-[11px] text-slate-500 truncate"><span id="kpi-persen-kloter" class="text-emerald-600 font-bold">0%</span> · <span id="kpi-kloter-sak" class="font-semibold text-slate-700">0 Sak</span></div>
+            </div>
+          </div>
+
+          <!-- 5. Mandiri / Belum Masuk Kloter -->
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center text-xl shrink-0">
+              <i class="fa-solid fa-user-clock"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-[10px] font-bold uppercase tracking-wider text-purple-700">Mandiri / Belum</div>
+              <div id="kpi-mandiri-petani" class="text-lg sm:text-xl font-black text-slate-900 tracking-tight truncate">0 Petani</div>
+              <div class="text-[11px] text-slate-500 truncate"><span id="kpi-persen-mandiri" class="text-amber-600 font-bold">0%</span> · <span id="kpi-mandiri-sak" class="font-semibold text-slate-700">0 Sak</span></div>
             </div>
           </div>
 
@@ -533,76 +545,103 @@
             </div>
           </div>
 
-          <!-- Quick Stat KPI Cards for Alokasi Pembagian (Style Mirip Ringkasan Dashboard Pro) -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-2">
+          <!-- Quick Stat KPI Cards for Alokasi Pembagian (Style Mirip Ringkasan Dashboard Pro & Filter Sheet) -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3 pt-2">
             
-            <!-- 1. Total Anggota -->
+            <!-- 1. SEMUA DATA / TOTAL ALOKASI PEMBAGIAN -->
             <button type="button" onclick="setAlokasiCardFilter('')" 
-                    class="alokasi-kpi bg-white p-4 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md hover:border-slate-300 transition text-left flex items-center gap-3.5 group">
-              <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-xl shrink-0 group-hover:bg-slate-200 transition">
-                <i class="fa-solid fa-users"></i>
+                    class="alokasi-kpi bg-white p-3.5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md hover:border-slate-300 transition text-left flex flex-col justify-between group">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Semua Data</span>
+                <span class="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center text-xs group-hover:bg-slate-200 transition"><i class="fa-solid fa-users"></i></span>
               </div>
-              <div class="min-w-0">
-                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Total Anggota</div>
-                <div id="alokasi-count" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">0</div>
-                <div class="text-[11px] text-slate-400 truncate">Semua data alokasi</div>
+              <div>
+                <div class="text-lg sm:text-xl font-black text-slate-900 tracking-tight"><span id="alokasi-count">0</span> <span class="text-xs font-normal text-slate-500">Petani</span></div>
+                <div class="text-[11px] font-semibold text-slate-600 truncate mt-0.5"><span id="al-total-sak" class="font-mono text-emerald-700 font-bold">0</span> Sak Alokasi</div>
               </div>
             </button>
 
-            <!-- 2. Sisa Pupuk Gudang -->
-            <div class="bg-white p-4 rounded-2xl border border-violet-200/90 shadow-sm flex items-center gap-3.5">
-              <div class="w-12 h-12 rounded-xl bg-violet-50 text-violet-700 flex items-center justify-center text-xl shrink-0">
-                <i class="fa-solid fa-warehouse"></i>
+            <!-- 2. SUDAH AMBIL -->
+            <button type="button" onclick="setAlokasiCardFilter('SUDAH AMBIL')" 
+                    class="alokasi-kpi bg-white p-3.5 rounded-2xl border border-blue-200/90 shadow-sm hover:shadow-md hover:border-blue-300 transition text-left flex flex-col justify-between group">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-blue-700">Sudah Ambil</span>
+                <span class="w-7 h-7 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center text-xs group-hover:bg-blue-100 transition"><i class="fa-solid fa-circle-check"></i></span>
               </div>
-              <div class="min-w-0">
-                <div class="text-[10px] font-bold uppercase tracking-wider text-violet-700">Sisa Pupuk Gudang</div>
-                <div class="text-xs font-black text-slate-900 tracking-tight mt-0.5 flex flex-wrap items-center gap-1.5">
-                  <span class="bg-violet-50 text-violet-900 px-1.5 py-0.5 rounded border border-violet-100 font-mono">U:<b id="sisa-pupuk-urea">—</b></span>
-                  <span class="bg-violet-50 text-violet-900 px-1.5 py-0.5 rounded border border-violet-100 font-mono">P:<b id="sisa-pupuk-phonska">—</b></span>
-                  <span class="bg-violet-50 text-violet-900 px-1.5 py-0.5 rounded border border-violet-100 font-mono">O:<b id="sisa-pupuk-organik">—</b></span>
+              <div>
+                <div class="text-lg sm:text-xl font-black text-blue-800 tracking-tight"><span id="alokasi-sudah-ambil">0</span> <span class="text-xs font-normal text-blue-600">Petani</span></div>
+                <div class="text-[11px] font-semibold text-blue-700 truncate mt-0.5"><span id="al-sudah-ambil-sak" class="font-mono font-bold">0</span> Sak</div>
+              </div>
+            </button>
+
+            <!-- 3. BELUM AMBIL -->
+            <button type="button" onclick="setAlokasiCardFilter('BELUM AMBIL')" 
+                    class="alokasi-kpi bg-white p-3.5 rounded-2xl border border-rose-200/90 shadow-sm hover:shadow-md hover:border-rose-300 transition text-left flex flex-col justify-between group">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-rose-700">Belum Ambil</span>
+                <span class="w-7 h-7 rounded-lg bg-rose-50 text-rose-700 flex items-center justify-center text-xs group-hover:bg-rose-100 transition"><i class="fa-solid fa-clock"></i></span>
+              </div>
+              <div>
+                <div class="text-lg sm:text-xl font-black text-rose-800 tracking-tight"><span id="alokasi-belum-ambil">0</span> <span class="text-xs font-normal text-rose-600">Petani</span></div>
+                <div class="text-[11px] font-semibold text-rose-700 truncate mt-0.5"><span id="al-belum-ambil-sak" class="font-mono font-bold">0</span> Sak</div>
+              </div>
+            </button>
+
+            <!-- 4. SETOR KTP -->
+            <button type="button" onclick="setAlokasiCardFilter('SETOR KTP')" 
+                    class="alokasi-kpi bg-white p-3.5 rounded-2xl border border-violet-200/90 shadow-sm hover:shadow-md hover:border-violet-300 transition text-left flex flex-col justify-between group">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-violet-700">Setor KTP</span>
+                <span class="w-7 h-7 rounded-lg bg-violet-50 text-violet-700 flex items-center justify-center text-xs group-hover:bg-violet-100 transition"><i class="fa-solid fa-id-card-clip"></i></span>
+              </div>
+              <div>
+                <div class="text-lg sm:text-xl font-black text-violet-800 tracking-tight"><span id="alokasi-setor-ktp">0</span> <span class="text-xs font-normal text-violet-600">Petani</span></div>
+                <div class="text-[11px] font-semibold text-violet-700 truncate mt-0.5"><span id="al-setor-ktp-sak" class="font-mono font-bold">0</span> Sak</div>
+              </div>
+            </button>
+
+            <!-- 5. BELUM SETOR KTP -->
+            <button type="button" onclick="setAlokasiCardFilter('BELUM SETOR KTP')" 
+                    class="alokasi-kpi bg-white p-3.5 rounded-2xl border border-amber-200/90 shadow-sm hover:shadow-md hover:border-amber-300 transition text-left flex flex-col justify-between group">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-amber-700">Belum Setor KTP</span>
+                <span class="w-7 h-7 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center text-xs group-hover:bg-amber-100 transition"><i class="fa-solid fa-triangle-exclamation"></i></span>
+              </div>
+              <div>
+                <div class="text-lg sm:text-xl font-black text-amber-800 tracking-tight"><span id="alokasi-belum-setor-ktp">0</span> <span class="text-xs font-normal text-amber-600">Petani</span></div>
+                <div class="text-[11px] font-semibold text-amber-700 truncate mt-0.5"><span id="al-belum-setor-ktp-sak" class="font-mono font-bold">0</span> Sak</div>
+              </div>
+            </button>
+
+            <!-- 6. SURAT KUASA -->
+            <button type="button" onclick="setAlokasiCardFilter('SURAT KUASA')" 
+                    class="alokasi-kpi bg-white p-3.5 rounded-2xl border border-teal-200/90 shadow-sm hover:shadow-md hover:border-teal-300 transition text-left flex flex-col justify-between group">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-teal-700">Surat Kuasa</span>
+                <span class="w-7 h-7 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center text-xs group-hover:bg-teal-100 transition"><i class="fa-solid fa-file-signature"></i></span>
+              </div>
+              <div>
+                <div class="text-lg sm:text-xl font-black text-teal-800 tracking-tight"><span id="alokasi-surat-kuasa">0</span> <span class="text-xs font-normal text-teal-600">Petani</span></div>
+                <div class="text-[11px] font-semibold text-teal-700 truncate mt-0.5"><span id="al-surat-kuasa-sak" class="font-mono font-bold">0</span> Sak</div>
+              </div>
+            </button>
+
+            <!-- 7. SISA SAK JIKA DIAMBIL SEMUA (SISA DROP GUDANG) -->
+            <div class="bg-white p-3.5 rounded-2xl border border-emerald-200/90 shadow-sm flex flex-col justify-between col-span-2 sm:col-span-1">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-800">Sisa Jika Ambil Semua</span>
+                <span class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-xs"><i class="fa-solid fa-boxes-stacked"></i></span>
+              </div>
+              <div>
+                <div class="text-xs font-black text-slate-900 tracking-tight flex flex-wrap items-center gap-1">
+                  <span class="bg-emerald-50 text-emerald-900 px-1 py-0.5 rounded border border-emerald-100 font-mono text-[11px]">U:<b id="sisa-pupuk-urea">—</b></span>
+                  <span class="bg-emerald-50 text-emerald-900 px-1 py-0.5 rounded border border-emerald-100 font-mono text-[11px]">P:<b id="sisa-pupuk-phonska">—</b></span>
+                  <span class="bg-emerald-50 text-emerald-900 px-1 py-0.5 rounded border border-emerald-100 font-mono text-[11px]">O:<b id="sisa-pupuk-organik">—</b></span>
                 </div>
-                <div class="text-[11px] text-violet-500 truncate mt-0.5">Stok fisik tersisa</div>
+                <div class="text-[10px] text-emerald-700 font-semibold truncate mt-1">Sisa Stok Fisik Gudang</div>
               </div>
             </div>
 
-            <!-- 3. Sudah Ambil -->
-            <button type="button" onclick="setAlokasiCardFilter('SUDAH')" 
-                    class="alokasi-kpi bg-white p-4 rounded-2xl border border-emerald-200/90 shadow-sm hover:shadow-md hover:border-emerald-300 transition text-left flex items-center gap-3.5 group">
-              <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl shrink-0 group-hover:bg-emerald-100 transition">
-                <i class="fa-solid fa-circle-check"></i>
-              </div>
-              <div class="min-w-0">
-                <div class="text-[10px] font-bold uppercase tracking-wider text-emerald-700">Sudah Ambil</div>
-                <div id="alokasi-sudah" class="text-xl sm:text-2xl font-black text-emerald-800 tracking-tight">0</div>
-                <div class="text-[11px] text-emerald-600 truncate">Petani selesai ambil</div>
-              </div>
-            </button>
-
-            <!-- 4. Belum Ambil -->
-            <button type="button" onclick="setAlokasiCardFilter('BELUM')" 
-                    class="alokasi-kpi bg-white p-4 rounded-2xl border border-amber-200/90 shadow-sm hover:shadow-md hover:border-amber-300 transition text-left flex items-center gap-3.5 group">
-              <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center text-xl shrink-0 group-hover:bg-amber-100 transition">
-                <i class="fa-solid fa-clock"></i>
-              </div>
-              <div class="min-w-0">
-                <div class="text-[10px] font-bold uppercase tracking-wider text-amber-700">Belum Ambil</div>
-                <div id="alokasi-belum" class="text-xl sm:text-2xl font-black text-amber-800 tracking-tight">0</div>
-                <div class="text-[11px] text-amber-600 truncate">Menunggu penebusan</div>
-              </div>
-            </button>
-
-            <!-- 5. Belum Setor KTP -->
-            <button type="button" onclick="setAlokasiCardFilter('KTP')" 
-                    class="alokasi-kpi bg-white p-4 rounded-2xl border border-blue-200/90 shadow-sm hover:shadow-md hover:border-blue-300 transition text-left flex items-center gap-3.5 group">
-              <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl shrink-0 group-hover:bg-blue-100 transition">
-                <i class="fa-solid fa-id-card"></i>
-              </div>
-              <div class="min-w-0">
-                <div class="text-[10px] font-bold uppercase tracking-wider text-blue-700">Belum Setor KTP</div>
-                <div id="alokasi-lainnya" class="text-xl sm:text-2xl font-black text-blue-800 tracking-tight">0</div>
-                <div class="text-[11px] text-blue-600 truncate">Berkas KTP belum ada</div>
-              </div>
-            </button>
           </div>
         </div>
 
@@ -620,10 +659,14 @@
               </div>
               <select id="al-status-filter" onchange="renderAlokasiTable()" 
                       class="px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-700 bg-white focus:outline-none">
-                <option value="">Semua Status</option>
-                <option value="SUDAH">Sudah Ambil</option>
-                <option value="BELUM">Belum Ambil</option>
-                <option value="KTP">Belum Setor KTP</option>
+                <option value="">Semua Data (Status)</option>
+                <option value="SUDAH AMBIL">Sudah Ambil</option>
+                <option value="BELUM AMBIL">Belum Ambil</option>
+                <option value="SETOR KTP">Setor KTP</option>
+                <option value="BELUM SETOR KTP">Belum Setor KTP</option>
+                <option value="SURAT KUASA">Surat Kuasa</option>
+                <option value="FOTO DI KIOS">Foto di Kios</option>
+                <option value="SUDAH BAYAR">Sudah Bayar</option>
               </select>
             </div>
 
@@ -1161,9 +1204,113 @@
     function alStatusColor(label){const x=label.toUpperCase();if(x.includes('SUDAH AMBIL'))return 'bg-blue-100 text-blue-800';if(x.includes('BELUM AMBIL'))return 'bg-red-100 text-red-800';if(x.includes('SETOR KTP'))return x.includes('BELUM')?'bg-orange-100 text-orange-800':'bg-violet-100 text-violet-800';if(x.includes('FOTO'))return 'bg-emerald-100 text-emerald-800';if(x.includes('SURAT'))return 'bg-sky-100 text-sky-800';return 'bg-slate-100 text-slate-700';}
     function renderAlStatusPicker(row,value){const selected=alStatusList(value);const chips=selected.map(x=>'<span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold '+alStatusColor(x)+'">'+escAl(x)+'</span>').join('');const checks=ALOKASI_STATUS_OPTIONS.map((x,i)=>'<label class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-slate-50 cursor-pointer text-xs"><input type="checkbox" '+(selected.includes(x)?'checked':'')+' onchange="changeAlStatus('+row+',\''+x+'\',this.checked)" class="accent-emerald-700"><span class="rounded-full px-2 py-0.5 font-semibold '+alStatusColor(x)+'">'+x+'</span></label>').join('');return '<div class="relative min-w-[170px]"><input type="hidden" data-row="'+row+'" data-col="5" value="'+escAl(selected.join(', '))+'"><details class="group/status"><summary class="min-h-9 flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-2 py-1.5 cursor-pointer list-none hover:border-emerald-400"><span class="flex flex-wrap gap-1">'+(chips||'<span class="text-xs text-slate-400">Pilih status…</span>')+'</span><i class="fa-solid fa-chevron-down text-[10px] text-slate-400 shrink-0"></i></summary><div class="absolute left-0 top-full z-30 mt-1 w-56 rounded-xl border border-slate-200 bg-white p-2 shadow-xl max-h-64 overflow-y-auto">'+checks+'</div></details></div>';}
     function changeAlStatus(row,option,checked){const input=document.querySelector('[data-row="'+row+'"][data-col="5"]');let values=alStatusList(input.value);values=checked?(values.includes(option)?values:[...values,option]):values.filter(x=>x!==option);input.value=values.join(', ');const tr=input.closest('tr');const details=tr.querySelector('details');const holder=document.createElement('div');holder.innerHTML=renderAlStatusPicker(row,input.value);details.replaceWith(holder.firstElementChild);}
-    function alokasiStatusCategory(r){const labels=alStatusList(r.values[5]).map(x=>x.toUpperCase());if(labels.includes('SUDAH AMBIL'))return 'SUDAH';if(labels.includes('BELUM AMBIL'))return 'BELUM';if(labels.includes('BELUM SETOR KTP'))return 'KTP';return 'LAINNYA';}
+    function alokasiStatusCategory(r){
+      const raw = String(r.values?.[5] || '').toUpperCase();
+      return raw;
+    }
+    function matchStatusFilter(rowStatusRaw, filterKey) {
+      if (!filterKey) return true;
+      const s = String(rowStatusRaw || '').toUpperCase();
+      const target = filterKey.toUpperCase();
+      if (target === 'BELUM SETOR KTP') return s.includes('BELUM SETOR KTP');
+      if (target === 'SETOR KTP') return s.includes('SETOR KTP') && !s.includes('BELUM SETOR KTP');
+      if (target === 'BELUM AMBIL') return s.includes('BELUM AMBIL');
+      if (target === 'SUDAH AMBIL') return s.includes('SUDAH AMBIL');
+      if (target === 'SURAT KUASA') return s.includes('SURAT KUASA');
+      if (target === 'FOTO DI KIOS') return s.includes('FOTO');
+      if (target === 'SUDAH BAYAR') return s.includes('SUDAH BAYAR');
+      return s.includes(target);
+    }
     function setAlokasiCardFilter(category){document.getElementById('al-status-filter').value=category;renderAlokasiTable();}
-    function renderAlokasiTable(){const q=(document.getElementById('al-search').value||'').trim().toLowerCase(),st=document.getElementById('al-status-filter').value;const filtered=alokasiRows.filter(r=>{const matchText=!q||r.values.some(v=>String(v??'').toLowerCase().includes(q));return matchText&&(!st||alokasiStatusCategory(r)===st);});const total=filtered.length;document.getElementById('alokasi-count').textContent=alokasiRows.length;const sudah=alokasiRows.filter(r=>alokasiStatusCategory(r)==='SUDAH').length,belum=alokasiRows.filter(r=>alokasiStatusCategory(r)==='BELUM').length,lainnya=alokasiRows.filter(r=>alokasiStatusCategory(r)==='KTP').length;const sisaRow=alokasiAllRows.find(r=>(r.values||[]).some(v=>String(v??'').toUpperCase().includes('SISA P')));const fmtSisa=v=>v===undefined||v===null||v===''?'—':String(v).match(/SAK/i)?String(v):String(v)+' Sak';document.getElementById('sisa-pupuk-urea').textContent=sisaRow?fmtSisa(sisaRow.values[9]):'—';document.getElementById('sisa-pupuk-phonska').textContent=sisaRow?fmtSisa(sisaRow.values[10]):'—';document.getElementById('sisa-pupuk-organik').textContent=sisaRow?fmtSisa(sisaRow.values[11]):'—';document.getElementById('alokasi-sudah').textContent=sudah;document.getElementById('alokasi-belum').textContent=belum;document.getElementById('alokasi-lainnya').textContent=lainnya;document.querySelectorAll('.alokasi-kpi').forEach((el,i)=>{const active=['','SUDAH','BELUM','KTP'][i]===st;el.classList.toggle('ring-2',active);el.classList.toggle('ring-emerald-600',active);el.classList.toggle('border-emerald-600',active);});document.getElementById('alokasi-empty').classList.toggle('hidden',total>0);document.getElementById('al-page-info').textContent=total?('Menampilkan seluruh '+total+' data petani'):'Tidak ada data';document.getElementById('alokasi-tbody').innerHTML=filtered.map((r,ri)=>{const rowBg=ri%2===0?'bg-white':'bg-slate-50/70';return '<tr class="group '+rowBg+' hover:!bg-emerald-50/70 transition-colors">'+r.values.map((v,i)=>{const width=i===0?'w-[46px] min-w-[46px]':i===1?'w-[130px] min-w-[130px]':i===2?'w-[140px] min-w-[140px]':i===3?'w-[80px] min-w-[80px]':i===4?'w-[80px] min-w-[80px]':i===5?'w-[170px] min-w-[170px]':i>=6&&i<=8?'w-[80px] min-w-[80px]':i>=9&&i<=11?'w-[84px] min-w-[84px]':i===12?'w-[100px] min-w-[100px]':'w-[140px] min-w-[140px]';const locked=i===3||i===6||i===7||i===8;const align=i===0||(i>=9&&i<=11)?'text-center':(i>=6&&i<=8)||i===12?'text-right':'text-left';if(i===5)return '<td class="'+width+' border-b border-r border-slate-200/90 px-2 py-1.5 align-middle bg-inherit">'+renderAlStatusPicker(r.row,v)+'</td>';return '<td class="'+width+' border-b border-r border-slate-200/90 px-2 py-1.5 align-middle bg-inherit"><input data-row="'+r.row+'" data-col="'+i+'" value="'+escAl(v)+'" title="'+escAl(v)+(locked?' · Hanya baca':'')+'" aria-label="'+(['No','NIK','Nama','Lahan Revisi (hanya baca)','Revisi Lahan Asli','Status','Urea (hanya baca)','Phonska (hanya baca)','Organik (hanya baca)','Sak Urea','Sak Phonska','Sak Organik','Uang','Keterangan'][i])+'" class="w-full min-w-0 rounded-md border '+(locked?'border-slate-200/60 bg-slate-100/70 text-slate-500 cursor-not-allowed':'border-slate-200/80 bg-white hover:border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-slate-800 shadow-2xs')+' px-2 py-1 text-[12px] leading-snug outline-none '+align+' '+(i===0?'font-semibold text-slate-500':i===1?'font-mono tracking-tight text-slate-700':i===2?'font-bold text-slate-900':i>=6&&i<=11?'font-semibold text-slate-800':i===12?'font-bold text-emerald-800':'')+'" '+(i===0||locked?'readonly tabindex="-1"':'')+'></td>';}).join('')+'<td class="w-[90px] min-w-[90px] border-b border-slate-200/90 px-2 py-1.5 align-middle bg-inherit no-print"><div class="flex flex-nowrap items-center justify-center gap-1.5"><button type="button" title="Edit baris" aria-label="Edit baris" onclick="editAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 shadow-2xs transition"><i class="fa-solid fa-pen-to-square text-[11px]"></i></button><button type="button" title="Simpan perubahan" aria-label="Simpan perubahan" onclick="saveAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-700 text-white shadow-2xs hover:bg-emerald-800 transition"><i class="fa-solid fa-floppy-disk text-[11px]"></i></button>'+(alokasiJenis==='NON_ERDKK'?'<button type="button" title="Hapus data" aria-label="Hapus data" onclick="deleteAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-rose-600 text-white hover:bg-rose-700 shadow-2xs transition"><i class="fa-solid fa-trash text-[11px]"></i></button>':'')+'</div></td></tr>';}).join('');}
+    
+    function parseSak(val) {
+      if (val === undefined || val === null) return 0;
+      const num = parseFloat(String(val).replace(/[^0-9.-]/g, ''));
+      return isNaN(num) ? 0 : num;
+    }
+
+    function renderAlokasiTable(){
+      const q=(document.getElementById('al-search').value||'').trim().toLowerCase(),st=document.getElementById('al-status-filter').value;
+      const filtered=alokasiRows.filter(r=>{
+        const matchText=!q||r.values.some(v=>String(v??'').toLowerCase().includes(q));
+        const statusVal = r.values?.[5] || '';
+        return matchText && matchStatusFilter(statusVal, st);
+      });
+      const total=filtered.length;
+      document.getElementById('alokasi-count').textContent=alokasiRows.length;
+
+      // Hitung Sak Total Semua Baris Alokasi
+      let totalSakAlokasi = 0;
+      alokasiRows.forEach(r => {
+        totalSakAlokasi += parseSak(r.values[9]) + parseSak(r.values[10]) + parseSak(r.values[11]);
+      });
+      const elTotSak = document.getElementById('al-total-sak');
+      if (elTotSak) elTotSak.textContent = formatNumber(totalSakAlokasi);
+
+      // Hitung Petani & Sak per Status (Sudah Ambil, Belum Ambil, Setor KTP, Belum Setor KTP, Surat Kuasa)
+      const stats = {
+        'SUDAH AMBIL': { petani: 0, sak: 0 },
+        'BELUM AMBIL': { petani: 0, sak: 0 },
+        'SETOR KTP': { petani: 0, sak: 0 },
+        'BELUM SETOR KTP': { petani: 0, sak: 0 },
+        'SURAT KUASA': { petani: 0, sak: 0 }
+      };
+
+      alokasiRows.forEach(r => {
+        const s = String(r.values?.[5] || '').toUpperCase();
+        const rowSak = parseSak(r.values[9]) + parseSak(r.values[10]) + parseSak(r.values[11]);
+
+        if (s.includes('SUDAH AMBIL')) { stats['SUDAH AMBIL'].petani++; stats['SUDAH AMBIL'].sak += rowSak; }
+        if (s.includes('BELUM AMBIL')) { stats['BELUM AMBIL'].petani++; stats['BELUM AMBIL'].sak += rowSak; }
+        if (s.includes('BELUM SETOR KTP')) { stats['BELUM SETOR KTP'].petani++; stats['BELUM SETOR KTP'].sak += rowSak; }
+        else if (s.includes('SETOR KTP')) { stats['SETOR KTP'].petani++; stats['SETOR KTP'].sak += rowSak; }
+        if (s.includes('SURAT KUASA')) { stats['SURAT KUASA'].petani++; stats['SURAT KUASA'].sak += rowSak; }
+      });
+
+      // Update KPI Nilai Petani & Sak
+      const elSudah = document.getElementById('alokasi-sudah-ambil');
+      const elSudahSak = document.getElementById('al-sudah-ambil-sak');
+      if (elSudah) elSudah.textContent = stats['SUDAH AMBIL'].petani;
+      if (elSudahSak) elSudahSak.textContent = formatNumber(stats['SUDAH AMBIL'].sak);
+
+      const elBelum = document.getElementById('alokasi-belum-ambil');
+      const elBelumSak = document.getElementById('al-belum-ambil-sak');
+      if (elBelum) elBelum.textContent = stats['BELUM AMBIL'].petani;
+      if (elBelumSak) elBelumSak.textContent = formatNumber(stats['BELUM AMBIL'].sak);
+
+      const elSetor = document.getElementById('alokasi-setor-ktp');
+      const elSetorSak = document.getElementById('al-setor-ktp-sak');
+      if (elSetor) elSetor.textContent = stats['SETOR KTP'].petani;
+      if (elSetorSak) elSetorSak.textContent = formatNumber(stats['SETOR KTP'].sak);
+
+      const elBelumSetor = document.getElementById('alokasi-belum-setor-ktp');
+      const elBelumSetorSak = document.getElementById('al-belum-setor-ktp-sak');
+      if (elBelumSetor) elBelumSetor.textContent = stats['BELUM SETOR KTP'].petani;
+      if (elBelumSetorSak) elBelumSetorSak.textContent = formatNumber(stats['BELUM SETOR KTP'].sak);
+
+      const elKuasa = document.getElementById('alokasi-surat-kuasa');
+      const elKuasaSak = document.getElementById('al-surat-kuasa-sak');
+      if (elKuasa) elKuasa.textContent = stats['SURAT KUASA'].petani;
+      if (elKuasaSak) elKuasaSak.textContent = formatNumber(stats['SURAT KUASA'].sak);
+
+      // Sisa Pupuk Gudang jika Petani Ambil Semua
+      const sisaRow=alokasiAllRows.find(r=>(r.values||[]).some(v=>String(v??'').toUpperCase().includes('SISA P')));
+      const fmtSisa=v=>v===undefined||v===null||v===''?'—':String(v).match(/SAK/i)?String(v):String(v)+' Sak';
+      document.getElementById('sisa-pupuk-urea').textContent=sisaRow?fmtSisa(sisaRow.values[9]):'—';
+      document.getElementById('sisa-pupuk-phonska').textContent=sisaRow?fmtSisa(sisaRow.values[10]):'—';
+      document.getElementById('sisa-pupuk-organik').textContent=sisaRow?fmtSisa(sisaRow.values[11]):'—';
+
+      // Ring Active State pada KPI Card
+      const filterKeys = ['', 'SUDAH AMBIL', 'BELUM AMBIL', 'SETOR KTP', 'BELUM SETOR KTP', 'SURAT KUASA'];
+      document.querySelectorAll('.alokasi-kpi').forEach((el,i)=>{
+        const active = filterKeys[i] !== undefined && filterKeys[i] === st;
+        el.classList.toggle('ring-2',active);
+        el.classList.toggle('ring-emerald-600',active);
+        el.classList.toggle('border-emerald-600',active);
+      });
+
+      document.getElementById('alokasi-empty').classList.toggle('hidden',total>0);
+      document.getElementById('al-page-info').textContent=total?('Menampilkan seluruh '+total+' data petani'):'Tidak ada data';document.getElementById('alokasi-tbody').innerHTML=filtered.map((r,ri)=>{const rowBg=ri%2===0?'bg-white':'bg-slate-50/70';return '<tr class="group '+rowBg+' hover:!bg-emerald-50/70 transition-colors">'+r.values.map((v,i)=>{const width=i===0?'w-[46px] min-w-[46px]':i===1?'w-[130px] min-w-[130px]':i===2?'w-[140px] min-w-[140px]':i===3?'w-[80px] min-w-[80px]':i===4?'w-[80px] min-w-[80px]':i===5?'w-[170px] min-w-[170px]':i>=6&&i<=8?'w-[80px] min-w-[80px]':i>=9&&i<=11?'w-[84px] min-w-[84px]':i===12?'w-[100px] min-w-[100px]':'w-[140px] min-w-[140px]';const locked=i===3||i===6||i===7||i===8;const align=i===0||(i>=9&&i<=11)?'text-center':(i>=6&&i<=8)||i===12?'text-right':'text-left';if(i===5)return '<td class="'+width+' border-b border-r border-slate-200/90 px-2 py-1.5 align-middle bg-inherit">'+renderAlStatusPicker(r.row,v)+'</td>';return '<td class="'+width+' border-b border-r border-slate-200/90 px-2 py-1.5 align-middle bg-inherit"><input data-row="'+r.row+'" data-col="'+i+'" value="'+escAl(v)+'" title="'+escAl(v)+(locked?' · Hanya baca':'')+'" aria-label="'+(['No','NIK','Nama','Lahan Revisi (hanya baca)','Revisi Lahan Asli','Status','Urea (hanya baca)','Phonska (hanya baca)','Organik (hanya baca)','Sak Urea','Sak Phonska','Sak Organik','Uang','Keterangan'][i])+'" class="w-full min-w-0 rounded-md border '+(locked?'border-slate-200/60 bg-slate-100/70 text-slate-500 cursor-not-allowed':'border-slate-200/80 bg-white hover:border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-slate-800 shadow-2xs')+' px-2 py-1 text-[12px] leading-snug outline-none '+align+' '+(i===0?'font-semibold text-slate-500':i===1?'font-mono tracking-tight text-slate-700':i===2?'font-bold text-slate-900':i>=6&&i<=11?'font-semibold text-slate-800':i===12?'font-bold text-emerald-800':'')+'" '+(i===0||locked?'readonly tabindex="-1"':'')+'></td>';}).join('')+'<td class="w-[90px] min-w-[90px] border-b border-slate-200/90 px-2 py-1.5 align-middle bg-inherit no-print"><div class="flex flex-nowrap items-center justify-center gap-1.5"><button type="button" title="Edit baris" aria-label="Edit baris" onclick="editAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 shadow-2xs transition"><i class="fa-solid fa-pen-to-square text-[11px]"></i></button><button type="button" title="Simpan perubahan" aria-label="Simpan perubahan" onclick="saveAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-700 text-white shadow-2xs hover:bg-emerald-800 transition"><i class="fa-solid fa-floppy-disk text-[11px]"></i></button>'+(alokasiJenis==='NON_ERDKK'?'<button type="button" title="Hapus data" aria-label="Hapus data" onclick="deleteAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-rose-600 text-white hover:bg-rose-700 shadow-2xs transition"><i class="fa-solid fa-trash text-[11px]"></i></button>':'')+'</div></td></tr>';}).join('');}
     function editAlokasiRow(row){const first=document.querySelector('[data-row="'+row+'"][data-col="1"]');if(first){first.focus();first.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});}showAlokasiToast('Mode edit: ubah kolom yang diperlukan, lalu tekan ikon Simpan.');}
     async function saveAlokasiRow(row){const values=Array(14).fill('');document.querySelectorAll('[data-row="'+row+'"][data-col]').forEach(e=>values[+e.dataset.col]=e.value);const btn=document.querySelector('button[onclick="saveAlokasiRow('+row+')"]');if(btn){btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-circle-notch fa-spin mr-1"></i>Menyimpan';}try{await alokasiApi('saveAlokasi',{row,values});const idx=alokasiRows.findIndex(x=>x.row===row);if(idx>=0)alokasiRows[idx].values=values;const allIdx=alokasiAllRows.findIndex(x=>x.row===row);if(allIdx>=0)alokasiAllRows[allIdx].values=values;renderAlokasiTable();showAlokasiToast('Perubahan berhasil disimpan ke Google Sheet.');}catch(e){showAlokasiToast(e.message,'error');if(btn){btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-floppy-disk mr-1"></i>Simpan';}}}
     function confirmAlokasiDelete(nama){return new Promise(resolve=>{let modal=document.getElementById('al-delete-confirm');if(!modal){modal=document.createElement('div');modal.id='al-delete-confirm';modal.className='fixed inset-0 z-[150] hidden items-center justify-center bg-slate-950/50 p-4';modal.innerHTML='<div class="w-full max-w-sm rounded-2xl bg-white p-5 shadow-2xl"><div class="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-rose-100 text-rose-600"><i class="fa-solid fa-trash"></i></div><h3 class="text-base font-bold text-slate-900">Hapus data petani?</h3><p id="al-delete-message" class="mt-2 text-sm leading-relaxed text-slate-600"></p><div class="mt-5 flex justify-end gap-2"><button type="button" id="al-delete-cancel" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600">Batal</button><button type="button" id="al-delete-yes" class="rounded-lg bg-rose-600 px-4 py-2 text-sm font-bold text-white hover:bg-rose-700">Ya, hapus</button></div></div>';document.body.appendChild(modal);}modal.querySelector('#al-delete-message').textContent='Hapus '+nama+' dari daftar Non-e-RDKK? Data pada Google Sheet akan dihapus.';modal.classList.remove('hidden');modal.classList.add('flex');const finish=value=>{modal.classList.add('hidden');modal.classList.remove('flex');modal.querySelector('#al-delete-cancel').onclick=null;modal.querySelector('#al-delete-yes').onclick=null;resolve(value);};modal.querySelector('#al-delete-cancel').onclick=()=>finish(false);modal.querySelector('#al-delete-yes').onclick=()=>finish(true);});}
@@ -1325,8 +1472,46 @@
       document.getElementById('kpi-tagihan').innerText = formatRupiah(r.totalTagihan);
       document.getElementById('kpi-sisa-bayar').innerText = formatRupiah(r.sisaBayar);
       document.getElementById('kpi-sisa-sak').innerText = formatNumber(r.totalSisaSak) + ' Sak';
+      if (document.getElementById('kpi-total-alokasi-sak')) {
+        document.getElementById('kpi-total-alokasi-sak').innerText = formatNumber(r.totalAlokasiSak);
+      }
       document.getElementById('kpi-total-petani').innerText = r.totalMasukKloter + ' Petani';
       document.getElementById('kpi-persen-kloter').innerText = r.persenKloter + '%';
+
+      // Mandiri / Belum Masuk Kloter
+      const totalMandiri = r.totalMandiri !== undefined ? r.totalMandiri : Math.max(0, (r.totalPetani || 0) - (r.totalMasukKloter || 0));
+      const persenMandiri = r.totalPetani > 0 ? Math.round((totalMandiri / r.totalPetani) * 100) : (100 - (r.persenKloter || 0));
+      if (document.getElementById('kpi-mandiri-petani')) {
+        document.getElementById('kpi-mandiri-petani').innerText = totalMandiri + ' Petani';
+      }
+      if (document.getElementById('kpi-persen-mandiri')) {
+        document.getElementById('kpi-persen-mandiri').innerText = persenMandiri + '%';
+      }
+
+      // Hitung rincian sak kloter vs mandiri dari daftar petani
+      let kloterSakTotal = 0;
+      let mandiriSakTotal = 0;
+      if (Array.isArray(data.petani)) {
+        data.petani.forEach(p => {
+          // Konversi Urea & Phonska (50kg/sak) dan Organik (40kg/sak)
+          const sakU = Math.round((Number(p.urea) || 0) / 50);
+          const sakP = Math.round((Number(p.npk) || 0) / 50);
+          const sakO = Math.round((Number(p.organik) || 0) / 40);
+          const totalSakP = sakU + sakP + sakO;
+          const isKloter = String(p.status || '').toLowerCase().includes('kloter');
+          if (isKloter) {
+            kloterSakTotal += totalSakP;
+          } else {
+            mandiriSakTotal += totalSakP;
+          }
+        });
+      }
+      if (document.getElementById('kpi-kloter-sak')) {
+        document.getElementById('kpi-kloter-sak').innerText = (kloterSakTotal > 0 ? formatNumber(kloterSakTotal) : Math.round((r.totalAlokasiSak || 0) * (r.persenKloter || 0) / 100)) + ' Sak';
+      }
+      if (document.getElementById('kpi-mandiri-sak')) {
+        document.getElementById('kpi-mandiri-sak').innerText = (mandiriSakTotal > 0 ? formatNumber(mandiriSakTotal) : Math.max(0, (r.totalAlokasiSak || 0) - kloterSakTotal)) + ' Sak';
+      }
 
       // Banner Bawah
       document.getElementById('banner-dp').innerText = formatRupiah(r.dpDisetor);
