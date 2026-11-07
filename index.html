@@ -928,11 +928,12 @@
         document.getElementById('login-password').value = '';
         enterDashboard();
       } catch (error) {
-        errorBox.textContent = error.message || 'Login gagal. Periksa koneksi.';
+        console.error('Login error:', error);
+        errorBox.querySelector('span').textContent = error.message || 'Login gagal. Periksa koneksi atau username/password.';
         errorBox.classList.remove('hidden');
       } finally {
         button.disabled = false;
-        button.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Masuk Dashboard';
+        button.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> <span>Masuk ke Dashboard</span>';
       }
     }
 
