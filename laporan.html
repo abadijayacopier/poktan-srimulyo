@@ -41,6 +41,9 @@
         <a href="index.html" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5 border border-slate-200">
           <i class="fa-solid fa-arrow-left"></i> Dashboard Utama
         </a>
+        <a href="cetak-kloter.html" class="px-4 py-2 rounded-xl bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm active:scale-95">
+          <i class="fa-solid fa-file-contract"></i> Cetak Kloter (F4)
+        </a>
         <button onclick="sinkronUlangData()" id="btn-refresh" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5 border border-slate-200">
           <i class="fa-solid fa-rotate text-emerald-600"></i> Segarkan Data
         </button>
@@ -359,6 +362,16 @@
         ['Penebusan Mandiri', T(c0, 5), T(c1, 5), 'text-amber-800'],
         ['Total Bobot Pupuk', T(c0, 7) + ' Kg', 'Urea + NPK + Organik']
       ], 'bg-purple-50/50')}
+
+      <div class="no-print p-3.5 bg-purple-50 border border-purple-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <div class="flex items-center gap-2 text-purple-900 font-medium">
+          <i class="fa-solid fa-file-contract text-purple-700 text-base"></i>
+          <span>Perlu mencetak lembar <b>Surat Kuasa Resmi per Kloter (1 s/d 10)</b> lengkap dengan kolom zig-zag tanda tangan format kertas F4 / Folio?</span>
+        </div>
+        <a href="cetak-kloter.html" class="px-3.5 py-1.5 rounded-lg bg-purple-700 hover:bg-purple-800 text-white font-bold whitespace-nowrap transition text-center shadow-sm">
+          Buka Format F4 Kloter 1-10
+        </a>
+      </div>
 
       <div class="space-y-2">
         <h4 class="text-xs font-black uppercase text-slate-900">I. DAFTAR KLOTER SURAT KUASA PENEBUSAN (KLOTER 1 S/D ${kloter.length})</h4>
