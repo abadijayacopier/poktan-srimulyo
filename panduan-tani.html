@@ -2839,7 +2839,7 @@
           crop: getKomoditasAktif(),
           variety: (getVarietasAktif() || {}).nama || 'Belum dipilih',
           area: document.getElementById('calc-luas').value || '',
-          season: document.getElementById('calc-musim')?.value || '',
+          season: document.querySelector('input[name="calc-musim"]:checked')?.value || '',
           plantingDate: document.getElementById('calc-tanggal-tanam')?.value || '',
           notes: document.getElementById('calc-catatan').value || ''
         };
