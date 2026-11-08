@@ -317,17 +317,17 @@
         </div>
 
         <!-- 6 Top KPI Metric Cards (Keuangan, Sak, Masuk Kloter, Mandiri, dan Luas Lahan) -->
-        <section id="dashboard-kpi-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3.5">
+        <section id="dashboard-kpi-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           
           <!-- 1. DP / Pembayaran Kios -->
           <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-3.5">
             <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl shrink-0">
               <i class="fa-solid fa-hand-holding-dollar"></i>
             </div>
-            <div class="min-w-0">
-              <div class="text-[10px] font-bold uppercase tracking-wider text-emerald-700">DP / Titipan Kios</div>
-              <div id="kpi-dp" class="text-lg sm:text-xl font-black text-slate-900 tracking-tight truncate">Rp 0</div>
-              <div class="text-[11px] text-slate-500 truncate">Tagihan: <span id="kpi-tagihan" class="font-semibold text-slate-700">Rp 0</span></div>
+            <div class="min-w-0 flex-1">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">DP / Titipan Kios</div>
+              <div id="kpi-dp" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight whitespace-nowrap">Rp 0</div>
+              <div class="text-xs text-slate-500 mt-0.5 whitespace-nowrap">Tagihan: <span id="kpi-tagihan" class="font-semibold text-slate-700">Rp 0</span></div>
             </div>
           </div>
 
@@ -336,10 +336,10 @@
             <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl shrink-0">
               <i class="fa-solid fa-file-invoice-dollar"></i>
             </div>
-            <div class="min-w-0">
-              <div class="text-[10px] font-bold uppercase tracking-wider text-rose-600">Sisa Tagihan Kios</div>
-              <div id="kpi-sisa-bayar" class="text-lg sm:text-xl font-black text-rose-600 tracking-tight truncate">Rp 0</div>
-              <div class="text-[11px] text-rose-500 font-medium truncate">Kekurangan bayar kios</div>
+            <div class="min-w-0 flex-1">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-rose-600">Sisa Tagihan Kios</div>
+              <div id="kpi-sisa-bayar" class="text-xl sm:text-2xl font-black text-rose-600 tracking-tight whitespace-nowrap">Rp 0</div>
+              <div class="text-xs text-rose-500 font-medium mt-0.5 whitespace-nowrap">Kekurangan bayar kios</div>
             </div>
           </div>
 
@@ -348,10 +348,10 @@
             <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center text-xl shrink-0">
               <i class="fa-solid fa-boxes-packing"></i>
             </div>
-            <div class="min-w-0">
-              <div class="text-[10px] font-bold uppercase tracking-wider text-amber-700">Sisa Belum Kirim</div>
-              <div id="kpi-sisa-sak" class="text-lg sm:text-xl font-black text-slate-900 tracking-tight truncate">0 Sak</div>
-              <div class="text-[11px] text-slate-500 truncate">Dari total <span id="kpi-total-alokasi-sak" class="font-semibold text-slate-700">0</span> sak</div>
+            <div class="min-w-0 flex-1">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-amber-700">Sisa Belum Kirim</div>
+              <div id="kpi-sisa-sak" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight whitespace-nowrap">0 Sak</div>
+              <div class="text-xs text-slate-500 mt-0.5 whitespace-nowrap">Dari total <span id="kpi-total-alokasi-sak" class="font-semibold text-slate-700">0</span> sak</div>
             </div>
           </div>
 
@@ -360,10 +360,10 @@
             <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl shrink-0">
               <i class="fa-solid fa-users"></i>
             </div>
-            <div class="min-w-0">
-              <div class="text-[10px] font-bold uppercase tracking-wider text-blue-700">Masuk Kloter</div>
-              <div id="kpi-total-petani" class="text-lg sm:text-xl font-black text-slate-900 tracking-tight truncate">0 Petani</div>
-              <div class="text-[11px] text-slate-500 truncate"><span id="kpi-persen-kloter" class="text-emerald-600 font-bold">0%</span> · <span id="kpi-kloter-sak" class="font-semibold text-slate-700">0 Sak</span></div>
+            <div class="min-w-0 flex-1">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-blue-700">Masuk Kloter</div>
+              <div id="kpi-total-petani" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight whitespace-nowrap">0 Petani</div>
+              <div class="text-xs text-slate-500 mt-0.5 whitespace-nowrap"><span id="kpi-persen-kloter" class="text-emerald-600 font-bold">0%</span> · <span id="kpi-kloter-sak" class="font-semibold text-slate-700">0 Sak</span></div>
             </div>
           </div>
 
@@ -372,24 +372,24 @@
             <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center text-xl shrink-0">
               <i class="fa-solid fa-user-clock"></i>
             </div>
-            <div class="min-w-0">
-              <div class="text-[10px] font-bold uppercase tracking-wider text-purple-700">Mandiri / Belum</div>
-              <div id="kpi-mandiri-petani" class="text-lg sm:text-xl font-black text-slate-900 tracking-tight truncate">0 Petani</div>
-              <div class="text-[11px] text-slate-500 truncate"><span id="kpi-persen-mandiri" class="text-amber-600 font-bold">0%</span> · <span id="kpi-mandiri-sak" class="font-semibold text-slate-700">0 Sak</span></div>
+            <div class="min-w-0 flex-1">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-purple-700">Mandiri / Belum</div>
+              <div id="kpi-mandiri-petani" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight whitespace-nowrap">0 Petani</div>
+              <div class="text-xs text-slate-500 mt-0.5 whitespace-nowrap"><span id="kpi-persen-mandiri" class="text-amber-600 font-bold">0%</span> · <span id="kpi-mandiri-sak" class="font-semibold text-slate-700">0 Sak</span></div>
             </div>
           </div>
 
           <!-- 6. Total Luas Lahan (e-RDKK & Non-eRDKK) -->
-          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-teal-200/90 shadow-sm hover:shadow-md transition flex items-center gap-3.5 col-span-1 sm:col-span-2 lg:col-span-3 xl:col-span-1">
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-teal-200/90 shadow-sm hover:shadow-md transition flex items-center gap-3.5">
             <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center text-xl shrink-0">
               <i class="fa-solid fa-map-location-dot"></i>
             </div>
             <div class="min-w-0 flex-1">
-              <div class="text-[10px] font-bold uppercase tracking-wider text-teal-700">Total Luas Lahan</div>
-              <div class="text-lg sm:text-xl font-black text-teal-900 tracking-tight flex items-baseline gap-1">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-teal-700">Total Luas Lahan</div>
+              <div class="text-xl sm:text-2xl font-black text-teal-900 tracking-tight flex items-baseline gap-1 whitespace-nowrap">
                 <span id="kpi-luas-total-all">55,97</span> <span class="text-xs font-semibold text-teal-700">ha</span>
               </div>
-              <div class="text-[11px] text-slate-600 font-medium truncate flex items-center gap-2 mt-0.5">
+              <div class="text-xs text-slate-600 font-medium flex items-center gap-2 mt-0.5 whitespace-nowrap">
                 <span title="Luas Petani e-RDKK"><b class="text-emerald-700">e-RDKK:</b> <span id="kpi-luas-erdkk-val">54,20 ha</span></span>
                 <span>•</span>
                 <span title="Luas Petani Non-eRDKK"><b class="text-blue-700">Non:</b> <span id="kpi-luas-nonerdkk-val">1,77 ha</span></span>
