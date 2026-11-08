@@ -83,7 +83,7 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
       border: 1px solid #cbd5e1;
       border-radius: 4px;
-      color: #0f172a;
+      color: #000;
     }
 
     /* Mode Khusus Penyusunan PDF oleh html2pdf */
@@ -145,7 +145,7 @@
       <div>
         <div class="flex flex-wrap items-center gap-2 mb-1.5">
           <span class="px-2.5 py-0.5 rounded-md bg-purple-100 text-purple-800 text-[10px] font-extrabold uppercase">SURAT KUASA PENEBUSAN PUPUK</span>
-          <span class="px-2.5 py-0.5 rounded-md bg-amber-100 text-amber-900 text-[10px] font-black uppercase">FORMAT KERTAS F4 (215 x 330 mm)</span>
+          <span class="px-2.5 py-0.5 rounded-md bg-amber-100 text-amber-900 text-[10px] font-black uppercase">FORMAT ASLI GOOGLE SPREADSHEET (F4)</span>
           <span id="sync-status" class="text-xs text-slate-400 flex items-center gap-1.5">
             <i class="fa-solid fa-spinner fa-spin text-purple-600"></i> Memuat Google Sheets...
           </span>
@@ -154,7 +154,7 @@
           <i class="fa-solid fa-file-contract text-purple-700"></i>
           Pusat Cetak &amp; Ekspor PDF Surat Kuasa Kloter
         </h1>
-        <p class="text-xs text-slate-500 mt-0.5">Format baku resmi BPP Lembeyan untuk penebusan pupuk bersubsidi MT3 2026 (Kloter 1 s/d 10)</p>
+        <p class="text-xs text-slate-500 mt-0.5">Sesuai format baku Google Spreadsheet Poktan Sri Mulyo MT3 2026 (Kloter 1 s/d 10)</p>
       </div>
 
       <!-- Tombol Aksi: Terstruktur untuk HP & Komputer -->
@@ -260,8 +260,8 @@
     function parseKloterRows(kloterNum, rows) {
       const getVal = (r, c) => (rows[r] && rows[r].c && rows[r].c[c] ? (rows[r].c[c].f || rows[r].c[c].v || '') : '').toString().trim();
 
-      const pemberi = { nama: '', nik: '', poktan: 'SRI MULYO', alamat: '' };
-      const penerima = { nama: 'SUPRIYANTO', nik: '3520033010900002', poktan: 'SRI MULYO', alamat: 'DSN SELUNGGUH RT 006 RW 001 DESA KEDIREN KEC. LEMBEYAN - KAB. MAGETAN' };
+      const pemberi = { nama: '', nik: '', poktan: 'SRI MULYO', alamat: 'DSN SELUNGGUH RT 006 RW 001 DESA KEDIREN\n  KECAMATAN LEMBEYAN -KABUPATEN MAGETAN' };
+      const penerima = { nama: 'SUPRIYANTO', nik: '3520033010900002', poktan: 'SRI MULYO', alamat: 'DSN SELUNGGUH RT 006 RW 001 DESA KEDIREN\n  KECAMATAN LEMBEYAN -KABUPATEN MAGETAN' };
 
       // Cari data Pemberi & Penerima Kuasa dari baris 0-15
       for (let r = 0; r < Math.min(16, rows.length); r++) {
@@ -278,8 +278,8 @@
         } else if (c0.includes('KELOMPOK')) {
           if (c2) pemberi.poktan = c2;
         } else if (c0.includes('ALAMAT')) {
-          if (!pemberi.alamat) pemberi.alamat = c2.replace(/\n+/g, ' ');
-          else if (!penerima.alamat) penerima.alamat = c2.replace(/\n+/g, ' ');
+          if (!pemberi.alamat) pemberi.alamat = c2;
+          else if (!penerima.alamat) penerima.alamat = c2;
         }
       }
 
@@ -337,16 +337,15 @@
       };
     }
 
-    // Render HTML sebuah lembar F4 untuk 1 Kloter
+    // Render HTML sebuah lembar F4 untuk 1 Kloter SESUAI PERSIS SPREADSHEET (IMG_7300.png)
     function renderLembarF4(data) {
       const k = data.kloter;
       const p = data.pemberi;
       const r = data.penerima;
       const list = data.petani;
       const tot = data.total;
-      const tglCetak = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date());
 
-      // Buat baris tabel petani (standar 20 baris agar pas rapi di 1 lembar F4)
+      // Buat baris tabel petani (standar 20 baris seperti di spreadsheet)
       let rowsHtml = '';
       const totalBaris = Math.max(20, list.length);
       for (let i = 0; i < totalBaris; i++) {
@@ -355,15 +354,17 @@
         const noTtd = i + 1;
         if (item) {
           rowsHtml += `
-            <tr class="text-[10.5px] leading-snug hover:bg-slate-50">
-              <td class="border border-black py-1 px-1 text-center font-mono font-medium">${item.no}</td>
-              <td class="border border-black py-1 px-2 font-bold text-slate-900">${esc(item.nama)}</td>
-              <td class="border border-black py-1 px-1.5 text-center font-mono text-[10px] tracking-tight whitespace-nowrap">${esc(item.nik)}</td>
-              <td class="border border-black py-1 px-1 text-center">${esc(item.komoditas)}</td>
-              <td class="border border-black py-1 px-1.5 text-right font-mono font-bold">${esc(item.urea)}</td>
-              <td class="border border-black py-1 px-1.5 text-right font-mono font-bold">${esc(item.npk)}</td>
-              <td class="border border-black py-1 px-1.5 text-right font-mono font-bold">${esc(item.organik)}</td>
-              <td class="border border-black py-0.5 px-1 text-[9.5px]">
+            <tr class="text-[9.5px] leading-tight hover:bg-slate-50">
+              <td class="border border-black py-0.5 px-1 text-center font-mono">${item.no}</td>
+              <td class="border border-black py-0.5 px-1.5 font-bold uppercase text-slate-900">${esc(item.nama)}</td>
+              <td class="border border-black py-0.5 px-1 text-center font-mono text-[9px] tracking-tight whitespace-nowrap">${esc(item.nik)}</td>
+              <td class="border border-black py-0.5 px-1 text-center uppercase">${esc(item.komoditas)}</td>
+              <td class="border border-black py-0.5 px-1 text-right font-mono font-medium">${esc(item.urea)}</td>
+              <td class="border border-black py-0.5 px-1 text-right font-mono font-medium">${esc(item.npk)}</td>
+              <td class="border border-black py-0.5 px-1 text-center font-mono text-slate-400 text-[8.5px]">0</td>
+              <td class="border border-black py-0.5 px-1 text-center font-mono text-slate-400 text-[8.5px]">-</td>
+              <td class="border border-black py-0.5 px-1 text-right font-mono font-medium">${esc(item.organik)}</td>
+              <td class="border border-black py-0.5 px-1 text-[8.5px]">
                 <div class="flex items-center w-full">
                   ${isOdd ? `<span class="w-1/2 pl-0.5">${noTtd}. ........</span><span class="w-1/2"></span>` 
                           : `<span class="w-1/2"></span><span class="w-1/2 text-right pr-0.5">${noTtd}. ........</span>`}
@@ -371,20 +372,22 @@
               </td>
             </tr>`;
         } else {
-          // Baris kosong pelengkap (misal Kloter 8 ada 16 petani atau Kloter 9 template kosong)
+          // Baris kosong pelengkap 17-20 (seperti di sheet ada komoditas PADI dan 0)
           rowsHtml += `
-            <tr class="text-[10px] leading-snug text-slate-300">
-              <td class="border border-black py-1 px-1 text-center font-mono">${i + 1}</td>
-              <td class="border border-black py-1 px-2">-</td>
-              <td class="border border-black py-1 px-1.5 text-center font-mono text-[9px]">-</td>
-              <td class="border border-black py-1 px-1 text-center">-</td>
-              <td class="border border-black py-1 px-1.5 text-right font-mono">-</td>
-              <td class="border border-black py-1 px-1.5 text-right font-mono">-</td>
-              <td class="border border-black py-1 px-1.5 text-right font-mono">-</td>
-              <td class="border border-black py-0.5 px-1 text-[9px]">
+            <tr class="text-[9.5px] leading-tight text-slate-400">
+              <td class="border border-black py-0.5 px-1 text-center font-mono">${i + 1}</td>
+              <td class="border border-black py-0.5 px-1.5">&nbsp;</td>
+              <td class="border border-black py-0.5 px-1 text-center font-mono text-[8.5px]">&nbsp;</td>
+              <td class="border border-black py-0.5 px-1 text-center">PADI</td>
+              <td class="border border-black py-0.5 px-1 text-right font-mono">&nbsp;</td>
+              <td class="border border-black py-0.5 px-1 text-right font-mono">&nbsp;</td>
+              <td class="border border-black py-0.5 px-1 text-center font-mono text-[8.5px]">0</td>
+              <td class="border border-black py-0.5 px-1 text-center font-mono text-[8.5px]">&nbsp;</td>
+              <td class="border border-black py-0.5 px-1 text-right font-mono">&nbsp;</td>
+              <td class="border border-black py-0.5 px-1 text-[8.5px]">
                 <div class="flex items-center w-full">
-                  ${isOdd ? `<span class="w-1/2 pl-0.5 text-slate-400">${noTtd}.</span><span class="w-1/2"></span>` 
-                          : `<span class="w-1/2"></span><span class="w-1/2 text-right pr-0.5 text-slate-400">${noTtd}.</span>`}
+                  ${isOdd ? `<span class="w-1/2 pl-0.5 text-slate-300">${noTtd}.</span><span class="w-1/2"></span>` 
+                          : `<span class="w-1/2"></span><span class="w-1/2 text-right pr-0.5 text-slate-300">${noTtd}.</span>`}
                 </div>
               </td>
             </tr>`;
@@ -393,116 +396,110 @@
 
       return `
       <div id="kloter-sheet-${k}" class="f4-preview-page">
-        <!-- 1. KOP SURAT KUASA RESMI -->
-        <div class="text-center border-b-2 border-black pb-2 mb-2.5">
+        <!-- 1. JUDUL SURAT KUASA (PERSIS SPREADSHEET ROW 1) -->
+        <div class="text-center mb-2.5">
           <h2 class="text-base font-black tracking-wider uppercase text-black">SURAT KUASA</h2>
-          <h3 class="text-xs sm:text-sm font-extrabold uppercase text-black">PENEBUSAN PUPUK BERSUBSIDI KELOMPOK TANI &ldquo;SRI MULYO&rdquo;</h3>
-          <p class="text-[10px] sm:text-[10.5px] text-black font-semibold tracking-wide">DESA KEDIREN, KECAMATAN LEMBEYAN, KABUPATEN MAGETAN &bull; MUSIM TANAM III (2026)</p>
         </div>
 
-        <!-- 2. IDENTITAS PEMBERI & PENERIMA KUASA -->
-        <div class="text-[10px] leading-snug space-y-1.5 text-black mb-2">
-          <p class="font-bold">Yang bertanda tangan di bawah ini:</p>
-          <div class="grid grid-cols-2 gap-3 pl-1.5 border border-black/50 p-2 rounded bg-slate-50/40">
-            <!-- I. PEMBERI KUASA -->
-            <div>
-              <p class="font-black text-black uppercase border-b border-black/30 pb-0.5 mb-1">I. PEMBERI KUASA (PERWAKILAN KLOTER ${k})</p>
-              <table class="w-full text-[9.5px]">
-                <tr><td class="w-20 font-bold py-0.5">Nama</td><td>: <b>${esc(p.nama || '-')}</b></td></tr>
-                <tr><td class="font-bold py-0.5">NIK</td><td>: ${esc(p.nik || '-')}</td></tr>
-                <tr><td class="font-bold py-0.5">Kelompok Tani</td><td>: ${esc(p.poktan || 'SRI MULYO')}</td></tr>
-                <tr><td class="font-bold py-0.5 align-top">Alamat</td><td class="align-top">: ${esc(p.alamat || 'Desa Kediren, Kec. Lembeyan')}</td></tr>
-              </table>
-            </div>
+        <!-- 2. PEMBUKA & IDENTITAS (PERSIS SPREADSHEET ROW 3-14) -->
+        <p class="text-[10px] text-black font-normal mb-1">Yang bertanda tangan di bawah ini:</p>
 
-            <!-- II. PENERIMA KUASA -->
-            <div>
-              <p class="font-black text-black uppercase border-b border-black/30 pb-0.5 mb-1">II. PENERIMA KUASA (PENGELOLA / POKTAN)</p>
-              <table class="w-full text-[9.5px]">
-                <tr><td class="w-20 font-bold py-0.5">Nama</td><td>: <b>SUPRIYANTO</b></td></tr>
-                <tr><td class="font-bold py-0.5">NIK</td><td>: 3520033010900002</td></tr>
-                <tr><td class="font-bold py-0.5">Kelompok Tani</td><td>: SRI MULYO</td></tr>
-                <tr><td class="font-bold py-0.5 align-top">Alamat</td><td class="align-top">: Dsn. Selungguh RT 006 RW 001 Ds. Kediren</td></tr>
-              </table>
-            </div>
-          </div>
+        <div class="text-[9.5px] space-y-1 text-black mb-2">
+          <div class="font-bold">I. PEMBERI KUASA</div>
+          <table class="w-full text-[9.5px] ml-4">
+            <tr><td class="w-24 font-normal py-0.2">Nama</td><td>: <b>${esc(p.nama || '-')}</b></td></tr>
+            <tr><td class="font-normal py-0.2">NIK</td><td>: <b>${esc(p.nik || '-')}</b></td></tr>
+            <tr><td class="font-normal py-0.2">Kelompok Tani</td><td>: ${esc(p.poktan || 'SRI MULYO')}</td></tr>
+            <tr><td class="font-normal py-0.2 align-top">Alamat</td><td class="align-top">: ${esc(p.alamat || 'DSN SELUNGGUH RT 006 RW 001 DESA KEDIREN KECAMATAN LEMBEYAN -KABUPATEN MAGETAN').replace(/\n+/g, '<br>&nbsp; ')}</td></tr>
+          </table>
 
-          <p class="text-justify text-[9.5px] sm:text-[10px] leading-relaxed pt-0.5">
-            Dengan ini <b>PEMBERI KUASA</b> memberikan kuasa penuh kepada <b>PENERIMA KUASA</b> dengan alasan usia lanjut / kesehatan / transportasi 
-            agar dapat melakukan penebusan Pupuk Bersubsidi di Kios Resmi PPTS untuk komoditas padi/palawija dengan rincian anggota sebagai berikut:
-          </p>
+          <div class="font-bold pt-0.5">II. PENERIMA KUASA</div>
+          <table class="w-full text-[9.5px] ml-4">
+            <tr><td class="w-24 font-normal py-0.2">Nama</td><td>: <b>SUPRIYANTO</b></td></tr>
+            <tr><td class="font-normal py-0.2">NIK</td><td>: 3520033010900002</td></tr>
+            <tr><td class="font-normal py-0.2">Kelompok Tani</td><td>: SRI MULYO</td></tr>
+            <tr><td class="font-normal py-0.2 align-top">Alamat</td><td class="align-top">: DSN SELUNGGUH RT 006 RW 001 DESA KEDIREN<br>&nbsp; KECAMATAN LEMBEYAN -KABUPATEN MAGETAN</td></tr>
+          </table>
         </div>
 
-        <!-- 3. TABEL DAFTAR ANGGOTA PETANI -->
-        <table class="w-full text-[10.5px] border border-black border-collapse mb-2.5">
-          <thead class="bg-slate-100 font-black text-black border-b-2 border-black text-center text-[10px]">
+        <!-- 3. PERNYATAAN KUASA (PERSIS SPREADSHEET ROW 16-19) -->
+        <p class="text-[9.5px] text-justify leading-relaxed text-black mb-2">
+          Dengan ini <b>PEMBERI KUASA</b> memberikan kuasa kepada <b>PENERIMA KUASA</b> dengan alasan <b>usia lanjut/kesehatan/transportasi</b> agar dapat melakukan penebusan Pupuk Bersubsidi di PPTS .................................... untuk komoditas <b>padi/jagung/kedelai/bawang merah/bawang putih/cabai/kakao/kopi/tebu rakyat/ubi kayu</b> dengan rincian sebagaimana berikut:
+        </p>
+
+        <!-- 4. TABEL ANGGOTA PETANI (PERSIS SPREADSHEET ROW 21-43) -->
+        <table class="w-full text-[9.5px] border border-black border-collapse mb-2">
+          <thead class="bg-white font-bold text-black border-b border-black text-center">
             <tr>
-              <th class="border border-black py-1 px-1 w-8">No</th>
-              <th class="border border-black py-1 px-2 text-left">Nama Petani</th>
-              <th class="border border-black py-1 px-1.5 w-36 whitespace-nowrap">NIK</th>
-              <th class="border border-black py-1 px-1 w-16">Komoditas</th>
-              <th class="border border-black py-1 px-1.5 w-16 text-right">Urea (Kg)</th>
-              <th class="border border-black py-1 px-1.5 w-16 text-right">NPK (Kg)</th>
-              <th class="border border-black py-1 px-1.5 w-16 text-right">Org (Kg)</th>
-              <th class="border border-black py-1 px-1 w-28">Tanda Tangan</th>
+              <th rowspan="2" class="border border-black py-0.5 px-1 w-6">No</th>
+              <th rowspan="2" class="border border-black py-0.5 px-2 text-left">Nama Petani</th>
+              <th rowspan="2" class="border border-black py-0.5 px-1.5 w-32 whitespace-nowrap">NIK</th>
+              <th rowspan="2" class="border border-black py-0.5 px-1 w-14">Komoditas</th>
+              <th colspan="5" class="border border-black py-0.5 px-1">Jumlah Penebusan (Kg)</th>
+              <th rowspan="2" class="border border-black py-0.5 px-1 w-24">Tanda Tangan</th>
+            </tr>
+            <tr class="text-[8.5px]">
+              <th class="border border-black py-0.5 px-1 w-11 text-right">Urea</th>
+              <th class="border border-black py-0.5 px-1 w-11 text-right">NPK</th>
+              <th class="border border-black py-0.5 px-1 w-9 text-center">NPK</th>
+              <th class="border border-black py-0.5 px-1 w-8 text-center">ZA</th>
+              <th class="border border-black py-0.5 px-1 w-11 text-right">Organik</th>
             </tr>
           </thead>
           <tbody>
             ${rowsHtml}
-            <tr class="bg-slate-100 font-black border-t-2 border-black text-[10.5px]">
-              <td colspan="4" class="border border-black py-1 px-2 uppercase text-center tracking-wider">TOTAL ALOKASI PENEBUSAN (KLOTER ${k}):</td>
-              <td class="border border-black py-1 px-1.5 text-right font-mono font-black">${esc(tot.urea)}</td>
-              <td class="border border-black py-1 px-1.5 text-right font-mono font-black">${esc(tot.npk)}</td>
-              <td class="border border-black py-1 px-1.5 text-right font-mono font-black">${esc(tot.organik)}</td>
-              <td class="border border-black py-1 px-1 text-center font-bold text-[9.5px]">${list.length} Petani</td>
+            <tr class="bg-white font-bold border-t-2 border-black text-[9.5px]">
+              <td colspan="4" class="border border-black py-0.5 px-2 uppercase text-center font-bold">Total</td>
+              <td class="border border-black py-0.5 px-1 text-right font-mono font-bold">${esc(tot.urea)}</td>
+              <td class="border border-black py-0.5 px-1 text-right font-mono font-bold">${esc(tot.npk)}</td>
+              <td class="border border-black py-0.5 px-1 text-center font-mono text-slate-400 text-[8.5px]">-</td>
+              <td class="border border-black py-0.5 px-1 text-center font-mono text-slate-400 text-[8.5px]">-</td>
+              <td class="border border-black py-0.5 px-1 text-right font-mono font-bold">${esc(tot.organik)}</td>
+              <td class="border border-black py-0.5 px-1 text-center font-medium text-[8px]">&nbsp;</td>
             </tr>
           </tbody>
         </table>
 
-        <!-- 4. PENUTUP & LEMBAR TANDA TANGAN 3 PIHAK -->
-        <div class="text-[9.5px] sm:text-[10px] leading-relaxed text-slate-900">
-          <p class="text-justify mb-2.5">
-            Sehubungan dengan pemberian kuasa tersebut, <b>PENERIMA KUASA</b> menyatakan dan menyanggupi akan menyerahkan Pupuk Bersubsidi 
-            kepada masing-masing Petani sesuai daftar di atas serta bertanggung jawab secara administrasi dan hukum atas kesesuaian jumlah 
-            penebusan yang diterima oleh masing-masing Petani. Demikian Surat Kuasa ini dibuat dengan sebenarnya untuk dipergunakan sebagaimana mestinya.
-          </p>
+        <!-- 5. PERNYATAAN PENUTUP (PERSIS SPREADSHEET ROW 45-48) -->
+        <p class="text-[9.5px] text-justify leading-relaxed text-black mb-1.5">
+          Sehubungan dengan pemberian kuasa tersebut, <b>PENERIMA KUASA</b> menyatakan dan menyanggupi akan menyerahkan Pupuk Bersubsidi kepada masing-masing Petani sesuai daftar di atas serta bertanggung jawab secara administrasi dan hukum atas kesesuaian jumlah penebusan yang diterima oleh masing-masing Petani.<br>
+          Demikian Surat Kuasa ini dibuat dengan sebenarnya untuk dipergunakan sebagaimana mestinya.
+        </p>
 
-          <div class="grid grid-cols-3 text-center text-[10px] leading-normal pt-1">
-            <!-- PEMBERI KUASA -->
+        <!-- 6. LEMBAR TANDA TANGAN PERSIS SPREADSHEET (ROW 52-68) -->
+        <div class="text-[9.5px] text-black mt-1">
+          <!-- Tanggal Kanan Atas -->
+          <div class="text-right pr-6 mb-1 text-[9.5px]">
+            Magetan , 17 Oktober &nbsp;2026
+          </div>
+
+          <!-- Baris 1: A.n Pemberi Kuasa (Kiri) & Penerima Kuasa (Kanan) -->
+          <div class="grid grid-cols-2 text-center px-6 mb-2">
             <div>
-              <p class="font-bold">A.n. Pemberi Kuasa</p>
-              <p class="text-[9px] text-slate-600">Perwakilan Petani Kloter ${k}</p>
-              <div class="h-16 flex items-end justify-center pb-1">
-                <span class="text-[8px] text-slate-400 italic">[ Tanda Tangan ]</span>
-              </div>
-              <p class="font-black underline underline-offset-2 uppercase text-slate-900">${esc(p.nama || '................................')}</p>
-              <p class="text-[8.5px] text-slate-600">NIK. ${esc(p.nik || '................................')}</p>
+              <p class="font-normal">A.n Pemberi Kuasa</p>
+              <div class="h-14"></div>
+              <p class="font-bold uppercase text-black underline underline-offset-2">${esc(p.nama || '................................')}</p>
             </div>
-
-            <!-- PENERIMA KUASA -->
             <div>
-              <p class="font-bold">Penerima Kuasa</p>
-              <p class="text-[9px] text-slate-600">Pengurus / Koordinator Kloter</p>
-              <div class="h-16 flex items-end justify-center pb-1">
-                <span class="text-[8px] text-slate-400 italic">[ Tanda Tangan ]</span>
-              </div>
-              <p class="font-black underline underline-offset-2 uppercase text-slate-900">SUPRIYANTO</p>
-              <p class="text-[8.5px] text-slate-600">NIK. 3520033010900002</p>
-            </div>
-
-            <!-- MENGETAHUI PPL -->
-            <div>
-              <p>Kediren, ${tglCetak}</p>
-              <p class="font-bold">Mengetahui,</p>
-              <p class="text-[9px] text-slate-600">Penyuluh Pertanian (PPL Wilbin)</p>
-              <div class="h-16 flex items-end justify-center pb-1">
-                <span class="text-[8px] text-slate-400 italic">[ Tanda Tangan &amp; Cap ]</span>
-              </div>
-              <p class="font-black underline underline-offset-2 uppercase text-slate-900">IIS SUGIARTI, SP</p>
-              <p class="text-[8.5px] text-slate-600">NIP. 19810425 201001 2 020</p>
+              <p class="font-normal">Penerima Kuasa</p>
+              <div class="h-14"></div>
+              <p class="font-bold uppercase text-black underline underline-offset-2">SUPRIYANTO</p>
             </div>
           </div>
+
+          <!-- Baris 2: Mengetahui PPL (Tengah Bawah) -->
+          <div class="text-center mx-auto w-64">
+            <p class="font-normal">Mengetahui</p>
+            <p class="font-normal">Penyuluh Pertanian</p>
+            <p class="font-normal font-semibold">Desa KEDIREN</p>
+            <div class="h-12 flex items-end justify-center pb-0.5">
+              <span class="text-[7.5px] text-slate-300 italic">[ Tanda Tangan &amp; Cap ]</span>
+            </div>
+            <p class="font-bold uppercase text-black underline underline-offset-2">( IIS SUGIARTI, SP )</p>
+            <p class="text-[8.5px]">NIP. 19810425 201001 2 020</p>
+          </div>
         </div>
+
       </div>`;
     }
 
