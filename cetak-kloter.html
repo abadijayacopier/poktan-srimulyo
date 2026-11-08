@@ -623,6 +623,10 @@
       buatTombolKloter();
       muatUlangData();
     });
+    // Saat pengguna kembali ke tab ini (mis. habis mengedit spreadsheet), data otomatis diperbarui
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') muatUlangData();
+    });
   </script>
 </body>
 </html>
