@@ -1,5 +1,6 @@
 const MAX_BODY_BYTES = 4 * 1024 * 1024;
 const MAX_HISTORY = 12;
+const requestWindows = new Map();
 
 function cleanText(value, max = 2000) {
   return String(value || "").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "").slice(0, max);
@@ -21,6 +22,14 @@ module.exports = async function handler(req, res) {
   if (!apiKey) return json(res, 503, { error: "Layanan AI belum dikonfigurasi. Hubungi pengurus Poktan." });
 
   try {
+    const ip = String(req.headers["x-forwarded-for"] || "unknown").split(",")[0].trim();
+    const now = Date.now();
+    const windowInfo = requestWindows.get(ip) || { start: now, count: 0 };
+    if (now - windowInfo.start > 60000) { windowInfo.start = now; windowInfo.count = 0; }
+    windowInfo.count += 1;
+    requestWindows.set(ip, windowInfo);
+    if (windowInfo.count > 8) return json(res, 429, { error: "Terlalu banyak permintaan. Coba lagi satu menit lagi." });
+
     const declaredSize = Number(req.headers["content-length"] || 0);
     if (declaredSize > MAX_BODY_BYTES) return json(res, 413, { error: "Permintaan terlalu besar. Kompres foto lalu coba lagi." });
 
@@ -48,7 +57,7 @@ module.exports = async function handler(req, res) {
 
     const input = safeMessages.map((m) => ({
       role: m.role,
-      content: [{ type: "input_text", text: m.content }]
+      content: m.role === "assistant" ? m.content : [{ type: "input_text", text: m.content }]
     }));
 
     let imageAttached = false;
@@ -101,7 +110,8 @@ module.exports = async function handler(req, res) {
       return json(res, 502, { error: "AI belum dapat menjawab saat ini. Silakan coba kembali beberapa saat lagi." });
     }
 
-    const reply = String(data.output_text || "").trim();
+    const outputText = Array.isArray(data.output) ? data.output.filter((item) => item.type === "message").flatMap((item) => Array.isArray(item.content) ? item.content : []).filter((part) => part.type === "output_text").map((part) => part.text || "").join("\n") : "";
+    const reply = String(data.output_text || outputText || "").trim();
     if (!reply) return json(res, 502, { error: "AI belum menghasilkan jawaban. Silakan kirim ulang pertanyaan." });
 
     return json(res, 200, { reply, imageAnalyzed: imageAttached });
