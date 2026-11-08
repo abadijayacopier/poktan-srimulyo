@@ -9,11 +9,11 @@
   <script>
     // Proteksi Hak Akses: Halaman ini HANYA UNTUK ADMINISTRATOR
     (function checkAdminAuth() {
-      const token = sessionStorage.getItem('poktan_session_token');
-      const user = sessionStorage.getItem('poktan_session_user');
+      const token = localStorage.getItem('poktan_session_token') || sessionStorage.getItem('poktan_session_token');
+      const role = localStorage.getItem('poktan_session_role') || sessionStorage.getItem('poktan_session_role');
       // Bila tidak ada sesi login atau pengguna bukan admin
-      if (!token) {
-        alert('Akses ditolak. Silakan login sebagai administrator terlebih dahulu.');
+      if (!token || role !== 'admin') {
+        alert('Akses ditolak: Menu Sisa Pupuk hanya dapat diakses oleh Administrator.');
         window.location.replace('index.html');
         return;
       }

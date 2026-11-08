@@ -48,6 +48,11 @@
       }
     }
 
+    /* Proteksi Role Admin: sembunyikan semua elemen admin-only jika bukan admin */
+    body:not(.is-admin) [data-admin-only] {
+      display: none !important;
+    }
+
     /* Auth locking */
     .auth-locked header, 
     .auth-locked #app-container, 
@@ -236,8 +241,8 @@
           <span class="hidden xl:inline">Refresh</span>
         </button>
 
-        <!-- Tombol Langsung Cetak Laporan (Tablet & Desktop) -->
-        <a href="laporan.html" title="Pusat Cetak Dokumen & Laporan Resmi (4 Sheet)"
+        <!-- Tombol Langsung Cetak Laporan (Tablet & Desktop - Admin Only) -->
+        <a href="laporan.html" data-admin-only title="Pusat Cetak Dokumen & Laporan Resmi (4 Sheet)"
            class="hidden sm:flex items-center gap-1.5 p-2 sm:px-2.5 sm:py-1.5 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-bold transition active:scale-95 shadow-2xs">
           <i class="fa-solid fa-print text-amber-600 text-xs"></i>
           <span class="hidden md:inline">Cetak Laporan</span>
@@ -471,7 +476,7 @@
             <div class="text-xs font-bold text-emerald-950">Sisa Pupuk</div>
             <div class="text-[10px] text-emerald-700 font-medium">Formula Target 71 Sak</div>
           </a>
-          <a href="laporan.html" class="p-3.5 bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-xl border border-amber-300/80 shadow-2xs hover:shadow-sm hover:border-amber-500 transition text-left group">
+          <a href="laporan.html" data-admin-only class="hidden p-3.5 bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-xl border border-amber-300/80 shadow-2xs hover:shadow-sm hover:border-amber-500 transition text-left group">
             <div class="flex items-center justify-between mb-1">
               <span class="w-8 h-8 rounded-lg bg-amber-600 text-white flex items-center justify-center text-sm group-hover:scale-105 transition"><i class="fa-solid fa-print"></i></span>
               <i class="fa-solid fa-arrow-right text-[11px] text-amber-600 group-hover:translate-x-0.5 transition"></i>
@@ -1316,6 +1321,7 @@
       document.body.classList.remove('auth-locked');
       document.getElementById('login-screen').classList.add('hidden');
       const isAdmin = authSession.role === 'admin';
+      document.body.classList.toggle('is-admin', isAdmin);
       document.querySelectorAll('[data-admin-only]').forEach(el => el.classList.toggle('hidden', !isAdmin));
       const badge = document.getElementById('user-role-badge');
       const hour = new Date().getHours();
@@ -1340,6 +1346,7 @@
 
     function showLogin(message) {
       authSession = null;
+      document.body.classList.remove('is-admin');
       document.body.classList.add('auth-locked');
       document.getElementById('login-screen').classList.remove('hidden');
       const errorBox = document.getElementById('login-error');
