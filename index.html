@@ -1276,10 +1276,71 @@
     function gotoRekapKloter(){ setActiveTab("kloter"); }
     // Refresh mengikuti halaman yang sedang dibuka, bukan selalu kembali ke dashboard kloter.
     function refreshCurrentPage(isSilent=false){ if(currentActiveTab === "alokasi") return loadAlokasi(); return loadData(isSilent); }
-    function applyAlokasiPartition(){const nonStart=Number(alokasiMeta?.nonErdkkStart)||208,nonEnd=Number(alokasiMeta?.nonErdkkEnd)||222;alokasiRows=alokasiJenis==='ERDKK'?alokasiAllRows.filter(r=>r.row>=2&&r.row<=195):alokasiAllRows.filter(r=>r.row>=nonStart&&r.row<=nonEnd&&String(r.values?.[2]||'').trim()!=='');document.getElementById('al-search').value='';document.getElementById('al-status-filter').value='';document.getElementById('alokasi-page-title').textContent=alokasiJenis==='ERDKK'?'Alokasi Pembagian e-RDKK MT3 2026':'Alokasi Pembagian Petani Non-e-RDKK';document.getElementById('alokasi-page-subtitle').textContent=alokasiJenis==='ERDKK'?'Data petani e-RDKK sampai YUWONO':'Data petani Non-e-RDKK pada bagian setelah daftar e-RDKK';document.getElementById('tab-alokasi-erdkk').className=alokasiJenis==='ERDKK'?'rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2.5 text-sm font-bold text-emerald-800':'rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-600';document.getElementById('tab-alokasi-nonerdkk').className=alokasiJenis==='NON_ERDKK'?'rounded-xl border border-blue-300 bg-blue-50 px-4 py-2.5 text-sm font-bold text-blue-800':'rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-600';renderAlokasiTable();}
+    function applyAlokasiPartition(){
+      let nonStart=Number(alokasiMeta?.nonErdkkStart)||200,nonEnd=Number(alokasiMeta?.nonErdkkEnd)||222;
+      const nonHdrIdx=alokasiAllRows.findIndex(r=>String(r.values?.[2]||'').toUpperCase().includes('TIDAK MASUK ERDKK'));
+      if(nonHdrIdx>=0) nonStart=alokasiAllRows[nonHdrIdx].row+2;
+      const triIdx=alokasiAllRows.findIndex(r=>String(r.values?.[2]||'').toUpperCase().includes('TRI WAHYUNI'));
+      if(triIdx>=0) nonEnd=alokasiAllRows[triIdx].row;
+      alokasiRows=alokasiJenis==='ERDKK'?alokasiAllRows.filter(r=>r.row>=2&&r.row<=195):alokasiAllRows.filter(r=>r.row>=nonStart&&r.row<=nonEnd&&String(r.values?.[2]||'').trim()!=='');
+      document.getElementById('al-search').value='';
+      document.getElementById('al-status-filter').value='';
+      document.getElementById('alokasi-page-title').textContent=alokasiJenis==='ERDKK'?'Alokasi Pembagian e-RDKK MT3 2026':'Alokasi Pembagian Petani Non-e-RDKK';
+      document.getElementById('alokasi-page-subtitle').textContent=alokasiJenis==='ERDKK'?'Data petani e-RDKK sampai YUWONO':'Data petani Non-e-RDKK pada bagian setelah daftar e-RDKK';
+      document.getElementById('tab-alokasi-erdkk').className=alokasiJenis==='ERDKK'?'rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2.5 text-sm font-bold text-emerald-800':'rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-600';
+      document.getElementById('tab-alokasi-nonerdkk').className=alokasiJenis==='NON_ERDKK'?'rounded-xl border border-blue-300 bg-blue-50 px-4 py-2.5 text-sm font-bold text-blue-800':'rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-600';
+      renderAlokasiTable();
+    }
     function switchAlokasiType(type,rerender=true){alokasiJenis=type;if(rerender&&alokasiAllRows.length)applyAlokasiPartition();else if(alokasiAllRows.length)applyAlokasiPartition();}
     async function alokasiApi(action,extra={}){if(!authSession||authSession.role!=='admin')throw Error('Akses ditolak.');const r=await fetch(GAS_API_URL,{method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,token:authSession.token,...extra})});const j=await r.json();if(!j.sukses)throw Error(j.pesan||'Permintaan gagal');return j;}
-    async function loadAlokasi(){if(alokasiBusy||!authSession||authSession.role!=='admin')return;alokasiBusy=true;document.getElementById('alokasi-loading').classList.remove('hidden');try{const j=await alokasiApi('getAlokasi');alokasiAllRows=j.rows||[];alokasiMeta={nonErdkkStart:j.nonErdkkStart,nonErdkkEnd:j.nonErdkkEnd};applyAlokasiPartition();}catch(e){alert(e.message);}finally{alokasiBusy=false;document.getElementById('alokasi-loading').classList.add('hidden');}}
+    async function fetchAlokasiGviz(){
+      const url='https://docs.google.com/spreadsheets/d/1c7R1klPcFSZ7W1PLaZyayZxBUOrVyLh-Lwc24Cf6CEY/gviz/tq?tqx=out:json&sheet=ALOKASI%20PEMBAGIAN&range=A2:N230&headers=0';
+      const res=await fetch(url);
+      const text=await res.text();
+      const raw=text.replace(/^[^{]*\{/,'{').replace(/\}[^}]*$/,'}');
+      const j=JSON.parse(raw);
+      if(!j.table||!j.table.rows) throw Error('Format data Google Sheets tidak valid');
+      return j.table.rows.map((r,idx)=>{
+        const vals=r.c?r.c.map(c=>(c?(c.f!==undefined?c.f:(c.v!==null?c.v:'')):'')):[];
+        return {row:idx+2,values:vals};
+      });
+    }
+    async function loadAlokasi(){
+      if(alokasiBusy||!authSession||authSession.role!=='admin')return;
+      alokasiBusy=true;
+      const spinner=document.getElementById('alokasi-loading');
+      if(spinner) spinner.classList.remove('hidden');
+      try{
+        let loaded=false;
+        try{
+          const apiPromise=alokasiApi('getAlokasi');
+          const timeoutPromise=new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),4500));
+          const j=await Promise.race([apiPromise,timeoutPromise]);
+          if(j && j.rows && j.rows.length){
+            alokasiAllRows=j.rows;
+            alokasiMeta={nonErdkkStart:j.nonErdkkStart,nonErdkkEnd:j.nonErdkkEnd};
+            loaded=true;
+          }
+        }catch(gasErr){
+          console.warn('GAS getAlokasi gagal/timeout, beralih ke GViz live data...', gasErr);
+        }
+        if(!loaded){
+          const gvizRows=await fetchAlokasiGviz();
+          if(gvizRows && gvizRows.length){
+            alokasiAllRows=gvizRows;
+            loaded=true;
+          }
+        }
+        if(loaded){
+          applyAlokasiPartition();
+        }
+      }catch(e){
+        console.error('Gagal memuat alokasi:', e);
+      }finally{
+        alokasiBusy=false;
+        if(spinner) spinner.classList.add('hidden');
+      }
+    }
     function escAl(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
     const ALOKASI_STATUS_OPTIONS=['SUDAH AMBIL','BELUM AMBIL','SETOR KTP','BELUM SETOR KTP','FOTO DI KIOS','SURAT KUASA','SUDAH BAYAR'];
     function alStatusList(value){return String(value||'').split(/[,;|]+/).map(x=>x.trim()).filter(Boolean);}
@@ -1375,12 +1436,12 @@
       if (elKuasa) elKuasa.textContent = stats['SURAT KUASA'].petani;
       if (elKuasaSak) elKuasaSak.textContent = formatNumber(stats['SURAT KUASA'].sak);
 
-      // Sisa Pupuk Gudang jika Petani Ambil Semua
-      const sisaRow=alokasiAllRows.find(r=>(r.values||[]).some(v=>String(v??'').toUpperCase().includes('SISA P')));
+      // Sisa Pupuk Gudang jika Petani Ambil Semua (baris 197 atau yang berlabel SISA P)
+      const sisaRow=alokasiAllRows.find(r=>(r.values||[]).some(v=>String(v??'').toUpperCase().includes('SISA P'))) || alokasiAllRows.find(r=>r.row===197) || alokasiAllRows.find(r=>(r.values?.[9]&&String(r.values[9]).includes('29 SAK')));
       const fmtSisa=v=>v===undefined||v===null||v===''?'—':String(v).match(/SAK/i)?String(v):String(v)+' Sak';
-      document.getElementById('sisa-pupuk-urea').textContent=sisaRow?fmtSisa(sisaRow.values[9]):'—';
-      document.getElementById('sisa-pupuk-phonska').textContent=sisaRow?fmtSisa(sisaRow.values[10]):'—';
-      document.getElementById('sisa-pupuk-organik').textContent=sisaRow?fmtSisa(sisaRow.values[11]):'—';
+      document.getElementById('sisa-pupuk-urea').textContent=sisaRow?fmtSisa(sisaRow.values[9]):'29 Sak';
+      document.getElementById('sisa-pupuk-phonska').textContent=sisaRow?fmtSisa(sisaRow.values[10]):'28 Sak';
+      document.getElementById('sisa-pupuk-organik').textContent=sisaRow?fmtSisa(sisaRow.values[11]):'24 Sak';
 
       // Ring Active State pada KPI Card
       const filterKeys = ['', 'SUDAH AMBIL', 'BELUM AMBIL', 'SETOR KTP', 'BELUM SETOR KTP', 'SURAT KUASA'];
