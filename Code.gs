@@ -377,15 +377,23 @@ function tambahPetaniKeKloter(nik, kloterTujuan) {
 
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet = ss.getSheetByName('REKAP_KLOTER_CETAK');
-    if (!sheet) throw new Error("Sheet 'REKAP_KLOTER_CETAK' tidak ditemukan.");
+    const sheetRekap = ss.getSheetByName('REKAP_KLOTER_CETAK');
+    if (!sheetRekap) throw new Error("Sheet 'REKAP_KLOTER_CETAK' tidak ditemukan.");
 
     const targetNik = String(nik || '').trim();
     const targetKloter = String(kloterTujuan || '').trim();
 
     if (!targetNik || !targetKloter) throw new Error("NIK dan Kloter tujuan wajib diisi.");
 
-    const kloterMeta = sheet.getRange("B14:E23").getValues();
+    // Format target kloter, misal "Kloter 8" -> nama sheet "KLOTER 8"
+    const namaSheetKloter = targetKloter.toUpperCase();
+    const sheetKloter = ss.getSheetByName(namaSheetKloter) || ss.getSheetByName(targetKloter);
+    if (!sheetKloter) {
+      throw new Error("Sheet tab untuk '" + targetKloter + "' tidak ditemukan di spreadsheet.");
+    }
+
+    // Ambil metadata ketua kloter (penerima kuasa)
+    const kloterMeta = sheetRekap.getRange("B14:E23").getValues();
     let penerimaKuasaDefault = 'SUPRIYANTO';
     kloterMeta.forEach(r => {
       if (String(r[1] || '').trim().toUpperCase() === targetKloter.toUpperCase()) {
@@ -393,22 +401,18 @@ function tambahPetaniKeKloter(nik, kloterTujuan) {
       }
     });
 
-    const lastRow = Math.max(sheet.getLastRow(), 230);
+    // Validasi data petani dari REKAP_KLOTER_CETAK
+    const lastRow = Math.max(sheetRekap.getLastRow(), 230);
     const numRows = lastRow - 36;
-    const petaniRange = sheet.getRange(37, 2, numRows, 8).getValues();
+    const petaniRange = sheetRekap.getRange(37, 2, numRows, 8).getValues();
 
     let foundRowIndex = -1;
     let foundPetani = null;
-    let jumlahAnggotaKloterTujuan = 0;
 
     petaniRange.forEach((row, idx) => {
       const rowNik = String(row[1] || '').trim();
       const rowNama = String(row[2] || '').trim();
       const rowStatus = String(row[3] || '').trim();
-
-      if (rowStatus.toUpperCase() === targetKloter.toUpperCase()) {
-        jumlahAnggotaKloterTujuan++;
-      }
 
       if (rowNik === targetNik) {
         foundRowIndex = 37 + idx;
@@ -422,21 +426,44 @@ function tambahPetaniKeKloter(nik, kloterTujuan) {
       throw new Error("DITOLAK! Petani " + foundPetani.nama + " sudah terdaftar di " + foundPetani.status);
     }
 
-    if (jumlahAnggotaKloterTujuan >= 20) {
-      throw new Error("DITOLAK! " + targetKloter + " sudah penuh (20 petani).");
+    // Periksa slot anggota di sheet Kloter tujuan (C23:C42, maksimal 20 orang)
+    const slotValues = sheetKloter.getRange("C23:C42").getValues();
+    let slotKosongIndex = -1;
+    let jumlahTerisi = 0;
+
+    for (let i = 0; i < slotValues.length; i++) {
+      const val = String(slotValues[i][0] || '').trim();
+      if (val === targetNik) {
+        throw new Error("Petani " + foundPetani.nama + " sudah terdaftar di " + targetKloter + ".");
+      }
+      if (val !== '') {
+        jumlahTerisi++;
+      } else if (slotKosongIndex === -1) {
+        slotKosongIndex = i; // indeks 0-19 relatif terhadap C23
+      }
     }
 
-    const cellStatus = sheet.getRange(foundRowIndex, 5);
-    const cellPenerima = sheet.getRange(foundRowIndex, 6);
+    if (slotKosongIndex === -1 || jumlahTerisi >= 20) {
+      throw new Error("DITOLAK! " + targetKloter + " sudah penuh (maksimal 20 petani).");
+    }
 
-    if (!cellStatus.getFormula()) cellStatus.setValue(targetKloter);
-    if (!cellPenerima.getFormula()) cellPenerima.setValue(penerimaKuasaDefault);
+    // Tulis NIK ke baris kosong yang ditemukan di sheet Kloter tujuan
+    const targetRowKloter = 23 + slotKosongIndex;
+    sheetKloter.getRange(targetRowKloter, 3).setValue("'" + targetNik);
+
+    // Jika di REKAP_KLOTER_CETAK kolom status bukan formula (misal data statis), perbarui juga nilainya
+    if (foundRowIndex > 0) {
+      const cellStatus = sheetRekap.getRange(foundRowIndex, 5);
+      const cellPenerima = sheetRekap.getRange(foundRowIndex, 6);
+      if (!cellStatus.getFormula()) cellStatus.setValue(targetKloter);
+      if (!cellPenerima.getFormula()) cellPenerima.setValue(penerimaKuasaDefault);
+    }
 
     SpreadsheetApp.flush();
 
     return {
       sukses: true,
-      pesan: "Berhasil menambahkan " + foundPetani.nama + " ke " + targetKloter + "!",
+      pesan: "Berhasil menambahkan " + foundPetani.nama + " ke " + targetKloter + " (Urutan ke-" + (slotKosongIndex + 1) + ")!",
       dataTerbaru: getDashboardData()
     };
   } finally {
