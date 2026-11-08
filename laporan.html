@@ -6,119 +6,162 @@
   <title>Pusat Cetak Dokumen Laporan Resmi - Poktan Sri Mulyo</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     @media print {
       .no-print { display: none !important; }
       body { background: white !important; color: black !important; padding: 0 !important; }
       .print-page { box-shadow: none !important; border: none !important; margin: 0 !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; }
       .page-break { page-break-after: always; }
-      table { border-collapse: collapse !important; }
+      table { border-collapse: collapse !important; width: 100% !important; }
       th, td { border-color: #333 !important; }
+      .overflow-x-auto { overflow: visible !important; }
+      .kartu-grid { display: grid !important; }
+      .ttd-grid { display: grid !important; }
+    }
+
+    /* Mode Penyusunan PDF oleh html2pdf */
+    body.pdf-exporting {
+      background: white !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+    body.pdf-exporting .no-print {
+      display: none !important;
+    }
+    body.pdf-exporting .print-page {
+      box-shadow: none !important;
+      border: none !important;
+      border-radius: 0 !important;
+      margin: 0 !important;
+      padding: 8mm 10mm !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    body.pdf-exporting .overflow-x-auto {
+      overflow: visible !important;
+    }
+    body.pdf-exporting .kartu-grid {
+      display: grid !important;
+    }
+    body.pdf-exporting .ttd-grid {
+      display: grid !important;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen p-3 sm:p-6 lg:p-8 font-sans">
+<body class="bg-slate-100 text-slate-800 min-h-screen p-2.5 sm:p-5 lg:p-8 font-sans">
 
   <!-- Navigasi & Action Toolbar Atas (No-Print) -->
-  <div class="max-w-6xl mx-auto mb-6 no-print space-y-4">
-    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+  <div class="max-w-6xl mx-auto mb-5 no-print space-y-3">
+    <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
-        <div class="flex items-center gap-2 mb-1">
+        <div class="flex flex-wrap items-center gap-2 mb-1">
           <span class="px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[10px] font-extrabold uppercase">DOKUMEN RESMI POKTAN</span>
           <span class="text-xs text-slate-400">Musim Tanam III 2026</span>
           <span id="sync-badge" class="px-2 py-0.5 rounded-md bg-blue-100 text-blue-700 text-[10px] font-semibold flex items-center gap-1">
             <i class="fa-solid fa-spinner fa-spin text-[9px]"></i> Menghubungkan Google Sheets...
           </span>
         </div>
-        <h1 class="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
+        <h1 class="text-lg sm:text-2xl font-black text-slate-900 flex items-center gap-2">
           <i class="fa-solid fa-print text-emerald-600"></i>
-          Pusat Cetak & Laporan Resmi
+          Pusat Cetak &amp; Laporan Resmi
         </h1>
         <p class="text-xs text-slate-500 mt-0.5">Format cetak resmi sinkron otomatis dari 4 sheet utama Poktan Sri Mulyo</p>
       </div>
 
-      <div class="flex flex-wrap items-center gap-2.5">
-        <a href="index.html" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5 border border-slate-200">
-          <i class="fa-solid fa-arrow-left"></i> Dashboard Utama
-        </a>
-        <a href="cetak-kloter.html" class="px-4 py-2 rounded-xl bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm active:scale-95">
-          <i class="fa-solid fa-file-contract"></i> Cetak Kloter (F4)
-        </a>
-        <button onclick="sinkronUlangData()" id="btn-refresh" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5 border border-slate-200">
-          <i class="fa-solid fa-rotate text-emerald-600"></i> Segarkan Data
-        </button>
-        <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm active:scale-95">
-          <i class="fa-solid fa-print"></i> Cetak Dokumen Terpilih
-        </button>
+      <!-- Tombol Aksi: Dioptimalkan untuk HP (Mode Portrait) & Laptop -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0">
+        <div class="grid grid-cols-2 sm:flex sm:items-center gap-2">
+          <button onclick="eksporPdfLaporan()" id="btn-pdf-laporan" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm active:scale-95">
+            <i class="fa-solid fa-file-pdf"></i> Unduh PDF
+          </button>
+          <button onclick="window.print()" class="px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm active:scale-95">
+            <i class="fa-solid fa-print"></i> Cetak / Print
+          </button>
+        </div>
+        <div class="flex items-center gap-1.5 justify-between sm:justify-start">
+          <a href="index.html" class="flex-1 sm:flex-none px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center justify-center gap-1 border border-slate-200">
+            <i class="fa-solid fa-arrow-left"></i> Dashboard
+          </a>
+          <a href="cetak-kloter.html" class="flex-1 sm:flex-none px-3 py-2 rounded-xl bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold transition flex items-center justify-center gap-1 shadow-sm active:scale-95">
+            <i class="fa-solid fa-file-contract"></i> Kloter F4
+          </a>
+          <button onclick="sinkronUlangData()" id="btn-refresh" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center justify-center gap-1 border border-slate-200" title="Segarkan data dari spreadsheet">
+            <i class="fa-solid fa-rotate text-emerald-600"></i>
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- Pilihan Tab Dokumen Laporan Cetak -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
       <!-- 1. LAPORAN_CETAK -->
       <button onclick="pilihLaporan('laporan_cetak')" id="tab-laporan_cetak" 
-              class="laporan-tab active-tab bg-white p-4 rounded-xl border-2 border-emerald-600 shadow-sm text-left transition group">
+              class="laporan-tab active-tab bg-white p-3.5 sm:p-4 rounded-xl border-2 border-emerald-600 shadow-sm text-left transition group">
         <div class="flex items-center justify-between mb-1">
-          <span class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-sm font-bold">1</span>
-          <i class="fa-solid fa-file-invoice text-emerald-600"></i>
+          <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-xs sm:text-sm font-bold">1</span>
+          <i class="fa-solid fa-file-invoice text-emerald-600 text-xs sm:text-sm"></i>
         </div>
-        <div class="text-xs font-bold text-slate-900">Laporan Penyaluran</div>
-        <div class="text-[10px] text-slate-500">Sheet: LAPORAN_CETAK (4 Bagian)</div>
+        <div class="text-xs font-bold text-slate-900 leading-tight">Laporan Penyaluran</div>
+        <div class="text-[9.5px] sm:text-[10px] text-slate-500 mt-0.5">Sheet: LAPORAN_CETAK</div>
       </button>
 
       <!-- 2. REKAP_KLOTER_CETAK -->
       <button onclick="pilihLaporan('rekap_kloter')" id="tab-rekap_kloter" 
-              class="laporan-tab bg-white p-4 rounded-xl border-2 border-slate-200 hover:border-slate-300 shadow-sm text-left transition group">
+              class="laporan-tab bg-white p-3.5 sm:p-4 rounded-xl border-2 border-slate-200 hover:border-slate-300 shadow-sm text-left transition group">
         <div class="flex items-center justify-between mb-1">
-          <span class="w-8 h-8 rounded-lg bg-purple-50 text-purple-700 flex items-center justify-center text-sm font-bold">2</span>
-          <i class="fa-solid fa-list-check text-purple-600"></i>
+          <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-purple-50 text-purple-700 flex items-center justify-center text-xs sm:text-sm font-bold">2</span>
+          <i class="fa-solid fa-list-check text-purple-600 text-xs sm:text-sm"></i>
         </div>
-        <div class="text-xs font-bold text-slate-900">Rekap Kloter & Petani</div>
-        <div class="text-[10px] text-slate-500">Sheet: REKAP_KLOTER_CETAK</div>
+        <div class="text-xs font-bold text-slate-900 leading-tight">Rekap Kloter &amp; Petani</div>
+        <div class="text-[9.5px] sm:text-[10px] text-slate-500 mt-0.5">Sheet: REKAP_KLOTER</div>
       </button>
 
       <!-- 3. LAPORAN_NON_ERDKK -->
       <button onclick="pilihLaporan('non_erdkk')" id="tab-non_erdkk" 
-              class="laporan-tab bg-white p-4 rounded-xl border-2 border-slate-200 hover:border-slate-300 shadow-sm text-left transition group">
+              class="laporan-tab bg-white p-3.5 sm:p-4 rounded-xl border-2 border-slate-200 hover:border-slate-300 shadow-sm text-left transition group">
         <div class="flex items-center justify-between mb-1">
-          <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center text-sm font-bold">3</span>
-          <i class="fa-solid fa-users-gear text-blue-600"></i>
+          <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center text-xs sm:text-sm font-bold">3</span>
+          <i class="fa-solid fa-users-gear text-blue-600 text-xs sm:text-sm"></i>
         </div>
-        <div class="text-xs font-bold text-slate-900">Petani Non-eRDKK</div>
-        <div class="text-[10px] text-slate-500">Sheet: LAPORAN_NON_ERDKK</div>
+        <div class="text-xs font-bold text-slate-900 leading-tight">Petani Non-eRDKK</div>
+        <div class="text-[9.5px] sm:text-[10px] text-slate-500 mt-0.5">Sheet: NON_ERDKK</div>
       </button>
 
       <!-- 4. LAPORAN_TARGET_SISA -->
       <button onclick="pilihLaporan('target_sisa')" id="tab-target_sisa" 
-              class="laporan-tab bg-white p-4 rounded-xl border-2 border-slate-200 hover:border-slate-300 shadow-sm text-left transition group">
+              class="laporan-tab bg-white p-3.5 sm:p-4 rounded-xl border-2 border-slate-200 hover:border-slate-300 shadow-sm text-left transition group">
         <div class="flex items-center justify-between mb-1">
-          <span class="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center text-sm font-bold">4</span>
-          <i class="fa-solid fa-boxes-stacked text-amber-600"></i>
+          <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center text-xs sm:text-sm font-bold">4</span>
+          <i class="fa-solid fa-boxes-stacked text-amber-600 text-xs sm:text-sm"></i>
         </div>
-        <div class="text-xs font-bold text-slate-900">Target Sisa Pupuk</div>
-        <div class="text-[10px] text-slate-500">Sheet: LAPORAN_TARGET_SISA</div>
+        <div class="text-xs font-bold text-slate-900 leading-tight">Target Sisa Pupuk</div>
+        <div class="text-[9.5px] sm:text-[10px] text-slate-500 mt-0.5">Sheet: TARGET_SISA</div>
       </button>
     </div>
   </div>
 
 
-  <!-- CONTAINER PRINT LEMBAR KERJA RESMI (diisi otomatis dari Google Sheets) -->
+  <!-- CONTAINER PRINT LEMBAR KERJA RESMI (RESPONSIVE & OVERFLOW SAFE) -->
   <div class="max-w-6xl mx-auto">
     <div id="sync-error" class="hidden no-print mb-4 p-4 rounded-xl border border-rose-200 bg-rose-50 text-rose-800 text-xs flex items-center justify-between gap-3">
       <span><i class="fa-solid fa-triangle-exclamation mr-1"></i> <span id="sync-error-text">Gagal mengambil data dari Google Sheets.</span></span>
       <button onclick="sinkronUlangData()" class="px-3 py-1.5 rounded-lg bg-rose-600 text-white font-bold">Coba Lagi</button>
     </div>
-    <div id="doc-laporan_cetak" class="print-page bg-white p-8 sm:p-12 rounded-2xl border border-slate-200 shadow-md space-y-6"></div>
-    <div id="doc-rekap_kloter" class="hidden print-page bg-white p-8 sm:p-12 rounded-2xl border border-slate-200 shadow-md space-y-6"></div>
-    <div id="doc-non_erdkk" class="hidden print-page bg-white p-8 sm:p-12 rounded-2xl border border-slate-200 shadow-md space-y-6"></div>
-    <div id="doc-target_sisa" class="hidden print-page bg-white p-8 sm:p-12 rounded-2xl border border-slate-200 shadow-md space-y-6"></div>
+    
+    <!-- Tiap lembar dokumen resmi (padding responsif: p-4 di HP, p-8 di tablet, p-12 di desktop) -->
+    <div id="doc-laporan_cetak" class="print-page bg-white p-4 sm:p-8 lg:p-12 rounded-2xl border border-slate-200 shadow-md space-y-5 sm:space-y-6"></div>
+    <div id="doc-rekap_kloter" class="hidden print-page bg-white p-4 sm:p-8 lg:p-12 rounded-2xl border border-slate-200 shadow-md space-y-5 sm:space-y-6"></div>
+    <div id="doc-non_erdkk" class="hidden print-page bg-white p-4 sm:p-8 lg:p-12 rounded-2xl border border-slate-200 shadow-md space-y-5 sm:space-y-6"></div>
+    <div id="doc-target_sisa" class="hidden print-page bg-white p-4 sm:p-8 lg:p-12 rounded-2xl border border-slate-200 shadow-md space-y-5 sm:space-y-6"></div>
   </div>
 
   <script>
     /* ======================================================================
+     * PUSAT CETAK DOKUMEN & LAPORAN RESMI POKTAN SRI MULYO
      * Semua isi laporan dibaca LANGSUNG dari Google Sheets setiap halaman
-     * dibuka / tombol "Segarkan Data" ditekan. Tidak ada angka yang ditulis
-     * mati di HTML, sehingga perubahan di spreadsheet otomatis tampil di web.
+     * dibuka / tombol "Segarkan Data" ditekan.
      * ====================================================================== */
     const SHEET_ID = '1c7R1klPcFSZ7W1PLaZyayZxBUOrVyLh-Lwc24Cf6CEY';
     const DOCS = ['laporan_cetak', 'rekap_kloter', 'non_erdkk', 'target_sisa'];
@@ -191,30 +234,40 @@
       return 'Kediren, ' + new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
     }
 
-    const TD = 'border border-slate-400 p-2';
-    const TH = 'border border-slate-400 p-2';
+    const TD = 'border border-slate-400 p-1.5 sm:p-2 text-xs sm:text-sm';
+    const TH = 'border border-slate-400 p-1.5 sm:p-2 text-xs sm:text-sm';
+    
     const kop = judul => `
-      <div class="text-center border-b-2 border-slate-900 pb-4">
-        <h2 class="text-lg font-black tracking-wider uppercase text-slate-900">KELOMPOK TANI &ldquo;SRI MULYO&rdquo;</h2>
-        <p class="text-xs font-bold tracking-widest uppercase text-slate-700">DESA KEDIREN, KECAMATAN LEMBEYAN, KABUPATEN MAGETAN</p>
-        <h3 class="text-sm font-extrabold uppercase mt-2 text-slate-900 underline underline-offset-4">${judul}</h3>
+      <div class="text-center border-b-2 border-slate-900 pb-3 sm:pb-4">
+        <h2 class="text-base sm:text-lg font-black tracking-wider uppercase text-slate-900">KELOMPOK TANI &ldquo;SRI MULYO&rdquo;</h2>
+        <p class="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-700">DESA KEDIREN, KECAMATAN LEMBEYAN, KABUPATEN MAGETAN</p>
+        <h3 class="text-xs sm:text-sm font-extrabold uppercase mt-1.5 sm:mt-2 text-slate-900 underline underline-offset-4">${judul}</h3>
       </div>`;
+
+    // Ringkasan Kartu: Responsif di HP (Mode Portrait rapi 2-kolom / 3-kolom, tidak saling tabrak)
     const kartu = (items, bg) => `
-      <div class="grid gap-2 text-center border border-slate-900 p-2.5 ${bg}" style="grid-template-columns:repeat(${items.length},minmax(0,1fr))">
-        ${items.map((it, i) => `<div class="${i < items.length - 1 ? 'border-r border-slate-300' : ''}">
-          <div class="text-[10px] font-bold uppercase text-slate-600">${esc(it[0])}</div>
-          <div class="text-base font-black ${it[3] || 'text-slate-900'} mt-0.5">${esc(it[1])}</div>
-          <div class="text-[9px] text-slate-500">${esc(it[2] || '')}</div></div>`).join('')}
+      <div class="overflow-x-auto my-1.5">
+        <div class="kartu-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-${items.length} gap-2 text-center border border-slate-900 p-2 sm:p-2.5 ${bg} min-w-[280px]">
+          ${items.map((it, i) => `<div class="${i < items.length - 1 ? 'sm:border-r border-slate-300' : ''} p-1">
+            <div class="text-[9.5px] sm:text-[10px] font-bold uppercase text-slate-600 leading-tight">${esc(it[0])}</div>
+            <div class="text-sm sm:text-base font-black ${it[3] || 'text-slate-900'} mt-0.5 tracking-tight">${esc(it[1])}</div>
+            <div class="text-[9px] text-slate-500 leading-tight mt-0.5">${esc(it[2] || '')}</div></div>`).join('')}
+        </div>
       </div>`;
+
+    // Blok Tanda Tangan: Responsif di HP (tidak berdempetan / garis titik-titik tidak patah)
     const ttd = (tanggal, kolom) => `
-      <div class="pt-8 grid text-center text-xs" style="grid-template-columns:repeat(${kolom.length},minmax(0,1fr))">
-        ${kolom.map((k, i) => `<div>
-          <p>${i === 0 ? 'Mengetahui,' : (i === kolom.length - 1 ? esc(tanggal) : '&nbsp;')}</p>
-          <p class="font-bold mt-1">${esc(k[0])}</p><p class="text-[10px] text-slate-500">${esc(k[1])}</p>
-          <div class="h-20"></div>
-          <p class="font-bold underline underline-offset-2">${esc(k[2])}</p><p class="text-[10px] text-slate-500 mt-0.5">${esc(k[3])}</p></div>`).join('')}
+      <div class="pt-6 sm:pt-8 ttd-grid grid grid-cols-1 sm:grid-cols-${kolom.length} gap-6 sm:gap-2 text-center text-xs">
+        ${kolom.map((k, i) => `<div class="flex flex-col items-center">
+          <p class="text-[11px]">${i === 0 ? 'Mengetahui,' : (i === kolom.length - 1 ? esc(tanggal) : '&nbsp;')}</p>
+          <p class="font-bold mt-1 text-xs">${esc(k[0])}</p>
+          <p class="text-[10px] text-slate-500">${esc(k[1])}</p>
+          <div class="h-16 sm:h-20"></div>
+          <p class="font-bold underline underline-offset-2 text-xs">${esc(k[2])}</p>
+          <p class="text-[10px] text-slate-500 mt-0.5">${esc(k[3])}</p></div>`).join('')}
       </div>`;
-    const TTD_PPL = ['Penyuluh Pertanian Lapangan (PPL)', 'PPL Wilbin Desa Kediren', '( ........................................ )', 'NIP. ....................................'];
+
+    const TTD_PPL = ['Penyuluh Pertanian Lapangan (PPL)', 'PPL Wilbin Desa Kediren', '( ................................ )', 'NIP. ................................'];
     const TTD_KETUA = ['Ketua Kelompok Tani', 'Poktan "SRI MULYO"', '( SAMSI )', 'Ketua Poktan Sri Mulyo'];
     const TTD_BENDAHARA = ['Bendahara Kelompok Tani', 'Poktan "SRI MULYO"', '( SUTIKNO )', 'Bendahara Poktan'];
     const TTD_KUASA = ['Penerima Kuasa / Pengelola', 'Pengurus Kelompok Tani "SRI MULYO"', '( SUPRIYANTO )', 'Penerima Kuasa Kloter 1-10'];
@@ -231,7 +284,6 @@
         else if (petani.length && !T(r, 1) && (T(r, 5) || T(r, 6))) { total = r; break; }
       }
       const bayar = petani.filter(r => num(V(r, 7)) > 0);
-      // Ikuti hasil rumus spreadsheet ("6 Petani Sudah Ambil • 11 Petani Belum Ambil") bila tersedia
       const mAmbil = total ? T(total, 8).match(/(\d+)\s*Petani\s*Sudah\s*Ambil/i) : null;
       const ambil = mAmbil ? { length: parseInt(mAmbil[1], 10) } : petani.filter(r => /SDH|SUDAH/i.test(T(r, 8)));
       return {
@@ -255,7 +307,6 @@
       const tglPendek = tanggal.replace(/^Kediren,\s*/, '');
       const kemasan = n => /organik|petro/i.test(n) ? '40 Kg' : '50 Kg';
 
-      // Bagian IV: baris jumlah petani & setoran dihitung ulang dari LAPORAN_NON_ERDKK agar selalu sesuai
       const nonRows = non.map(r => {
         const label = T(r, 1);
         let ket = T(r, 4), nilai = T(r, 5);
@@ -266,14 +317,14 @@
       });
 
       return `${kop('LAPORAN PERTANGGUNGJAWABAN PENYALURAN &amp; REALISASI PUPUK BERSUBSIDI')}
-      <div class="grid grid-cols-2 gap-4 text-xs">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-xs">
         <table class="w-full">
-          <tr><td class="font-bold py-0.5 w-36">Nomor Dokumen</td><td>: 014/POKTAN-SM/KDR/XI/2026</td></tr>
+          <tr><td class="font-bold py-0.5 w-32 sm:w-36">Nomor Dokumen</td><td>: 014/POKTAN-SM/KDR/XI/2026</td></tr>
           <tr><td class="font-bold py-0.5">Wilayah Binaan</td><td>: BPP Kec. Lembeyan - Magetan</td></tr>
           <tr><td class="font-bold py-0.5">Komoditas / e-RDKK</td><td>: Padi &amp; Palawija (Musim Rendeng)</td></tr>
         </table>
         <table class="w-full">
-          <tr><td class="font-bold py-0.5 w-36">Musim Tanam (MT)</td><td>: MT III - 2026</td></tr>
+          <tr><td class="font-bold py-0.5 w-32 sm:w-36">Musim Tanam (MT)</td><td>: MT III - 2026</td></tr>
           <tr><td class="font-bold py-0.5">Tanggal Laporan</td><td>: ${esc(tglPendek)}</td></tr>
           <tr><td class="font-bold py-0.5">Status Laporan</td><td>: Final Penyaluran Pupuk Subsidi</td></tr>
         </table>
@@ -283,49 +334,57 @@
         ['Luas Lahan', T(c0, 2), 'Hektar Terdaftar'],
         ['Sudah Ambil', T(c0, 3) + ' Petani', 'Realisasi Ambil', 'text-emerald-800'],
         ['Sak Tersalur', T(c0, 4) + ' SAK', T(c1, 4)],
-        ['Penerimaan Kas', T(c0, 5), 'Kas Hasil Penebusan', 'text-emerald-900']
+        ['Penerimaan Kas', T(c0, 5), 'Kas Penebusan', 'text-emerald-900']
       ], 'bg-emerald-50/50')}
 
       <div class="space-y-2">
         <h4 class="text-xs font-black uppercase text-slate-900">I. REALISASI DISTRIBUSI FISIK PUPUK BERSUBSIDI</h4>
-        <table class="w-full text-xs border border-slate-900">
-          <thead class="bg-slate-100 font-bold"><tr>
-            <th class="${TH} text-left">Jenis Pupuk</th><th class="${TH} text-center">Kemasan</th><th class="${TH} text-right">Alokasi (Kg)</th>
-            <th class="${TH} text-right">Kuota Kios (Sak)</th><th class="${TH} text-right">Realisasi (Sak)</th><th class="${TH} text-right">% Realisasi</th></tr></thead>
-          <tbody>${fisik.map(r => { const tot = isTotalRow(T(r, 1)); return `<tr class="${tot ? 'bg-slate-100 font-bold border-t-2 border-slate-900' : ''}">
-            <td class="${TD} ${tot ? 'uppercase' : 'font-semibold'}">${esc(T(r, 1))}</td><td class="${TD} text-center">${tot ? '-' : kemasan(T(r, 1))}</td>
-            <td class="${TD} text-right font-mono">${esc(T(r, 3))}</td><td class="${TD} text-right font-mono">${esc(T(r, 4))}</td>
-            <td class="${TD} text-right font-mono font-bold">${esc(T(r, 5))}</td><td class="${TD} text-right font-mono">${esc(T(r, 6))}</td></tr>`; }).join('')}</tbody>
-        </table>
+        <div class="overflow-x-auto -mx-1 sm:mx-0 my-1 rounded-lg">
+          <table class="w-full min-w-[500px] text-xs border border-slate-900">
+            <thead class="bg-slate-100 font-bold"><tr>
+              <th class="${TH} text-left">Jenis Pupuk</th><th class="${TH} text-center">Kemasan</th><th class="${TH} text-right">Alokasi (Kg)</th>
+              <th class="${TH} text-right">Kuota Kios (Sak)</th><th class="${TH} text-right">Realisasi (Sak)</th><th class="${TH} text-right">% Realisasi</th></tr></thead>
+            <tbody>${fisik.map(r => { const tot = isTotalRow(T(r, 1)); return `<tr class="${tot ? 'bg-slate-100 font-bold border-t-2 border-slate-900' : ''}">
+              <td class="${TD} ${tot ? 'uppercase' : 'font-semibold'}">${esc(T(r, 1))}</td><td class="${TD} text-center">${tot ? '-' : kemasan(T(r, 1))}</td>
+              <td class="${TD} text-right font-mono">${esc(T(r, 3))}</td><td class="${TD} text-right font-mono">${esc(T(r, 4))}</td>
+              <td class="${TD} text-right font-mono font-bold">${esc(T(r, 5))}</td><td class="${TD} text-right font-mono">${esc(T(r, 6))}</td></tr>`; }).join('')}</tbody>
+          </table>
+        </div>
       </div>
 
       <div class="space-y-2">
         <h4 class="text-xs font-black uppercase text-slate-900">II. REKAPITULASI KEUANGAN &amp; OPERASIONAL DISTRIBUSI</h4>
-        <table class="w-full text-xs border border-slate-900">
-          <thead class="bg-slate-100 font-bold"><tr><th class="${TH} text-left">Uraian Transaksi Keuangan</th><th class="${TH} text-left">Volume / Keterangan</th><th class="${TH} text-right">Realisasi Nilai (Rp)</th></tr></thead>
-          <tbody>${keu.map(r => { const tot = isTotalRow(T(r, 1)); return `<tr class="${tot ? 'bg-emerald-100/70 font-black border-t-2 border-slate-900' : ''}">
-            <td class="${TD} ${tot ? 'uppercase' : ''}">${esc(T(r, 1))}</td><td class="${TD}">${esc(T(r, 4))}</td><td class="${TD} text-right font-mono">${esc(T(r, 5))}</td></tr>`; }).join('')}</tbody>
-        </table>
+        <div class="overflow-x-auto -mx-1 sm:mx-0 my-1 rounded-lg">
+          <table class="w-full min-w-[450px] text-xs border border-slate-900">
+            <thead class="bg-slate-100 font-bold"><tr><th class="${TH} text-left">Uraian Transaksi Keuangan</th><th class="${TH} text-left">Volume / Keterangan</th><th class="${TH} text-right">Realisasi Nilai (Rp)</th></tr></thead>
+            <tbody>${keu.map(r => { const tot = isTotalRow(T(r, 1)); return `<tr class="${tot ? 'bg-emerald-100/70 font-black border-t-2 border-slate-900' : ''}">
+              <td class="${TD} ${tot ? 'uppercase' : ''}">${esc(T(r, 1))}</td><td class="${TD}">${esc(T(r, 4))}</td><td class="${TD} text-right font-mono">${esc(T(r, 5))}</td></tr>`; }).join('')}</tbody>
+          </table>
+        </div>
       </div>
 
       <div class="space-y-2">
         <h4 class="text-xs font-black uppercase text-slate-900">III. STATUS ADMINISTRASI PENGAMBILAN &amp; DOKUMEN PETANI</h4>
-        <table class="w-full text-xs border border-slate-900">
-          <thead class="bg-slate-100 font-bold"><tr><th class="${TH} text-left">Status Pengambilan &amp; Berkas KTP</th><th class="${TH} text-center">Petani</th><th class="${TH} text-center">%</th>
-            <th class="${TH} text-right">Urea (Sak)</th><th class="${TH} text-right">NPK (Sak)</th><th class="${TH} text-right">Organik (Sak)</th></tr></thead>
-          <tbody>${adm.map(r => { const tot = isTotalRow(T(r, 1)); return `<tr class="${tot ? 'bg-slate-100 font-bold border-t-2 border-slate-900' : ''}">
-            <td class="${TD} ${tot ? 'uppercase' : 'font-medium'}">${esc(T(r, 1))}</td><td class="${TD} text-center font-bold">${esc(T(r, 2))}</td><td class="${TD} text-center font-mono">${esc(T(r, 3))}</td>
-            <td class="${TD} text-right font-mono">${esc(T(r, 4))}</td><td class="${TD} text-right font-mono">${esc(T(r, 5))}</td><td class="${TD} text-right font-mono">${esc(T(r, 6))}</td></tr>`; }).join('')}</tbody>
-        </table>
+        <div class="overflow-x-auto -mx-1 sm:mx-0 my-1 rounded-lg">
+          <table class="w-full min-w-[500px] text-xs border border-slate-900">
+            <thead class="bg-slate-100 font-bold"><tr><th class="${TH} text-left">Status Pengambilan &amp; Berkas KTP</th><th class="${TH} text-center">Petani</th><th class="${TH} text-center">%</th>
+              <th class="${TH} text-right">Urea (Sak)</th><th class="${TH} text-right">NPK (Sak)</th><th class="${TH} text-right">Organik (Sak)</th></tr></thead>
+            <tbody>${adm.map(r => { const tot = isTotalRow(T(r, 1)); return `<tr class="${tot ? 'bg-slate-100 font-bold border-t-2 border-slate-900' : ''}">
+              <td class="${TD} ${tot ? 'uppercase' : 'font-medium'}">${esc(T(r, 1))}</td><td class="${TD} text-center font-bold">${esc(T(r, 2))}</td><td class="${TD} text-center font-mono">${esc(T(r, 3))}</td>
+              <td class="${TD} text-right font-mono">${esc(T(r, 4))}</td><td class="${TD} text-right font-mono">${esc(T(r, 5))}</td><td class="${TD} text-right font-mono">${esc(T(r, 6))}</td></tr>`; }).join('')}</tbody>
+          </table>
+        </div>
       </div>
 
       <div class="space-y-2">
         <h4 class="text-xs font-black uppercase text-slate-900">IV. RINGKASAN PENYALURAN PUPUK NON e-RDKK (CADANGAN POKTAN)</h4>
-        <table class="w-full text-xs border border-slate-900">
-          <thead class="bg-slate-100 font-bold"><tr><th class="${TH} text-left">Uraian Rekapitulasi Non e-RDKK</th><th class="${TH} text-left">Volume / Keterangan</th><th class="${TH} text-right">Nilai</th></tr></thead>
-          <tbody>${nonRows.map(r => { const tot = isTotalRow(r[0]); return `<tr class="${tot ? 'bg-emerald-100/70 font-black border-t-2 border-slate-900' : ''}">
-            <td class="${TD} ${tot ? 'uppercase' : ''}">${esc(r[0])}</td><td class="${TD}">${esc(r[1])}</td><td class="${TD} text-right font-mono">${esc(r[2])}</td></tr>`; }).join('')}</tbody>
-        </table>
+        <div class="overflow-x-auto -mx-1 sm:mx-0 my-1 rounded-lg">
+          <table class="w-full min-w-[450px] text-xs border border-slate-900">
+            <thead class="bg-slate-100 font-bold"><tr><th class="${TH} text-left">Uraian Rekapitulasi Non e-RDKK</th><th class="${TH} text-left">Volume / Keterangan</th><th class="${TH} text-right">Nilai</th></tr></thead>
+            <tbody>${nonRows.map(r => { const tot = isTotalRow(r[0]); return `<tr class="${tot ? 'bg-emerald-100/70 font-black border-t-2 border-slate-900' : ''}">
+              <td class="${TD} ${tot ? 'uppercase' : ''}">${esc(r[0])}</td><td class="${TD}">${esc(r[1])}</td><td class="${TD} text-right font-mono">${esc(r[2])}</td></tr>`; }).join('')}</tbody>
+          </table>
+        </div>
       </div>
       ${ttd(tanggal, [TTD_PPL, TTD_KETUA, TTD_BENDAHARA])}`;
     }
@@ -363,59 +422,65 @@
         ['Total Bobot Pupuk', T(c0, 7) + ' Kg', 'Urea + NPK + Organik']
       ], 'bg-purple-50/50')}
 
-      <div class="no-print p-3.5 bg-purple-50 border border-purple-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+      <div class="no-print p-3 sm:p-3.5 bg-purple-50 border border-purple-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div class="flex items-center gap-2 text-purple-900 font-medium">
-          <i class="fa-solid fa-file-contract text-purple-700 text-base"></i>
-          <span>Perlu mencetak lembar <b>Surat Kuasa Resmi per Kloter (1 s/d 10)</b> lengkap dengan kolom zig-zag tanda tangan format kertas F4 / Folio?</span>
+          <i class="fa-solid fa-file-contract text-purple-700 text-base shrink-0"></i>
+          <span>Perlu mencetak lembar <b>Surat Kuasa Resmi per Kloter (1 s/d 10)</b> lengkap dengan kolom zig-zag tanda tangan format kertas F4?</span>
         </div>
-        <a href="cetak-kloter.html" class="px-3.5 py-1.5 rounded-lg bg-purple-700 hover:bg-purple-800 text-white font-bold whitespace-nowrap transition text-center shadow-sm">
+        <a href="cetak-kloter.html" class="px-3.5 py-1.5 rounded-lg bg-purple-700 hover:bg-purple-800 text-white font-bold whitespace-nowrap transition text-center shadow-sm shrink-0">
           Buka Format F4 Kloter 1-10
         </a>
       </div>
 
       <div class="space-y-2">
         <h4 class="text-xs font-black uppercase text-slate-900">I. DAFTAR KLOTER SURAT KUASA PENEBUSAN (KLOTER 1 S/D ${kloter.length})</h4>
-        <table class="w-full text-xs border border-slate-900">
-          <thead class="bg-slate-100 font-bold"><tr><th class="${TH} text-center w-10">No</th><th class="${TH} text-left">Nama Kloter</th><th class="${TH} text-left">Pemberi Kuasa (Perwakilan)</th>
-            <th class="${TH} text-left">Penerima Kuasa</th><th class="${TH} text-center">Jumlah Petani</th><th class="${TH} text-right">Urea (Kg)</th><th class="${TH} text-right">NPK (Kg)</th><th class="${TH} text-right">Organik (Kg)</th></tr></thead>
-          <tbody>${kloter.map(r => `<tr><td class="${TD} text-center">${esc(T(r, 1))}</td><td class="${TD} font-bold">${esc(T(r, 2))}</td><td class="${TD}">${esc(T(r, 3))}</td><td class="${TD}">${esc(T(r, 4))}</td>
-            <td class="${TD} text-center font-bold">${esc(T(r, 5))}</td><td class="${TD} text-right font-mono">${esc(T(r, 6))}</td><td class="${TD} text-right font-mono">${esc(T(r, 7))}</td><td class="${TD} text-right font-mono">${esc(T(r, 8))}</td></tr>`).join('')}
-            <tr class="bg-slate-100 font-bold border-t-2 border-slate-900"><td colspan="4" class="${TD} uppercase">TOTAL ALOKASI DALAM KLOTER</td><td class="${TD} text-center text-purple-900">${esc(T(totK, 5))} Petani</td>
-            <td class="${TD} text-right font-mono">${esc(T(totK, 6))}</td><td class="${TD} text-right font-mono">${esc(T(totK, 7))}</td><td class="${TD} text-right font-mono">${esc(T(totK, 8))}</td></tr></tbody>
-        </table>
+        <div class="overflow-x-auto -mx-1 sm:mx-0 my-1 rounded-lg">
+          <table class="w-full min-w-[550px] text-xs border border-slate-900">
+            <thead class="bg-slate-100 font-bold"><tr><th class="${TH} text-center w-10">No</th><th class="${TH} text-left">Nama Kloter</th><th class="${TH} text-left">Pemberi Kuasa (Perwakilan)</th>
+              <th class="${TH} text-left">Penerima Kuasa</th><th class="${TH} text-center">Jumlah Petani</th><th class="${TH} text-right">Urea (Kg)</th><th class="${TH} text-right">NPK (Kg)</th><th class="${TH} text-right">Organik (Kg)</th></tr></thead>
+            <tbody>${kloter.map(r => `<tr><td class="${TD} text-center">${esc(T(r, 1))}</td><td class="${TD} font-bold">${esc(T(r, 2))}</td><td class="${TD}">${esc(T(r, 3))}</td><td class="${TD}">${esc(T(r, 4))}</td>
+              <td class="${TD} text-center font-bold">${esc(T(r, 5))}</td><td class="${TD} text-right font-mono">${esc(T(r, 6))}</td><td class="${TD} text-right font-mono">${esc(T(r, 7))}</td><td class="${TD} text-right font-mono">${esc(T(r, 8))}</td></tr>`).join('')}
+              <tr class="bg-slate-100 font-bold border-t-2 border-slate-900"><td colspan="4" class="${TD} uppercase">TOTAL ALOKASI DALAM KLOTER</td><td class="${TD} text-center text-purple-900">${esc(T(totK, 5))} Petani</td>
+              <td class="${TD} text-right font-mono">${esc(T(totK, 6))}</td><td class="${TD} text-right font-mono">${esc(T(totK, 7))}</td><td class="${TD} text-right font-mono">${esc(T(totK, 8))}</td></tr></tbody>
+          </table>
+        </div>
       </div>
 
       <div class="space-y-2">
         <h4 class="text-xs font-black uppercase text-slate-900">II. STATUS DROP PENGIRIMAN GUDANG POKTAN &amp; REKAP TAGIHAN KIOS</h4>
-        <table class="w-full text-xs border border-slate-900">
-          <thead class="bg-slate-100 font-bold"><tr><th class="${TH} text-center w-10">No</th><th class="${TH} text-left">Jenis Pupuk</th><th class="${TH} text-right">Alokasi Surat Kuasa BPP</th>
-            <th class="${TH} text-right">Sudah Dikirim Ke Gudang</th><th class="${TH} text-right">Belum Dikirim Ke Gudang</th><th class="${TH} text-right">Harga / Sak</th><th class="${TH} text-right">Nilai Tagihan</th></tr></thead>
-          <tbody>${drop.map(r => `<tr><td class="${TD} text-center">${esc(T(r, 1))}</td><td class="${TD} font-semibold">${esc(T(r, 2))}</td><td class="${TD} text-right font-mono">${esc(T(r, 3))}</td>
-            <td class="${TD} text-right font-mono font-bold text-emerald-800">${esc(T(r, 4))}</td><td class="${TD} text-right font-mono text-amber-700">${esc(T(r, 5))}</td>
-            <td class="${TD} text-right font-mono">${esc(T(r, 7))}</td><td class="${TD} text-right font-mono font-bold">${esc(T(r, 8))}</td></tr>`).join('')}
-            ${dropTot ? `<tr class="bg-slate-100 font-bold border-t-2 border-slate-900"><td colspan="2" class="${TD} uppercase">TOTAL</td><td class="${TD} text-right font-mono">${esc(T(dropTot, 3))}</td>
-              <td class="${TD} text-right font-mono">${esc(T(dropTot, 4))}</td><td class="${TD} text-right font-mono">${esc(T(dropTot, 5))}</td><td class="${TD}"></td><td class="${TD} text-right font-mono">${esc(T(dropTot, 8))}</td></tr>` : ''}
-            ${dropExtra[0] ? `<tr class="bg-emerald-50 font-bold"><td colspan="6" class="${TD} text-right uppercase">Setoran / Pembayaran ke Kios</td><td class="${TD} text-right font-mono text-emerald-800">${esc(dropExtra[0])}</td></tr>` : ''}
-            ${dropExtra[1] ? `<tr class="bg-amber-50 font-bold"><td colspan="6" class="${TD} text-right uppercase">Sisa Tagihan</td><td class="${TD} text-right font-mono text-amber-900">${esc(dropExtra[1])}</td></tr>` : ''}
-          </tbody>
-        </table>
+        <div class="overflow-x-auto -mx-1 sm:mx-0 my-1 rounded-lg">
+          <table class="w-full min-w-[550px] text-xs border border-slate-900">
+            <thead class="bg-slate-100 font-bold"><tr><th class="${TH} text-center w-10">No</th><th class="${TH} text-left">Jenis Pupuk</th><th class="${TH} text-right">Alokasi Surat Kuasa BPP</th>
+              <th class="${TH} text-right">Sudah Dikirim Ke Gudang</th><th class="${TH} text-right">Belum Dikirim Ke Gudang</th><th class="${TH} text-right">Harga / Sak</th><th class="${TH} text-right">Nilai Tagihan</th></tr></thead>
+            <tbody>${drop.map(r => `<tr><td class="${TD} text-center">${esc(T(r, 1))}</td><td class="${TD} font-semibold">${esc(T(r, 2))}</td><td class="${TD} text-right font-mono">${esc(T(r, 3))}</td>
+              <td class="${TD} text-right font-mono font-bold text-emerald-800">${esc(T(r, 4))}</td><td class="${TD} text-right font-mono text-amber-700">${esc(T(r, 5))}</td>
+              <td class="${TD} text-right font-mono">${esc(T(r, 7))}</td><td class="${TD} text-right font-mono font-bold">${esc(T(r, 8))}</td></tr>`).join('')}
+              ${dropTot ? `<tr class="bg-slate-100 font-bold border-t-2 border-slate-900"><td colspan="2" class="${TD} uppercase">TOTAL</td><td class="${TD} text-right font-mono">${esc(T(dropTot, 3))}</td>
+                <td class="${TD} text-right font-mono">${esc(T(dropTot, 4))}</td><td class="${TD} text-right font-mono">${esc(T(dropTot, 5))}</td><td class="${TD}"></td><td class="${TD} text-right font-mono">${esc(T(dropTot, 8))}</td></tr>` : ''}
+              ${dropExtra[0] ? `<tr class="bg-emerald-50 font-bold"><td colspan="6" class="${TD} text-right uppercase">Setoran / Pembayaran ke Kios</td><td class="${TD} text-right font-mono text-emerald-800">${esc(dropExtra[0])}</td></tr>` : ''}
+              ${dropExtra[1] ? `<tr class="bg-amber-50 font-bold"><td colspan="6" class="${TD} text-right uppercase">Sisa Tagihan</td><td class="${TD} text-right font-mono text-amber-900">${esc(dropExtra[1])}</td></tr>` : ''}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div class="space-y-2 pt-4">
         <h4 class="text-xs font-black uppercase text-slate-900">III. DAFTAR LENGKAP STATUS PETANI &amp; PENERIMA KUASA (${petani.length} ANGGOTA e-RDKK)</h4>
-        <table class="w-full text-[11px] border border-slate-900">
-          <thead class="bg-slate-100 font-bold"><tr><th class="border border-slate-400 p-1.5 text-center w-10">No</th><th class="border border-slate-400 p-1.5 text-center">NIK</th><th class="border border-slate-400 p-1.5 text-left">Nama Petani</th>
-            <th class="border border-slate-400 p-1.5 text-center">Status</th><th class="border border-slate-400 p-1.5 text-left">Penerima Kuasa</th><th class="border border-slate-400 p-1.5 text-right">Urea (Kg)</th>
-            <th class="border border-slate-400 p-1.5 text-right">NPK (Kg)</th><th class="border border-slate-400 p-1.5 text-right">Org (Kg)</th></tr></thead>
-          <tbody>${petani.map(r => `<tr><td class="border border-slate-400 p-1 text-center font-mono">${esc(T(r, 1))}</td><td class="border border-slate-400 p-1 text-center font-mono text-[10px] text-slate-600">${esc(T(r, 2))}</td>
-            <td class="border border-slate-400 p-1 font-bold">${esc(T(r, 3))}</td>
-            <td class="border border-slate-400 p-1 text-center"><span class="px-1.5 py-0.5 rounded text-[9px] font-bold ${/kloter/i.test(T(r, 4)) ? 'bg-purple-100 text-purple-800' : 'bg-slate-100 text-slate-600'}">${esc(T(r, 4))}</span></td>
-            <td class="border border-slate-400 p-1">${esc(T(r, 5))}</td><td class="border border-slate-400 p-1 text-right font-mono">${esc(T(r, 6))}</td>
-            <td class="border border-slate-400 p-1 text-right font-mono">${esc(T(r, 7))}</td><td class="border border-slate-400 p-1 text-right font-mono">${esc(T(r, 8))}</td></tr>`).join('')}
-            ${totP ? `<tr class="bg-slate-100 font-black border-t-2 border-slate-900"><td colspan="5" class="${TD} uppercase text-right">TOTAL ${petani.length} ANGGOTA e-RDKK:</td>
-              <td class="${TD} text-right font-mono">${esc(T(totP, 6))}</td><td class="${TD} text-right font-mono">${esc(T(totP, 7))}</td><td class="${TD} text-right font-mono">${esc(T(totP, 8))}</td></tr>` : ''}
-          </tbody>
-        </table>
+        <div class="overflow-x-auto -mx-1 sm:mx-0 my-1 rounded-lg">
+          <table class="w-full min-w-[600px] text-[11px] border border-slate-900">
+            <thead class="bg-slate-100 font-bold"><tr><th class="border border-slate-400 p-1.5 text-center w-10">No</th><th class="border border-slate-400 p-1.5 text-center">NIK</th><th class="border border-slate-400 p-1.5 text-left">Nama Petani</th>
+              <th class="border border-slate-400 p-1.5 text-center">Status</th><th class="border border-slate-400 p-1.5 text-left">Penerima Kuasa</th><th class="border border-slate-400 p-1.5 text-right">Urea (Kg)</th>
+              <th class="border border-slate-400 p-1.5 text-right">NPK (Kg)</th><th class="border border-slate-400 p-1.5 text-right">Org (Kg)</th></tr></thead>
+            <tbody>${petani.map(r => `<tr><td class="border border-slate-400 p-1 text-center font-mono">${esc(T(r, 1))}</td><td class="border border-slate-400 p-1 text-center font-mono text-[10px] text-slate-600">${esc(T(r, 2))}</td>
+              <td class="border border-slate-400 p-1 font-bold">${esc(T(r, 3))}</td>
+              <td class="border border-slate-400 p-1 text-center"><span class="px-1.5 py-0.5 rounded text-[9px] font-bold ${/kloter/i.test(T(r, 4)) ? 'bg-purple-100 text-purple-800' : 'bg-slate-100 text-slate-600'}">${esc(T(r, 4))}</span></td>
+              <td class="border border-slate-400 p-1">${esc(T(r, 5))}</td><td class="border border-slate-400 p-1 text-right font-mono">${esc(T(r, 6))}</td>
+              <td class="border border-slate-400 p-1 text-right font-mono">${esc(T(r, 7))}</td><td class="border border-slate-400 p-1 text-right font-mono">${esc(T(r, 8))}</td></tr>`).join('')}
+              ${totP ? `<tr class="bg-slate-100 font-black border-t-2 border-slate-900"><td colspan="5" class="${TD} uppercase text-right">TOTAL ${petani.length} ANGGOTA e-RDKK:</td>
+                <td class="${TD} text-right font-mono">${esc(T(totP, 6))}</td><td class="${TD} text-right font-mono">${esc(T(totP, 7))}</td><td class="${TD} text-right font-mono">${esc(T(totP, 8))}</td></tr>` : ''}
+            </tbody>
+          </table>
+        </div>
       </div>
       ${ttd(tanggal, [TTD_KETUA, TTD_KUASA])}`;
     }
@@ -431,21 +496,23 @@
       ], 'bg-blue-50/50')}
       <div class="space-y-2">
         <h4 class="text-xs font-black uppercase text-slate-900">DAFTAR LENGKAP PETANI NON-eRDKK &amp; ALOKASI PUPUK CADANGAN (${ne.jumlah} PETANI)</h4>
-        <table class="w-full text-xs border border-slate-900">
-          <thead class="bg-slate-100 font-bold"><tr><th class="${TH} text-center w-10">No</th><th class="${TH} text-left">Nama Petani</th><th class="${TH} text-left">Alamat / Blok Lahan</th>
-            <th class="${TH} text-left">Status Usulan</th><th class="${TH} text-center">Luas (Ha)</th><th class="${TH} text-center">Alokasi (U/P/O)</th><th class="${TH} text-right">Setoran (Rp)</th><th class="${TH} text-left">Keterangan</th></tr></thead>
-          <tbody>${ne.petani.map(r => { const bayar = num(V(r, 7)) > 0; const ambil = /SDH|SUDAH/i.test(T(r, 8)); return `<tr>
-            <td class="${TD} text-center font-mono">${esc(T(r, 1))}</td><td class="${TD} font-bold">${esc(T(r, 2))}</td><td class="${TD}">${esc(T(r, 3))}</td>
-            <td class="${TD} text-[11px] text-slate-600">${esc(T(r, 4))}</td><td class="${TD} text-center font-mono">${esc(T(r, 5))}</td>
-            <td class="${TD} text-center font-bold text-blue-900 font-mono">${esc(T(r, 6))}</td>
-            <td class="${TD} text-right font-mono ${bayar ? 'font-bold text-emerald-800' : 'text-slate-500'}">${bayar ? rupiah(num(V(r, 7))) : '-'}</td>
-            <td class="${TD} text-[10px]"><span class="px-1.5 py-0.5 rounded font-bold ${ambil ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">${esc(T(r, 8))}</span></td></tr>`; }).join('')}
-            <tr class="bg-slate-100 font-black border-t-2 border-slate-900"><td colspan="4" class="${TD} uppercase text-right">TOTAL (${ne.jumlah} PETANI):</td>
-              <td class="${TD} text-center font-mono">${esc(ne.luas)}</td><td class="${TD} text-center font-mono text-blue-900">${esc(ne.alokasi)}</td>
-              <td class="${TD} text-right font-mono text-emerald-900">${rupiah(ne.totalBayar)}</td>
-              <td class="${TD} text-[10px]">${ne.jumlahBayar} Bayar • ${ne.jumlahAmbil} Sudah Ambil • ${ne.jumlah - ne.jumlahAmbil} Belum</td></tr>
-          </tbody>
-        </table>
+        <div class="overflow-x-auto -mx-1 sm:mx-0 my-1 rounded-lg">
+          <table class="w-full min-w-[650px] text-xs border border-slate-900">
+            <thead class="bg-slate-100 font-bold"><tr><th class="${TH} text-center w-10">No</th><th class="${TH} text-left">Nama Petani</th><th class="${TH} text-left">Alamat / Blok Lahan</th>
+              <th class="${TH} text-left">Status Usulan</th><th class="${TH} text-center">Luas (Ha)</th><th class="${TH} text-center">Alokasi (U/P/O)</th><th class="${TH} text-right">Setoran (Rp)</th><th class="${TH} text-left">Keterangan</th></tr></thead>
+            <tbody>${ne.petani.map(r => { const bayar = num(V(r, 7)) > 0; const ambil = /SDH|SUDAH/i.test(T(r, 8)); return `<tr>
+              <td class="${TD} text-center font-mono">${esc(T(r, 1))}</td><td class="${TD} font-bold">${esc(T(r, 2))}</td><td class="${TD}">${esc(T(r, 3))}</td>
+              <td class="${TD} text-[11px] text-slate-600">${esc(T(r, 4))}</td><td class="${TD} text-center font-mono">${esc(T(r, 5))}</td>
+              <td class="${TD} text-center font-bold text-blue-900 font-mono">${esc(T(r, 6))}</td>
+              <td class="${TD} text-right font-mono ${bayar ? 'font-bold text-emerald-800' : 'text-slate-500'}">${bayar ? rupiah(num(V(r, 7))) : '-'}</td>
+              <td class="${TD} text-[10px]"><span class="px-1.5 py-0.5 rounded font-bold ${ambil ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">${esc(T(r, 8))}</span></td></tr>`; }).join('')}
+              <tr class="bg-slate-100 font-black border-t-2 border-slate-900"><td colspan="4" class="${TD} uppercase text-right">TOTAL (${ne.jumlah} PETANI):</td>
+                <td class="${TD} text-center font-mono">${esc(ne.luas)}</td><td class="${TD} text-center font-mono text-blue-900">${esc(ne.alokasi)}</td>
+                <td class="${TD} text-right font-mono text-emerald-900">${rupiah(ne.totalBayar)}</td>
+                <td class="${TD} text-[10px]">${ne.jumlahBayar} Bayar • ${ne.jumlahAmbil} Sudah Ambil • ${ne.jumlah - ne.jumlahAmbil} Belum</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       ${ttd(tanggal, [TTD_KETUA, TTD_KUASA])}`;
     }
@@ -458,14 +525,17 @@
         const data = barisSection(rows, judul);
         return `<div class="space-y-2">
           <h4 class="text-xs font-black uppercase text-slate-900">${esc(i >= 0 ? T(rows[i], 1) : judul)}</h4>
-          <table class="w-full text-xs border border-slate-900">
-            <thead class="bg-slate-100 font-bold"><tr><th class="${TH} text-left">${esc(i >= 0 ? T(rows[i + 1], 1) : 'Komponen')}</th><th class="${TH} text-center w-16">Satuan</th>
-              <th class="${TH} text-right">Urea</th><th class="${TH} text-right">NPK Phonska</th><th class="${TH} text-right">Organik</th><th class="${TH} text-right">Total</th><th class="${TH} text-left">${esc(i >= 0 ? T(rows[i + 1], 7) : headKet)}</th></tr></thead>
-            <tbody>${data.map(r => { const tot = isTotalRow(T(r, 1)); return `<tr class="${tot ? 'bg-amber-100/60 font-bold border-t-2 border-slate-900' : ''}">
-              <td class="${TD} ${tot ? 'uppercase' : ''}">${esc(T(r, 1))}</td><td class="${TD} text-center">${esc(T(r, 2))}</td>
-              <td class="${TD} text-right font-mono">${esc(T(r, 3))}</td><td class="${TD} text-right font-mono">${esc(T(r, 4))}</td><td class="${TD} text-right font-mono">${esc(T(r, 5))}</td>
-              <td class="${TD} text-right font-mono font-bold">${esc(T(r, 6))}</td><td class="${TD} text-slate-600">${esc(T(r, 7))}</td></tr>`; }).join('')}</tbody>
-          </table></div>`;
+          <div class="overflow-x-auto -mx-1 sm:mx-0 my-1 rounded-lg">
+            <table class="w-full min-w-[550px] text-xs border border-slate-900">
+              <thead class="bg-slate-100 font-bold"><tr><th class="${TH} text-left">${esc(i >= 0 ? T(rows[i + 1], 1) : 'Komponen')}</th><th class="${TH} text-center w-16">Satuan</th>
+                <th class="${TH} text-right">Urea</th><th class="${TH} text-right">NPK Phonska</th><th class="${TH} text-right">Organik</th><th class="${TH} text-right">Total</th><th class="${TH} text-left">${esc(i >= 0 ? T(rows[i + 1], 7) : headKet)}</th></tr></thead>
+              <tbody>${data.map(r => { const tot = isTotalRow(T(r, 1)); return `<tr class="${tot ? 'bg-amber-100/60 font-bold border-t-2 border-slate-900' : ''}">
+                <td class="${TD} ${tot ? 'uppercase' : ''}">${esc(T(r, 1))}</td><td class="${TD} text-center">${esc(T(r, 2))}</td>
+                <td class="${TD} text-right font-mono">${esc(T(r, 3))}</td><td class="${TD} text-right font-mono">${esc(T(r, 4))}</td><td class="${TD} text-right font-mono">${esc(T(r, 5))}</td>
+                <td class="${TD} text-right font-mono font-bold">${esc(T(r, 6))}</td><td class="${TD} text-slate-600">${esc(T(r, 7))}</td></tr>`; }).join('')}</tbody>
+            </table>
+          </div>
+        </div>`;
       };
       return `${kop('LAPORAN TARGET SISA PUPUK PENGAJUAN PPL &amp; HASIL PEMBAGIAN')}
       ${kartu([
@@ -476,6 +546,56 @@
       ], 'bg-amber-50/50')}
       <div class="space-y-5">${sec('I. ANALISIS', 'Keterangan')}${sec('II. REALISASI', 'Keterangan')}${sec('III. REKAPITULASI', 'Formula')}</div>
       ${ttd(tanggal, [TTD_PPL, TTD_KETUA, TTD_BENDAHARA])}`;
+    }
+
+    // ---------- Ekspor PDF Dokumen Laporan Terpilih ----------
+    async function eksporPdfLaporan() {
+      const activeDocId = DOCS.find(id => {
+        const el = document.getElementById('doc-' + id);
+        return el && !el.classList.contains('hidden');
+      }) || 'laporan_cetak';
+
+      const element = document.getElementById('doc-' + activeDocId);
+      if (!element) return;
+
+      const btn = document.getElementById('btn-pdf-laporan');
+      const origText = btn ? btn.innerHTML : '';
+      if (btn) {
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyusun PDF...';
+        btn.disabled = true;
+      }
+
+      document.body.classList.add('pdf-exporting');
+      await new Promise(r => setTimeout(r, 120));
+
+      const judulFile = {
+        'laporan_cetak': 'LAPORAN_PERTANGGUNGJAWABAN_PENYALURAN_PUPUK_POKTAN_SRI_MULYO.pdf',
+        'rekap_kloter': 'REKAPITULASI_KLOTER_PENYALURAN_POKTAN_SRI_MULYO.pdf',
+        'non_erdkk': 'LAPORAN_PETANI_NON_ERDKK_POKTAN_SRI_MULYO.pdf',
+        'target_sisa': 'LAPORAN_TARGET_SISA_PUPUK_POKTAN_SRI_MULYO.pdf'
+      }[activeDocId] || 'DOKUMEN_LAPORAN_POKTAN_SRI_MULYO.pdf';
+
+      const opt = {
+        margin: [6, 8, 6, 8],
+        filename: judulFile,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['css', 'legacy'] }
+      };
+
+      try {
+        await html2pdf().set(opt).from(element).save();
+      } catch (err) {
+        console.error(err);
+        alert('Gagal menyusun PDF: ' + err.message);
+      } finally {
+        document.body.classList.remove('pdf-exporting');
+        if (btn) {
+          btn.innerHTML = origText;
+          btn.disabled = false;
+        }
+      }
     }
 
     // ---------- Sinkronisasi ----------
