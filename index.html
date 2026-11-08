@@ -191,88 +191,114 @@
   <!-- 2. MODERN TOP HEADER BAR                  -->
   <!-- ========================================== -->
   <header class="bg-white border-b border-slate-200/80 sticky top-0 z-40 safe-top no-print">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3 lg:gap-4">
       
-      <!-- Brand & Info -->
-      <div class="flex items-center gap-3 min-w-0">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-800 to-emerald-600 flex items-center justify-center text-white shadow-md shadow-emerald-800/20 shrink-0">
-          <i class="fa-solid fa-wheat-awn text-lg text-emerald-200"></i>
+      <!-- Brand & Info (shrink-0 agar logo tidak pernah terpotong) -->
+      <div class="flex items-center gap-2.5 sm:gap-3 shrink-0">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-emerald-800 to-emerald-600 flex items-center justify-center text-white shadow-md shadow-emerald-800/20 shrink-0">
+          <i class="fa-solid fa-wheat-awn text-base sm:text-lg text-emerald-200"></i>
         </div>
-        <div class="min-w-0">
+        <div class="shrink-0">
           <div class="flex items-center gap-2">
-            <h1 class="text-sm sm:text-base font-extrabold text-slate-900 tracking-tight truncate">POKTAN SRI MULYO</h1>
+            <h1 class="text-sm sm:text-base font-extrabold text-slate-900 tracking-tight whitespace-nowrap">POKTAN SRI MULYO</h1>
             <span id="sync-badge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
               Live Sync
             </span>
           </div>
-          <p class="text-[11px] text-slate-500 truncate hidden sm:block">Alokasi RDKK MT III 2026 · Desa Kediren, Kec. Lembeyan, Kab. Magetan</p>
+          <p class="text-[11px] text-slate-500 whitespace-nowrap hidden 2xl:block">Alokasi RDKK MT III 2026 · Desa Kediren, Kec. Lembeyan, Kab. Magetan</p>
+          <p class="text-[11px] text-slate-500 whitespace-nowrap hidden xl:block 2xl:hidden">MT III 2026 · Kediren, Lembeyan</p>
         </div>
       </div>
 
       <!-- Desktop Navigation Tabs (Tablet/Desktop) -->
-      <nav class="hidden md:flex items-center gap-1 bg-slate-100/80 p-1 rounded-xl border border-slate-200">
+      <nav class="hidden lg:flex items-center gap-1 bg-slate-100/90 p-1 rounded-xl border border-slate-200/80 shrink-0">
         <button type="button" data-nav-tab="overview" onclick="setActiveTab('overview')" 
-                class="nav-active px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
+                class="nav-active px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
           <i class="fa-solid fa-chart-pie text-slate-400"></i>
           <span>Ringkasan</span>
         </button>
         <button type="button" data-nav-tab="dropgudang" onclick="setActiveTab('dropgudang')" 
-                class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
+                class="px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
           <i class="fa-solid fa-warehouse text-slate-400"></i>
           <span>Drop Gudang</span>
         </button>
         <button type="button" data-nav-tab="alokasi" data-admin-only onclick="setActiveTab('alokasi')" 
-                class="hidden px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
+                class="hidden px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
           <i class="fa-solid fa-table-list text-slate-400"></i>
-          <span>Alokasi Pembagian</span>
+          <span>Alokasi</span>
         </button>
         <button type="button" data-nav-tab="kloter" onclick="setActiveTab('kloter')" 
-                class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
+                class="px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
           <i class="fa-solid fa-list-check text-slate-400"></i>
-          <span>Rekap Kloter</span>
+          <span>Kloter</span>
         </button>
         <button type="button" data-nav-tab="petani" onclick="setActiveTab('petani')" 
-                class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
+                class="px-2.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
           <i class="fa-solid fa-file-signature text-slate-400"></i>
-          <span>Daftar Surat Kuasa</span>
+          <span>Petani</span>
         </button>
         <a href="sisa-pupuk.html" data-admin-only
-           class="hidden px-3 py-1.5 rounded-lg text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition flex items-center gap-1.5">
+           class="hidden px-2.5 py-1.5 rounded-lg text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition flex items-center gap-1.5">
           <i class="fa-solid fa-calculator text-emerald-600"></i>
           <span>Sisa Pupuk</span>
         </a>
       </nav>
 
-      <!-- Right Header Actions (User Role, Refresh, Print, Logout) -->
+      <!-- Right Header Actions (User Role, Refresh, Print Dropdown, Logout) -->
       <div class="flex items-center gap-2 shrink-0">
-        <span id="user-role-badge" class="hidden px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold sm:inline-flex items-center gap-1.5">
+        <!-- User Badge -->
+        <span id="user-role-badge" class="hidden px-2.5 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold sm:inline-flex items-center gap-1.5">
           <i class="fa-solid fa-user-check text-emerald-600"></i>
           <span>User</span>
         </span>
 
+        <!-- Refresh Button -->
         <button onclick="refreshCurrentPage(false)" title="Refresh data dari Google Sheets"
-                class="w-9 h-9 sm:w-auto sm:px-3 sm:py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition flex items-center justify-center gap-1.5 active:scale-95 shadow-sm">
-          <i id="refresh-icon" class="fa-solid fa-rotate text-emerald-700"></i>
-          <span class="hidden sm:inline">Refresh</span>
+                class="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition flex items-center justify-center gap-1.5 active:scale-95 shadow-2xs">
+          <i id="refresh-icon" class="fa-solid fa-rotate text-emerald-700 text-xs"></i>
+          <span class="hidden md:inline">Refresh</span>
         </button>
 
-        <a href="laporan.html" title="Pusat Cetak Dokumen & Laporan Resmi"
-           class="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-semibold transition active:scale-95 shadow-sm">
-          <i class="fa-solid fa-print text-amber-600"></i>
-          <span class="hidden sm:inline">Cetak Laporan</span>
-        </a>
+        <!-- Cetak Menu Dropdown -->
+        <div class="relative" id="print-dropdown-container">
+          <button type="button" id="print-dropdown-btn" onclick="togglePrintDropdown(event)" title="Pusat Cetak Dokumen & Surat Kuasa"
+                  class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-bold transition active:scale-95 shadow-2xs">
+            <i class="fa-solid fa-print text-amber-600 text-xs"></i>
+            <span>Cetak</span>
+            <i class="fa-solid fa-chevron-down text-[10px] text-amber-700/70 ml-0.5"></i>
+          </button>
+          
+          <div id="print-dropdown-menu" class="hidden absolute right-0 mt-2 w-60 bg-white rounded-2xl shadow-xl border border-slate-200/90 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-100">
+            <div class="px-3.5 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100">
+              Pilihan Cetak Dokumen
+            </div>
+            <a href="laporan.html" class="flex items-center gap-3 px-3.5 py-2.5 text-xs text-slate-700 hover:bg-amber-50 hover:text-amber-950 transition font-medium group">
+              <span class="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 group-hover:scale-105 transition">
+                <i class="fa-solid fa-file-invoice text-sm"></i>
+              </span>
+              <div>
+                <div class="font-bold text-slate-800 group-hover:text-amber-900">Cetak Laporan Resmi</div>
+                <div class="text-[10px] text-slate-400">4 Sheet format lengkap</div>
+              </div>
+            </a>
+            <a href="cetak-kloter.html" class="flex items-center gap-3 px-3.5 py-2.5 text-xs text-slate-700 hover:bg-purple-50 hover:text-purple-950 transition font-medium border-t border-slate-100 group">
+              <span class="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0 group-hover:scale-105 transition">
+                <i class="fa-solid fa-file-contract text-sm"></i>
+              </span>
+              <div>
+                <div class="font-bold text-slate-800 group-hover:text-purple-900">Surat Kuasa (F4)</div>
+                <div class="text-[10px] text-slate-400">Kloter 1 - 10 Khusus Folio</div>
+              </div>
+            </a>
+          </div>
+        </div>
 
-        <a href="cetak-kloter.html" title="Pusat Cetak & Ekspor PDF Surat Kuasa Kloter 1 - 10 (Kertas F4)"
-           class="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-purple-200 bg-purple-50 hover:bg-purple-100 text-purple-900 text-xs font-semibold transition active:scale-95 shadow-sm">
-          <i class="fa-solid fa-file-contract text-purple-600"></i>
-          <span class="hidden sm:inline">Cetak Kloter (F4)</span>
-        </a>
-
+        <!-- Logout Button -->
         <button id="logout-button" onclick="logoutUser()" title="Keluar dari akun"
-                class="hidden w-9 h-9 sm:w-auto sm:px-3 sm:py-2 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 text-xs font-bold transition items-center justify-center gap-1.5 active:scale-95">
-          <i class="fa-solid fa-right-from-bracket"></i>
-          <span class="hidden sm:inline">Keluar</span>
+                class="hidden px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 text-xs font-bold transition items-center justify-center gap-1.5 active:scale-95 shadow-2xs">
+          <i class="fa-solid fa-right-from-bracket text-xs"></i>
+          <span class="hidden md:inline">Keluar</span>
         </button>
       </div>
 
@@ -406,14 +432,14 @@
         </section>
 
         <!-- Quick Navigation Shortcuts (Overview Actions) -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-7 gap-3 sm:gap-3.5">
           <button type="button" onclick="setActiveTab('dropgudang')" class="p-3.5 bg-white rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-sm hover:border-emerald-300 transition text-left group">
             <div class="flex items-center justify-between mb-1">
               <span class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-sm group-hover:scale-105 transition"><i class="fa-solid fa-warehouse"></i></span>
               <i class="fa-solid fa-arrow-right text-[11px] text-slate-300 group-hover:text-emerald-600 transition"></i>
             </div>
             <div class="text-xs font-bold text-slate-800">Drop Gudang</div>
-            <div class="text-[10px] text-slate-400">Realisasi sak fisik & tagihan</div>
+            <div class="text-[10px] text-slate-400">Realisasi sak & tagihan</div>
           </button>
           <button type="button" data-admin-only onclick="setActiveTab('alokasi')" class="hidden p-3.5 bg-white rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-sm hover:border-emerald-300 transition text-left group">
             <div class="flex items-center justify-between mb-1">
@@ -421,7 +447,7 @@
               <i class="fa-solid fa-arrow-right text-[11px] text-slate-300 group-hover:text-teal-600 transition"></i>
             </div>
             <div class="text-xs font-bold text-slate-800">Alokasi Pembagian</div>
-            <div class="text-[10px] text-slate-400">Editor e-RDKK & Non-e-RDKK</div>
+            <div class="text-[10px] text-slate-400">Editor e-RDKK & Non</div>
           </button>
           <button type="button" onclick="setActiveTab('kloter')" class="p-3.5 bg-white rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-sm hover:border-emerald-300 transition text-left group">
             <div class="flex items-center justify-between mb-1">
@@ -436,16 +462,16 @@
               <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center text-sm group-hover:scale-105 transition"><i class="fa-solid fa-file-signature"></i></span>
               <i class="fa-solid fa-arrow-right text-[11px] text-slate-300 group-hover:text-blue-600 transition"></i>
             </div>
-            <div class="text-xs font-bold text-slate-800">Daftar Surat Kuasa</div>
-            <div class="text-[10px] text-slate-400">BPP Lembeyan MT3 2026</div>
+            <div class="text-xs font-bold text-slate-800">Surat Kuasa</div>
+            <div class="text-[10px] text-slate-400">Daftar Petani Penerima</div>
           </button>
           <a href="sisa-pupuk.html" data-admin-only class="hidden p-3.5 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-xl border border-emerald-300/80 shadow-2xs hover:shadow-sm hover:border-emerald-500 transition text-left group">
             <div class="flex items-center justify-between mb-1">
               <span class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-sm group-hover:scale-105 transition"><i class="fa-solid fa-calculator"></i></span>
               <i class="fa-solid fa-arrow-right text-[11px] text-emerald-600 group-hover:translate-x-0.5 transition"></i>
             </div>
-            <div class="text-xs font-bold text-emerald-950">Sisa Pupuk Terakhir</div>
-            <div class="text-[10px] text-emerald-700 font-medium">Formula & Target 71 Sak</div>
+            <div class="text-xs font-bold text-emerald-950">Sisa Pupuk</div>
+            <div class="text-[10px] text-emerald-700 font-medium">Formula Target 71 Sak</div>
           </a>
           <a href="laporan.html" class="p-3.5 bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-xl border border-amber-300/80 shadow-2xs hover:shadow-sm hover:border-amber-500 transition text-left group">
             <div class="flex items-center justify-between mb-1">
@@ -453,9 +479,9 @@
               <i class="fa-solid fa-arrow-right text-[11px] text-amber-600 group-hover:translate-x-0.5 transition"></i>
             </div>
             <div class="text-xs font-bold text-amber-950">Cetak Laporan</div>
-            <div class="text-[10px] text-amber-700 font-medium">4 Sheet Format Cetak</div>
+            <div class="text-[10px] text-amber-700 font-medium">4 Sheet Format Lengkap</div>
           </a>
-          <a href="cetak-kloter.html" class="p-3.5 bg-gradient-to-br from-purple-500/10 to-indigo-500/10 rounded-xl border border-purple-300/80 shadow-2xs hover:shadow-sm hover:border-purple-500 transition text-left group">
+          <a href="cetak-kloter.html" class="col-span-2 sm:col-span-3 md:col-span-2 xl:col-span-1 p-3.5 bg-gradient-to-br from-purple-500/10 to-indigo-500/10 rounded-xl border border-purple-300/80 shadow-2xs hover:shadow-sm hover:border-purple-500 transition text-left group">
             <div class="flex items-center justify-between mb-1">
               <span class="w-8 h-8 rounded-lg bg-purple-600 text-white flex items-center justify-center text-sm group-hover:scale-105 transition"><i class="fa-solid fa-file-contract"></i></span>
               <i class="fa-solid fa-arrow-right text-[11px] text-purple-600 group-hover:translate-x-0.5 transition"></i>
@@ -1299,7 +1325,8 @@
                        hour >= 11 && hour < 15 ? 'Selamat siang' :
                        hour >= 15 && hour < 18 ? 'Selamat sore' : 'Selamat malam';
       const displayName = isAdmin ? 'Admin' : (authSession.username || 'Samsi');
-      badge.innerHTML = '<i class="fa-regular fa-sun mr-1.5"></i>' + greeting + ', ' + displayName;
+      badge.innerHTML = '<i class="fa-solid fa-user-shield text-emerald-600 text-xs"></i><span class="font-bold">' + displayName + '</span>';
+      badge.setAttribute('title', greeting + ', ' + displayName);
       badge.setAttribute('aria-label', greeting + ', ' + displayName);
       badge.classList.remove('hidden');
       document.getElementById('logout-button').classList.remove('hidden');
@@ -1346,6 +1373,21 @@
       forceLogout('Anda sudah keluar dari aplikasi.');
       if (token) authApi({ action: 'logout', token }).catch(() => {});
     }
+
+    // Toggle Dropdown Cetak Dokumen di Header
+    function togglePrintDropdown(event) {
+      if (event) event.stopPropagation();
+      const menu = document.getElementById('print-dropdown-menu');
+      if (menu) menu.classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', function(e) {
+      const container = document.getElementById('print-dropdown-container');
+      const menu = document.getElementById('print-dropdown-menu');
+      if (container && menu && !container.contains(e.target)) {
+        menu.classList.add('hidden');
+      }
+    });
 
     let alokasiRows=[], alokasiAllRows=[], alokasiBusy=false, alokasiJenis="ERDKK";
     function openAlokasiPage(){ setActiveTab("alokasi"); }
