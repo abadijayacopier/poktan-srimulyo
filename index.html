@@ -237,8 +237,8 @@
           <i class="fa-solid fa-file-signature text-slate-400"></i>
           <span>Daftar Surat Kuasa</span>
         </button>
-        <a href="sisa-pupuk.html" 
-           class="px-3 py-1.5 rounded-lg text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition flex items-center gap-1.5">
+        <a href="sisa-pupuk.html" data-admin-only
+           class="hidden px-3 py-1.5 rounded-lg text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition flex items-center gap-1.5">
           <i class="fa-solid fa-calculator text-emerald-600"></i>
           <span>Sisa Pupuk</span>
         </a>
@@ -415,7 +415,7 @@
             <div class="text-xs font-bold text-slate-800">Daftar Surat Kuasa</div>
             <div class="text-[10px] text-slate-400">BPP Lembeyan MT3 2026</div>
           </button>
-          <a href="sisa-pupuk.html" class="p-3.5 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-xl border border-emerald-300/80 shadow-2xs hover:shadow-sm hover:border-emerald-500 transition text-left group">
+          <a href="sisa-pupuk.html" data-admin-only class="hidden p-3.5 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-xl border border-emerald-300/80 shadow-2xs hover:shadow-sm hover:border-emerald-500 transition text-left group">
             <div class="flex items-center justify-between mb-1">
               <span class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-sm group-hover:scale-105 transition"><i class="fa-solid fa-calculator"></i></span>
               <i class="fa-solid fa-arrow-right text-[11px] text-emerald-600 group-hover:translate-x-0.5 transition"></i>
@@ -933,9 +933,9 @@
         <span class="nav-label text-[9px] font-semibold tracking-tight">Surat Kuasa</span>
       </button>
 
-      <!-- Tab 6: Sisa Pupuk Halaman Baru -->
-      <a href="sisa-pupuk.html"
-         class="mobile-nav-item flex flex-col items-center justify-center py-1 px-0.5 transition text-emerald-700">
+      <!-- Tab 6: Sisa Pupuk Halaman Baru (Admin Only) -->
+      <a href="sisa-pupuk.html" data-admin-only
+         class="hidden mobile-nav-item flex flex-col items-center justify-center py-1 px-0.5 transition text-emerald-700">
         <span class="nav-icon-wrapper w-8 h-8 rounded-xl flex items-center justify-center transition mb-0.5 bg-emerald-50 text-emerald-600">
           <i class="fa-solid fa-calculator text-base"></i>
         </span>

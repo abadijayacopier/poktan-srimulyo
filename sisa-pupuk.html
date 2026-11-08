@@ -6,6 +6,37 @@
   <title>Rekapitulasi & Formula Alokasi Sisa Pupuk - Poktan Sri Mulyo</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    // Proteksi Hak Akses: Halaman ini HANYA UNTUK ADMINISTRATOR
+    (function checkAdminAuth() {
+      const token = sessionStorage.getItem('poktan_session_token');
+      const user = sessionStorage.getItem('poktan_session_user');
+      // Bila tidak ada sesi login atau pengguna bukan admin
+      if (!token) {
+        alert('Akses ditolak. Silakan login sebagai administrator terlebih dahulu.');
+        window.location.replace('index.html');
+        return;
+      }
+      // Verifikasi asynchronous ke GAS API
+      const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyoJtATgF_5ESUILhf4gZvxVBdEnkTJ7qaWqmbWN8esgYTwtMJJR6bAptLuebR58zaZ/exec';
+      fetch(GAS_API_URL, {
+        method: 'POST',
+        redirect: 'follow',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'validateSession', token: token })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (!res.sukses || res.role !== 'admin') {
+          alert('Akses ditolak: Menu ini hanya dapat diakses oleh Administrator.');
+          window.location.replace('index.html');
+        }
+      })
+      .catch(err => {
+        console.warn('Verifikasi sesi offline:', err);
+      });
+    })();
+  </script>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen p-4 sm:p-6 lg:p-8 font-sans selection:bg-emerald-500 selection:text-white">
 
@@ -20,6 +51,7 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
         <div>
           <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-emerald-400 mb-1">
+            <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-extrabold text-[10px]">ADMIN ONLY</span>
             <span id="sync-indicator" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
             <span id="sync-status">Sheet: Alokasi Pembagian · Live Sync Terhubung</span>
           </div>
