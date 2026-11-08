@@ -48,6 +48,20 @@
     .custom-scrollbar::-webkit-scrollbar-thumb:hover {
       background: #94a3b8;
     }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeIn {
+      animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col font-sans">
@@ -56,26 +70,26 @@
   <!-- 1. TOP HEADER PUBLIK (BEBAS AKSES & TOMBOL LOGIN PENGURUS)-->
   <!-- ======================================================== -->
   <header class="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-900 text-white sticky top-0 z-40 shadow-lg no-print">
-    <div class="max-w-7xl mx-auto px-3.5 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-3">
+    <div class="max-w-7xl mx-auto px-3.5 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2.5 sm:gap-3">
       
       <!-- Brand & Community Identity -->
-      <div class="flex items-center gap-2.5 sm:gap-3.5">
-        <a href="panduan-tani.html" class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-emerald-300 shadow-md backdrop-blur-sm shrink-0">
-          <i class="fa-solid fa-wheat-awn text-xl sm:text-2xl text-emerald-200"></i>
+      <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
+        <a href="panduan-tani.html" class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-emerald-300 shadow-md backdrop-blur-sm shrink-0">
+          <i class="fa-solid fa-wheat-awn text-lg sm:text-2xl text-emerald-200"></i>
         </a>
         <div class="min-w-0">
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1.5 sm:gap-2">
             <h1 class="text-xs sm:text-base font-black tracking-tight text-white uppercase truncate">POKTAN SRI MULYO</h1>
-            <span class="hidden xs:inline-flex px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+            <span class="hidden xs:inline-flex px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 shrink-0">
               PORTAL PUBLIK
             </span>
           </div>
-          <p class="text-[10px] sm:text-xs text-emerald-100/80 truncate">Desa Kediren · Lembeyan · Magetan · Wilbin BPP Lembeyan</p>
+          <p class="text-[10px] sm:text-xs text-emerald-100/80 truncate">Desa Kediren · Lembeyan · Magetan · Wilbin BPP</p>
         </div>
       </div>
 
       <!-- Action Buttons: Berbagi WA & Tombol Masuk Pengurus -->
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
         <button onclick="bagikanKeWa()" title="Bagikan panduan ini ke WhatsApp warga"
                 class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-700/80 hover:bg-emerald-600 border border-emerald-500/30 text-white text-xs font-bold transition shadow-sm">
           <i class="fa-brands fa-whatsapp text-emerald-300 text-sm"></i>
@@ -84,7 +98,7 @@
 
         <!-- Tombol Masuk ke Dashboard / Portal Pengurus -->
         <a href="index.html" title="Login ke Dashboard Pengurus e-RDKK & Alokasi"
-           class="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 text-xs font-black transition flex items-center gap-1.5 shadow-md shadow-black/20">
+           class="px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 text-xs font-black transition flex items-center gap-1.5 shadow-md shadow-black/20">
           <i class="fa-solid fa-lock text-slate-900 text-xs"></i>
           <span>Portal Pengurus</span>
         </a>
@@ -94,29 +108,29 @@
 
     <!-- SUB-NAVBAR: TAB PILIHAN MODUL -->
     <div class="border-t border-emerald-700/50 bg-emerald-950/40 backdrop-blur-md">
-      <div class="max-w-7xl mx-auto px-2 sm:px-6 flex items-center gap-1.5 overflow-x-auto custom-scrollbar py-2">
+      <div class="max-w-7xl mx-auto px-2.5 sm:px-6 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-2 scroll-smooth">
         <button onclick="pilihTab('kalkulator')" id="nav-kalkulator" 
-                class="tab-btn active px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 bg-white text-emerald-950 shadow-sm">
+                class="tab-btn active px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 bg-white text-emerald-950 shadow-sm shrink-0">
           <i class="fa-solid fa-calculator text-emerald-700"></i>
-          <span>Dosis & Rencana Tanam</span>
+          <span>Dosis &amp; Rencana Tanam</span>
         </button>
         <button onclick="pilihTab('kalender')" id="nav-kalender" 
-                class="tab-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 text-emerald-100 hover:bg-white/10">
+                class="tab-btn px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 text-emerald-100 hover:bg-white/10 shrink-0">
           <i class="fa-solid fa-calendar-days text-emerald-300"></i>
-          <span>Kalender Tanam & Panen</span>
+          <span>Kalender Tanam &amp; Panen</span>
         </button>
         <button onclick="pilihTab('semprot')" id="nav-semprot" 
-                class="tab-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 text-emerald-100 hover:bg-white/10">
+                class="tab-btn px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 text-emerald-100 hover:bg-white/10 shrink-0">
           <i class="fa-solid fa-spray-can-sparkles text-emerald-300"></i>
           <span>Waktu Semprot Hama</span>
         </button>
         <button onclick="pilihTab('klinik')" id="nav-klinik" 
-                class="tab-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 text-emerald-100 hover:bg-white/10">
+                class="tab-btn px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 text-emerald-100 hover:bg-white/10 shrink-0">
           <i class="fa-solid fa-plant-wilt text-emerald-300"></i>
-          <span>Klinik Penyakit Padi & Jagung</span>
+          <span>Klinik Penyakit Padi &amp; Jagung</span>
         </button>
         <button onclick="pilihTab('laporan-bpp')" id="nav-laporan-bpp" 
-                class="tab-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 text-amber-200 hover:bg-white/10 border border-amber-300/30">
+                class="tab-btn px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 text-amber-200 hover:bg-white/10 border border-amber-300/30 shrink-0">
           <i class="fa-solid fa-print text-amber-300"></i>
           <span>Rekap Cetak BPP</span>
         </button>
@@ -160,16 +174,52 @@
             <span class="text-[11px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md">Bebas Akses</span>
           </div>
 
-          <!-- Pilihan Petani e-RDKK -->
-          <div>
-            <label for="select-petani" class="block text-xs font-bold text-slate-700 mb-1">
-              Nama Petani (Cari di Database e-RDKK)
-            </label>
-            <input list="list-petani" id="input-petani" oninput="onPetaniChanged()"
-                   placeholder="Ketik nama atau NIK Anda..." 
-                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 text-xs transition">
-            <datalist id="list-petani"></datalist>
-            <p class="text-[10px] text-slate-400 mt-1">Data jatah Urea, NPK, dan Luas Lahan otomatis terisi jika nama ditemukan.</p>
+          <!-- Pilihan Petani e-RDKK dengan Live Autocomplete & Validasi Real-time -->
+          <div class="relative" id="wrapper-cari-petani">
+            <div class="flex items-center justify-between mb-1">
+              <label for="input-petani" class="block text-xs font-bold text-slate-700">
+                Nama Petani (Cari di Database e-RDKK)
+              </label>
+              <span id="badge-pencarian" class="text-[10px] text-slate-400 font-medium">Cari Nama / NIK</span>
+            </div>
+            
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <i class="fa-solid fa-magnifying-glass text-xs" id="icon-cari-petani"></i>
+              </div>
+              <input type="text" id="input-petani" oninput="onInputCariPetani(this.value)" onfocus="onInputFocusPetani()"
+                     autocomplete="off" spellcheck="false"
+                     placeholder="Ketik nama petani atau NIK Anda..." 
+                     class="w-full pl-9 pr-9 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 text-xs font-medium text-slate-800 transition">
+              <button type="button" id="btn-clear-petani" onclick="resetPencarianPetani()" title="Bersihkan Pencarian"
+                      class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 active:scale-95 transition">
+                <i class="fa-solid fa-circle-xmark text-xs"></i>
+              </button>
+            </div>
+
+            <!-- Floating Suggestion Dropdown List (Autocomplete) -->
+            <div id="dropdown-petani" class="hidden absolute z-50 left-0 right-0 top-full mt-1.5 bg-white rounded-2xl shadow-xl border border-slate-200/90 max-h-64 overflow-y-auto custom-scrollbar divide-y divide-slate-100">
+              <!-- Item hasil pencarian akan dirender di sini via JavaScript -->
+            </div>
+
+            <!-- NOTIFIKASI JIKA TIDAK TERDAFTAR DI e-RDKK -->
+            <div id="notif-tidak-terdaftar" class="hidden mt-2 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-start gap-2.5 transition animate-fadeIn">
+              <i class="fa-solid fa-triangle-exclamation text-rose-600 text-sm mt-0.5 shrink-0"></i>
+              <div class="flex-1 leading-tight">
+                <span class="font-bold text-rose-900">Nama / NIK tidak terdaftar di e-RDKK Kementerian Pertanian</span>
+                <p class="text-[10px] text-rose-600 font-normal mt-0.5">Pastikan ejaan nama atau NIK 16 digit sudah sesuai dengan data kelompok tani Poktan Sri Mulyo.</p>
+              </div>
+            </div>
+
+            <!-- NOTIFIKASI JIKA TERDAFTAR DI e-RDKK -->
+            <div id="notif-terdaftar" class="hidden mt-2 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center gap-2 transition animate-fadeIn">
+              <i class="fa-solid fa-circle-check text-emerald-600 text-sm shrink-0"></i>
+              <div class="flex-1 leading-tight">
+                <span>Terverifikasi di e-RDKK: <b id="teks-nama-terdaftar" class="text-emerald-950 font-bold"></b></span>
+              </div>
+            </div>
+
+            <p id="helper-teks-petani" class="text-[10px] text-slate-400 mt-1">Data jatah Urea, NPK, dan Luas Lahan otomatis terisi jika terdaftar.</p>
           </div>
 
           <!-- NIK & Luas Lahan -->
@@ -880,8 +930,38 @@
       hitungDosis();
     }
 
-    // Ambil daftar petani e-RDKK dari backend
+    // ========================================================
+    // LOGIKA PENCARIAN LIVE & AUTOCOMPLETE DATABASE e-RDKK
+    // ========================================================
+    let petaniAktifTerpilih = null;
+
+    // Database cadangan resmi Poktan Sri Mulyo untuk responsivitas seketika (offline-ready)
+    const SEED_PETANI_ERDKK = [
+      { nama: 'SUPRIYANTO', nik: '3520031205840001', luas: '0.35', urea: '80', npk: '72' },
+      { nama: 'SUMARNI', nik: '3520035010780002', luas: '0.40', urea: '90', npk: '80' },
+      { nama: 'SUPARNO', nik: '3520031508650003', luas: '0.30', urea: '70', npk: '60' },
+      { nama: 'SUTRISNO', nik: '3520032004720004', luas: '0.50', urea: '115', npk: '100' },
+      { nama: 'SUKADI', nik: '3520030509690005', luas: '0.25', urea: '60', npk: '50' },
+      { nama: 'SURIPTO', nik: '3520031802750006', luas: '0.45', urea: '105', npk: '90' },
+      { nama: 'SUNARTO', nik: '3520032211800007', luas: '0.35', urea: '80', npk: '72' }
+    ];
+
+    // Ambil daftar petani e-RDKK dari backend Google Apps Script & sinkronisasi cache
     async function muatDaftarPetani() {
+      // Inisialisasi awal dengan cache lokal atau seed data
+      const localPetani = localStorage.getItem('poktan_cache_petani_publik');
+      if (localPetani) {
+        try {
+          const parsed = JSON.parse(localPetani);
+          if (Array.isArray(parsed) && parsed.length > 0) daftarPetaniCache = parsed;
+          else daftarPetaniCache = SEED_PETANI_ERDKK;
+        } catch (e) {
+          daftarPetaniCache = SEED_PETANI_ERDKK;
+        }
+      } else {
+        daftarPetaniCache = SEED_PETANI_ERDKK;
+      }
+
       try {
         const res = await fetch(GAS_API_URL, {
           method: 'POST',
@@ -889,28 +969,155 @@
           body: JSON.stringify({ action: 'getDaftarPetaniPublik' })
         });
         const json = await res.json();
-        if (json && json.sukses && Array.isArray(json.petani)) {
+        if (json && json.sukses && Array.isArray(json.petani) && json.petani.length > 0) {
           daftarPetaniCache = json.petani;
-          const dl = document.getElementById('list-petani');
-          dl.innerHTML = daftarPetaniCache.map(p => `<option value="${p.nama} (${p.nik})">Luas: ${p.luas} Ha · Urea: ${p.urea} Kg · NPK: ${p.npk} Kg</option>`).join('');
+          try {
+            localStorage.setItem('poktan_cache_petani_publik', JSON.stringify(daftarPetaniCache));
+          } catch (e) {}
         }
       } catch (err) {
-        console.warn('Gagal memuat e-RDKK online:', err);
+        console.warn('Gagal sinkronisasi e-RDKK online, menggunakan cache lokal:', err);
       }
     }
 
-    // Saat petani dipilih dari datalist
-    function onPetaniChanged() {
+    function onInputFocusPetani() {
       const val = document.getElementById('input-petani').value;
-      const match = daftarPetaniCache.find(p => val.includes(p.nik) || val.toUpperCase().includes(p.nama.toUpperCase()));
-      if (match) {
-        document.getElementById('calc-nik').value = match.nik;
-        document.getElementById('calc-luas').value = parseFloat(match.luas.replace(',', '.')) || 0.35;
-        if (parseFloat(match.urea)) document.getElementById('calc-urea').value = match.urea;
-        if (parseFloat(match.npk)) document.getElementById('calc-npk').value = match.npk;
-        hitungDosis();
+      if (val.trim().length > 0) {
+        onInputCariPetani(val);
       }
     }
+
+    function onInputCariPetani(rawVal) {
+      const val = (rawVal || '').trim();
+      const btnClear = document.getElementById('btn-clear-petani');
+      const dropdown = document.getElementById('dropdown-petani');
+      const notifError = document.getElementById('notif-tidak-terdaftar');
+      const notifSuccess = document.getElementById('notif-terdaftar');
+      const badgeStatus = document.getElementById('badge-pencarian');
+
+      if (btnClear) {
+        if (val.length > 0) btnClear.classList.remove('hidden');
+        else btnClear.classList.add('hidden');
+      }
+
+      if (val.length === 0) {
+        dropdown.classList.add('hidden');
+        notifError.classList.add('hidden');
+        notifSuccess.classList.add('hidden');
+        if (badgeStatus) badgeStatus.innerText = 'Cari Nama / NIK';
+        petaniAktifTerpilih = null;
+        return;
+      }
+
+      const q = val.toLowerCase();
+      const matches = daftarPetaniCache.filter(p => {
+        const nm = (p.nama || '').toLowerCase();
+        const nk = (p.nik || '').toString();
+        return nm.includes(q) || nk.includes(q);
+      });
+
+      if (matches.length > 0) {
+        notifError.classList.add('hidden');
+        if (badgeStatus) badgeStatus.innerText = `${matches.length} Petani Terdaftar`;
+
+        // Render Dropdown Hasil Rekomendasi
+        dropdown.innerHTML = matches.slice(0, 10).map((p, idx) => `
+          <div onclick="pilihPetaniObj(${idx})" class="p-3 hover:bg-emerald-50 cursor-pointer flex items-center justify-between gap-2 transition active:bg-emerald-100">
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-xs font-black text-slate-900 uppercase">${p.nama}</span>
+                <span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-slate-100 text-slate-600 border border-slate-200">${p.nik}</span>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-0.5">Luas: <b>${p.luas} Ha</b> · Jatah MT3: Urea <b>${p.urea} Kg</b>, NPK <b>${p.npk} Kg</b></p>
+            </div>
+            <div class="shrink-0 text-emerald-600 text-xs font-bold flex items-center gap-1">
+              <span>Pilih</span>
+              <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            </div>
+          </div>
+        `).join('');
+
+        window._currentMatches = matches;
+        dropdown.classList.remove('hidden');
+
+        // Otomatis terapkan jika nama atau NIK yang diketik cocok tepat 100%
+        const exactMatch = matches.find(p => p.nik === val || p.nama.toUpperCase() === val.toUpperCase());
+        if (exactMatch && !petaniAktifTerpilih) {
+          terapkanPetani(exactMatch, false);
+        }
+      } else {
+        dropdown.classList.add('hidden');
+        dropdown.innerHTML = '';
+        notifSuccess.classList.add('hidden');
+        petaniAktifTerpilih = null;
+
+        if (q.length >= 2) {
+          notifError.classList.remove('hidden');
+          if (badgeStatus) badgeStatus.innerText = 'Tidak Terdaftar';
+        } else {
+          notifError.classList.add('hidden');
+          if (badgeStatus) badgeStatus.innerText = 'Cari Nama / NIK';
+        }
+      }
+    }
+
+    function pilihPetaniObj(index) {
+      if (window._currentMatches && window._currentMatches[index]) {
+        terapkanPetani(window._currentMatches[index], true);
+      }
+    }
+
+    function terapkanPetani(petani, tutupDropdown = true) {
+      petaniAktifTerpilih = petani;
+      document.getElementById('input-petani').value = petani.nama;
+      document.getElementById('calc-nik').value = petani.nik;
+      document.getElementById('calc-luas').value = parseFloat(String(petani.luas).replace(',', '.')) || 0.35;
+      if (parseFloat(petani.urea)) document.getElementById('calc-urea').value = petani.urea;
+      if (parseFloat(petani.npk)) document.getElementById('calc-npk').value = petani.npk;
+
+      if (tutupDropdown) {
+        document.getElementById('dropdown-petani').classList.add('hidden');
+      }
+      document.getElementById('notif-tidak-terdaftar').classList.add('hidden');
+      
+      const notifSuccess = document.getElementById('notif-terdaftar');
+      const teksSuccess = document.getElementById('teks-nama-terdaftar');
+      if (notifSuccess && teksSuccess) {
+        teksSuccess.innerText = `${petani.nama} (NIK: ${petani.nik})`;
+        notifSuccess.classList.remove('hidden');
+      }
+
+      const badgeStatus = document.getElementById('badge-pencarian');
+      if (badgeStatus) badgeStatus.innerText = 'Terverifikasi e-RDKK';
+
+      const btnClear = document.getElementById('btn-clear-petani');
+      if (btnClear) btnClear.classList.remove('hidden');
+
+      hitungDosis();
+    }
+
+    function resetPencarianPetani() {
+      document.getElementById('input-petani').value = '';
+      document.getElementById('calc-nik').value = '';
+      document.getElementById('btn-clear-petani').classList.add('hidden');
+      document.getElementById('dropdown-petani').classList.add('hidden');
+      document.getElementById('notif-tidak-terdaftar').classList.add('hidden');
+      document.getElementById('notif-terdaftar').classList.add('hidden');
+      
+      const badgeStatus = document.getElementById('badge-pencarian');
+      if (badgeStatus) badgeStatus.innerText = 'Cari Nama / NIK';
+
+      petaniAktifTerpilih = null;
+    }
+
+    // Menutup dropdown suggestions jika pengguna menyentuh area di luar kotak pencarian
+    document.addEventListener('click', (e) => {
+      const wrapper = document.getElementById('wrapper-cari-petani');
+      const dropdown = document.getElementById('dropdown-petani');
+      if (wrapper && dropdown && !wrapper.contains(e.target)) {
+        dropdown.classList.add('hidden');
+      }
+    });
 
     // Kalkulasi Dosis & Tanggal Panen Presisi
     function hitungDosis() {

@@ -36,39 +36,40 @@
   <!-- 1. TOP HEADER & NAVIGATION BAR             -->
   <!-- ========================================== -->
   <header class="bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-40 shadow-lg">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+    <div class="max-w-7xl mx-auto px-3.5 sm:px-6 min-h-16 py-2.5 sm:py-0 sm:h-16 flex items-center justify-between gap-2.5 sm:gap-3">
       
       <!-- Brand & Title -->
-      <div class="flex items-center gap-3">
-        <a href="index.html" class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-900/40 hover:scale-105 transition">
-          <i class="fa-solid fa-wheat-awn text-lg"></i>
+      <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+        <a href="index.html" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-900/40 hover:scale-105 transition shrink-0">
+          <i class="fa-solid fa-wheat-awn text-base sm:text-lg"></i>
         </a>
-        <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-sm sm:text-base font-black tracking-tight text-white">LOG AKTIVITAS & AUDIT SISTEM</h1>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+            <h1 class="text-xs sm:text-base font-black tracking-tight text-white uppercase truncate">LOG AKTIVITAS & AUDIT</h1>
+            <span class="px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1 shrink-0">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              Live Monitoring
+              <span class="hidden xs:inline">Live Monitoring</span>
+              <span class="xs:hidden">Live</span>
             </span>
           </div>
-          <p class="text-[11px] text-slate-400 font-medium">Poktan Sri Mulyo · Desa Kediren, Kec. Lembeyan</p>
+          <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium truncate">Poktan Sri Mulyo · Desa Kediren, Kec. Lembeyan</p>
         </div>
       </div>
 
       <!-- Action Buttons -->
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
         <button onclick="muatLog()" id="btn-refresh" title="Segarkan Data Log"
-                class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold transition flex items-center gap-1.5">
+                class="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold transition flex items-center gap-1.5">
           <i id="refresh-icon" class="fa-solid fa-rotate text-emerald-400 text-xs"></i>
-          <span class="hidden sm:inline">Segarkan</span>
+          <span class="hidden md:inline">Segarkan</span>
         </button>
         <button onclick="eksporCsv()" title="Unduh Log Format CSV"
-                class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold transition flex items-center gap-1.5">
+                class="p-2 sm:px-3 sm:py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold transition flex items-center gap-1.5">
           <i class="fa-solid fa-file-csv text-teal-400 text-xs"></i>
-          <span class="hidden sm:inline">Unduh CSV</span>
+          <span class="hidden md:inline">Unduh CSV</span>
         </button>
         <a href="index.html" title="Kembali ke Dashboard Utama"
-           class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-md shadow-emerald-950/50">
+           class="px-2.5 py-1.5 sm:px-3.5 sm:py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-md shadow-emerald-950/50">
           <i class="fa-solid fa-arrow-left text-xs"></i>
           <span>Dashboard</span>
         </a>
