@@ -630,12 +630,12 @@
               </div>
             </button>
 
-            <!-- 4. SETOR KTP -->
-            <button type="button" onclick="setAlokasiCardFilter('SETOR KTP')" 
+            <!-- 4. SETOR KTP / SUDAH USULAN -->
+            <button type="button" id="kpi-btn-alokasi-4" onclick="setAlokasiCardFilter('SETOR KTP')" 
                     class="alokasi-kpi bg-white p-3.5 rounded-2xl border border-violet-200/90 shadow-sm hover:shadow-md hover:border-violet-300 transition text-left flex flex-col justify-between group">
               <div class="flex items-center justify-between mb-1.5">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-violet-700">Setor KTP</span>
-                <span class="w-7 h-7 rounded-lg bg-violet-50 text-violet-700 flex items-center justify-center text-xs group-hover:bg-violet-100 transition"><i class="fa-solid fa-id-card-clip"></i></span>
+                <span id="kpi-title-alokasi-4" class="text-[10px] font-bold uppercase tracking-wider text-violet-700">Setor KTP</span>
+                <span id="kpi-icon-alokasi-4" class="w-7 h-7 rounded-lg bg-violet-50 text-violet-700 flex items-center justify-center text-xs group-hover:bg-violet-100 transition"><i class="fa-solid fa-id-card-clip"></i></span>
               </div>
               <div>
                 <div class="text-lg sm:text-xl font-black text-violet-800 tracking-tight"><span id="alokasi-setor-ktp">0</span> <span class="text-xs font-normal text-violet-600">Petani</span></div>
@@ -643,12 +643,12 @@
               </div>
             </button>
 
-            <!-- 5. BELUM SETOR KTP -->
-            <button type="button" onclick="setAlokasiCardFilter('BELUM SETOR KTP')" 
+            <!-- 5. BELUM SETOR KTP / PENGAJUAN BARU -->
+            <button type="button" id="kpi-btn-alokasi-5" onclick="setAlokasiCardFilter('BELUM SETOR KTP')" 
                     class="alokasi-kpi bg-white p-3.5 rounded-2xl border border-amber-200/90 shadow-sm hover:shadow-md hover:border-amber-300 transition text-left flex flex-col justify-between group">
               <div class="flex items-center justify-between mb-1.5">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-amber-700">Belum Setor KTP</span>
-                <span class="w-7 h-7 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center text-xs group-hover:bg-amber-100 transition"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                <span id="kpi-title-alokasi-5" class="text-[10px] font-bold uppercase tracking-wider text-amber-700">Belum Setor KTP</span>
+                <span id="kpi-icon-alokasi-5" class="w-7 h-7 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center text-xs group-hover:bg-amber-100 transition"><i class="fa-solid fa-triangle-exclamation"></i></span>
               </div>
               <div>
                 <div class="text-lg sm:text-xl font-black text-amber-800 tracking-tight"><span id="alokasi-belum-setor-ktp">0</span> <span class="text-xs font-normal text-amber-600">Petani</span></div>
@@ -656,12 +656,12 @@
               </div>
             </button>
 
-            <!-- 6. SURAT KUASA -->
-            <button type="button" onclick="setAlokasiCardFilter('SURAT KUASA')" 
+            <!-- 6. SURAT KUASA / BELUM USULAN -->
+            <button type="button" id="kpi-btn-alokasi-6" onclick="setAlokasiCardFilter('SURAT KUASA')" 
                     class="alokasi-kpi bg-white p-3.5 rounded-2xl border border-teal-200/90 shadow-sm hover:shadow-md hover:border-teal-300 transition text-left flex flex-col justify-between group">
               <div class="flex items-center justify-between mb-1.5">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-teal-700">Surat Kuasa</span>
-                <span class="w-7 h-7 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center text-xs group-hover:bg-teal-100 transition"><i class="fa-solid fa-file-signature"></i></span>
+                <span id="kpi-title-alokasi-6" class="text-[10px] font-bold uppercase tracking-wider text-teal-700">Surat Kuasa</span>
+                <span id="kpi-icon-alokasi-6" class="w-7 h-7 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center text-xs group-hover:bg-teal-100 transition"><i class="fa-solid fa-file-signature"></i></span>
               </div>
               <div>
                 <div class="text-lg sm:text-xl font-black text-teal-800 tracking-tight"><span id="alokasi-surat-kuasa">0</span> <span class="text-xs font-normal text-teal-600">Petani</span></div>
@@ -669,10 +669,10 @@
               </div>
             </button>
 
-            <!-- 7. SISA SAK JIKA DIAMBIL SEMUA (SISA DROP GUDANG) -->
+            <!-- 7. SISA SAK JIKA DIAMBIL SEMUA (SISA DROP GUDANG) ATAU TOTAL PUPUK NON-ERDKK -->
             <div class="bg-white p-3.5 rounded-2xl border border-emerald-200/90 shadow-sm flex flex-col justify-between col-span-2 sm:col-span-1">
               <div class="flex items-center justify-between mb-1.5">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-800">Sisa Jika Ambil Semua</span>
+                <span id="kpi-title-alokasi-7" class="text-[10px] font-bold uppercase tracking-wider text-emerald-800">Sisa Jika Ambil Semua</span>
                 <span class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-xs"><i class="fa-solid fa-boxes-stacked"></i></span>
               </div>
               <div>
@@ -681,7 +681,7 @@
                   <span class="bg-emerald-50 text-emerald-900 px-1 py-0.5 rounded border border-emerald-100 font-mono text-[11px]">P:<b id="sisa-pupuk-phonska">—</b></span>
                   <span class="bg-emerald-50 text-emerald-900 px-1 py-0.5 rounded border border-emerald-100 font-mono text-[11px]">O:<b id="sisa-pupuk-organik">—</b></span>
                 </div>
-                <div class="text-[10px] text-emerald-700 font-semibold truncate mt-1">Sisa Stok Fisik Gudang</div>
+                <div id="kpi-sub-alokasi-7" class="text-[10px] text-emerald-700 font-semibold truncate mt-1">Sisa Stok Fisik Gudang</div>
               </div>
             </div>
 
@@ -1377,27 +1377,86 @@
       }
     }
     function escAl(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-    const ALOKASI_STATUS_OPTIONS=['SUDAH AMBIL','BELUM AMBIL','SETOR KTP','BELUM SETOR KTP','FOTO DI KIOS','SURAT KUASA','SUDAH BAYAR'];
+    const ALOKASI_STATUS_OPTIONS_ERDKK=['SUDAH AMBIL','BELUM AMBIL','SETOR KTP','BELUM SETOR KTP','FOTO DI KIOS','SURAT KUASA','SUDAH BAYAR'];
+    const ALOKASI_STATUS_OPTIONS_NONERDKK=['SUDAH AMBIL','BELUM AMBIL','SUDAH MASUK USULAN','PENGAJUAN DATA BARU','BELUM USULAN','SETOR KTP','SUDAH BAYAR'];
     function alStatusList(value){return String(value||'').split(/[,;|]+/).map(x=>x.trim()).filter(Boolean);}
-    function alStatusColor(label){const x=label.toUpperCase();if(x.includes('SUDAH AMBIL'))return 'bg-blue-100 text-blue-800';if(x.includes('BELUM AMBIL'))return 'bg-red-100 text-red-800';if(x.includes('SETOR KTP'))return x.includes('BELUM')?'bg-orange-100 text-orange-800':'bg-violet-100 text-violet-800';if(x.includes('FOTO'))return 'bg-emerald-100 text-emerald-800';if(x.includes('SURAT'))return 'bg-sky-100 text-sky-800';return 'bg-slate-100 text-slate-700';}
-    function renderAlStatusPicker(row,value){const selected=alStatusList(value);const chips=selected.map(x=>'<span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold '+alStatusColor(x)+'">'+escAl(x)+'</span>').join('');const checks=ALOKASI_STATUS_OPTIONS.map((x,i)=>'<label class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-slate-50 cursor-pointer text-xs"><input type="checkbox" '+(selected.includes(x)?'checked':'')+' onchange="changeAlStatus('+row+',\''+x+'\',this.checked)" class="accent-emerald-700"><span class="rounded-full px-2 py-0.5 font-semibold '+alStatusColor(x)+'">'+x+'</span></label>').join('');return '<div class="relative min-w-[170px]"><input type="hidden" data-row="'+row+'" data-col="5" value="'+escAl(selected.join(', '))+'"><details class="group/status"><summary class="min-h-9 flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-2 py-1.5 cursor-pointer list-none hover:border-emerald-400"><span class="flex flex-wrap gap-1">'+(chips||'<span class="text-xs text-slate-400">Pilih status…</span>')+'</span><i class="fa-solid fa-chevron-down text-[10px] text-slate-400 shrink-0"></i></summary><div class="absolute left-0 top-full z-30 mt-1 w-56 rounded-xl border border-slate-200 bg-white p-2 shadow-xl max-h-64 overflow-y-auto">'+checks+'</div></details></div>';}
-    function changeAlStatus(row,option,checked){const input=document.querySelector('[data-row="'+row+'"][data-col="5"]');let values=alStatusList(input.value);values=checked?(values.includes(option)?values:[...values,option]):values.filter(x=>x!==option);input.value=values.join(', ');const tr=input.closest('tr');const details=tr.querySelector('details');const holder=document.createElement('div');holder.innerHTML=renderAlStatusPicker(row,input.value);details.replaceWith(holder.firstElementChild);}
+    function alStatusColor(label){
+      const x=label.toUpperCase();
+      if(x.includes('SUDAH AMBIL')||x.includes('SDH AMBIL'))return 'bg-blue-100 text-blue-800';
+      if(x.includes('BELUM AMBIL'))return 'bg-red-100 text-red-800';
+      if(x.includes('SUDAH MASUK USULAN'))return 'bg-violet-100 text-violet-800';
+      if(x.includes('PENGAJUAN DATA BARU')||x.includes('PENGAJUAN'))return 'bg-amber-100 text-amber-800';
+      if(x.includes('BELUM USULAN'))return 'bg-teal-100 text-teal-800';
+      if(x.includes('SETOR KTP'))return x.includes('BELUM')?'bg-orange-100 text-orange-800':'bg-violet-100 text-violet-800';
+      if(x.includes('FOTO'))return 'bg-emerald-100 text-emerald-800';
+      if(x.includes('SURAT'))return 'bg-sky-100 text-sky-800';
+      return 'bg-slate-100 text-slate-700';
+    }
+    function renderAlStatusPicker(row,value){
+      const selected=alStatusList(value);
+      const options = alokasiJenis === 'NON_ERDKK' ? ALOKASI_STATUS_OPTIONS_NONERDKK : ALOKASI_STATUS_OPTIONS_ERDKK;
+      const chips=selected.map(x=>'<span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold '+alStatusColor(x)+'">'+escAl(x)+'</span>').join('');
+      const checks=options.map(x=>'<label class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-slate-50 cursor-pointer text-xs"><input type="checkbox" '+(selected.includes(x)?'checked':'')+' onchange="changeAlStatus('+row+',\''+x+'\',this.checked)" class="accent-emerald-700"><span class="rounded-full px-2 py-0.5 font-semibold '+alStatusColor(x)+'">'+x+'</span></label>').join('');
+      return '<div class="relative min-w-[170px]"><input type="hidden" data-row="'+row+'" data-col="5" value="'+escAl(selected.join(', '))+'"><details class="group/status"><summary class="min-h-9 flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-2 py-1.5 cursor-pointer list-none hover:border-emerald-400"><span class="flex flex-wrap gap-1">'+(chips||'<span class="text-xs text-slate-400">Pilih status…</span>')+'</span><i class="fa-solid fa-chevron-down text-[10px] text-slate-400 shrink-0"></i></summary><div class="absolute left-0 top-full z-30 mt-1 w-60 rounded-xl border border-slate-200 bg-white p-2 shadow-xl max-h-64 overflow-y-auto">'+checks+'</div></details></div>';
+    }
+    function changeAlStatus(row,option,checked){
+      const input=document.querySelector('[data-row="'+row+'"][data-col="5"]');
+      let values=alStatusList(input.value);
+      values=checked?(values.includes(option)?values:[...values,option]):values.filter(x=>x!==option);
+      input.value=values.join(', ');
+      
+      // Khusus Non-eRDKK, jika opsi adalah status pengambilan, sinkronkan juga ke input kolom 13 (Keterangan) jika relevan
+      if (alokasiJenis === 'NON_ERDKK' && (option === 'SUDAH AMBIL' || option === 'BELUM AMBIL')) {
+        const inputKet = document.querySelector('[data-row="'+row+'"][data-col="13"]');
+        if (inputKet) {
+          if (checked) {
+            inputKet.value = option === 'SUDAH AMBIL' ? 'SDH AMBIL' : 'BELUM AMBIL';
+          } else if (inputKet.value === 'SDH AMBIL' || inputKet.value === 'BELUM AMBIL') {
+            inputKet.value = '';
+          }
+        }
+      }
+      
+      const tr=input.closest('tr');
+      const details=tr.querySelector('details');
+      const holder=document.createElement('div');
+      holder.innerHTML=renderAlStatusPicker(row,input.value);
+      details.replaceWith(holder.firstElementChild);
+    }
     function alokasiStatusCategory(r){
       const raw = String(r.values?.[5] || '').toUpperCase();
       return raw;
     }
-    function matchStatusFilter(rowStatusRaw, filterKey) {
+    function matchStatusFilter(r, filterKey) {
       if (!filterKey) return true;
-      const s = String(rowStatusRaw || '').toUpperCase();
       const target = filterKey.toUpperCase();
-      if (target === 'BELUM SETOR KTP') return s.includes('BELUM SETOR KTP');
-      if (target === 'SETOR KTP') return s.includes('SETOR KTP') && !s.includes('BELUM SETOR KTP');
-      if (target === 'BELUM AMBIL') return s.includes('BELUM AMBIL');
-      if (target === 'SUDAH AMBIL') return s.includes('SUDAH AMBIL');
-      if (target === 'SURAT KUASA') return s.includes('SURAT KUASA');
-      if (target === 'FOTO DI KIOS') return s.includes('FOTO');
-      if (target === 'SUDAH BAYAR') return s.includes('SUDAH BAYAR');
-      return s.includes(target);
+      const s5 = String(r?.values?.[5] || '').toUpperCase();
+      const s13 = String(r?.values?.[13] || '').toUpperCase();
+      const combined = s5 + ' ' + s13;
+
+      if (target === 'SUDAH AMBIL') {
+        return s5.includes('SUDAH AMBIL') || s13.includes('SDH AMBIL') || s13.includes('SUDAH AMBIL');
+      }
+      if (target === 'BELUM AMBIL') {
+        const isSudah = s5.includes('SUDAH AMBIL') || s13.includes('SDH AMBIL') || s13.includes('SUDAH AMBIL');
+        if (isSudah) return false;
+        return s5.includes('BELUM AMBIL') || s13.includes('BELUM AMBIL') || (alokasiJenis === 'NON_ERDKK' && !isSudah);
+      }
+      if (target === 'SUDAH MASUK USULAN') {
+        return combined.includes('SUDAH MASUK USULAN') || combined.includes('MASUK USULAN');
+      }
+      if (target === 'PENGAJUAN DATA BARU') {
+        return combined.includes('PENGAJUAN DATA BARU') || combined.includes('PENGAJUAN');
+      }
+      if (target === 'BELUM USULAN') {
+        return combined.includes('BELUM USULAN');
+      }
+      if (target === 'BELUM SETOR KTP') return combined.includes('BELUM SETOR KTP');
+      if (target === 'SETOR KTP') return combined.includes('SETOR KTP') && !combined.includes('BELUM SETOR KTP');
+      if (target === 'SURAT KUASA') return combined.includes('SURAT KUASA');
+      if (target === 'FOTO DI KIOS') return combined.includes('FOTO');
+      if (target === 'SUDAH BAYAR') return combined.includes('SUDAH BAYAR');
+      return combined.includes(target);
     }
     function setAlokasiCardFilter(category){document.getElementById('al-status-filter').value=category;renderAlokasiTable();}
     
@@ -1414,12 +1473,38 @@
       return isNaN(num) ? 0 : num;
     }
 
+    function updateAlokasiStatusFilterDropdown() {
+      const select = document.getElementById('al-status-filter');
+      if (!select) return;
+      const currentVal = select.value;
+      if (alokasiJenis === 'NON_ERDKK') {
+        select.innerHTML = '<option value="">Semua Data (Status)</option>' +
+          '<option value="SUDAH AMBIL">Sudah Ambil</option>' +
+          '<option value="BELUM AMBIL">Belum Ambil</option>' +
+          '<option value="SUDAH MASUK USULAN">Sudah Masuk Usulan</option>' +
+          '<option value="PENGAJUAN DATA BARU">Pengajuan Data Baru</option>' +
+          '<option value="BELUM USULAN">Belum Usulan</option>' +
+          '<option value="SETOR KTP">Setor KTP</option>' +
+          '<option value="SUDAH BAYAR">Sudah Bayar</option>';
+      } else {
+        select.innerHTML = '<option value="">Semua Data (Status)</option>' +
+          '<option value="SUDAH AMBIL">Sudah Ambil</option>' +
+          '<option value="BELUM AMBIL">Belum Ambil</option>' +
+          '<option value="SETOR KTP">Setor KTP</option>' +
+          '<option value="BELUM SETOR KTP">Belum Setor KTP</option>' +
+          '<option value="SURAT KUASA">Surat Kuasa</option>' +
+          '<option value="FOTO DI KIOS">Foto di Kios</option>' +
+          '<option value="SUDAH BAYAR">Sudah Bayar</option>';
+      }
+      select.value = currentVal;
+    }
+
     function renderAlokasiTable(){
+      updateAlokasiStatusFilterDropdown();
       const q=(document.getElementById('al-search').value||'').trim().toLowerCase(),st=document.getElementById('al-status-filter').value;
       const filtered=alokasiRows.filter(r=>{
         const matchText=!q||r.values.some(v=>String(v??'').toLowerCase().includes(q));
-        const statusVal = r.values?.[5] || '';
-        return matchText && matchStatusFilter(statusVal, st);
+        return matchText && matchStatusFilter(r, st);
       });
       const total=filtered.length;
       document.getElementById('alokasi-count').textContent=alokasiRows.length;
@@ -1454,33 +1539,76 @@
 
       // Hitung Sak Total Semua Baris Alokasi
       let totalSakAlokasi = 0;
+      let nonUreaSak = 0, nonPhonskaSak = 0, nonOrganikSak = 0;
       alokasiRows.forEach(r => {
-        totalSakAlokasi += parseSak(r.values[9]) + parseSak(r.values[10]) + parseSak(r.values[11]);
+        const u = parseSak(r.values[9]);
+        const p = parseSak(r.values[10]);
+        const o = parseSak(r.values[11]);
+        totalSakAlokasi += (u + p + o);
+        nonUreaSak += u;
+        nonPhonskaSak += p;
+        nonOrganikSak += o;
       });
       const elTotSak = document.getElementById('al-total-sak');
       if (elTotSak) elTotSak.textContent = formatNumber(totalSakAlokasi);
 
-      // Hitung Petani & Sak per Status (Sudah Ambil, Belum Ambil, Setor KTP, Belum Setor KTP, Surat Kuasa)
+      // Hitung Petani & Sak per Status
       const stats = {
         'SUDAH AMBIL': { petani: 0, sak: 0 },
         'BELUM AMBIL': { petani: 0, sak: 0 },
         'SETOR KTP': { petani: 0, sak: 0 },
         'BELUM SETOR KTP': { petani: 0, sak: 0 },
-        'SURAT KUASA': { petani: 0, sak: 0 }
+        'SURAT KUASA': { petani: 0, sak: 0 },
+        'SUDAH MASUK USULAN': { petani: 0, sak: 0 },
+        'PENGAJUAN DATA BARU': { petani: 0, sak: 0 },
+        'BELUM USULAN': { petani: 0, sak: 0 }
       };
 
       alokasiRows.forEach(r => {
-        const s = String(r.values?.[5] || '').toUpperCase();
+        const s5 = String(r.values?.[5] || '').toUpperCase();
+        const s13 = String(r.values?.[13] || '').toUpperCase();
         const rowSak = parseSak(r.values[9]) + parseSak(r.values[10]) + parseSak(r.values[11]);
 
-        if (s.includes('SUDAH AMBIL')) { stats['SUDAH AMBIL'].petani++; stats['SUDAH AMBIL'].sak += rowSak; }
-        if (s.includes('BELUM AMBIL')) { stats['BELUM AMBIL'].petani++; stats['BELUM AMBIL'].sak += rowSak; }
-        if (s.includes('BELUM SETOR KTP')) { stats['BELUM SETOR KTP'].petani++; stats['BELUM SETOR KTP'].sak += rowSak; }
-        else if (s.includes('SETOR KTP')) { stats['SETOR KTP'].petani++; stats['SETOR KTP'].sak += rowSak; }
-        if (s.includes('SURAT KUASA')) { stats['SURAT KUASA'].petani++; stats['SURAT KUASA'].sak += rowSak; }
+        // Pengambilan pupuk (cek kolom 5 & 13)
+        const isSudahAmbil = s5.includes('SUDAH AMBIL') || s13.includes('SDH AMBIL') || s13.includes('SUDAH AMBIL');
+        if (isSudahAmbil) {
+          stats['SUDAH AMBIL'].petani++;
+          stats['SUDAH AMBIL'].sak += rowSak;
+        } else {
+          stats['BELUM AMBIL'].petani++;
+          stats['BELUM AMBIL'].sak += rowSak;
+        }
+
+        // Status usulan / Non-eRDKK
+        const comb = s5 + ' ' + s13;
+        if (comb.includes('SUDAH MASUK USULAN') || comb.includes('MASUK USULAN')) {
+          stats['SUDAH MASUK USULAN'].petani++;
+          stats['SUDAH MASUK USULAN'].sak += rowSak;
+        }
+        if (comb.includes('PENGAJUAN DATA BARU') || comb.includes('PENGAJUAN')) {
+          stats['PENGAJUAN DATA BARU'].petani++;
+          stats['PENGAJUAN DATA BARU'].sak += rowSak;
+        }
+        if (comb.includes('BELUM USULAN')) {
+          stats['BELUM USULAN'].petani++;
+          stats['BELUM USULAN'].sak += rowSak;
+        }
+
+        // Status e-RDKK KTP / Kuasa
+        if (comb.includes('BELUM SETOR KTP')) {
+          stats['BELUM SETOR KTP'].petani++;
+          stats['BELUM SETOR KTP'].sak += rowSak;
+        } else if (comb.includes('SETOR KTP')) {
+          stats['SETOR KTP'].petani++;
+          stats['SETOR KTP'].sak += rowSak;
+        }
+        if (comb.includes('SURAT KUASA')) {
+          stats['SURAT KUASA'].petani++;
+          stats['SURAT KUASA'].sak += rowSak;
+        }
       });
 
-      // Update KPI Nilai Petani & Sak
+      // Update KPI Nilai Petani & Sak Card 2 (Sudah Ambil) & Card 3 (Belum Ambil)
       const elSudah = document.getElementById('alokasi-sudah-ambil');
       const elSudahSak = document.getElementById('al-sudah-ambil-sak');
       if (elSudah) elSudah.textContent = stats['SUDAH AMBIL'].petani;
@@ -1491,30 +1619,88 @@
       if (elBelum) elBelum.textContent = stats['BELUM AMBIL'].petani;
       if (elBelumSak) elBelumSak.textContent = formatNumber(stats['BELUM AMBIL'].sak);
 
-      const elSetor = document.getElementById('alokasi-setor-ktp');
-      const elSetorSak = document.getElementById('al-setor-ktp-sak');
-      if (elSetor) elSetor.textContent = stats['SETOR KTP'].petani;
-      if (elSetorSak) elSetorSak.textContent = formatNumber(stats['SETOR KTP'].sak);
+      // Sesuaikan judul & nilai Card 4, 5, 6 sesuai Tab (e-RDKK vs Non-eRDKK)
+      const btnKpi4 = document.getElementById('kpi-btn-alokasi-4');
+      const titleKpi4 = document.getElementById('kpi-title-alokasi-4');
+      const iconKpi4 = document.getElementById('kpi-icon-alokasi-4');
+      const elVal4 = document.getElementById('alokasi-setor-ktp');
+      const elValSak4 = document.getElementById('al-setor-ktp-sak');
 
-      const elBelumSetor = document.getElementById('alokasi-belum-setor-ktp');
-      const elBelumSetorSak = document.getElementById('al-belum-setor-ktp-sak');
-      if (elBelumSetor) elBelumSetor.textContent = stats['BELUM SETOR KTP'].petani;
-      if (elBelumSetorSak) elBelumSetorSak.textContent = formatNumber(stats['BELUM SETOR KTP'].sak);
+      const btnKpi5 = document.getElementById('kpi-btn-alokasi-5');
+      const titleKpi5 = document.getElementById('kpi-title-alokasi-5');
+      const iconKpi5 = document.getElementById('kpi-icon-alokasi-5');
+      const elVal5 = document.getElementById('alokasi-belum-setor-ktp');
+      const elValSak5 = document.getElementById('al-belum-setor-ktp-sak');
 
-      const elKuasa = document.getElementById('alokasi-surat-kuasa');
-      const elKuasaSak = document.getElementById('al-surat-kuasa-sak');
-      if (elKuasa) elKuasa.textContent = stats['SURAT KUASA'].petani;
-      if (elKuasaSak) elKuasaSak.textContent = formatNumber(stats['SURAT KUASA'].sak);
+      const btnKpi6 = document.getElementById('kpi-btn-alokasi-6');
+      const titleKpi6 = document.getElementById('kpi-title-alokasi-6');
+      const iconKpi6 = document.getElementById('kpi-icon-alokasi-6');
+      const elVal6 = document.getElementById('alokasi-surat-kuasa');
+      const elValSak6 = document.getElementById('al-surat-kuasa-sak');
 
-      // Sisa Pupuk Gudang jika Petani Ambil Semua (baris 197 atau yang berlabel SISA P)
-      const sisaRow=alokasiAllRows.find(r=>(r.values||[]).some(v=>String(v??'').toUpperCase().includes('SISA P'))) || alokasiAllRows.find(r=>r.row===197) || alokasiAllRows.find(r=>(r.values?.[9]&&String(r.values[9]).includes('29 SAK')));
+      if (alokasiJenis === 'NON_ERDKK') {
+        if (titleKpi4) titleKpi4.textContent = 'Sudah Usulan';
+        if (iconKpi4) iconKpi4.innerHTML = '<i class="fa-solid fa-clipboard-check"></i>';
+        if (btnKpi4) btnKpi4.setAttribute('onclick', "setAlokasiCardFilter('SUDAH MASUK USULAN')");
+        if (elVal4) elVal4.textContent = stats['SUDAH MASUK USULAN'].petani;
+        if (elValSak4) elValSak4.textContent = formatNumber(stats['SUDAH MASUK USULAN'].sak);
+
+        if (titleKpi5) titleKpi5.textContent = 'Pengajuan Baru';
+        if (iconKpi5) iconKpi5.innerHTML = '<i class="fa-solid fa-user-plus"></i>';
+        if (btnKpi5) btnKpi5.setAttribute('onclick', "setAlokasiCardFilter('PENGAJUAN DATA BARU')");
+        if (elVal5) elVal5.textContent = stats['PENGAJUAN DATA BARU'].petani;
+        if (elValSak5) elValSak5.textContent = formatNumber(stats['PENGAJUAN DATA BARU'].sak);
+
+        if (titleKpi6) titleKpi6.textContent = 'Belum Usulan';
+        if (iconKpi6) iconKpi6.innerHTML = '<i class="fa-solid fa-hourglass-start"></i>';
+        if (btnKpi6) btnKpi6.setAttribute('onclick', "setAlokasiCardFilter('BELUM USULAN')");
+        if (elVal6) elVal6.textContent = stats['BELUM USULAN'].petani;
+        if (elValSak6) elValSak6.textContent = formatNumber(stats['BELUM USULAN'].sak);
+      } else {
+        if (titleKpi4) titleKpi4.textContent = 'Setor KTP';
+        if (iconKpi4) iconKpi4.innerHTML = '<i class="fa-solid fa-id-card-clip"></i>';
+        if (btnKpi4) btnKpi4.setAttribute('onclick', "setAlokasiCardFilter('SETOR KTP')");
+        if (elVal4) elVal4.textContent = stats['SETOR KTP'].petani;
+        if (elValSak4) elValSak4.textContent = formatNumber(stats['SETOR KTP'].sak);
+
+        if (titleKpi5) titleKpi5.textContent = 'Belum Setor KTP';
+        if (iconKpi5) iconKpi5.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+        if (btnKpi5) btnKpi5.setAttribute('onclick', "setAlokasiCardFilter('BELUM SETOR KTP')");
+        if (elVal5) elVal5.textContent = stats['BELUM SETOR KTP'].petani;
+        if (elValSak5) elValSak5.textContent = formatNumber(stats['BELUM SETOR KTP'].sak);
+
+        if (titleKpi6) titleKpi6.textContent = 'Surat Kuasa';
+        if (iconKpi6) iconKpi6.innerHTML = '<i class="fa-solid fa-file-signature"></i>';
+        if (btnKpi6) btnKpi6.setAttribute('onclick', "setAlokasiCardFilter('SURAT KUASA')");
+        if (elVal6) elVal6.textContent = stats['SURAT KUASA'].petani;
+        if (elValSak6) elValSak6.textContent = formatNumber(stats['SURAT KUASA'].sak);
+      }
+
+      // Card 7: Sisa Pupuk Gudang jika e-RDKK, atau Total Alokasi Pupuk Sak jika Non-eRDKK
+      const titleKpi7 = document.getElementById('kpi-title-alokasi-7');
+      const subKpi7 = document.getElementById('kpi-sub-alokasi-7');
       const fmtSisa=v=>v===undefined||v===null||v===''?'—':String(v).match(/SAK/i)?String(v):String(v)+' Sak';
-      document.getElementById('sisa-pupuk-urea').textContent=sisaRow?fmtSisa(sisaRow.values[9]):'29 Sak';
-      document.getElementById('sisa-pupuk-phonska').textContent=sisaRow?fmtSisa(sisaRow.values[10]):'28 Sak';
-      document.getElementById('sisa-pupuk-organik').textContent=sisaRow?fmtSisa(sisaRow.values[11]):'24 Sak';
+
+      if (alokasiJenis === 'NON_ERDKK') {
+        if (titleKpi7) titleKpi7.textContent = 'Total Pupuk Non-eRDKK';
+        if (subKpi7) subKpi7.textContent = 'U: '+nonUreaSak+' · P: '+nonPhonskaSak+' · O: '+nonOrganikSak+' Sak';
+        document.getElementById('sisa-pupuk-urea').textContent = nonUreaSak + ' Sak';
+        document.getElementById('sisa-pupuk-phonska').textContent = nonPhonskaSak + ' Sak';
+        document.getElementById('sisa-pupuk-organik').textContent = nonOrganikSak + ' Sak';
+      } else {
+        if (titleKpi7) titleKpi7.textContent = 'Sisa Jika Ambil Semua';
+        if (subKpi7) subKpi7.textContent = 'Sisa Stok Fisik Gudang';
+        const sisaRow=alokasiAllRows.find(r=>(r.values||[]).some(v=>String(v??'').toUpperCase().includes('SISA P'))) || alokasiAllRows.find(r=>r.row===197) || alokasiAllRows.find(r=>(r.values?.[9]&&String(r.values[9]).includes('29 SAK')));
+        document.getElementById('sisa-pupuk-urea').textContent=sisaRow?fmtSisa(sisaRow.values[9]):'29 Sak';
+        document.getElementById('sisa-pupuk-phonska').textContent=sisaRow?fmtSisa(sisaRow.values[10]):'28 Sak';
+        document.getElementById('sisa-pupuk-organik').textContent=sisaRow?fmtSisa(sisaRow.values[11]):'24 Sak';
+      }
 
       // Ring Active State pada KPI Card
-      const filterKeys = ['', 'SUDAH AMBIL', 'BELUM AMBIL', 'SETOR KTP', 'BELUM SETOR KTP', 'SURAT KUASA'];
+      const filterKeys = alokasiJenis === 'NON_ERDKK' 
+        ? ['', 'SUDAH AMBIL', 'BELUM AMBIL', 'SUDAH MASUK USULAN', 'PENGAJUAN DATA BARU', 'BELUM USULAN']
+        : ['', 'SUDAH AMBIL', 'BELUM AMBIL', 'SETOR KTP', 'BELUM SETOR KTP', 'SURAT KUASA'];
+
       document.querySelectorAll('.alokasi-kpi').forEach((el,i)=>{
         const active = filterKeys[i] !== undefined && filterKeys[i] === st;
         el.classList.toggle('ring-2',active);
