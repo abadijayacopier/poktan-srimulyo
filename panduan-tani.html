@@ -2,11 +2,18 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#022c22">
   <title>Panduan Budidaya, Kalender Tanam & Dosis Pupuk - Poktan Sri Mulyo</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    html {
+      background-color: #022c22;
+    }
+    body {
+      background-color: #f8fafc;
+    }
     /* Styling Cetak Kertas F4 / Folio (215 x 330 mm) & A4 */
     @page {
       size: 215mm 330mm;
@@ -103,7 +110,7 @@
   <!-- ======================================================== -->
   <!-- 1. TOP HEADER PUBLIK (BEBAS AKSES & TOMBOL LOGIN PENGURUS)-->
   <!-- ======================================================== -->
-  <header class="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-900 text-white sticky top-0 z-40 shadow-lg no-print">
+  <header class="bg-gradient-to-r from-emerald-950 via-emerald-900 to-teal-950 text-white sticky top-0 z-50 shadow-xl backdrop-blur-md border-b border-emerald-700/40 no-print" style="padding-top: max(0.25rem, env(safe-area-inset-top));">
     <div class="max-w-7xl mx-auto px-3.5 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2.5 sm:gap-3">
       
       <!-- Brand & Community Identity -->
@@ -424,11 +431,27 @@
             </div>
           </div>
 
-          <!-- Catatan / Gejala Hama -->
+          <!-- Catatan / Gejala Hama & Pilihan Cepat AI -->
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Catatan Tambahan / Riwayat Hama Sawah (Opsional)</label>
-            <input type="text" id="calc-catatan" placeholder="Misal: ada riwayat sundep / kresek musim lalu" 
-                   class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs">
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-xs font-bold text-slate-700">Catatan Riwayat Hama Sawah (Untuk Resep AI)</label>
+              <span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1">
+                <i class="fa-solid fa-robot"></i> Resep AI Otomatis
+              </span>
+            </div>
+            <input type="text" id="calc-catatan" oninput="hitungDosis()" placeholder="Misal: ada riwayat wereng / sundep / kresek musim lalu" 
+                   class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-800 font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+            <!-- Pilihan Cepat Gejala Hama untuk Petani -->
+            <div class="mt-2 flex flex-wrap gap-1.5 items-center">
+              <span class="text-[10px] font-bold text-slate-500 mr-0.5"><i class="fa-solid fa-wand-magic-sparkles text-emerald-600"></i> Pilih Gejala:</span>
+              <button type="button" onclick="tambahGejalaHama('Wereng Coklat')" class="px-2 py-0.5 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 text-[10px] font-bold transition active:scale-95 shadow-2xs">+ Wereng</button>
+              <button type="button" onclick="tambahGejalaHama('Sundep Penggerek')" class="px-2 py-0.5 rounded-lg bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200 text-[10px] font-bold transition active:scale-95 shadow-2xs">+ Sundep</button>
+              <button type="button" onclick="tambahGejalaHama('Kresek Bakteri')" class="px-2 py-0.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 text-[10px] font-bold transition active:scale-95 shadow-2xs">+ Kresek (BLB)</button>
+              <button type="button" onclick="tambahGejalaHama('Jamur Blas Leher')" class="px-2 py-0.5 rounded-lg bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 text-[10px] font-bold transition active:scale-95 shadow-2xs">+ Jamur Blas</button>
+              <button type="button" onclick="tambahGejalaHama('Tanah Asem-Aseman')" class="px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 text-[10px] font-bold transition active:scale-95 shadow-2xs">+ Tanah Asem</button>
+              <button type="button" onclick="tambahGejalaHama('Tikus Sawah')" class="px-2 py-0.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 text-[10px] font-bold transition active:scale-95 shadow-2xs">+ Tikus</button>
+              <button type="button" onclick="tambahGejalaHama('Ulat Grayak')" class="px-2 py-0.5 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 text-[10px] font-bold transition active:scale-95 shadow-2xs">+ Ulat Grayak</button>
+            </div>
           </div>
 
           <!-- Tombol Kirim & Simpan ke Poktan -->
@@ -560,6 +583,87 @@
             </div>
           </div>
 
+          <!-- KARTU ASISTEN AI AGRONOMI POKTAN SRI MULYO (REKOMENDASI PINTAR KHUSUS LAHAN PETANI) -->
+          <div id="card-ai-agronomi" class="bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 text-white rounded-3xl p-5 sm:p-6 border border-emerald-500/30 shadow-xl space-y-4 relative overflow-hidden transition-all duration-300">
+            
+            <!-- Header AI & Status Risiko -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3.5">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 text-lg shadow-inner shrink-0">
+                  <i class="fa-solid fa-robot animate-bounce"></i>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <h4 class="text-sm sm:text-base font-black tracking-tight text-white flex items-center gap-1.5">
+                      <span>Asisten AI Agronomi Poktan</span>
+                      <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-400 text-slate-950 shadow-sm">
+                        PRESISI LAHAN
+                      </span>
+                    </h4>
+                  </div>
+                  <p class="text-[11px] text-emerald-200/80 mt-0.5" id="ai-petani-target">
+                    Analisis resep obat &amp; takaran khusus untuk lahan Anda
+                  </p>
+                </div>
+              </div>
+
+              <!-- Status Badge Tingkat Risiko -->
+              <div id="ai-badge-wrap" class="shrink-0">
+                <span id="ai-badge-status" class="px-3 py-1 rounded-full text-xs font-black uppercase border flex items-center gap-1.5 shadow-sm bg-emerald-500/20 text-emerald-300 border-emerald-400/30">
+                  <i class="fa-solid fa-shield-check"></i>
+                  <span id="ai-status-teks">Normal Terkendali</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Diagnosis Cerdas Kondisi Lahan & Hama -->
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-2">
+              <div class="flex items-center gap-2 text-xs font-bold text-amber-300">
+                <i class="fa-solid fa-microscope text-amber-400"></i>
+                <span>Diagnosis Risiko &amp; Karakteristik Lahan:</span>
+              </div>
+              <p class="text-xs text-slate-200 leading-relaxed" id="ai-diagnosis-teks">
+                Menyesuaikan kondisi tanaman berdasarkan komoditas, varietas, musim tanam, dan riwayat hama yang dilaporkan.
+              </p>
+            </div>
+
+            <!-- Resep Penanganan Obat / Pestisida Rekomendasi Resmi BPP -->
+            <div class="space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-emerald-300 uppercase tracking-wider flex items-center gap-1.5">
+                  <i class="fa-solid fa-prescription-bottle-medical text-emerald-400"></i>
+                  <span>Resep Obat &amp; Tindakan Pencegahan BPP</span>
+                </span>
+                <span class="text-[10px] text-slate-400 font-mono">Standar PHT Kementan</span>
+              </div>
+              
+              <!-- Container Kartu Resep Obat Dinamis -->
+              <div id="ai-resep-container" class="space-y-2">
+                <!-- Diisi otomatis oleh JavaScript -->
+              </div>
+            </div>
+
+            <!-- Penyesuaian Taktis Pupuk Berimbang dari AI -->
+            <div class="bg-emerald-950/60 border border-emerald-700/40 rounded-2xl p-4 space-y-2">
+              <div class="flex items-center gap-2 text-xs font-bold text-emerald-300">
+                <i class="fa-solid fa-sliders text-emerald-400"></i>
+                <span>Strategi Pemupukan Spesifik (Bukan Rumus Baku):</span>
+              </div>
+              <ul class="text-xs text-emerald-100/90 space-y-1.5 list-disc list-inside" id="ai-saran-pupuk-list">
+                <!-- Diisi otomatis oleh JavaScript -->
+              </ul>
+            </div>
+
+            <!-- Saran Pengawalan Agroklimat Musim -->
+            <div class="pt-2 border-t border-white/10 flex items-start gap-2 text-[11px] text-slate-300">
+              <i class="fa-solid fa-cloud-sun text-sky-400 text-xs mt-0.5 shrink-0"></i>
+              <div id="ai-saran-musim-teks" class="leading-snug">
+                <!-- Diisi otomatis oleh JavaScript -->
+              </div>
+            </div>
+
+          </div>
+
         </div>
 
       </div>
@@ -646,6 +750,17 @@
               <!-- Diisi otomatis oleh fungsi siapkanLembarCetakKalender() -->
             </tbody>
           </table>
+        </div>
+
+        <!-- LAMPIRAN RESEP KHUSUS AI AGRONOMI PENGENDALIAN HAMA PADA CETAK KALENDER -->
+        <div id="pk-ai-resep-box" class="border border-black p-2.5 rounded-lg bg-slate-50/60 text-[10px] space-y-1">
+          <div class="font-black uppercase text-black flex items-center justify-between border-b border-black pb-1">
+            <span>REKOMENDASI KHUSUS &amp; RESEP PENGENDALIAN HAMA AI BPP LEMBEYAN:</span>
+            <span id="pk-ai-status-cetak" class="font-mono text-[9px] uppercase font-bold text-slate-800">[ TERANALISIS ]</span>
+          </div>
+          <div id="pk-ai-resep-content" class="text-[9px] leading-relaxed text-black pt-0.5">
+            <!-- Diisi otomatis oleh JavaScript -->
+          </div>
         </div>
 
         <!-- Tanda Tangan Pengesahan -->
@@ -1248,25 +1363,21 @@
     let petaniAktifTerpilih = null;
 
     // Database cadangan resmi Poktan Sri Mulyo untuk responsivitas seketika (offline-ready)
-    const SEED_PETANI_ERDKK = [
-      { nama: 'SUPRIYANTO', nik: '3520031205840001', luas: '0.35', urea: '80', npk: '72' },
-      { nama: 'SUMARNI', nik: '3520035010780002', luas: '0.40', urea: '90', npk: '80' },
-      { nama: 'SUPARNO', nik: '3520031508650003', luas: '0.30', urea: '70', npk: '60' },
-      { nama: 'SUTRISNO', nik: '3520032004720004', luas: '0.50', urea: '115', npk: '100' },
-      { nama: 'SUKADI', nik: '3520030509690005', luas: '0.25', urea: '60', npk: '50' },
-      { nama: 'SURIPTO', nik: '3520031802750006', luas: '0.45', urea: '105', npk: '90' },
-      { nama: 'SUNARTO', nik: '3520032211800007', luas: '0.35', urea: '80', npk: '72' }
-    ];
+    // Database resmi 195 Petani Poktan Sri Mulyo dari Tab "ALOKASI PEMBAGIAN" Google Sheet
+    const SEED_PETANI_ERDKK = [{"nama":"AGUS JAENURI","nik":"3520032402810001","luas":"0.32","urea":"80","npk":"75"},{"nama":"AGUS SUTOPO","nik":"3520031206890003","luas":"0.75","urea":"187","npk":"175"},{"nama":"AHMAD MUNIR","nik":"3520031308700002","luas":"0.29","urea":"72","npk":"68"},{"nama":"ANIK RIYANA","nik":"3520034602850002","luas":"0.14","urea":"35","npk":"33"},{"nama":"ARIF GUNAWAN","nik":"3520032211850001","luas":"0.14","urea":"35","npk":"33"},{"nama":"BAMBANG SUCIPTO","nik":"3520030810910001","luas":"0.14","urea":"35","npk":"33"},{"nama":"BARIYAH","nik":"3520034606650001","luas":"0.14","urea":"35","npk":"33"},{"nama":"BEJO","nik":"3520031003560002","luas":"0.38","urea":"95","npk":"89"},{"nama":"BENI IRMAWAN","nik":"3520020410890001","luas":"0.14","urea":"35","npk":"33"},{"nama":"BINGAN","nik":"3520031208590001","luas":"0.14","urea":"35","npk":"33"},{"nama":"BOIMIN","nik":"3520030701510001","luas":"0.14","urea":"35","npk":"33"},{"nama":"BOIMIN","nik":"3520031005710001","luas":"0.28","urea":"70","npk":"65"},{"nama":"BOIRIN","nik":"3520031809730002","luas":"0.7","urea":"174","npk":"163"},{"nama":"DJAMI","nik":"3520035202490002","luas":"0.14","urea":"35","npk":"33"},{"nama":"DWI OKTA ROHMADANI","nik":"3520032310050001","luas":"0.14","urea":"35","npk":"33"},{"nama":"EDI MARGONO","nik":"3520020307790001","luas":"0.26","urea":"65","npk":"61"},{"nama":"EMI PURWATI","nik":"3520025508910004","luas":"0.12","urea":"30","npk":"28"},{"nama":"ENDANG RETNO WINARSIH","nik":"3520036101870001","luas":"0.66","urea":"164","npk":"154"},{"nama":"ERNA YULIATI","nik":"3520034407700005","luas":"0.9","urea":"224","npk":"210"},{"nama":"HARJO BOWOH","nik":"3520030107500011","luas":"0.19","urea":"47","npk":"44"},{"nama":"HARJO LOSO","nik":"3520030604590001","luas":"0.33","urea":"82","npk":"77"},{"nama":"HARYADI","nik":"3520031401820001","luas":"0.14","urea":"35","npk":"33"},{"nama":"HERI GUNAWAN","nik":"1811070810900003","luas":"0.14","urea":"35","npk":"33"},{"nama":"HERI SUSANTO","nik":"3520030305850001","luas":"0.17","urea":"42","npk":"40"},{"nama":"IHWAN NUDDIN","nik":"3520030310830001","luas":"0.14","urea":"35","npk":"33"},{"nama":"IMAM SUKADI","nik":"3520030705700001","luas":"0.12","urea":"30","npk":"28"},{"nama":"ISMIATUN","nik":"3520035605710001","luas":"0.28","urea":"70","npk":"65"},{"nama":"ISWAHYUDI","nik":"3520032002720001","luas":"0.16","urea":"40","npk":"37"},{"nama":"JAMINEM","nik":"3520035405590001","luas":"0.21","urea":"52","npk":"49"},{"nama":"JAMIRAN","nik":"3520030111660001","luas":"0.38","urea":"95","npk":"89"},{"nama":"JANTU WARSITA","nik":"3520032809770001","luas":"0.2","urea":"50","npk":"47"},{"nama":"JEMALI","nik":"3520030104550001","luas":"0.71","urea":"177","npk":"166"},{"nama":"JOHAN ARIFIN","nik":"3520101504660001","luas":"0.09","urea":"22","npk":"21"},{"nama":"JOKO WASKITO","nik":"3520032711850001","luas":"0.06","urea":"15","npk":"14"},{"nama":"JOYO","nik":"3520031006510001","luas":"0.14","urea":"35","npk":"33"},{"nama":"JUMARI","nik":"3520032510550001","luas":"0.17","urea":"42","npk":"40"},{"nama":"JUWITA ERNAWATI","nik":"3520036305880001","luas":"0.14","urea":"35","npk":"33"},{"nama":"KADEMIN","nik":"3520031110460001","luas":"0.45","urea":"112","npk":"105"},{"nama":"KADEMUN","nik":"3520032602440001","luas":"0.28","urea":"70","npk":"65"},{"nama":"KADIMIN","nik":"3520031201550001","luas":"0.2","urea":"50","npk":"47"},{"nama":"KADIMUN","nik":"3520032506700001","luas":"0.28","urea":"70","npk":"65"},{"nama":"KADIRUN","nik":"3520033006540001","luas":"0.77","urea":"192","npk":"180"},{"nama":"KADIYEM","nik":"3520035007730001","luas":"0.24","urea":"60","npk":"56"},{"nama":"KAIRUN","nik":"3520031802580001","luas":"0.23","urea":"57","npk":"54"},{"nama":"KAMIN SAMSULI","nik":"3520031507790001","luas":"0.48","urea":"120","npk":"112"},{"nama":"KARIMUN","nik":"3520030702710001","luas":"0.2","urea":"50","npk":"47"},{"nama":"KARINA HARDIANA WAHYU FARANANDA","nik":"3520034612980001","luas":"0.24","urea":"60","npk":"56"},{"nama":"KARNI","nik":"3520031112630004","luas":"0.17","urea":"42","npk":"40"},{"nama":"KARNO","nik":"3520031204460001","luas":"0.06","urea":"15","npk":"14"},{"nama":"KASENO","nik":"3520030606670001","luas":"0.62","urea":"154","npk":"145"},{"nama":"KASIMUN","nik":"3520033007610001","luas":"0.39","urea":"97","npk":"91"},{"nama":"KASIYO","nik":"3520030707450001","luas":"0.29","urea":"72","npk":"68"},{"nama":"KASMAN","nik":"3520033006560001","luas":"0.42","urea":"105","npk":"98"},{"nama":"KASMIATI","nik":"3520034804710002","luas":"0.51","urea":"127","npk":"119"},{"nama":"KATIMUN","nik":"3520031403520001","luas":"0.49","urea":"122","npk":"114"},{"nama":"KEMIS","nik":"3520031805590001","luas":"0.28","urea":"70","npk":"65"},{"nama":"KIMAN","nik":"3520033006360001","luas":"0.42","urea":"105","npk":"98"},{"nama":"LASIMIN","nik":"3520030107740005","luas":"0.28","urea":"70","npk":"65"},{"nama":"MANTO","nik":"3520031005640001","luas":"0.14","urea":"35","npk":"33"},{"nama":"MARIYEM","nik":"3520034212500001","luas":"0.27","urea":"67","npk":"63"},{"nama":"MARJI","nik":"3520030404640001","luas":"0.14","urea":"35","npk":"33"},{"nama":"MARSINI","nik":"3520037005650001","luas":"0.44","urea":"110","npk":"103"},{"nama":"MIREM","nik":"3520035704450001","luas":"0.2","urea":"50","npk":"47"},{"nama":"MISLAN SARJIANTO","nik":"3520032411650001","luas":"0.22","urea":"55","npk":"51"},{"nama":"MISNI","nik":"3520033112660001","luas":"0.12","urea":"30","npk":"28"},{"nama":"MISPAN","nik":"3520030107690008","luas":"0.14","urea":"35","npk":"33"},{"nama":"MISRATI","nik":"3520036202680002","luas":"0.11","urea":"27","npk":"26"},{"nama":"MOBIN","nik":"3520031204560001","luas":"0.3","urea":"75","npk":"70"},{"nama":"MOH PANUDIN","nik":"3520030904560002","luas":"0.08","urea":"20","npk":"19"},{"nama":"MUH BIBIT","nik":"3520030101620016","luas":"0.1","urea":"25","npk":"23"},{"nama":"NGADINO","nik":"3520030101760002","luas":"0.31","urea":"77","npk":"72"},{"nama":"NUR HADI TOMO","nik":"3520031204650001","luas":"0.14","urea":"35","npk":"33"},{"nama":"PAIMIN","nik":"3520031708560001","luas":"0.28","urea":"70","npk":"65"},{"nama":"PAINEM","nik":"3520035403440002","luas":"0.18","urea":"45","npk":"42"},{"nama":"PANIJO","nik":"3520030304530001","luas":"0.29","urea":"72","npk":"68"},{"nama":"PANIJO","nik":"3520032311630001","luas":"0.2","urea":"50","npk":"47"},{"nama":"PARDI","nik":"3520021207700005","luas":"0.22","urea":"55","npk":"51"},{"nama":"PARDI","nik":"3520031404540001","luas":"0.08","urea":"20","npk":"19"},{"nama":"PARMI","nik":"3520034704580001","luas":"0.2","urea":"50","npk":"47"},{"nama":"PARNI","nik":"3520031506650002","luas":"0.14","urea":"35","npk":"33"},{"nama":"PARNI","nik":"3520032808880001","luas":"0.41","urea":"102","npk":"96"},{"nama":"PARNO","nik":"3520031006580001","luas":"0.77","urea":"192","npk":"180"},{"nama":"PARTO SAMAN","nik":"3520031012640001","luas":"0.14","urea":"35","npk":"33"},{"nama":"PUJIATI","nik":"3520035607820001","luas":"0.28","urea":"70","npk":"65"},{"nama":"PURWANTO","nik":"3520030104740001","luas":"0.14","urea":"35","npk":"33"},{"nama":"RATUN","nik":"3520034107450032","luas":"0.19","urea":"47","npk":"44"},{"nama":"RINI BUDI LESTARI","nik":"3520036303860001","luas":"0.26","urea":"65","npk":"61"},{"nama":"RIRIT ARMIYANTI","nik":"3520034503770001","luas":"0.28","urea":"70","npk":"65"},{"nama":"ROBBY DWIYANTO","nik":"3520031810950002","luas":"0.14","urea":"35","npk":"33"},{"nama":"SABAR","nik":"3520030104640002","luas":"0.19","urea":"47","npk":"44"},{"nama":"SADIRAN","nik":"3520030101750001","luas":"0.14","urea":"35","npk":"33"},{"nama":"SADIRAN","nik":"3520032512400001","luas":"0.14","urea":"35","npk":"33"},{"nama":"SAIFUDIN JUHRI","nik":"3520032212650001","luas":"0.26","urea":"65","npk":"61"},{"nama":"SAIRUN","nik":"3520031510560002","luas":"0.23","urea":"57","npk":"54"},{"nama":"SAKIP","nik":"3520032909500001","luas":"0.14","urea":"35","npk":"33"},{"nama":"SAMAN","nik":"3520030509660001","luas":"0.1","urea":"25","npk":"23"},{"nama":"SAMIDI","nik":"3520030212520001","luas":"0.54","urea":"135","npk":"126"},{"nama":"SAMIJAN","nik":"3520033012690002","luas":"0.34","urea":"85","npk":"79"},{"nama":"SAMINEM","nik":"3520035703770003","luas":"0.33","urea":"82","npk":"77"},{"nama":"SAMINGOEN","nik":"3520031805600001","luas":"0.28","urea":"70","npk":"65"},{"nama":"SAMIRAN","nik":"3502150602630004","luas":"0.11","urea":"27","npk":"26"},{"nama":"SAMIRAN","nik":"3520030905670001","luas":"0.37","urea":"92","npk":"86"},{"nama":"SAMSI","nik":"3520032202660001","luas":"0.66","urea":"164","npk":"154"},{"nama":"SAMSITIN","nik":"3520034104520010","luas":"0.31","urea":"77","npk":"72"},{"nama":"SAMSUDIN","nik":"3520031109460001","luas":"0.28","urea":"70","npk":"65"},{"nama":"SAMSUL MA'ARIF","nik":"3520030107910005","luas":"0.28","urea":"70","npk":"65"},{"nama":"SAMSURI","nik":"3520030308890001","luas":"0.14","urea":"35","npk":"33"},{"nama":"SAMSURI","nik":"3520031809730001","luas":"0.28","urea":"70","npk":"65"},{"nama":"SAMUDI","nik":"3520033103810001","luas":"0.28","urea":"70","npk":"65"},{"nama":"SAMUJI","nik":"3520031204530001","luas":"0.14","urea":"35","npk":"33"},{"nama":"SARDI","nik":"3520030107530009","luas":"0.35","urea":"87","npk":"82"},{"nama":"SARDI","nik":"3520031106510001","luas":"0.38","urea":"95","npk":"89"},{"nama":"SARDI","nik":"3520031708570001","luas":"1.05","urea":"262","npk":"245"},{"nama":"SARIJO","nik":"3520032701690002","luas":"0.42","urea":"105","npk":"98"},{"nama":"SARIMIN","nik":"3520033112590001","luas":"0.42","urea":"105","npk":"98"},{"nama":"SARNI","nik":"3520031505650002","luas":"0.07","urea":"17","npk":"16"},{"nama":"SARNO","nik":"3520031707710001","luas":"0.14","urea":"35","npk":"33"},{"nama":"SEMUN","nik":"3520030101550011","luas":"0.21","urea":"52","npk":"49"},{"nama":"SENEN","nik":"3520031406550001","luas":"0.06","urea":"15","npk":"14"},{"nama":"SENEN","nik":"3520033012630001","luas":"0.17","urea":"42","npk":"40"},{"nama":"SENI FADKUR","nik":"3520031008490001","luas":"0.14","urea":"35","npk":"33"},{"nama":"SIMIN","nik":"3520033107730002","luas":"0.7","urea":"174","npk":"163"},{"nama":"SIRUN","nik":"3520031505510001","luas":"0.1","urea":"25","npk":"23"},{"nama":"SLAMET","nik":"3520031501680001","luas":"0.14","urea":"35","npk":"33"},{"nama":"SRI HIDAYATI","nik":"3520034802790001","luas":"0.19","urea":"47","npk":"44"},{"nama":"SUBANDI","nik":"3520030608690001","luas":"0.42","urea":"105","npk":"98"},{"nama":"SUBANI","nik":"3520031808760001","luas":"0.14","urea":"35","npk":"33"},{"nama":"SUCIPTO","nik":"3520031504600001","luas":"0.22","urea":"55","npk":"51"},{"nama":"SUCIPTO","nik":"6474021405600003","luas":"0.25","urea":"62","npk":"58"},{"nama":"SUDARNO","nik":"3520032305770002","luas":"0.22","urea":"55","npk":"51"},{"nama":"SUGENG","nik":"3520030901750004","luas":"0.2","urea":"50","npk":"47"},{"nama":"SUGENG PURWANTO","nik":"3520032106850001","luas":"0.29","urea":"72","npk":"68"},{"nama":"SUGENG RIYANTO","nik":"3520031610910001","luas":"0.41","urea":"102","npk":"96"},{"nama":"SUGITO","nik":"3520030707590001","luas":"0.33","urea":"82","npk":"77"},{"nama":"SUGIYANTO","nik":"3520031107610001","luas":"0.22","urea":"55","npk":"51"},{"nama":"SUGIYONO","nik":"3520032005730001","luas":"0.14","urea":"35","npk":"33"},{"nama":"SUGIYONO","nik":"3520032012770003","luas":"0.38","urea":"95","npk":"89"},{"nama":"SUKADI","nik":"3520030302740002","luas":"0.1","urea":"25","npk":"23"},{"nama":"SUKAMTO","nik":"3520030205790004","luas":"0.56","urea":"139","npk":"131"},{"nama":"SUKAMTO","nik":"3520031306620001","luas":"0.06","urea":"15","npk":"14"},{"nama":"SUKAMTO","nik":"3520031512420001","luas":"0.3","urea":"75","npk":"70"},{"nama":"SUKARDI","nik":"3520032702660001","luas":"0.18","urea":"45","npk":"42"},{"nama":"SUKARTINI","nik":"3520035710760001","luas":"0.11","urea":"27","npk":"26"},{"nama":"SUKAT","nik":"3520031607570001","luas":"0.4","urea":"100","npk":"93"},{"nama":"SUKIMAN","nik":"3520030107380072","luas":"0.28","urea":"70","npk":"65"},{"nama":"SULASMI","nik":"3520034202560001","luas":"0.08","urea":"20","npk":"19"},{"nama":"SULISTYOWATI","nik":"3520034703860003","luas":"0.56","urea":"139","npk":"131"},{"nama":"SUMARNI","nik":"3520030104970001","luas":"0.49","urea":"122","npk":"114"},{"nama":"SUMARTI","nik":"3520035105820001","luas":"0.31","urea":"77","npk":"72"},{"nama":"SUMIRAN","nik":"3520030305500002","luas":"0.47","urea":"117","npk":"110"},{"nama":"SUNARTI","nik":"3520035112870001","luas":"0.32","urea":"80","npk":"75"},{"nama":"SUNARYO","nik":"3520032101840001","luas":"0.29","urea":"72","npk":"68"},{"nama":"SUPARNO","nik":"3520033112640001","luas":"0.27","urea":"67","npk":"63"},{"nama":"SUPENO","nik":"3520031010550001","luas":"0.45","urea":"112","npk":"105"},{"nama":"SUPRIONO","nik":"3520030307790001","luas":"0.08","urea":"20","npk":"19"},{"nama":"SUPRIYANTO","nik":"3520033010900002","luas":"0.19","urea":"47","npk":"44"},{"nama":"SUPRIYANTO","nik":"6472050910800010","luas":"0.17","urea":"42","npk":"40"},{"nama":"SUPRIYONO","nik":"3520030511720001","luas":"0.28","urea":"70","npk":"65"},{"nama":"SUPRIYONO","nik":"3520030807740001","luas":"0.28","urea":"70","npk":"65"},{"nama":"SURADI","nik":"3520031704560004","luas":"0.42","urea":"105","npk":"98"},{"nama":"SURATI","nik":"3520036707750001","luas":"0.35","urea":"87","npk":"82"},{"nama":"SURATNO","nik":"3520031108800003","luas":"0.42","urea":"105","npk":"98"},{"nama":"SURINI","nik":"3520035710810001","luas":"0.13","urea":"32","npk":"30"},{"nama":"SUTADI","nik":"3520033006510001","luas":"0.42","urea":"105","npk":"98"},{"nama":"SUTARTI","nik":"3520034406650001","luas":"0.24","urea":"60","npk":"56"},{"nama":"SUTIKNO","nik":"3520033112650005","luas":"0.28","urea":"70","npk":"65"},{"nama":"SUTINI","nik":"3520034906630001","luas":"0.28","urea":"70","npk":"65"},{"nama":"SUTOMO","nik":"3520031805700001","luas":"0.16","urea":"40","npk":"37"},{"nama":"SUTRISNO","nik":"3520030607600001","luas":"0.43","urea":"107","npk":"100"},{"nama":"SUTRISNO","nik":"3520031506700001","luas":"0.5","urea":"125","npk":"117"},{"nama":"SUTRISNO","nik":"3520032909800001","luas":"0.14","urea":"35","npk":"33"},{"nama":"SUWANTO","nik":"3520032807750002","luas":"0.53","urea":"132","npk":"124"},{"nama":"SUWARNO","nik":"3520030505590001","luas":"0.23","urea":"57","npk":"54"},{"nama":"SUWITO","nik":"3520030505610001","luas":"0.19","urea":"47","npk":"44"},{"nama":"SUYADI","nik":"3502162705810004","luas":"0.35","urea":"87","npk":"82"},{"nama":"SUYATI","nik":"3520035710710002","luas":"0.12","urea":"30","npk":"28"},{"nama":"SUYITNO","nik":"3520031408670002","luas":"0.84","urea":"209","npk":"196"},{"nama":"SUYONO","nik":"3520030202770002","luas":"0.14","urea":"35","npk":"33"},{"nama":"TAYEM","nik":"3520037005390001","luas":"0.19","urea":"47","npk":"44"},{"nama":"TRI WINDARTI","nik":"3520036606700001","luas":"0.12","urea":"30","npk":"28"},{"nama":"TUKIRAN","nik":"3520030104720001","luas":"0.14","urea":"35","npk":"33"},{"nama":"TUKIRAN","nik":"3520030604650001","luas":"0.27","urea":"67","npk":"63"},{"nama":"TUNGGUL HARDIYONO","nik":"3520030405850004","luas":"0.28","urea":"70","npk":"65"},{"nama":"WAGIMIN","nik":"3520031210540001","luas":"0.24","urea":"60","npk":"56"},{"nama":"WAGIMUN","nik":"3520031303630001","luas":"0.11","urea":"27","npk":"26"},{"nama":"WAGINEM","nik":"3520036505570001","luas":"0.14","urea":"35","npk":"33"},{"nama":"WAKINO","nik":"3520030405620001","luas":"1","urea":"249","npk":"233"},{"nama":"WARSIYAT","nik":"3520031208740005","luas":"0.14","urea":"35","npk":"33"},{"nama":"WIJI","nik":"3520035604580001","luas":"0.34","urea":"85","npk":"79"},{"nama":"WIJIANTO","nik":"3520020103680003","luas":"0.31","urea":"77","npk":"72"},{"nama":"WIR SADIRUN","nik":"3520030510650001","luas":"0.41","urea":"102","npk":"96"},{"nama":"YITNO","nik":"3520030111760001","luas":"0.27","urea":"67","npk":"63"},{"nama":"YULIANA","nik":"3520034807860001","luas":"0.36","urea":"90","npk":"84"},{"nama":"YUWONO","nik":"3520030111500001","luas":"0.28","urea":"70","npk":"65"},{"nama":"SADIRUN","nik":"3520030603530001","luas":"0.14","urea":"0","npk":"0"}];
 
-    // Ambil daftar petani e-RDKK dari backend Google Apps Script & sinkronisasi cache
+    // Sinkronisasi data petani langsung dari Tab Google Sheet ALOKASI PEMBAGIAN & Apps Script
     async function muatDaftarPetani() {
-      // Inisialisasi awal dengan cache lokal atau seed data
+      // Prioritas 1: Gunakan cache lokal jika sudah ada data lengkap (>50 petani)
       const localPetani = localStorage.getItem('poktan_cache_petani_publik');
       if (localPetani) {
         try {
           const parsed = JSON.parse(localPetani);
-          if (Array.isArray(parsed) && parsed.length > 0) daftarPetaniCache = parsed;
-          else daftarPetaniCache = SEED_PETANI_ERDKK;
+          if (Array.isArray(parsed) && parsed.length > 50) {
+            daftarPetaniCache = parsed;
+          } else {
+            daftarPetaniCache = SEED_PETANI_ERDKK;
+          }
         } catch (e) {
           daftarPetaniCache = SEED_PETANI_ERDKK;
         }
@@ -1274,6 +1385,42 @@
         daftarPetaniCache = SEED_PETANI_ERDKK;
       }
 
+      // Prioritas 2: Tarik live data seketika dari Google Sheet Tab ALOKASI PEMBAGIAN (GViz API)
+      const GVIZ_URL = 'https://docs.google.com/spreadsheets/d/1c7R1klPcFSZ7W1PLaZyayZxBUOrVyLh-Lwc24Cf6CEY/gviz/tq?tqx=out:json&sheet=ALOKASI%20PEMBAGIAN&range=A2:N245&headers=0';
+      try {
+        const res = await fetch(GVIZ_URL);
+        const txt = await res.text();
+        const jsonStr = txt.substring(txt.indexOf('{'), txt.lastIndexOf('}') + 1);
+        const data = JSON.parse(jsonStr);
+        const rows = data.table && data.table.rows;
+        if (Array.isArray(rows) && rows.length > 0) {
+          const list = [];
+          rows.forEach(r => {
+            const c = r.c;
+            if (!c) return;
+            const nik = c[1] ? String(c[1].v || '').trim() : '';
+            const nama = c[2] ? String(c[2].v || '').trim() : '';
+            let luas = c[3] ? String(c[3].f || c[3].v || '').trim() : '';
+            if (!luas || luas === 'null') luas = c[4] ? String(c[4].f || c[4].v || '').trim() : '0.25';
+            luas = luas.replace(',', '.').replace(/[^0-9.]/g, '');
+            const urea = c[6] ? String(c[6].f || Math.round(Number(c[6].v) || 0)).replace(/[^0-9]/g, '') : '0';
+            const npk = c[7] ? String(c[7].f || Math.round(Number(c[7].v) || 0)).replace(/[^0-9]/g, '') : '0';
+            if (nik && nama && !nama.includes('TOTAL') && !nama.includes('TIDAK MASUK') && nik !== 'NIK') {
+              list.push({ nama: nama.toUpperCase(), nik, luas: luas || '0.25', urea: urea || '0', npk: npk || '0' });
+            }
+          });
+          if (list.length > 0) {
+            daftarPetaniCache = list;
+            try { localStorage.setItem('poktan_cache_petani_publik', JSON.stringify(list)); } catch (e) {}
+            console.log('Sinkronisasi Google Sheet ALOKASI PEMBAGIAN berhasil:', list.length, 'petani.');
+            return;
+          }
+        }
+      } catch (errGviz) {
+        console.warn('GViz fetch gagal, mencoba Apps Script backend:', errGviz);
+      }
+
+      // Prioritas 3: Fallback ke Google Apps Script backend jika GViz dibatasi browser
       try {
         const res = await fetch(GAS_API_URL, {
           method: 'POST',
@@ -1288,7 +1435,7 @@
           } catch (e) {}
         }
       } catch (err) {
-        console.warn('Gagal sinkronisasi e-RDKK online, menggunakan cache lokal:', err);
+        console.warn('Gagal sinkronisasi online, menggunakan database offline lokal:', err);
       }
     }
 
@@ -1432,6 +1579,255 @@
     });
 
     // Kalkulasi Dosis & Tanggal Panen Presisi
+    
+    // Helper tambah gejala hama cepat dari chip
+    function tambahGejalaHama(gejala) {
+      const input = document.getElementById('calc-catatan');
+      if (!input) return;
+      const current = (input.value || '').trim();
+      if (current) {
+        if (!current.toLowerCase().includes(gejala.toLowerCase())) {
+          input.value = current + ', ' + gejala;
+        }
+      } else {
+        input.value = 'Riwayat keluhan: ' + gejala;
+      }
+      hitungDosis();
+    }
+
+    function getMusimAktif() {
+      const checked = document.querySelector('input[name="calc-musim"]:checked');
+      return checked ? checked.value : 'MT 3 (Gadu 2)';
+    }
+
+    // ========================================================
+    // ENGINE AI AGRONOMI POKTAN SRI MULYO (REKOMENDASI PRESISI)
+    // ========================================================
+    function analisisAiAgronomi(params) {
+      const {
+        nama,
+        nik,
+        luas,
+        musim,
+        komoditas,
+        varietas,
+        tglTanam,
+        urea,
+        npk,
+        catatan
+      } = params;
+
+      const raw = (catatan || '').toLowerCase();
+
+      // Deteksi gejala hama & kondisi tanah
+      const isWereng = /wereng|bph|coklat|kerdil hampa|hopper/i.test(raw);
+      const isSundep = /sundep|beluk|penggerek|kaper|larva batang|pucuk mati/i.test(raw);
+      const isKresek = /kresek|blb|bakteri|xanthomonas|hawar daun|garis kuning/i.test(raw);
+      const isBlas = /blas|blast|patah leher|pyricularia|busuk leher/i.test(raw);
+      const isAsem = /asem|masam|karat|merah|sulit anakan|gambut/i.test(raw);
+      const isTikus = /tikus|pengerat|lubang tikus|potong malai/i.test(raw);
+      const isUlat = /ulat|grayak|faw|tentara|tongkol/i.test(raw);
+      const isWalang = /walang|sangit|kepik|biji tutul/i.test(raw);
+
+      let tingkatRisiko = 'Normal Terkendali';
+      let badgeClass = 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30';
+      let diagnosis = '';
+      const rekomendasiObat = [];
+      const penyesuaianPupuk = [];
+      const saranMusim = [];
+      const tindakanTimelineKhusus = [];
+
+      const targetNama = nama ? nama.toUpperCase() : 'PETANI MANDIRI';
+
+      // 1. Diagnosis Khusus Berdasarkan Keluhan
+      if (isWereng) {
+        tingkatRisiko = 'Waspada Tinggi: Wereng Coklat (BPH)';
+        badgeClass = 'bg-rose-500/20 text-rose-300 border-rose-400/40';
+        diagnosis = `Terdeteksi riwayat atau ancaman hama Wereng Batang Coklat pada petak ${targetNama} (${luas} Ha). Diperlukan pengawalan nozel bawah dan pembatasan pupuk nitrogen berlebih.`;
+        rekomendasiObat.push({
+          nama: 'Insektisida Penghambat Makan Wereng',
+          bahanAktif: 'Pimetrozin 50% (contoh: Chess 50 WG) ATAU Imidakloprid (Confidor 200 SL)',
+          dosis: '15 - 20 gram per tangki 16 Liter air (1 sachet kecil)',
+          waktu: 'Pagi hari pkl 06.30 - 08.30 WIB. Semprotan nozel diarahkan langsung ke PANGKAL BATANG rumpun padi',
+          efek: 'Melumpuhkan belalai hisap wereng dalam 1-2 jam dan memandulkan wereng betina dewasa'
+        });
+        penyesuaianPupuk.push('HINDARI penambahan pupuk Urea berlebih di Pemupukan Susulan II (maksimal 25% dosis). Jaringan tanaman yang terlalu rimbun dan empuk memicu ledakan wereng berlipat ganda.');
+        penyesuaianPupuk.push('Terapkan sistem irigasi berselang (Intermittent): 3 hari diairi macak-macak, 4 hari dikeringkan sampai tanah retak rambut untuk menurunkan kelembaban sarang wereng.');
+        tindakanTimelineKhusus.push({
+          hst: 'HST 15 & HST 30',
+          kegiatan: 'Semprot preventif Wereng Coklat (Pimetrozin) tepat di pangkal batang rumpun padi saat pagi hari.'
+        });
+      }
+
+      if (isSundep) {
+        if (tingkatRisiko.includes('Normal')) {
+          tingkatRisiko = 'Perhatian: Penggerek Batang & Sundep';
+          badgeClass = 'bg-amber-500/20 text-amber-300 border-amber-400/40';
+        }
+        diagnosis += (diagnosis ? ' ' : '') + 'Teridentifikasi risiko serangan Sundep (fase vegetatif) dan Beluk malai hampa (fase generatif).';
+        rekomendasiObat.push({
+          nama: 'Insektisida Sistemik Penggerek Batang',
+          bahanAktif: 'Dimehipo 400 g/l (contoh: Spontan 400 SL) ATAU Klorantraniliprol (Prevathon 50 SC)',
+          dosis: '30 - 40 ml (Spontan) atau 15 ml (Prevathon) per tangki 16 Liter',
+          waktu: 'Pagi pkl 07.00 - 09.00 WIB atau sore pkl 15.30 - 17.00 WIB',
+          efek: 'Racun sistemik meresap ke dalam jaringan pelepah batang untuk mematikan ulat penggerek yang berada di dalam'
+        });
+        tindakanTimelineKhusus.push({
+          hst: 'HST 10 & HST 35',
+          kegiatan: 'Aplikasi insektisida sistemik Sundep saat kaper aktif terbang bertelur, pasang lampu perangkap di pematang.'
+        });
+      }
+
+      if (isKresek || isBlas) {
+        if (tingkatRisiko.includes('Normal')) {
+          tingkatRisiko = 'Waspada Infeksi Jamur & Hawar Bakteri';
+          badgeClass = 'bg-amber-500/20 text-amber-300 border-amber-400/40';
+        }
+        diagnosis += (diagnosis ? ' ' : '') + 'Risiko bercak hawar daun bakteri (Kresek) atau jamur patah leher (Blas) pada daun bendera.';
+        rekomendasiObat.push({
+          nama: isKresek ? 'Bakterisida Protektif & Kuratif' : 'Fungisida Sistemik Patah Leher',
+          bahanAktif: isKresek ? 'Tembaga Oksiklorida 50% (Kuproxat) atau Seng Tiazol' : 'Trisiklazol (Beam 75 WP) ATAU Azoksistrobin + Difenokonazol (Amistartop)',
+          dosis: '20 - 25 gram atau 15-20 ml per tangki 16 Liter',
+          waktu: 'Pagi hari setelah embun daun mengering (pkl 07.30 - 09.30) agar larutan obat menempel sempurna',
+          efek: 'Menghambat perkembangbiakan koloni bakteri Xanthomonas dan menahan patahnya leher malai'
+        });
+        penyesuaianPupuk.push('Koreksi Dosis Urea: Turunkan porsi Urea susulan ke-2 sebesar 20%, alihkan ke pupuk Kalium (KCL/NPK) untuk memperkeras dinding sel daun padi.');
+        tindakanTimelineKhusus.push({
+          hst: 'HST 20 & HST 45',
+          kegiatan: 'Semprot Bakterisida / Fungisida pelindung malai sebelum infeksi kresek/blas menjalar ke bulir gabah.'
+        });
+      }
+
+      if (isAsem) {
+        tingkatRisiko = 'Koreksi Tanah Masam (Asem-Aseman)';
+        badgeClass = 'bg-rose-500/20 text-rose-300 border-rose-400/40';
+        diagnosis += (diagnosis ? ' ' : '') + 'Tanah sawah mengalami keasaman tinggi / asem-aseman yang menyebabkan daun kuning berkarat dan anakan kerdil.';
+        rekomendasiObat.push({
+          nama: 'Pembenah Tanah & Kapur Pertanian',
+          bahanAktif: 'Kapur Pertanian (Dolomit / CaMg(CO3)2) + Pupuk Hayati Asam Humat',
+          dosis: '150 - 250 kg Dolomit per hektar (aplikasi 1-2 sak untuk luas petak ini)',
+          waktu: 'Tabur merata saat bajak pertama (H-15 s.d. H-7 sebelum tanam)',
+          efek: 'Menaikkan pH tanah ke normal (pH 6.2 - 6.5) sehingga akar mampu menyerap pupuk Urea dan NPK dengan optimal'
+        });
+        penyesuaianPupuk.push('PENTING: Jangan tabur pupuk Urea saat bibit masih menguning akibat asem-aseman! Tunggu hingga umur 10-12 HST saat akar baru bertunas putih.');
+        tindakanTimelineKhusus.push({
+          hst: 'H - 15',
+          kegiatan: 'Tabur Kapur Dolomit 2 sak per petak saat olah tanah basah untuk menetralkan pH tanah asem-aseman.'
+        });
+      }
+
+      if (isTikus) {
+        diagnosis += (diagnosis ? ' ' : '') + 'Waspadai serangan tikus pengerat pada tanggul dan pematang sawah.';
+        rekomendasiObat.push({
+          nama: 'Rodentisida & Pengendalian Tikus Terpadu',
+          bahanAktif: 'Brodifakum (Klerat / Petrokum) + Pengemposan Belerang Liang Aktif',
+          dosis: '1-2 kotak umpan beracun di lintasan aktif pematang sawah',
+          waktu: 'Pasang sore hari pkl 17.00 WIB, sanitasi liang pematang secara gotong royong',
+          efek: 'Mengendalikan populasi tikus sebelum masa bunting padi serentak'
+        });
+      }
+
+      if (isUlat) {
+        diagnosis += (diagnosis ? ' ' : '') + 'Waspada serangan ulat grayak atau ulat penggerek tongkol jagung.';
+        rekomendasiObat.push({
+          nama: 'Insektisida Translaminar Ulat',
+          bahanAktif: 'Emamektin Benzoat (Proclaim 5 SG) ATAU Spinetoram (Endure 120 SC)',
+          dosis: '10 - 15 gram per tangki 16 Liter',
+          waktu: 'Sore hari pkl 16.00 - 18.00 WIB saat ulat aktif keluar dari gulungan daun',
+          efek: 'Membasmi larva ulat instar 1 s.d. 3 dalam hitungan jam'
+        });
+      }
+
+      // Default jika tidak ada keluhan hama spesifik
+      if (rekomendasiObat.length === 0) {
+        diagnosis = `Kondisi lahan petak ${targetNama} (${luas} Ha) terpantau sehat dan kondusif. Pola budidaya diarahkan untuk efisiensi serapan pupuk berimbang dan pencegahan dini.`;
+        rekomendasiObat.push({
+          nama: 'Pengawalan Preventif Ramah Lingkungan',
+          bahanAktif: 'Agen Hayati (Trichoderma sp. & Beauveria bassiana) ATAU Insektisida Nabati',
+          dosis: '100 ml per tangki 16 Liter',
+          waktu: 'Sore hari pkl 16.00 WIB tiap 14 hari sekali',
+          efek: 'Menjaga populasi musuh alami (laba-laba, tomcat, capung) tetap aktif melindungi sawah'
+        });
+        penyesuaianPupuk.push(`Alokasi resmi Urea ${urea} Kg dan NPK ${npk} Kg untuk luas ${luas} Ha sudah proporsional sesuai acuan e-RDKK BPP Lembeyan.`);
+      }
+
+      // Saran Iklim & Musim Tanam
+      if (musim.includes('MT 1')) {
+        saranMusim.push('Karakteristik MT 1 (Musim Hujan): Kelembaban tinggi rawan jamur & bakteri. Tambahkan perekat pestisida (surfactant) agar semprotan obat tidak larut tercuci hujan.');
+      } else if (musim.includes('MT 2')) {
+        saranMusim.push('Karakteristik MT 2 (Pancaroba): Fluktuasi suhu siang dan malam memicu perkembangan kaper sundep dan wereng. Lakukan pengamatan rumpun 4 hari sekali.');
+      } else {
+        saranMusim.push('Karakteristik MT 3 (Kemarau): Ketersediaan air terbatas. Utamakan pengairan macak-macak pada fase kritis pemupukan dan pembungaan. Tabur pupuk hanya saat tanah basah.');
+      }
+
+      // Saran Khusus Varietas
+      const vLower = (varietas || '').toLowerCase();
+      if (vLower.includes('ciherang')) {
+        penyesuaianPupuk.push('Varietas Ciherang memiliki beras pulen prima namun lebih sensitif terhadap wereng biotipe baru. Wajib pertahankan pengairan macak-macak.');
+      } else if (vLower.includes('inpari 32')) {
+        penyesuaianPupuk.push('Varietas Inpari 32 tahan jamur blas, tetapi peka hawar bakteri jika daun terlalu rimbun. Jaga jarak tanam minimal jajar legowo 2:1.');
+      } else if (vLower.includes('mapan 05')) {
+        penyesuaianPupuk.push('Varietas Mapan 05 (Hibrida) berpotensi menghasilkan >25 anakan produktif per rumpun. Dukung dengan penyemprotan pupuk kalium cair saat pengisian butir.');
+      }
+
+      return {
+        targetNama,
+        tingkatRisiko,
+        badgeClass,
+        diagnosis,
+        rekomendasiObat,
+        penyesuaianPupuk,
+        saranMusim: saranMusim.join(' '),
+        tindakanTimelineKhusus
+      };
+    }
+
+    // Render tampilan kartu AI Agronomi di layar
+    function updateAiAgronomi(ai) {
+      const elTarget = document.getElementById('ai-petani-target');
+      if (elTarget) elTarget.innerText = `Analisis resep obat & takaran khusus untuk lahan Bpk/Ibu ${ai.targetNama}`;
+
+      const elBadgeWrap = document.getElementById('ai-badge-wrap');
+      if (elBadgeWrap) {
+        elBadgeWrap.innerHTML = `<span class="px-3 py-1 rounded-full text-xs font-black uppercase border flex items-center gap-1.5 shadow-sm ${ai.badgeClass}">
+          <i class="fa-solid fa-shield-virus"></i>
+          <span>${ai.tingkatRisiko}</span>
+        </span>`;
+      }
+
+      const elDiag = document.getElementById('ai-diagnosis-teks');
+      if (elDiag) elDiag.innerText = ai.diagnosis;
+
+      const elResep = document.getElementById('ai-resep-container');
+      if (elResep) {
+        elResep.innerHTML = ai.rekomendasiObat.map((r, i) => `
+          <div class="p-3.5 rounded-2xl bg-white/10 border border-white/15 space-y-1.5 text-xs text-slate-100">
+            <div class="flex items-center justify-between">
+              <b class="text-amber-300 font-extrabold flex items-center gap-1.5">
+                <i class="fa-solid fa-pills text-amber-400"></i> ${r.nama}
+              </b>
+              <span class="text-[10px] text-emerald-300 font-bold bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/30">Rekomendasi BPP</span>
+            </div>
+            <p><span class="text-slate-400 font-semibold">Bahan Aktif:</span> <b class="text-white">${r.bahanAktif}</b></p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11px] pt-1 border-t border-white/10">
+              <p><span class="text-slate-400">Takaran/Dosis:</span> <span class="font-bold text-sky-200">${r.dosis}</span></p>
+              <p><span class="text-slate-400">Waktu Semprot:</span> <span class="font-bold text-emerald-200">${r.waktu}</span></p>
+            </div>
+            <p class="text-[10.5px] text-slate-300 italic pt-0.5">💡 Efek Lapangan: ${r.efek}</p>
+          </div>
+        `).join('');
+      }
+
+      const elPupuk = document.getElementById('ai-saran-pupuk-list');
+      if (elPupuk) {
+        elPupuk.innerHTML = ai.penyesuaianPupuk.map(p => `<li>${p}</li>`).join('');
+      }
+
+      const elMusim = document.getElementById('ai-saran-musim-teks');
+      if (elMusim) elMusim.innerText = ai.saranMusim;
+    }
+
+    // Kalkulasi Dosis & Tanggal Panen Presisi
     function hitungDosis() {
       const rawKom = document.getElementById('calc-komoditas').value;
       const kom = getKomoditasAktif();
@@ -1502,6 +1898,22 @@
         document.getElementById('res-dosis-t3').innerText = `Urea ${ureaT3} Kg (Penutup)`;
         document.getElementById('res-sak-t3').innerText = `Aplikasi 40-45 HST (jelang bunga jantan)`;
       }
+
+      // Eksekusi Analisis AI Agronomi Dinamis Khusus Petani Ini
+      const aiParams = {
+        nama: (document.getElementById('input-petani').value || '').trim(),
+        nik: (document.getElementById('calc-nik').value || '').trim(),
+        luas: document.getElementById('calc-luas').value || '0.35',
+        musim: getMusimAktif(),
+        komoditas: kom,
+        varietas: varInfo.nama,
+        tglTanam: tglTanam,
+        urea: totalUrea,
+        npk: totalNpk,
+        catatan: document.getElementById('calc-catatan').value
+      };
+      const aiHasil = analisisAiAgronomi(aiParams);
+      updateAiAgronomi(aiHasil);
     }
 
     // Render Timeline Visual di Tab Kalender
@@ -1520,23 +1932,41 @@
       };
 
       const c = document.getElementById('timeline-container');
+      // Dapatkan rekomendasi tindakan khusus AI untuk disisipkan ke timeline
+      const aiData = analisisAiAgronomi({
+        nama: document.getElementById('input-petani').value,
+        nik: document.getElementById('calc-nik').value,
+        luas: document.getElementById('calc-luas').value,
+        musim: getMusimAktif(),
+        komoditas: kom,
+        varietas: varInfo.nama,
+        tglTanam: base,
+        urea: document.getElementById('calc-urea').value,
+        npk: document.getElementById('calc-npk').value,
+        catatan: document.getElementById('calc-catatan').value
+      });
+
+      const customPestText = (aiData.tindakanTimelineKhusus && aiData.tindakanTimelineKhusus.length > 0)
+        ? aiData.tindakanTimelineKhusus.map(t => t.kegiatan).join('; ')
+        : '';
+
       const steps = kom === 'Padi' ? [
-        { hst: 'H - 25', tgl: add(-25), title: 'Penyemaian Benih & Olah Tanah', desc: 'Rendam benih, tiriskan, sebar di bedengan semai. Bajak sawah & garu gembur.', icon: 'fa-seedling', color: 'bg-emerald-600' },
+        { hst: 'H - 25', tgl: add(-25), title: 'Penyemaian Benih & Olah Tanah', desc: 'Rendam benih, tiriskan, sebar di bedengan semai. Bajak sawah & garu gembur.' + (aiData.tindakanTimelineKhusus.find(x => x.hst === 'H - 15') ? ' ' + aiData.tindakanTimelineKhusus.find(x => x.hst === 'H - 15').kegiatan : ''), icon: 'fa-seedling', color: 'bg-emerald-600' },
         { hst: 'HST 0', tgl: add(0), title: 'Hari Pindah Tanam (Transplanting)', desc: 'Tanam bibit umur 15-20 hari, 2-3 batang per rumpun, jarak tanam jajar legowo.', icon: 'fa-person-digging', color: 'bg-emerald-700' },
         { hst: 'HST 7', tgl: add(7), title: 'Pemupukan Dasar (Tahap 1)', desc: 'Tabur 70% NPK Phonska + 20% Urea saat kondisi sawah macak-macak.', icon: 'fa-box-archive', color: 'bg-blue-600' },
-        { hst: 'HST 15', tgl: add(15), title: 'Penyiangan Gulma & Pencegahan Sundep', desc: 'Matun rumput liar, kontrol keong mas, waspada kaper kupu-kupu penggerek batang.', icon: 'fa-broom', color: 'bg-amber-600' },
+        { hst: 'HST 15', tgl: add(15), title: 'Penyiangan Gulma & Kontrol Hama Khusus', desc: 'Matun rumput liar.' + (customPestText ? ' Tindakan Khusus: ' + customPestText : ' Kontrol keong mas & waspada kaper kupu-kupu sundep.'), icon: 'fa-broom', color: 'bg-amber-600' },
         { hst: 'HST 18', tgl: add(18), title: 'Pemupukan Susulan I (Tahap 2)', desc: 'Tabur 50% Urea + 30% NPK untuk memacu pertumbuhan anakan produktif maksimum.', icon: 'fa-cubes', color: 'bg-blue-700' },
-        { hst: 'HST 32', tgl: add(32), title: 'Pemupukan Susulan II (Fase Primordia)', desc: 'Tabur sisa 30% Urea menjelang bunting untuk menjaga kehijauan daun bendera.', icon: 'fa-leaf', color: 'bg-purple-600' },
+        { hst: 'HST 32', tgl: add(32), title: 'Pemupukan Susulan II (Fase Primordia)', desc: 'Tabur sisa 30% Urea menjelang bunting. ' + (aiData.rekomendasiObat[0] ? 'Semprot ' + aiData.rekomendasiObat[0].nama + '.' : ''), icon: 'fa-leaf', color: 'bg-purple-600' },
         { hst: 'HST 60', tgl: add(60), title: 'Fase Bunga & Pengisian Butir Padi', desc: 'Malai keluar serempak. Semprot pencegahan jamur blas leher & walang sangit pagi hari.', icon: 'fa-sun', color: 'bg-indigo-600' },
-        { hst: 'HST 90', tgl: add(90), title: 'Pengeringan Air Sawah Jelang Panen', desc: 'Buang air sawah agar tanah padat memudahkan proses panen dan mempercepat penuaan bulir.', icon: 'fa-water', color: 'bg-slate-600' },
+        { hst: 'HST 90', tgl: add(90), title: 'Pengeringan Sawah Pra-Panen', desc: 'Buang air sawah agar tanah padat memudahkan proses panen dan mempercepat penuaan bulir.', icon: 'fa-water', color: 'bg-slate-600' },
         { hst: `HST ${umur}`, tgl: add(umur), title: 'PANEN RAYA POKTAN SRI MULYO!', desc: `Padi siap dipanen saat 90-95% bulir menguning keemasan (Varietas: ${varInfo.nama}).`, icon: 'fa-wheat-awn', color: 'bg-amber-500' }
       ] : [
-        { hst: 'HST 0', tgl: add(0), title: 'Penugalan & Tanam Benih Jagung', desc: 'Tanam 1 biji per lubang jarak tanam 70 x 20 cm. Berikan Furadan/karbofuran jika ada semut.', icon: 'fa-seedling', color: 'bg-emerald-600' },
-        { hst: 'HST 7', tgl: add(7), title: 'Pemupukan Dasar Jagung (Tahap 1)', desc: 'Aplikasi 50% NPK + 30% Urea di samping lubang tanaman (jarak 5-7 cm).', icon: 'fa-cubes', color: 'bg-blue-600' },
-        { hst: 'HST 25', tgl: add(25), title: 'Pemupukan Susulan I & Pembumbunan Tanah', desc: 'Aplikasi 40% Urea + sisa NPK. Timbun tanah ke pangkal batang agar kokoh anti rebah.', icon: 'fa-person-digging', color: 'bg-amber-600' },
+        { hst: 'HST 0', tgl: add(0), title: 'Penugalan & Tanam Benih Jagung', desc: 'Tanam 1 biji per lubang jarak tanam 70 x 20 cm. Berikan perlakuan benih pencegah bulai.', icon: 'fa-seedling', color: 'bg-emerald-600' },
+        { hst: 'HST 7', tgl: add(7), title: 'Pemupukan Dasar Jagung (Tahap 1)', desc: 'Aplikasi 50% NPK + 30% Urea di samping lubang tanaman (jarak 5-7 cm).', icon: 'fa-box-archive', color: 'bg-blue-600' },
+        { hst: 'HST 25', tgl: add(25), title: 'Pemupukan Susulan I & Pembumbunan', desc: 'Aplikasi 40% Urea + sisa NPK. Timbun tanah ke pangkal batang agar kokoh anti rebah.' + (customPestText ? ' ' + customPestText : ''), icon: 'fa-person-digging', color: 'bg-amber-600' },
         { hst: 'HST 42', tgl: add(42), title: 'Pemupukan Susulan II (Fase Primordia)', desc: 'Aplikasi sisa 30% Urea menjelang keluarnya bunga jantan (tassel).', icon: 'fa-leaf', color: 'bg-purple-600' },
-        { hst: 'HST 55', tgl: add(55), title: 'Fase Keluar Bunga Jantan & Rambut Tongkol', desc: 'Pengendalian ulat penggerek tongkol. Pastikan kecukupan air saat penyerbukan.', icon: 'fa-sun', color: 'bg-indigo-600' },
-        { hst: `HST ${umur}`, tgl: add(umur), title: 'PANEN PIPIL KERING JAGUNG!', desc: `Kelobot kering kecoklatan, biji mengkilap keras berpati hitam (Black layer).`, icon: 'fa-cubes-stacked', color: 'bg-amber-500' }
+        { hst: 'HST 55', tgl: add(55), title: 'Fase Keluar Bunga & Rambut Tongkol', desc: 'Pengendalian ulat penggerek tongkol. Pastikan kecukupan air saat penyerbukan.', icon: 'fa-sun', color: 'bg-indigo-600' },
+        { hst: `HST ${umur}`, tgl: add(umur), title: 'PANEN PIPIL KERING JAGUNG!', desc: `Kelobot kering kecoklatan, biji mengkilap keras berpati hitam (Black layer).`, icon: 'fa-wheat-awn', color: 'bg-amber-500' }
       ];
 
       let html = '<div class="relative border-l-2 border-emerald-200 ml-4 space-y-6">';
@@ -1725,6 +2155,34 @@
       document.getElementById('pk-tgl-panen').innerText = tglPanenStr || addDays(umur);
       document.getElementById('pk-ttd-nama').innerText = inputNama || 'PETANI PEMOHON';
       document.getElementById('pk-tgl-cetak').innerText = `Kediren, ${new Intl.DateTimeFormat('id-ID', { dateStyle: 'long' }).format(new Date())}`;
+
+      // Analisis AI Agronomi Khusus untuk Lembar Cetak Petani Ini
+      const aiPrintData = analisisAiAgronomi({
+        nama: inputNama,
+        nik: inputNik,
+        luas: inputLuas,
+        musim: getMusimAktif(),
+        komoditas: komNama,
+        varietas: varInfo.nama,
+        tglTanam: base,
+        urea: document.getElementById('calc-urea').value,
+        npk: document.getElementById('calc-npk').value,
+        catatan: document.getElementById('calc-catatan').value
+      });
+
+      const elBoxCetak = document.getElementById('pk-ai-resep-content');
+      if (elBoxCetak) {
+        let contentHtml = `<p class="font-bold text-black mb-0.5">• Diagnosis Risiko: ${aiPrintData.diagnosis}</p>`;
+        if (aiPrintData.rekomendasiObat.length > 0) {
+          contentHtml += `<p class="text-black font-medium mb-0.5">• Resep Tindakan: ${aiPrintData.rekomendasiObat.map(o => `<b>${o.nama}</b> (${o.bahanAktif}) Dosis: ${o.dosis} (${o.waktu})`).join(' | ')}</p>`;
+        }
+        if (aiPrintData.penyesuaianPupuk.length > 0) {
+          contentHtml += `<p class="text-black mb-0.5">• Arahan Pupuk Berimbang: ${aiPrintData.penyesuaianPupuk.join(' ')}</p>`;
+        }
+        elBoxCetak.innerHTML = contentHtml;
+      }
+      const elStatusCetak = document.getElementById('pk-ai-status-cetak');
+      if (elStatusCetak) elStatusCetak.innerText = `[ ${aiPrintData.tingkatRisiko} ]`;
 
       // Ambil rincian dosis pupuk
       const d1 = document.getElementById('res-dosis-t1').innerText;

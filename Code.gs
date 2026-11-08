@@ -601,20 +601,21 @@ function getSystemLogs_() {
 function getDaftarPetaniPublik_() {
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet = ss.getSheetByName('ALOKASI ERDKK');
+    const sheet = ss.getSheetByName('ALOKASI PEMBAGIAN') || ss.getSheetByName('ALOKASI ERDKK');
     if (!sheet) return { sukses: true, petani: [] };
     const lastRow = sheet.getLastRow();
     if (lastRow < 2) return { sukses: true, petani: [] };
-    const values = sheet.getRange(2, 2, lastRow - 1, 15).getDisplayValues();
+    const values = sheet.getRange(2, 1, lastRow - 1, 14).getDisplayValues();
     const list = [];
     values.forEach(r => {
-      const nik = String(r[0] || '').trim();
-      const nama = String(r[1] || '').trim();
-      const luas = String(r[2] || '').trim();
-      const urea = String(r[13] || '').trim();
-      const npk = String(r[14] || '').trim();
-      if (nik && nama) {
-        list.push({ nik: nik, nama: nama, luas: luas, urea: urea, npk: npk });
+      const nik = String(r[1] || '').trim();
+      const nama = String(r[2] || '').trim();
+      let luas = String(r[3] || '').trim() || String(r[4] || '').trim();
+      luas = luas.replace(',', '.').replace(/[^0-9.]/g, '');
+      const urea = String(r[6] || '').trim().replace(/[^0-9]/g, '');
+      const npk = String(r[7] || '').trim().replace(/[^0-9]/g, '');
+      if (nik && nama && !nama.includes('TOTAL') && !nama.includes('TIDAK MASUK') && nik !== 'NIK') {
+        list.push({ nik: nik, nama: nama, luas: luas || '0.25', urea: urea || '0', npk: npk || '0' });
       }
     });
     return { sukses: true, petani: list };
