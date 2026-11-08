@@ -448,12 +448,12 @@
             </div>
           </div>
 
-          <!-- Catatan / Gejala Hama & Pilihan Cepat AI -->
+          <!-- Catatan / Gejala Hama & Pilihan Rekomendasi Cepat -->
           <div>
             <div class="flex items-center justify-between mb-1">
-              <label class="block text-xs font-bold text-slate-700">Catatan Riwayat Hama Sawah (Untuk Resep AI)</label>
+              <label class="block text-xs font-bold text-slate-700">Catatan Riwayat Hama Sawah &amp; Kondisi Tanah</label>
               <span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1">
-                <i class="fa-solid fa-robot"></i> Resep AI Otomatis
+                <i class="fa-solid fa-seedling"></i> Rekomendasi PPL &amp; BPP
               </span>
             </div>
             <input type="text" id="calc-catatan" oninput="hitungDosis()" placeholder="Misal: ada riwayat wereng / sundep / kresek musim lalu" 
@@ -600,26 +600,26 @@
             </div>
           </div>
 
-          <!-- KARTU ASISTEN AI AGRONOMI POKTAN SRI MULYO (REKOMENDASI PINTAR KHUSUS LAHAN PETANI) -->
+          <!-- KARTU REKOMENDASI AGRONOMI & PENGENDALIAN HAMA POKTAN SRI MULYO -->
           <div id="card-ai-agronomi" class="bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 text-white rounded-3xl p-5 sm:p-6 border border-emerald-500/30 shadow-xl space-y-4 relative overflow-hidden transition-all duration-300">
             
-            <!-- Header AI & Status Risiko -->
+            <!-- Header Rekomendasi Agronomi & Status Risiko -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3.5">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 text-lg shadow-inner shrink-0">
-                  <i class="fa-solid fa-robot animate-bounce"></i>
+                  <i class="fa-solid fa-stethoscope"></i>
                 </div>
                 <div>
                   <div class="flex items-center gap-2 flex-wrap">
                     <h4 class="text-sm sm:text-base font-black tracking-tight text-white flex items-center gap-1.5">
-                      <span>Asisten AI Agronomi Poktan</span>
+                      <span>Petunjuk Budidaya &amp; Pengendalian Hama</span>
                       <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-400 text-slate-950 shadow-sm">
                         PRESISI LAHAN
                       </span>
                     </h4>
                   </div>
                   <p class="text-[11px] text-emerald-200/80 mt-0.5" id="ai-petani-target">
-                    Analisis resep obat &amp; takaran khusus untuk lahan Anda
+                    Petunjuk obat &amp; takaran khusus untuk lahan Anda
                   </p>
                 </div>
               </div>
@@ -644,12 +644,12 @@
               </p>
             </div>
 
-            <!-- Resep Penanganan Obat / Pestisida Rekomendasi Resmi BPP -->
+            <!-- Rekomendasi Pengendalian & Obat Resmi BPP -->
             <div class="space-y-2.5">
               <div class="flex items-center justify-between">
                 <span class="text-xs font-bold text-emerald-300 uppercase tracking-wider flex items-center gap-1.5">
                   <i class="fa-solid fa-prescription-bottle-medical text-emerald-400"></i>
-                  <span>Resep Obat &amp; Tindakan Pencegahan BPP</span>
+                  <span>Rekomendasi Obat &amp; Tindakan Pencegahan PHT</span>
                 </span>
                 <span class="text-[10px] text-slate-400 font-mono">Standar PHT Kementan</span>
               </div>
@@ -660,7 +660,7 @@
               </div>
             </div>
 
-            <!-- Penyesuaian Taktis Pupuk Berimbang dari AI -->
+            <!-- Penyesuaian Taktis Pupuk Berimbang dari BPP -->
             <div class="bg-emerald-950/60 border border-emerald-700/40 rounded-2xl p-4 space-y-2">
               <div class="flex items-center gap-2 text-xs font-bold text-emerald-300">
                 <i class="fa-solid fa-sliders text-emerald-400"></i>
@@ -769,10 +769,10 @@
           </table>
         </div>
 
-        <!-- LAMPIRAN RESEP KHUSUS AI AGRONOMI PENGENDALIAN HAMA PADA CETAK KALENDER -->
+        <!-- LAMPIRAN REKOMENDASI KHUSUS PENGENDALIAN HAMA PADA CETAK KALENDER -->
         <div id="pk-ai-resep-box" class="border border-black p-2.5 rounded-lg bg-slate-50/60 text-[10px] space-y-1">
           <div class="font-black uppercase text-black flex items-center justify-between border-b border-black pb-1">
-            <span>REKOMENDASI KHUSUS &amp; RESEP PENGENDALIAN HAMA AI BPP LEMBEYAN:</span>
+            <span>PETUNJUK KHUSUS PENGENDALIAN HAMA &amp; PENYAKIT (PHT BPP LEMBEYAN):</span>
             <span id="pk-ai-status-cetak" class="font-mono text-[9px] uppercase font-bold text-slate-800">[ TERANALISIS ]</span>
           </div>
           <div id="pk-ai-resep-content" class="text-[9px] leading-relaxed text-black pt-0.5">
@@ -788,8 +788,8 @@
             <div class="h-14 flex items-end justify-center pb-1">
               <span class="text-[8px] text-slate-400 italic">[ Tanda Tangan &amp; Cap ]</span>
             </div>
-            <p class="font-black underline uppercase text-black">SUMARNO / PENGURUS</p>
-            <p class="text-[9px] text-slate-600">Poktan Sri Mulyo Kediren</p>
+            <p class="font-black underline uppercase text-black">SAMSI</p>
+            <p class="text-[9px] text-slate-600">Ketua Kelompok Tani</p>
           </div>
           <div>
             <p id="pk-tgl-cetak" class="text-slate-700">Kediren, 8 November 2026</p>
@@ -966,7 +966,7 @@
           </div>
 
           <!-- PEMBERITAHUAN STATUS DATA TABEL -->
-          <div class="mb-3 p-2.5 rounded-lg border border-slate-300 bg-slate-50 text-[10px] text-slate-700 flex items-center justify-between no-print">
+          <div id="bpp-status-banner" class="mb-3 p-2.5 rounded-lg border border-slate-300 bg-slate-50 text-[10px] text-slate-700 flex items-center justify-between no-print">
             <div class="flex items-center gap-2">
               <i class="fa-solid fa-circle-info text-blue-600 text-xs"></i>
               <span><b>Status Isian Tabel:</b> Dikosongkan sementara karena menunggu pengisian rencana tanam mandiri dari seluruh anggota kelompok tani.</span>
@@ -1025,7 +1025,7 @@
               <div class="h-16 flex items-end justify-center pb-1">
                 <span class="text-[8px] text-slate-400 italic">[ Tanda Tangan &amp; Cap ]</span>
               </div>
-              <p class="font-black underline uppercase text-slate-900">SUPRIYANTO</p>
+              <p class="font-black underline uppercase text-slate-900">SAMSI</p>
               <p class="text-[9px] text-slate-600">Ketua Kelompok Tani</p>
             </div>
 
@@ -1628,7 +1628,7 @@
     }
 
     // ========================================================
-    // ENGINE AI AGRONOMI POKTAN SRI MULYO (REKOMENDASI PRESISI)
+    // ENGINE AGRONOMI POKTAN SRI MULYO (REKOMENDASI PRESISI BPP)
     // ========================================================
     function analisisAiAgronomi(params) {
       const {
@@ -1645,6 +1645,7 @@
       } = params;
 
       const raw = (catatan || '').toLowerCase();
+      const isPadi = (komoditas || '').toLowerCase().includes('padi');
 
       // Deteksi gejala hama & kondisi tanah
       const isWereng = /wereng|bph|coklat|kerdil hampa|hopper/i.test(raw);
@@ -1654,6 +1655,7 @@
       const isAsem = /asem|masam|karat|merah|sulit anakan|gambut/i.test(raw);
       const isTikus = /tikus|pengerat|lubang tikus|potong malai/i.test(raw);
       const isUlat = /ulat|grayak|faw|tentara|tongkol/i.test(raw);
+      const isBulai = /bulai|bule|putih|peronosclerospora/i.test(raw);
       const isWalang = /walang|sangit|kepik|biji tutul/i.test(raw);
 
       let tingkatRisiko = 'Normal Terkendali';
@@ -1667,6 +1669,24 @@
       const targetNama = nama ? nama.toUpperCase() : 'PETANI MANDIRI';
 
       // 1. Diagnosis Khusus Berdasarkan Keluhan
+      if (isBulai && !isPadi) {
+        tingkatRisiko = 'Waspada Tinggi: Jamur Bulai Jagung';
+        badgeClass = 'bg-rose-500/20 text-rose-300 border-rose-400/40';
+        diagnosis = `Terdeteksi risiko infeksi jamur Bulai (Peronosclerospora maydis) pada petak Jagung ${targetNama} (${luas} Ha). Daun tanaman bergaris putih klorotik dan kerdil.`;
+        rekomendasiObat.push({
+          nama: 'Fungisida Sistemik Perlakuan Benih & Semprot Bulai',
+          bahanAktif: 'Metalaksil 35 SD (contoh: Saromyl / Ridomil Gold) ATAU Dimetomorf (Acrobat 50 WP)',
+          dosis: '5 gram per 1 kg benih (perlakuan benih) ATAU 20-25 gram per tangki 16 Liter jika semprot daun',
+          waktu: 'Aplikasi saat benih dicampur sebelum tanam ATAU semprot pagi hari sebelum jam 08.00 WIB pada umur 7, 14, 21 HST',
+          efek: 'Mencegah penetrasi spora jamur bulai dan melindungi pertumbuhan titik tumbuh jagung'
+        });
+        penyesuaianPupuk.push('Cabut dan musnahkan tanaman jagung yang sudah terinfeksi parah (daun putih total) agar tidak menular ke tanaman tetangga lewat tiupan angin.');
+        tindakanTimelineKhusus.push({
+          hst: 'HST 0 & HST 10',
+          kegiatan: 'Perlakuan benih Metalaksil dan semprot daun muda umur 10 HST untuk proteksi dini dari jamur bulai.'
+        });
+      }
+
       if (isWereng) {
         tingkatRisiko = 'Waspada Tinggi: Wereng Coklat (BPH)';
         badgeClass = 'bg-rose-500/20 text-rose-300 border-rose-400/40';
@@ -1755,7 +1775,7 @@
       }
 
       if (isUlat) {
-        diagnosis += (diagnosis ? ' ' : '') + 'Waspada serangan ulat grayak atau ulat penggerek tongkol jagung.';
+        diagnosis += (diagnosis ? ' ' : '') + 'Waspada serangan ulat grayak atau ulat penggerek tongkol.';
         rekomendasiObat.push({
           nama: 'Insektisida Translaminar Ulat',
           bahanAktif: 'Emamektin Benzoat (Proclaim 5 SG) ATAU Spinetoram (Endure 120 SC)',
@@ -1767,15 +1787,27 @@
 
       // Default jika tidak ada keluhan hama spesifik
       if (rekomendasiObat.length === 0) {
-        diagnosis = `Kondisi lahan petak ${targetNama} (${luas} Ha) terpantau sehat dan kondusif. Pola budidaya diarahkan untuk efisiensi serapan pupuk berimbang dan pencegahan dini.`;
-        rekomendasiObat.push({
-          nama: 'Pengawalan Preventif Ramah Lingkungan',
-          bahanAktif: 'Agen Hayati (Trichoderma sp. & Beauveria bassiana) ATAU Insektisida Nabati',
-          dosis: '100 ml per tangki 16 Liter',
-          waktu: 'Sore hari pkl 16.00 WIB tiap 14 hari sekali',
-          efek: 'Menjaga populasi musuh alami (laba-laba, tomcat, capung) tetap aktif melindungi sawah'
-        });
-        penyesuaianPupuk.push(`Alokasi resmi Urea ${urea} Kg dan NPK ${npk} Kg untuk luas ${luas} Ha sudah proporsional sesuai acuan e-RDKK BPP Lembeyan.`);
+        if (isPadi) {
+          diagnosis = `Kondisi lahan sawah petak ${targetNama} (${luas} Ha) terpantau sehat dan kondusif. Pola budidaya diarahkan untuk efisiensi serapan pupuk berimbang dan pencegahan dini.`;
+          rekomendasiObat.push({
+            nama: 'Pengawalan Preventif Ramah Lingkungan',
+            bahanAktif: 'Agen Hayati (Trichoderma sp. & Beauveria bassiana) ATAU Insektisida Nabati',
+            dosis: '100 ml per tangki 16 Liter',
+            waktu: 'Sore hari pkl 16.00 WIB tiap 14 hari sekali',
+            efek: 'Menjaga populasi musuh alami (laba-laba, tomcat, capung) tetap aktif melindungi sawah'
+          });
+          penyesuaianPupuk.push(`Alokasi resmi Urea ${urea} Kg dan NPK ${npk} Kg untuk luas ${luas} Ha sudah proporsional sesuai acuan e-RDKK BPP Lembeyan.`);
+        } else {
+          diagnosis = `Kondisi lahan petak ${targetNama} (${luas} Ha) siap tanam jagung. Pola budidaya difokuskan pada kekuatan tegak batang dan pencegahan bulai sedini mungkin.`;
+          rekomendasiObat.push({
+            nama: 'Perlakuan Benih & Perlindungan Awal Jagung',
+            bahanAktif: 'Fungisida Bahan Aktif Metalaksil 35 SD (contoh: Saromyl / Ridomil)',
+            dosis: '5 gram per 1 Kg benih jagung',
+            waktu: 'Campurkan rata pada benih dengan sedikit air sebelum ditugal ke lubang tanam',
+            efek: 'Mencegah 100% infeksi jamur bulai (daun bergaris putih) sejak awal masa semai berkecambah'
+          });
+          penyesuaianPupuk.push(`Alokasi resmi Urea ${urea} Kg dan NPK ${npk} Kg untuk luas ${luas} Ha siap diaplikasikan 2-3 tahap berdampingan dengan pembumbunan tanah.`);
+        }
       }
 
       // Saran Iklim & Musim Tanam
@@ -1809,10 +1841,10 @@
       };
     }
 
-    // Render tampilan kartu AI Agronomi di layar
+    // Render tampilan kartu Rekomendasi Agronomi di layar
     function updateAiAgronomi(ai) {
       const elTarget = document.getElementById('ai-petani-target');
-      if (elTarget) elTarget.innerText = `Analisis resep obat & takaran khusus untuk lahan Bpk/Ibu ${ai.targetNama}`;
+      if (elTarget) elTarget.innerText = `Petunjuk obat & takaran khusus untuk lahan Bpk/Ibu ${ai.targetNama}`;
 
       const elBadgeWrap = document.getElementById('ai-badge-wrap');
       if (elBadgeWrap) {
@@ -1858,6 +1890,7 @@
     function hitungDosis() {
       const rawKom = document.getElementById('calc-komoditas').value;
       const kom = getKomoditasAktif();
+      const isPadi = (rawKom === 'Padi' || kom.toLowerCase().includes('padi'));
       const varInfo = getVarietasAktif();
       const umurTanaman = varInfo.umur;
 
@@ -1875,8 +1908,8 @@
       };
 
       const tglT1 = addHari(tglTanam, 7);
-      const tglT2 = addHari(tglTanam, kom === 'Padi' ? 18 : 28);
-      const tglT3 = addHari(tglTanam, kom === 'Padi' ? 32 : 42);
+      const tglT2 = addHari(tglTanam, isPadi ? 18 : 28);
+      const tglT3 = addHari(tglTanam, isPadi ? 32 : 42);
       const tglPanen = addHari(tglTanam, umurTanaman);
 
       const fmt = d => new Intl.DateTimeFormat('id-ID', { dateStyle: 'long' }).format(d);
@@ -1893,7 +1926,7 @@
       document.getElementById('res-tgl-t3').innerHTML = `Perkiraan Waktu: <span class="font-black">${fmt(tglT3)}</span>`;
 
       // Dosis Pembagian
-      if (kom === 'Padi') {
+      if (isPadi) {
         const npkT1 = Math.round(totalNpk * 0.7);
         const ureaT1 = Math.round(totalUrea * 0.2);
         const ureaT2 = Math.round(totalUrea * 0.5);
@@ -1926,7 +1959,7 @@
         document.getElementById('res-sak-t3').innerText = `Aplikasi 40-45 HST (jelang bunga jantan)`;
       }
 
-      // Eksekusi Analisis AI Agronomi Dinamis Khusus Petani Ini
+      // Eksekusi Analisis Rekomendasi Agronomi Dinamis Khusus Petani Ini
       const aiParams = {
         nama: (document.getElementById('input-petani').value || '').trim(),
         nik: (document.getElementById('calc-nik').value || '').trim(),
@@ -1947,6 +1980,7 @@
     function renderTimeline() {
       const rawKom = document.getElementById('calc-komoditas').value;
       const kom = getKomoditasAktif();
+      const isPadi = (rawKom === 'Padi' || kom.toLowerCase().includes('padi'));
       const varInfo = getVarietasAktif();
       const umur = varInfo.umur;
 
@@ -1959,7 +1993,7 @@
       };
 
       const c = document.getElementById('timeline-container');
-      // Dapatkan rekomendasi tindakan khusus AI untuk disisipkan ke timeline
+      // Dapatkan rekomendasi tindakan khusus untuk disisipkan ke timeline
       const aiData = analisisAiAgronomi({
         nama: document.getElementById('input-petani').value,
         nik: document.getElementById('calc-nik').value,
@@ -1977,7 +2011,7 @@
         ? aiData.tindakanTimelineKhusus.map(t => t.kegiatan).join('; ')
         : '';
 
-      const steps = kom === 'Padi' ? [
+      const steps = isPadi ? [
         { hst: 'H - 25', tgl: add(-25), title: 'Penyemaian Benih & Olah Tanah', desc: 'Rendam benih, tiriskan, sebar di bedengan semai. Bajak sawah & garu gembur.' + (aiData.tindakanTimelineKhusus.find(x => x.hst === 'H - 15') ? ' ' + aiData.tindakanTimelineKhusus.find(x => x.hst === 'H - 15').kegiatan : ''), icon: 'fa-seedling', color: 'bg-emerald-600' },
         { hst: 'HST 0', tgl: add(0), title: 'Hari Pindah Tanam (Transplanting)', desc: 'Tanam bibit umur 15-20 hari, 2-3 batang per rumpun, jarak tanam jajar legowo.', icon: 'fa-person-digging', color: 'bg-emerald-700' },
         { hst: 'HST 7', tgl: add(7), title: 'Pemupukan Dasar (Tahap 1)', desc: 'Tabur 70% NPK Phonska + 20% Urea saat kondisi sawah macak-macak.', icon: 'fa-box-archive', color: 'bg-blue-600' },
@@ -2054,60 +2088,103 @@
       renderKlinik(f);
     }
 
-    // Kirim & Simpan Rencana Tanam ke Google Sheets
+    // Kirim & Simpan Rencana Tanam ke Google Sheets & LocalStorage
     async function simpanRencanaTani() {
       const btn = document.getElementById('btn-simpan-rencana');
       const original = btn.innerHTML;
       btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan ke Google Sheets...';
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan Rencana Tanam...';
 
       const rawKom = document.getElementById('calc-komoditas').value;
       const kom = getKomoditasAktif();
+      const isPadi = (rawKom === 'Padi' || kom.toLowerCase().includes('padi'));
       const varInfo = getVarietasAktif();
 
-      const payload = {
-        nik: document.getElementById('calc-nik').value || '352003...',
-        nama: document.getElementById('input-petani').value.replace(/\(.*?\)/, '').trim() || 'Petani Mandiri',
-        musim: document.querySelector('input[name="calc-musim"]:checked')?.value || 'MT 3 (Gadu 2)',
+      const nama = (document.getElementById('input-petani').value || '').replace(/\(.*?\)/, '').trim() || 'Petani Mandiri';
+      const nik = (document.getElementById('calc-nik').value || '').trim() || '-';
+      const luas = (document.getElementById('calc-luas').value || '0.35').trim();
+      const tglTanamStr = document.getElementById('calc-tanggal-tanam').value;
+      const base = tglTanamStr ? new Date(tglTanamStr) : new Date();
+      const fmtDate = d => new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium' }).format(d);
+      
+      const tglSemai = isPadi ? fmtDate(new Date(base.getTime() - 25 * 86400000)) : '-';
+      const tglTanamFormatted = fmtDate(base);
+      const estimasiPanen = document.getElementById('res-tgl-panen').innerText || fmtDate(new Date(base.getTime() + varInfo.umur * 86400000));
+      const ureaVal = document.getElementById('calc-urea').value || '0';
+      const npkVal = document.getElementById('calc-npk').value || '0';
+      const catatanHama = (document.getElementById('calc-catatan').value || '').trim() || '-';
+      const musimAktif = document.querySelector('input[name="calc-musim"]:checked')?.value || 'MT 3 (Gadu 2)';
+
+      const record = {
+        nama: nama,
+        nik: nik,
+        musim: musimAktif,
         komoditas: kom,
         varietas: varInfo.nama,
-        luas: document.getElementById('calc-luas').value || '0.35',
-        tglTanam: document.getElementById('calc-tanggal-tanam').value,
-        estimasiPanen: document.getElementById('res-tgl-panen').innerText,
-        urea: document.getElementById('calc-urea').value,
-        npk: document.getElementById('calc-npk').value,
-        catatan: document.getElementById('calc-catatan').value || '-'
+        luas: luas,
+        tglSemai: tglSemai,
+        tglTanam: tglTanamFormatted,
+        estimasiPanen: estimasiPanen,
+        urea: ureaVal,
+        npk: npkVal,
+        catatanHama: catatanHama,
+        timestamp: new Date().toISOString()
       };
 
+      // Simpan langsung ke penyimpanan browser (LocalStorage)
+      const LOCAL_STORAGE_KEY = 'poktan_riwayat_rencana_tani';
+      let localList = [];
       try {
-        const res = await fetch(GAS_API_URL, {
+        localList = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
+        if (!Array.isArray(localList)) localList = [];
+      } catch (e) {
+        localList = [];
+      }
+
+      // Hapus jika NIK atau Nama yang sama sudah pernah simpan agar data terupdate
+      localList = localList.filter(item => {
+        if (record.nik && record.nik !== '-' && item.nik === record.nik) return false;
+        if (item.nama && item.nama.toLowerCase() === record.nama.toLowerCase()) return false;
+        return true;
+      });
+      localList.unshift(record);
+      try {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localList));
+      } catch (e) {}
+
+      // Tampilkan Modal Bukti Registrasi Resmi (Tanpa Alert Browser Native)
+      document.getElementById('m-nama').innerText = record.nama;
+      document.getElementById('m-komoditas').innerText = `${record.komoditas} (${record.varietas})`;
+      document.getElementById('m-tgl-tanam').innerText = record.tglTanam;
+      document.getElementById('m-panen').innerText = record.estimasiPanen;
+      document.getElementById('m-pupuk').innerText = `Urea: ${record.urea} Kg | NPK: ${record.npk} Kg`;
+      document.getElementById('modal-bukti').classList.remove('hidden');
+
+      // Update tabel rekap BPP secara instan
+      renderTabelBpp(localList);
+
+      // Sinkronisasi data ke Google Sheets di background
+      try {
+        const payload = {
+          nik: record.nik,
+          nama: record.nama,
+          musim: record.musim,
+          komoditas: record.komoditas,
+          varietas: record.varietas,
+          luas: record.luas,
+          tglTanam: record.tglTanam,
+          estimasiPanen: record.estimasiPanen,
+          urea: record.urea,
+          npk: record.npk,
+          catatan: record.catatanHama
+        };
+        await fetch(GAS_API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({ action: 'simpanRencanaTani', data: payload })
         });
-        const json = await res.json();
-        if (json && json.sukses) {
-          // Buka modal bukti pendaftaran
-          document.getElementById('m-nama').innerText = payload.nama;
-          document.getElementById('m-komoditas').innerText = `${payload.komoditas} (${payload.varietas})`;
-          document.getElementById('m-tgl-tanam').innerText = payload.tglTanam;
-          document.getElementById('m-panen').innerText = payload.estimasiPanen;
-          document.getElementById('m-pupuk').innerText = `Urea: ${payload.urea} Kg | NPK: ${payload.npk} Kg`;
-          document.getElementById('modal-bukti').classList.remove('hidden');
-          
-          muatRiwayatRencanaTani();
-        } else {
-          alert('Berhasil tersimpan di lokal sistem!');
-        }
       } catch (err) {
-        console.warn('Simpan offline/lokal:', err);
-        // Fallback simpan lokal
-        document.getElementById('m-nama').innerText = payload.nama;
-        document.getElementById('m-komoditas').innerText = `${payload.komoditas} (${payload.varietas})`;
-        document.getElementById('m-tgl-tanam').innerText = payload.tglTanam;
-        document.getElementById('m-panen').innerText = payload.estimasiPanen;
-        document.getElementById('m-pupuk').innerText = `Urea: ${payload.urea} Kg | NPK: ${payload.npk} Kg`;
-        document.getElementById('modal-bukti').classList.remove('hidden');
+        console.warn('Sync Google Sheets tertunda, data tersimpan aman di lokal:', err);
       } finally {
         btn.disabled = false;
         btn.innerHTML = original;
@@ -2118,22 +2195,104 @@
       document.getElementById('modal-bukti').classList.add('hidden');
     }
 
-    // Ambil Riwayat dari Google Sheets tab KONSULTASI_PETANI untuk Laporan BPP
+    // Ambil Riwayat dari Penyimpanan Lokal & Google Sheets tab KONSULTASI_PETANI untuk Laporan BPP
     async function muatRiwayatRencanaTani() {
-      // Tabel cetak rekap BPP dikosongi resmi menunggu input rencana tanam dari petani
-      renderTabelBpp();
+      const LOCAL_STORAGE_KEY = 'poktan_riwayat_rencana_tani';
+      let localList = [];
+      try {
+        localList = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
+        if (!Array.isArray(localList)) localList = [];
+      } catch (e) {
+        localList = [];
+      }
+
+      // Tampilkan segera data dari local storage
+      renderTabelBpp(localList);
+
+      // Coba sinkronisasi dari Google Sheets jika online
+      try {
+        const res = await fetch(GAS_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'getRencanaTani' })
+        });
+        const json = await res.json();
+        if (json && json.sukses && Array.isArray(json.rows) && json.rows.length > 0) {
+          json.rows.forEach(sr => {
+            const exists = localList.some(lr => (lr.nik && sr.nik && lr.nik === sr.nik) || (lr.nama && sr.nama && lr.nama.toLowerCase() === sr.nama.toLowerCase()));
+            if (!exists) {
+              const isPadi = (sr.komoditas || '').toLowerCase().includes('padi');
+              localList.push({
+                nama: sr.nama,
+                nik: sr.nik,
+                luas: sr.luas || '0.00',
+                komoditas: sr.komoditas || '-',
+                varietas: sr.varietas || '-',
+                tglSemai: isPadi ? '-' : '-',
+                tglTanam: sr.tglTanam || '-',
+                estimasiPanen: sr.estimasiPanen || '-',
+                catatanHama: sr.catatan || '-',
+                urea: sr.urea || '0',
+                npk: sr.npk || '0'
+              });
+            }
+          });
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localList));
+          renderTabelBpp(localList);
+        }
+      } catch (err) {
+        // Mode offline didukung penuh
+      }
     }
 
-    // Render Tabel Cetak Rekap BPP (Kolom Resmi Non-Pupuk & Baris Kosong Menunggu Input Petani)
-    function renderTabelBpp() {
-      const tbody = document.getElementById('bpp-table-body');
-      let html = '';
+    // Render Tabel Cetak Rekap BPP (Menampilkan Petani yang Sudah Simpan Rencana Tanam)
+    function renderTabelBpp(list) {
+      const LOCAL_STORAGE_KEY = 'poktan_riwayat_rencana_tani';
+      let data = list;
+      if (!Array.isArray(data)) {
+        try {
+          data = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
+          if (!Array.isArray(data)) data = [];
+        } catch (e) {
+          data = [];
+        }
+      }
 
-      // Tampilkan 10 baris bergaris kosong formal berformat siap isi & verifikasi BPP
-      for (let i = 1; i <= 10; i++) {
+      const tbody = document.getElementById('bpp-table-body');
+      if (!tbody) return;
+
+      let html = '';
+      let totalLuas = 0;
+
+      // Render data petani yang telah menyimpan rencana tanam
+      data.forEach((p, index) => {
+        const no = index + 1;
+        const luasVal = parseFloat(p.luas) || 0;
+        totalLuas += luasVal;
+        const komLabel = p.varietas && p.varietas !== '-' ? `${p.komoditas || 'Padi'} (${p.varietas})` : (p.komoditas || 'Padi Sawah');
+
+        html += `
+          <tr class="h-8 border-b border-black hover:bg-emerald-50/40">
+            <td class="border border-black py-1 px-1.5 text-center font-mono text-[10px] font-bold">${no}</td>
+            <td class="border border-black py-1 px-2 font-bold text-slate-900 text-[10px]">${p.nama || '-'}</td>
+            <td class="border border-black py-1 px-2 text-center font-mono text-[9px] text-slate-800">${p.nik || '-'}</td>
+            <td class="border border-black py-1 px-1 text-center font-mono font-bold text-emerald-900 text-[10px]">${luasVal.toFixed(2)}</td>
+            <td class="border border-black py-1 px-2 text-center text-[9px] text-slate-800">${komLabel}</td>
+            <td class="border border-black py-1 px-1.5 text-center font-mono text-[9px] text-slate-800">${p.tglSemai || '-'}</td>
+            <td class="border border-black py-1 px-1.5 text-center font-mono font-bold text-[9px] text-slate-900">${p.tglTanam || '-'}</td>
+            <td class="border border-black py-1.5 px-1.5 text-center font-mono font-bold text-[9px] text-emerald-800">${p.estimasiPanen || '-'}</td>
+            <td class="border border-black py-1 px-2 text-[9px] text-slate-700">${p.catatanHama || '-'}</td>
+            <td class="border border-black py-1 px-2 text-center text-[9px] text-slate-400 font-mono">${no}. .........</td>
+          </tr>`;
+      });
+
+      // Tampilkan sisa baris bergaris kosong formal (minimal total 10 baris)
+      const sisa = Math.max(0, 10 - data.length);
+      for (let i = 1; i <= sisa; i++) {
+        const no = data.length + i;
         html += `
           <tr class="h-8 border-b border-black hover:bg-slate-50">
-            <td class="border border-black py-1.5 px-1.5 text-center font-mono text-[10px]">${i}</td>
+            <td class="border border-black py-1.5 px-1.5 text-center font-mono text-[10px] text-slate-400">${no}</td>
             <td class="border border-black py-1.5 px-2 text-slate-300 font-mono text-[9px]">....................................</td>
             <td class="border border-black py-1.5 px-2 text-center text-slate-300 font-mono text-[9px]">352003................</td>
             <td class="border border-black py-1.5 px-1 text-center font-mono text-slate-300 text-[10px]">0.00</td>
@@ -2142,12 +2301,42 @@
             <td class="border border-black py-1.5 px-1.5 text-center text-slate-300 font-mono text-[9px]">... / ... / 2026</td>
             <td class="border border-black py-1.5 px-1.5 text-center text-slate-300 font-mono text-[9px]">... / ... / 2027</td>
             <td class="border border-black py-1.5 px-2 text-slate-300 text-[9px]">-</td>
-            <td class="border border-black py-1.5 px-2 text-center text-[9px] text-slate-400 font-mono">${i}. .........</td>
+            <td class="border border-black py-1.5 px-2 text-center text-[9px] text-slate-400 font-mono">${no}. .........</td>
           </tr>`;
       }
 
       tbody.innerHTML = html;
-      document.getElementById('bpp-tot-luas').innerText = '0.00 Ha';
+
+      const elTotLuas = document.getElementById('bpp-tot-luas');
+      if (elTotLuas) {
+        elTotLuas.innerText = `${totalLuas.toFixed(2)} Ha`;
+      }
+
+      const elTglBpp = document.getElementById('tgl-cetak-bpp');
+      if (elTglBpp) {
+        elTglBpp.innerText = new Intl.DateTimeFormat('id-ID', { dateStyle: 'long' }).format(new Date());
+      }
+
+      const banner = document.getElementById('bpp-status-banner');
+      if (banner) {
+        if (data.length > 0) {
+          banner.innerHTML = `
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-circle-check text-emerald-600 text-xs"></i>
+              <span><b>Status Isian Tabel:</b> ${data.length} petani telah menyimpan rencana budidaya (total akumulasi lahan: <b>${totalLuas.toFixed(2)} Ha</b>).</span>
+            </div>
+            <span class="font-mono text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Terverifikasi</span>
+          `;
+        } else {
+          banner.innerHTML = `
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-circle-info text-blue-600 text-xs"></i>
+              <span><b>Status Isian Tabel:</b> Dikosongkan sementara karena menunggu pengisian rencana tanam mandiri dari seluruh anggota kelompok tani.</span>
+            </div>
+            <span class="font-mono text-slate-500 font-bold">Format Siap Verifikasi</span>
+          `;
+        }
+      }
     }
 
     // ========================================================
@@ -2183,7 +2372,7 @@
       document.getElementById('pk-ttd-nama').innerText = inputNama || 'PETANI PEMOHON';
       document.getElementById('pk-tgl-cetak').innerText = `Kediren, ${new Intl.DateTimeFormat('id-ID', { dateStyle: 'long' }).format(new Date())}`;
 
-      // Analisis AI Agronomi Khusus untuk Lembar Cetak Petani Ini
+      // Analisis Rekomendasi Agronomi Khusus untuk Lembar Cetak Petani Ini
       const aiPrintData = analisisAiAgronomi({
         nama: inputNama,
         nik: inputNik,
@@ -2201,7 +2390,7 @@
       if (elBoxCetak) {
         let contentHtml = `<p class="font-bold text-black mb-0.5">• Diagnosis Risiko: ${aiPrintData.diagnosis}</p>`;
         if (aiPrintData.rekomendasiObat.length > 0) {
-          contentHtml += `<p class="text-black font-medium mb-0.5">• Resep Tindakan: ${aiPrintData.rekomendasiObat.map(o => `<b>${o.nama}</b> (${o.bahanAktif}) Dosis: ${o.dosis} (${o.waktu})`).join(' | ')}</p>`;
+          contentHtml += `<p class="text-black font-medium mb-0.5">• Rekomendasi Pengendalian &amp; Tindakan: ${aiPrintData.rekomendasiObat.map(o => `<b>${o.nama}</b> (${o.bahanAktif}) Dosis: ${o.dosis} (${o.waktu})`).join(' | ')}</p>`;
         }
         if (aiPrintData.penyesuaianPupuk.length > 0) {
           contentHtml += `<p class="text-black mb-0.5">• Arahan Pupuk Berimbang: ${aiPrintData.penyesuaianPupuk.join(' ')}</p>`;
@@ -2216,7 +2405,8 @@
       const d2 = document.getElementById('res-dosis-t2').innerText;
       const d3 = document.getElementById('res-dosis-t3').innerText;
 
-      const rows = rawKom === 'Padi' ? [
+      const isPadi = (rawKom === 'Padi' || komNama.toLowerCase().includes('padi'));
+      const rows = isPadi ? [
         { hst: 'H - 25', tgl: addDays(-25), keg: 'Penyemaian Benih & Pengolahan Tanah Sawah (Bajak & Garu)', dosis: 'Olah tanah gembur & tabur pupuk organik matang' },
         { hst: 'HST 0', tgl: addDays(0), keg: 'Hari Tanam Pindah (Transplanting Bibit 15-20 hari)', dosis: 'Sawah kondisi macak-macak, jarak jajar legowo' },
         { hst: 'HST 7', tgl: addDays(7), keg: 'Pemupukan Dasar (Fase Vegetatif Awal)', dosis: d1 },
@@ -2313,7 +2503,7 @@
           },
           err => {
             if (icon) icon.classList.remove('fa-spin');
-            alert('Akses lokasi GPS smartphone belum aktif. Menggunakan koordinat perkiraan Desa Kediren, Kec. Lembeyan.');
+            console.log('GPS smartphone non-aktif/ditolak, fallback ke koordinat Desa Kediren Lembeyan');
             muatCuacaDariKoordinat(-7.7128, 111.3789, false);
           },
           { enableHighAccuracy: true, timeout: 9000 }
