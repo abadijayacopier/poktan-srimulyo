@@ -27,10 +27,17 @@
       .no-print {
         display: none !important;
       }
-      .f4-page {
+      .f4-sheet-wrapper {
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: visible !important;
+        display: block !important;
         width: 215mm !important;
-        height: 326mm !important;
-        max-height: 326mm !important;
+      }
+      .f4-preview-page {
+        width: 215mm !important;
+        min-width: 215mm !important;
+        max-width: 215mm !important;
         box-shadow: none !important;
         border: none !important;
         margin: 0 !important;
@@ -38,10 +45,10 @@
         page-break-after: always !important;
         break-after: page !important;
         page-break-inside: avoid !important;
-        overflow: hidden !important;
+        overflow: visible !important;
         box-sizing: border-box !important;
       }
-      .f4-page:last-child {
+      .f4-preview-page:last-child {
         page-break-after: auto !important;
         break-after: auto !important;
       }
@@ -50,26 +57,33 @@
         width: 100% !important;
       }
       th, td {
-        border-color: #111 !important;
+        border-color: #000 !important;
       }
     }
 
     /* Screen Preview Styling */
-    .f4-preview-page {
-      width: 215mm;
-      min-height: 326mm;
-      max-height: 326mm;
-      box-sizing: border-box;
-      padding: 7mm 9mm;
-      margin: 0 auto 28px auto;
-      background: white;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-      border: 1px solid #cbd5e1;
-      border-radius: 4px;
-      overflow: hidden;
+    .f4-sheet-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 24px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      align-items: center;
+    }
+
+    .f4-preview-page {
+      width: 215mm;
+      min-width: 215mm;
+      max-width: 215mm;
+      box-sizing: border-box;
+      padding: 8mm 10mm;
+      margin: 0 auto 28px auto;
+      background: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      color: #0f172a;
     }
 
     /* Mode Khusus Penyusunan PDF oleh html2pdf */
@@ -80,6 +94,13 @@
     }
     body.pdf-exporting .no-print {
       display: none !important;
+    }
+    body.pdf-exporting .f4-sheet-wrapper {
+      padding: 0 !important;
+      margin: 0 !important;
+      overflow: visible !important;
+      display: block !important;
+      width: 215mm !important;
     }
     body.pdf-exporting #print-container {
       max-width: none !important;
@@ -92,11 +113,9 @@
       border: none !important;
       border-radius: 0 !important;
       margin: 0 !important;
-      padding: 6mm 8mm !important;
+      padding: 8mm 10mm !important;
       width: 215mm !important;
-      height: 330mm !important;
-      max-height: 330mm !important;
-      min-height: 330mm !important;
+      min-width: 215mm !important;
       page-break-after: always !important;
       break-after: page !important;
       box-sizing: border-box !important;
@@ -116,44 +135,49 @@
     }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-900 min-h-screen p-3 sm:p-6 lg:p-8 font-sans">
+<body class="bg-slate-100 text-slate-900 min-h-screen p-2.5 sm:p-5 lg:p-8 font-sans">
 
   <!-- ======================================================== -->
   <!-- ACTION & NAVIGATION TOOLBAR (NO-PRINT)                   -->
   <!-- ======================================================== -->
-  <div class="max-w-6xl mx-auto mb-6 no-print space-y-4">
-    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <div class="max-w-6xl mx-auto mb-5 no-print space-y-3">
+    <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
-        <div class="flex items-center gap-2 mb-1">
+        <div class="flex flex-wrap items-center gap-2 mb-1.5">
           <span class="px-2.5 py-0.5 rounded-md bg-purple-100 text-purple-800 text-[10px] font-extrabold uppercase">SURAT KUASA PENEBUSAN PUPUK</span>
-          <span class="px-2.5 py-0.5 rounded-md bg-amber-100 text-amber-900 text-[10px] font-black uppercase">FORMAT KERTAS F4 / FOLIO (215 x 330 mm)</span>
-          <span id="sync-status" class="text-xs text-slate-400 flex items-center gap-1.5 ml-1">
+          <span class="px-2.5 py-0.5 rounded-md bg-amber-100 text-amber-900 text-[10px] font-black uppercase">FORMAT KERTAS F4 (215 x 330 mm)</span>
+          <span id="sync-status" class="text-xs text-slate-400 flex items-center gap-1.5">
             <i class="fa-solid fa-spinner fa-spin text-purple-600"></i> Memuat Google Sheets...
           </span>
         </div>
-        <h1 class="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
+        <h1 class="text-lg sm:text-2xl font-black text-slate-900 flex items-center gap-2">
           <i class="fa-solid fa-file-contract text-purple-700"></i>
           Pusat Cetak &amp; Ekspor PDF Surat Kuasa Kloter
         </h1>
         <p class="text-xs text-slate-500 mt-0.5">Format baku resmi BPP Lembeyan untuk penebusan pupuk bersubsidi MT3 2026 (Kloter 1 s/d 10)</p>
       </div>
 
-      <div class="flex flex-wrap items-center gap-2.5 shrink-0">
-        <a href="index.html" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5 border border-slate-200">
-          <i class="fa-solid fa-arrow-left"></i> Dashboard
-        </a>
-        <a href="laporan.html" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5 border border-slate-200">
-          <i class="fa-solid fa-print"></i> Laporan Cetak
-        </a>
-        <button onclick="muatUlangData()" id="btn-refresh" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5 border border-slate-200" title="Segarkan data dari spreadsheet">
-          <i class="fa-solid fa-rotate text-purple-600"></i> Segarkan
-        </button>
-        <button onclick="eksporPdf()" id="btn-pdf" class="px-4 py-2 rounded-xl bg-rose-700 hover:bg-rose-800 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm active:scale-95">
-          <i class="fa-solid fa-file-pdf"></i> Unduh PDF (F4)
-        </button>
-        <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm active:scale-95">
-          <i class="fa-solid fa-print"></i> Cetak / Print
-        </button>
+      <!-- Tombol Aksi: Terstruktur untuk HP & Komputer -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0">
+        <div class="grid grid-cols-2 sm:flex sm:items-center gap-2">
+          <button onclick="eksporPdf()" id="btn-pdf" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm active:scale-95">
+            <i class="fa-solid fa-file-pdf"></i> Unduh PDF (F4)
+          </button>
+          <button onclick="window.print()" class="px-4 py-2.5 rounded-xl bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm active:scale-95">
+            <i class="fa-solid fa-print"></i> Cetak / Print
+          </button>
+        </div>
+        <div class="flex items-center gap-1.5 justify-between sm:justify-start">
+          <a href="index.html" class="flex-1 sm:flex-none px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center justify-center gap-1 border border-slate-200">
+            <i class="fa-solid fa-arrow-left"></i> Dashboard
+          </a>
+          <a href="laporan.html" class="flex-1 sm:flex-none px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center justify-center gap-1 border border-slate-200">
+            <i class="fa-solid fa-print"></i> Laporan
+          </a>
+          <button onclick="muatUlangData()" id="btn-refresh" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center justify-center gap-1 border border-slate-200" title="Segarkan data dari spreadsheet">
+            <i class="fa-solid fa-rotate text-purple-600"></i>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -170,19 +194,26 @@
           <i class="fa-solid fa-layer-group text-purple-600"></i> Cetak Semua (1 - 10)
         </button>
         <div class="h-6 w-px bg-slate-200 mx-1 shrink-0"></div>
-        <!-- Tombol Kloter 1 s/d 10 dibuat dinamis atau statis -->
         <div id="kloter-buttons" class="flex items-center gap-2"></div>
       </div>
+    </div>
+
+    <!-- PETUNJUK LAYAR HP -->
+    <div class="md:hidden flex items-center justify-between px-2 text-[11px] text-slate-500">
+      <span><i class="fa-solid fa-arrows-left-right text-purple-600 mr-1"></i> Geser kertas ke samping untuk memeriksa seluruh kolom tabel</span>
+      <span class="font-bold text-purple-800">Standar Kertas F4</span>
     </div>
   </div>
 
   <!-- ======================================================== -->
   <!-- CONTAINER LEMBAR KERTAS F4 UNTUK PRINT & PDF             -->
   <!-- ======================================================== -->
-  <div id="print-container" class="max-w-6xl mx-auto flex flex-col items-center">
-    <div id="loading-indicator" class="py-24 text-center text-slate-500 text-sm">
-      <i class="fa-solid fa-circle-notch fa-spin text-3xl text-purple-600 mb-3 block"></i>
-      Menghubungkan ke Google Sheets (Kloter 1 s/d 10)...
+  <div class="f4-sheet-wrapper">
+    <div id="print-container" class="w-full flex flex-col items-center">
+      <div id="loading-indicator" class="py-24 text-center text-slate-500 text-sm">
+        <i class="fa-solid fa-circle-notch fa-spin text-3xl text-purple-600 mb-3 block"></i>
+        Menghubungkan ke Google Sheets (Kloter 1 s/d 10)...
+      </div>
     </div>
   </div>
 
@@ -315,7 +346,7 @@
       const tot = data.total;
       const tglCetak = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date());
 
-      // Buat baris tabel petani (standar 20 baris agar pas di 1 lembar F4)
+      // Buat baris tabel petani (standar 20 baris agar pas rapi di 1 lembar F4)
       let rowsHtml = '';
       const totalBaris = Math.max(20, list.length);
       for (let i = 0; i < totalBaris; i++) {
@@ -324,36 +355,36 @@
         const noTtd = i + 1;
         if (item) {
           rowsHtml += `
-            <tr class="text-[10px] leading-tight hover:bg-slate-50">
-              <td class="border border-black p-1 text-center font-mono">${item.no}</td>
-              <td class="border border-black p-1 font-bold text-slate-900">${esc(item.nama)}</td>
-              <td class="border border-black p-1 text-center font-mono text-[9.5px]">${esc(item.nik)}</td>
-              <td class="border border-black p-1 text-center">${esc(item.komoditas)}</td>
-              <td class="border border-black p-1 text-right font-mono font-semibold">${esc(item.urea)}</td>
-              <td class="border border-black p-1 text-right font-mono font-semibold">${esc(item.npk)}</td>
-              <td class="border border-black p-1 text-right font-mono font-semibold">${esc(item.organik)}</td>
-              <td class="border border-black p-0.5 text-[9px] w-24">
+            <tr class="text-[10.5px] leading-snug hover:bg-slate-50">
+              <td class="border border-black py-1 px-1 text-center font-mono font-medium">${item.no}</td>
+              <td class="border border-black py-1 px-2 font-bold text-slate-900">${esc(item.nama)}</td>
+              <td class="border border-black py-1 px-1.5 text-center font-mono text-[10px] tracking-tight whitespace-nowrap">${esc(item.nik)}</td>
+              <td class="border border-black py-1 px-1 text-center">${esc(item.komoditas)}</td>
+              <td class="border border-black py-1 px-1.5 text-right font-mono font-bold">${esc(item.urea)}</td>
+              <td class="border border-black py-1 px-1.5 text-right font-mono font-bold">${esc(item.npk)}</td>
+              <td class="border border-black py-1 px-1.5 text-right font-mono font-bold">${esc(item.organik)}</td>
+              <td class="border border-black py-0.5 px-1 text-[9.5px]">
                 <div class="flex items-center w-full">
-                  ${isOdd ? `<span class="w-1/2 pl-1">${noTtd}. ........</span><span class="w-1/2"></span>` 
-                          : `<span class="w-1/2"></span><span class="w-1/2 text-right pr-1">${noTtd}. ........</span>`}
+                  ${isOdd ? `<span class="w-1/2 pl-0.5">${noTtd}. ........</span><span class="w-1/2"></span>` 
+                          : `<span class="w-1/2"></span><span class="w-1/2 text-right pr-0.5">${noTtd}. ........</span>`}
                 </div>
               </td>
             </tr>`;
         } else {
-          // Baris kosong pelengkap (misal Kloter 8 cuma 16 petani atau Kloter 9 kosong)
+          // Baris kosong pelengkap (misal Kloter 8 ada 16 petani atau Kloter 9 template kosong)
           rowsHtml += `
-            <tr class="text-[10px] leading-tight text-slate-300">
-              <td class="border border-black p-1 text-center font-mono">${i + 1}</td>
-              <td class="border border-black p-1">-</td>
-              <td class="border border-black p-1 text-center font-mono text-[9px]">-</td>
-              <td class="border border-black p-1 text-center">-</td>
-              <td class="border border-black p-1 text-right font-mono">-</td>
-              <td class="border border-black p-1 text-right font-mono">-</td>
-              <td class="border border-black p-1 text-right font-mono">-</td>
-              <td class="border border-black p-0.5 text-[9px]">
+            <tr class="text-[10px] leading-snug text-slate-300">
+              <td class="border border-black py-1 px-1 text-center font-mono">${i + 1}</td>
+              <td class="border border-black py-1 px-2">-</td>
+              <td class="border border-black py-1 px-1.5 text-center font-mono text-[9px]">-</td>
+              <td class="border border-black py-1 px-1 text-center">-</td>
+              <td class="border border-black py-1 px-1.5 text-right font-mono">-</td>
+              <td class="border border-black py-1 px-1.5 text-right font-mono">-</td>
+              <td class="border border-black py-1 px-1.5 text-right font-mono">-</td>
+              <td class="border border-black py-0.5 px-1 text-[9px]">
                 <div class="flex items-center w-full">
-                  ${isOdd ? `<span class="w-1/2 pl-1 text-slate-400">${noTtd}.</span><span class="w-1/2"></span>` 
-                          : `<span class="w-1/2"></span><span class="w-1/2 text-right pr-1 text-slate-400">${noTtd}.</span>`}
+                  ${isOdd ? `<span class="w-1/2 pl-0.5 text-slate-400">${noTtd}.</span><span class="w-1/2"></span>` 
+                          : `<span class="w-1/2"></span><span class="w-1/2 text-right pr-0.5 text-slate-400">${noTtd}.</span>`}
                 </div>
               </td>
             </tr>`;
@@ -361,89 +392,87 @@
       }
 
       return `
-      <div id="kloter-sheet-${k}" class="f4-page f4-preview-page">
+      <div id="kloter-sheet-${k}" class="f4-preview-page">
         <!-- 1. KOP SURAT KUASA RESMI -->
-        <div>
-          <div class="text-center border-b-2 border-black pb-1.5 mb-2">
-            <h2 class="text-sm sm:text-base font-black tracking-wider uppercase text-black">SURAT KUASA</h2>
-            <h3 class="text-xs font-extrabold uppercase text-black">PENEBUSAN PUPUK BERSUBSIDI KELOMPOK TANI &ldquo;SRI MULYO&rdquo;</h3>
-            <p class="text-[10px] text-black font-semibold tracking-wide">DESA KEDIREN, KECAMATAN LEMBEYAN, KABUPATEN MAGETAN &bull; MUSIM TANAM III (2026)</p>
-          </div>
-
-          <!-- KETERANGAN KLOTER & PEMBERI/PENERIMA KUASA -->
-          <div class="text-[10px] leading-snug space-y-1 text-black mb-1.5">
-            <p class="font-bold">Yang bertanda tangan di bawah ini:</p>
-            <div class="grid grid-cols-2 gap-3 pl-1.5 border border-black/40 p-1.5 rounded bg-slate-50/50">
-              <!-- I. PEMBERI KUASA -->
-              <div>
-                <p class="font-black text-black uppercase border-b border-black/30 pb-0.5 mb-0.5">I. PEMBERI KUASA (PERWAKILAN KLOTER ${k})</p>
-                <table class="w-full text-[9.5px]">
-                  <tr><td class="w-20 font-bold py-0.2">Nama</td><td>: <b>${esc(p.nama || '-')}</b></td></tr>
-                  <tr><td class="font-bold py-0.2">NIK</td><td>: ${esc(p.nik || '-')}</td></tr>
-                  <tr><td class="font-bold py-0.2">Kelompok Tani</td><td>: ${esc(p.poktan || 'SRI MULYO')}</td></tr>
-                  <tr><td class="font-bold py-0.2 align-top">Alamat</td><td class="align-top">: ${esc(p.alamat || 'Desa Kediren, Kec. Lembeyan')}</td></tr>
-                </table>
-              </div>
-
-              <!-- II. PENERIMA KUASA -->
-              <div>
-                <p class="font-black text-black uppercase border-b border-black/30 pb-0.5 mb-0.5">II. PENERIMA KUASA (PENGELOLA / POKTAN)</p>
-                <table class="w-full text-[9.5px]">
-                  <tr><td class="w-20 font-bold py-0.2">Nama</td><td>: <b>SUPRIYANTO</b></td></tr>
-                  <tr><td class="font-bold py-0.2">NIK</td><td>: 3520033010900002</td></tr>
-                  <tr><td class="font-bold py-0.2">Kelompok Tani</td><td>: SRI MULYO</td></tr>
-                  <tr><td class="font-bold py-0.2 align-top">Alamat</td><td class="align-top">: Dsn. Selungguh RT 006 RW 001 Ds. Kediren</td></tr>
-                </table>
-              </div>
-            </div>
-
-            <p class="text-justify text-[9.5px] leading-tight pt-0.5">
-              Dengan ini PEMBERI KUASA memberikan kuasa penuh kepada PENERIMA KUASA dengan alasan usia lanjut / kesehatan / transportasi 
-              agar dapat melakukan penebusan Pupuk Bersubsidi di Kios Resmi PPTS untuk komoditas padi/palawija dengan rincian anggota sebagai berikut:
-            </p>
-          </div>
-
-          <!-- 2. TABEL DAFTAR ANGGOTA PETANI (F4 COMPACT) -->
-          <table class="w-full text-[10px] border border-black border-collapse">
-            <thead class="bg-slate-200/90 font-black text-black border-b border-black text-center">
-              <tr>
-                <th class="border border-black p-1 w-7">No</th>
-                <th class="border border-black p-1 text-left">Nama Petani</th>
-                <th class="border border-black p-1 w-32">NIK</th>
-                <th class="border border-black p-1 w-16">Komoditas</th>
-                <th class="border border-black p-1 w-16">Urea (Kg)</th>
-                <th class="border border-black p-1 w-16">NPK (Kg)</th>
-                <th class="border border-black p-1 w-16">Org (Kg)</th>
-                <th class="border border-black p-1 w-24">Tanda Tangan</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rowsHtml}
-              <tr class="bg-slate-200/90 font-black border-t-2 border-black text-[10px]">
-                <td colspan="4" class="border border-black p-1 uppercase text-center tracking-wider">TOTAL ALOKASI PENEBUSAN (KLOTER ${k}):</td>
-                <td class="border border-black p-1 text-right font-mono">${esc(tot.urea)}</td>
-                <td class="border border-black p-1 text-right font-mono">${esc(tot.npk)}</td>
-                <td class="border border-black p-1 text-right font-mono">${esc(tot.organik)}</td>
-                <td class="border border-black p-1 text-center font-bold text-[9px]">${list.length} Petani</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="text-center border-b-2 border-black pb-2 mb-2.5">
+          <h2 class="text-base font-black tracking-wider uppercase text-black">SURAT KUASA</h2>
+          <h3 class="text-xs sm:text-sm font-extrabold uppercase text-black">PENEBUSAN PUPUK BERSUBSIDI KELOMPOK TANI &ldquo;SRI MULYO&rdquo;</h3>
+          <p class="text-[10px] sm:text-[10.5px] text-black font-semibold tracking-wide">DESA KEDIREN, KECAMATAN LEMBEYAN, KABUPATEN MAGETAN &bull; MUSIM TANAM III (2026)</p>
         </div>
 
-        <!-- 3. PENUTUP & LEMBAR TANDA TANGAN 3 PIHAK -->
-        <div class="mt-1">
-          <p class="text-[9.5px] leading-tight text-justify mb-2">
-            Sehubungan dengan pemberian kuasa tersebut, PENERIMA KUASA menyatakan dan menyanggupi akan menyerahkan Pupuk Bersubsidi 
+        <!-- 2. IDENTITAS PEMBERI & PENERIMA KUASA -->
+        <div class="text-[10px] leading-snug space-y-1.5 text-black mb-2">
+          <p class="font-bold">Yang bertanda tangan di bawah ini:</p>
+          <div class="grid grid-cols-2 gap-3 pl-1.5 border border-black/50 p-2 rounded bg-slate-50/40">
+            <!-- I. PEMBERI KUASA -->
+            <div>
+              <p class="font-black text-black uppercase border-b border-black/30 pb-0.5 mb-1">I. PEMBERI KUASA (PERWAKILAN KLOTER ${k})</p>
+              <table class="w-full text-[9.5px]">
+                <tr><td class="w-20 font-bold py-0.5">Nama</td><td>: <b>${esc(p.nama || '-')}</b></td></tr>
+                <tr><td class="font-bold py-0.5">NIK</td><td>: ${esc(p.nik || '-')}</td></tr>
+                <tr><td class="font-bold py-0.5">Kelompok Tani</td><td>: ${esc(p.poktan || 'SRI MULYO')}</td></tr>
+                <tr><td class="font-bold py-0.5 align-top">Alamat</td><td class="align-top">: ${esc(p.alamat || 'Desa Kediren, Kec. Lembeyan')}</td></tr>
+              </table>
+            </div>
+
+            <!-- II. PENERIMA KUASA -->
+            <div>
+              <p class="font-black text-black uppercase border-b border-black/30 pb-0.5 mb-1">II. PENERIMA KUASA (PENGELOLA / POKTAN)</p>
+              <table class="w-full text-[9.5px]">
+                <tr><td class="w-20 font-bold py-0.5">Nama</td><td>: <b>SUPRIYANTO</b></td></tr>
+                <tr><td class="font-bold py-0.5">NIK</td><td>: 3520033010900002</td></tr>
+                <tr><td class="font-bold py-0.5">Kelompok Tani</td><td>: SRI MULYO</td></tr>
+                <tr><td class="font-bold py-0.5 align-top">Alamat</td><td class="align-top">: Dsn. Selungguh RT 006 RW 001 Ds. Kediren</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <p class="text-justify text-[9.5px] sm:text-[10px] leading-relaxed pt-0.5">
+            Dengan ini <b>PEMBERI KUASA</b> memberikan kuasa penuh kepada <b>PENERIMA KUASA</b> dengan alasan usia lanjut / kesehatan / transportasi 
+            agar dapat melakukan penebusan Pupuk Bersubsidi di Kios Resmi PPTS untuk komoditas padi/palawija dengan rincian anggota sebagai berikut:
+          </p>
+        </div>
+
+        <!-- 3. TABEL DAFTAR ANGGOTA PETANI -->
+        <table class="w-full text-[10.5px] border border-black border-collapse mb-2.5">
+          <thead class="bg-slate-100 font-black text-black border-b-2 border-black text-center text-[10px]">
+            <tr>
+              <th class="border border-black py-1 px-1 w-8">No</th>
+              <th class="border border-black py-1 px-2 text-left">Nama Petani</th>
+              <th class="border border-black py-1 px-1.5 w-36 whitespace-nowrap">NIK</th>
+              <th class="border border-black py-1 px-1 w-16">Komoditas</th>
+              <th class="border border-black py-1 px-1.5 w-16 text-right">Urea (Kg)</th>
+              <th class="border border-black py-1 px-1.5 w-16 text-right">NPK (Kg)</th>
+              <th class="border border-black py-1 px-1.5 w-16 text-right">Org (Kg)</th>
+              <th class="border border-black py-1 px-1 w-28">Tanda Tangan</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+            <tr class="bg-slate-100 font-black border-t-2 border-black text-[10.5px]">
+              <td colspan="4" class="border border-black py-1 px-2 uppercase text-center tracking-wider">TOTAL ALOKASI PENEBUSAN (KLOTER ${k}):</td>
+              <td class="border border-black py-1 px-1.5 text-right font-mono font-black">${esc(tot.urea)}</td>
+              <td class="border border-black py-1 px-1.5 text-right font-mono font-black">${esc(tot.npk)}</td>
+              <td class="border border-black py-1 px-1.5 text-right font-mono font-black">${esc(tot.organik)}</td>
+              <td class="border border-black py-1 px-1 text-center font-bold text-[9.5px]">${list.length} Petani</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- 4. PENUTUP & LEMBAR TANDA TANGAN 3 PIHAK -->
+        <div class="text-[9.5px] sm:text-[10px] leading-relaxed text-slate-900">
+          <p class="text-justify mb-2.5">
+            Sehubungan dengan pemberian kuasa tersebut, <b>PENERIMA KUASA</b> menyatakan dan menyanggupi akan menyerahkan Pupuk Bersubsidi 
             kepada masing-masing Petani sesuai daftar di atas serta bertanggung jawab secara administrasi dan hukum atas kesesuaian jumlah 
             penebusan yang diterima oleh masing-masing Petani. Demikian Surat Kuasa ini dibuat dengan sebenarnya untuk dipergunakan sebagaimana mestinya.
           </p>
 
-          <div class="grid grid-cols-3 text-center text-[10px] leading-tight pt-1">
+          <div class="grid grid-cols-3 text-center text-[10px] leading-normal pt-1">
             <!-- PEMBERI KUASA -->
             <div>
               <p class="font-bold">A.n. Pemberi Kuasa</p>
               <p class="text-[9px] text-slate-600">Perwakilan Petani Kloter ${k}</p>
-              <div class="h-14 flex items-end justify-center pb-1">
+              <div class="h-16 flex items-end justify-center pb-1">
                 <span class="text-[8px] text-slate-400 italic">[ Tanda Tangan ]</span>
               </div>
               <p class="font-black underline underline-offset-2 uppercase text-slate-900">${esc(p.nama || '................................')}</p>
@@ -454,7 +483,7 @@
             <div>
               <p class="font-bold">Penerima Kuasa</p>
               <p class="text-[9px] text-slate-600">Pengurus / Koordinator Kloter</p>
-              <div class="h-14 flex items-end justify-center pb-1">
+              <div class="h-16 flex items-end justify-center pb-1">
                 <span class="text-[8px] text-slate-400 italic">[ Tanda Tangan ]</span>
               </div>
               <p class="font-black underline underline-offset-2 uppercase text-slate-900">SUPRIYANTO</p>
@@ -466,7 +495,7 @@
               <p>Kediren, ${tglCetak}</p>
               <p class="font-bold">Mengetahui,</p>
               <p class="text-[9px] text-slate-600">Penyuluh Pertanian (PPL Wilbin)</p>
-              <div class="h-14 flex items-end justify-center pb-1">
+              <div class="h-16 flex items-end justify-center pb-1">
                 <span class="text-[8px] text-slate-400 italic">[ Tanda Tangan &amp; Cap ]</span>
               </div>
               <p class="font-black underline underline-offset-2 uppercase text-slate-900">IIS SUGIARTI, SP</p>
