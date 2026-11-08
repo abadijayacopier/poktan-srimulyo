@@ -1,4 +1,4 @@
-const MAX_BODY_BYTES = 7 * 1024 * 1024;
+const MAX_BODY_BYTES = 4 * 1024 * 1024;
 const MAX_HISTORY = 12;
 
 function cleanText(value, max = 2000) {
@@ -57,7 +57,7 @@ module.exports = async function handler(req, res) {
       const match = image.match(/^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=]+)$/);
       if (!match) return json(res, 400, { error: "Format foto harus JPG, PNG, atau WebP." });
       const bytes = Buffer.from(match[2], "base64");
-      if (bytes.length > 5 * 1024 * 1024) return json(res, 413, { error: "Ukuran foto maksimal 5 MB." });
+      if (bytes.length > 2.5 * 1024 * 1024) return json(res, 413, { error: "Ukuran foto maksimal 5 MB." });
       const last = input[input.length - 1];
       last.content.push({ type: "input_image", image_url: image, detail: "high" });
       imageAttached = true;
