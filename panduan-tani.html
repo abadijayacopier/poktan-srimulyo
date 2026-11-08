@@ -259,21 +259,59 @@
           </div>
 
           <!-- Pilihan Komoditas & Varietas Benih -->
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1">Komoditas</label>
               <select id="calc-komoditas" onchange="onKomoditasChanged()" 
-                      class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-800">
+                      class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
                 <option value="Padi" selected>🌾 Padi Sawah</option>
                 <option value="Jagung">🌽 Jagung Hibrida</option>
+                <option value="LAINNYA">🌱 Komoditas Lainnya (Ketik Sendiri...)</option>
               </select>
+              
+              <!-- Input Kustom jika Komoditas Lainnya dipilih -->
+              <div id="wrapper-komoditas-kustom" class="hidden mt-2 animate-fadeIn">
+                <label class="block text-[10px] font-bold text-emerald-800 mb-1">Ketik Nama Komoditas</label>
+                <input type="text" id="calc-komoditas-kustom" oninput="hitungDosis()" 
+                       placeholder="Misal: Kedelai, Kacang Hijau..." 
+                       class="w-full px-3 py-1.5 rounded-xl border border-emerald-300 bg-emerald-50/50 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+              </div>
             </div>
+
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1">Varietas Benih</label>
-              <select id="calc-varietas" onchange="hitungDosis()" 
-                      class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-800">
+              <select id="calc-varietas" onchange="onVarietasChanged()" 
+                      class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
                 <!-- Diisi otomatis oleh JavaScript -->
               </select>
+            </div>
+
+            <!-- Panel Khusus Ketik Varietas / Jenis Padi/Jagung Sendiri -->
+            <div id="wrapper-varietas-kustom" class="hidden sm:col-span-2 p-3 bg-emerald-50/70 rounded-2xl border border-emerald-200 space-y-2 animate-fadeIn">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-black text-emerald-950 flex items-center gap-1.5">
+                  <i class="fa-solid fa-pen-nib text-emerald-600"></i>
+                  <span>Ketik Nama Jenis / Varietas Sendiri</span>
+                </span>
+                <span class="text-[10px] text-emerald-700 font-bold bg-white px-2 py-0.5 rounded-full border border-emerald-200">Kustom</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <div class="sm:col-span-2">
+                  <label class="block text-[10px] font-bold text-slate-600 mb-1">Nama Jenis Benih / Varietas</label>
+                  <input type="text" id="calc-varietas-kustom" oninput="hitungDosis()" 
+                         placeholder="Misal: Inpari 48 Blas, Ketan Grendeng, BISI 2..." 
+                         class="w-full px-3 py-2 rounded-xl border border-emerald-300 bg-white text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-600 mb-1">Perkiraan Umur Panen (HST)</label>
+                  <div class="relative">
+                    <input type="number" id="calc-umur-kustom" min="60" max="180" value="115" oninput="hitungDosis()" 
+                           class="w-full px-3 py-2 pr-10 rounded-xl border border-emerald-300 bg-white text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+                    <span class="absolute right-2.5 top-2 text-[10px] font-bold text-slate-400">Hari</span>
+                  </div>
+                </div>
+              </div>
+              <p class="text-[10px] text-emerald-800/90 leading-tight">Umur panen digunakan untuk menghitung otomatis tanggal panen raya serta jadwal pemupukan berimbang.</p>
             </div>
           </div>
 
@@ -905,24 +943,86 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Ubah Komoditas (Padi vs Jagung)
-    function onKomoditasChanged() {
-      const kom = document.getElementById('calc-komoditas').value;
-      const vSelect = document.getElementById('calc-varietas');
-      const list = DATA_VARIETAS[kom] || [];
-      
-      vSelect.innerHTML = list.map(v => `<option value="${v.nama}">${v.nama} (~${v.umur} HST)</option>`).join('');
-      document.getElementById('label-takaran-komoditas').innerText = kom === 'Padi' ? 'Komoditas: Padi Sawah' : 'Komoditas: Jagung Hibrida';
-      
-      // Standar alokasi perkiraan awal
-      if (kom === 'Padi') {
-        document.getElementById('calc-urea').value = '80';
-        document.getElementById('calc-npk').value = '72';
-      } else {
-        document.getElementById('calc-urea').value = '90';
-        document.getElementById('calc-npk').value = '60';
+    // Helper: Mendapatkan Komoditas Aktif (Pilihan atau Ketik Sendiri)
+    function getKomoditasAktif() {
+      const val = document.getElementById('calc-komoditas').value;
+      if (val === 'LAINNYA') {
+        const customKom = (document.getElementById('calc-komoditas-kustom').value || '').trim();
+        return customKom || 'Komoditas Pilihan Mandiri';
+      }
+      return val === 'Padi' ? 'Padi Sawah' : (val === 'Jagung' ? 'Jagung Hibrida' : val);
+    }
+
+    // Helper: Mendapatkan Varietas Benih Aktif & Umur Panen (Daftar atau Ketik Sendiri)
+    function getVarietasAktif() {
+      const rawKom = document.getElementById('calc-komoditas').value;
+      const vSelectVal = document.getElementById('calc-varietas').value;
+
+      if (vSelectVal === 'KUSTOM') {
+        const namaKustom = (document.getElementById('calc-varietas-kustom').value || '').trim();
+        const defaultUmur = rawKom === 'Padi' ? 115 : (rawKom === 'Jagung' ? 105 : 100);
+        const umurKustom = parseInt(document.getElementById('calc-umur-kustom').value) || defaultUmur;
+        return {
+          nama: namaKustom || (rawKom === 'Padi' ? 'Varietas Padi Mandiri' : (rawKom === 'Jagung' ? 'Varietas Jagung Mandiri' : 'Varietas Mandiri')),
+          umur: umurKustom,
+          desc: 'Varietas khusus pilihan mandiri petani',
+          isKustom: true
+        };
       }
 
+      const listVar = DATA_VARIETAS[rawKom] || [];
+      const varInfo = listVar.find(v => vSelectVal.includes(v.nama)) || listVar[0] || {
+        nama: vSelectVal || 'Varietas Standar',
+        umur: rawKom === 'Padi' ? 115 : 105,
+        desc: 'Standar budidaya'
+      };
+      return varInfo;
+    }
+
+    // Handler saat dropdown Komoditas berubah
+    function onKomoditasChanged() {
+      const rawKom = document.getElementById('calc-komoditas').value;
+      const wrapKomKustom = document.getElementById('wrapper-komoditas-kustom');
+      const vSelect = document.getElementById('calc-varietas');
+      
+      if (rawKom === 'LAINNYA') {
+        if (wrapKomKustom) wrapKomKustom.classList.remove('hidden');
+      } else {
+        if (wrapKomKustom) wrapKomKustom.classList.add('hidden');
+      }
+
+      const list = DATA_VARIETAS[rawKom] || [];
+      
+      let optionsHtml = list.map(v => `<option value="${v.nama}">${v.nama} (~${v.umur} HST)</option>`).join('');
+      optionsHtml += `<option value="KUSTOM">✨ + Ketik Varietas Sendiri (Jika tidak ada di daftar)...</option>`;
+      vSelect.innerHTML = optionsHtml;
+
+      const komLabel = rawKom === 'Padi' ? 'Komoditas: Padi Sawah' : (rawKom === 'Jagung' ? 'Komoditas: Jagung Hibrida' : 'Komoditas: Tanaman Pilihan');
+      document.getElementById('label-takaran-komoditas').innerText = komLabel;
+      
+      // Standar alokasi perkiraan awal
+      if (rawKom === 'Padi') {
+        document.getElementById('calc-urea').value = '80';
+        document.getElementById('calc-npk').value = '72';
+        document.getElementById('calc-umur-kustom').value = '115';
+      } else if (rawKom === 'Jagung') {
+        document.getElementById('calc-urea').value = '90';
+        document.getElementById('calc-npk').value = '60';
+        document.getElementById('calc-umur-kustom').value = '105';
+      }
+
+      onVarietasChanged();
+    }
+
+    // Handler saat dropdown Varietas Benih berubah
+    function onVarietasChanged() {
+      const vSelectVal = document.getElementById('calc-varietas').value;
+      const wrapVarKustom = document.getElementById('wrapper-varietas-kustom');
+      if (vSelectVal === 'KUSTOM') {
+        if (wrapVarKustom) wrapVarKustom.classList.remove('hidden');
+      } else {
+        if (wrapVarKustom) wrapVarKustom.classList.add('hidden');
+      }
       hitungDosis();
     }
 
@@ -1121,11 +1221,10 @@
 
     // Kalkulasi Dosis & Tanggal Panen Presisi
     function hitungDosis() {
-      const kom = document.getElementById('calc-komoditas').value;
-      const varietasNama = document.getElementById('calc-varietas').value;
-      const listVar = DATA_VARIETAS[kom] || [];
-      const varInfo = listVar.find(v => varietasNama.includes(v.nama)) || listVar[0];
-      const umurTanaman = varInfo ? varInfo.umur : 115;
+      const rawKom = document.getElementById('calc-komoditas').value;
+      const kom = getKomoditasAktif();
+      const varInfo = getVarietasAktif();
+      const umurTanaman = varInfo.umur;
 
       const totalUrea = parseFloat(document.getElementById('calc-urea').value) || 0;
       const totalNpk = parseFloat(document.getElementById('calc-npk').value) || 0;
@@ -1195,11 +1294,10 @@
 
     // Render Timeline Visual di Tab Kalender
     function renderTimeline() {
-      const kom = document.getElementById('calc-komoditas').value;
-      const varietasNama = document.getElementById('calc-varietas').value;
-      const listVar = DATA_VARIETAS[kom] || [];
-      const varInfo = listVar.find(v => varietasNama.includes(v.nama)) || listVar[0];
-      const umur = varInfo ? varInfo.umur : 115;
+      const rawKom = document.getElementById('calc-komoditas').value;
+      const kom = getKomoditasAktif();
+      const varInfo = getVarietasAktif();
+      const umur = varInfo.umur;
 
       const tglStr = document.getElementById('calc-tanggal-tanam').value;
       const base = tglStr ? new Date(tglStr) : new Date();
@@ -1294,12 +1392,16 @@
       btn.disabled = true;
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan ke Google Sheets...';
 
+      const rawKom = document.getElementById('calc-komoditas').value;
+      const kom = getKomoditasAktif();
+      const varInfo = getVarietasAktif();
+
       const payload = {
         nik: document.getElementById('calc-nik').value || '352003...',
         nama: document.getElementById('input-petani').value.replace(/\(.*?\)/, '').trim() || 'Petani Mandiri',
         musim: document.querySelector('input[name="calc-musim"]:checked')?.value || 'MT 3 (Gadu 2)',
-        komoditas: document.getElementById('calc-komoditas').value,
-        varietas: document.getElementById('calc-varietas').value,
+        komoditas: kom,
+        varietas: varInfo.nama,
         luas: document.getElementById('calc-luas').value || '0.35',
         tglTanam: document.getElementById('calc-tanggal-tanam').value,
         estimasiPanen: document.getElementById('res-tgl-panen').innerText,
