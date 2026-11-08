@@ -183,6 +183,15 @@
           </div>
         </div>
 
+        <!-- OPSI INGATKAN LOGIN / REMEMBER ME -->
+        <div class="flex items-center justify-between pt-0.5">
+          <label for="login-remember" class="inline-flex items-center gap-2 cursor-pointer select-none text-xs font-semibold text-slate-600 hover:text-slate-800 transition">
+            <input type="checkbox" id="login-remember" name="remember" checked
+                   class="w-4 h-4 rounded text-emerald-600 border-slate-300 focus:ring-emerald-500/30 focus:ring-offset-0 cursor-pointer accent-emerald-600">
+            <span>Ingatkan login di perangkat ini</span>
+          </label>
+        </div>
+
         <div id="login-error" class="hidden rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs font-medium text-rose-700 flex items-center gap-2" role="alert">
           <i class="fa-solid fa-circle-exclamation shrink-0 text-rose-500"></i>
           <span></span>
@@ -1247,10 +1256,22 @@
         return;
       }
 
-      // Baca sesi dari localStorage (didukung fallback sessionStorage)
-      const savedToken = localStorage.getItem('poktan_session_token') || sessionStorage.getItem('poktan_session_token');
-      const savedUser = localStorage.getItem('poktan_session_user') || sessionStorage.getItem('poktan_session_user') || '';
-      const savedRole = localStorage.getItem('poktan_session_role') || sessionStorage.getItem('poktan_session_role') || (savedUser === 'admin' ? 'admin' : 'readonly');
+      // Siapkan status input username & checkbox Ingat Saya
+      const rememberedUser = localStorage.getItem('poktan_remember_user');
+      const rememberPref = localStorage.getItem('poktan_remember_login');
+      const uInput = document.getElementById('login-username');
+      const rememberCheckbox = document.getElementById('login-remember');
+      if (rememberedUser && uInput && !uInput.value) {
+        uInput.value = rememberedUser;
+      }
+      if (rememberCheckbox && rememberPref === 'false') {
+        rememberCheckbox.checked = false;
+      }
+
+      // Baca sesi: cek sessionStorage (tab aktif) atau localStorage (jika Ingatkan Login aktif)
+      const savedToken = sessionStorage.getItem('poktan_session_token') || localStorage.getItem('poktan_session_token');
+      const savedUser = sessionStorage.getItem('poktan_session_user') || localStorage.getItem('poktan_session_user') || '';
+      const savedRole = sessionStorage.getItem('poktan_session_role') || localStorage.getItem('poktan_session_role') || (savedUser === 'admin' ? 'admin' : 'readonly');
       if (!savedToken) return showLogin();
 
       // OPTIMISTIC SESSION RESTORATION:
@@ -1268,7 +1289,10 @@
         }
         if (result && result.role) {
           authSession.role = result.role;
-          localStorage.setItem('poktan_session_role', result.role);
+          if (localStorage.getItem('poktan_session_token')) {
+            localStorage.setItem('poktan_session_role', result.role);
+          }
+          sessionStorage.setItem('poktan_session_role', result.role);
           const isAdmin = result.role === 'admin';
           document.querySelectorAll('[data-admin-only]').forEach(el => el.classList.toggle('hidden', !isAdmin));
         }
@@ -1282,6 +1306,7 @@
       event.preventDefault();
       const username = document.getElementById('login-username').value.trim();
       const password = document.getElementById('login-password').value;
+      const remember = document.getElementById('login-remember') ? document.getElementById('login-remember').checked : true;
       const button = document.getElementById('login-submit');
       const errorBox = document.getElementById('login-error');
       button.disabled = true;
@@ -1293,13 +1318,26 @@
         if (!result.sukses || !result.token) throw new Error(result.pesan || 'Username atau password salah.');
         authSession = { token: result.token, username: result.username || username, role: result.role };
         
-        // Simpan sesi permanen di localStorage & sessionStorage
-        localStorage.setItem('poktan_session_token', result.token);
-        localStorage.setItem('poktan_session_user', authSession.username);
-        localStorage.setItem('poktan_session_role', authSession.role);
+        // Simpan sesi di sessionStorage untuk tab saat ini
         sessionStorage.setItem('poktan_session_token', result.token);
         sessionStorage.setItem('poktan_session_user', authSession.username);
         sessionStorage.setItem('poktan_session_role', authSession.role);
+
+        // Jika Ingatkan Login dicentang, simpan permanen di localStorage
+        if (remember) {
+          localStorage.setItem('poktan_session_token', result.token);
+          localStorage.setItem('poktan_session_user', authSession.username);
+          localStorage.setItem('poktan_session_role', authSession.role);
+          localStorage.setItem('poktan_remember_user', authSession.username);
+          localStorage.setItem('poktan_remember_login', 'true');
+        } else {
+          // Jika tidak dicentang, bersihkan penyimpanan jangka panjang
+          localStorage.removeItem('poktan_session_token');
+          localStorage.removeItem('poktan_session_user');
+          localStorage.removeItem('poktan_session_role');
+          localStorage.removeItem('poktan_remember_user');
+          localStorage.setItem('poktan_remember_login', 'false');
+        }
 
         document.getElementById('login-password').value = '';
         enterDashboard();
@@ -1355,6 +1393,18 @@
         errorBox.classList.remove('hidden');
       } else {
         errorBox.classList.add('hidden');
+      }
+
+      // Isi ulang username jika diingat di perangkat ini
+      const rememberedUser = localStorage.getItem('poktan_remember_user');
+      const rememberPref = localStorage.getItem('poktan_remember_login');
+      const uInput = document.getElementById('login-username');
+      const rememberCheckbox = document.getElementById('login-remember');
+      if (rememberedUser && uInput && !uInput.value) {
+        uInput.value = rememberedUser;
+      }
+      if (rememberCheckbox && rememberPref === 'false') {
+        rememberCheckbox.checked = false;
       }
     }
 
