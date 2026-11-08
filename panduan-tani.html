@@ -2728,7 +2728,7 @@
     }
 
     function bukaKonsultasiAgentPoktan() {
-      const nama = (document.getElementById('input-petani').value || '').replace(/\\(.*?\\)/, '').trim() || 'Petani Mandiri';
+      const nama = (document.getElementById('input-petani').value || '').replace(/\(.*?\)/, '').trim() || 'Petani Mandiri';
       const kom = getKomoditasAktif();
       const varInfo = getVarietasAktif();
       const luas = document.getElementById('calc-luas').value || '0.35';
@@ -2763,7 +2763,7 @@
       const box = document.getElementById('agent-chat-box');
       if (!box) return;
       box.innerHTML = riwayatChatAgent.map(m => {
-        const safeText = esc(m.text || '').replace(/\\n/g, '<br>');
+        const safeText = esc(m.text || '').replace(/\n/g, '<br>');
         if (m.sender === 'user') {
           return `<div class="flex justify-end"><div class="max-w-[85%] bg-emerald-700 text-white p-3 rounded-2xl rounded-tr-xs shadow-sm"><p class="text-xs leading-relaxed font-medium">${safeText}</p><span class="block text-[9px] text-emerald-200 mt-1 text-right">Anda</span></div></div>`;
         }
@@ -2776,7 +2776,7 @@
     function siapkanFotoDiagnosa(input) {
       const file = input.files && input.files[0];
       if (!file) return;
-      if (!/^image\\/(jpeg|png|webp)$/.test(file.type)) {
+      if (!/^image\/(jpeg|png|webp)$/.test(file.type)) {
         alert('Gunakan foto JPG, PNG, atau WebP.');
         input.value = '';
         return;
