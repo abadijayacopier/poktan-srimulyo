@@ -1230,7 +1230,7 @@
       const greeting = hour >= 4 && hour < 11 ? 'Selamat pagi' :
                        hour >= 11 && hour < 15 ? 'Selamat siang' :
                        hour >= 15 && hour < 18 ? 'Selamat sore' : 'Selamat malam';
-      const displayName = isAdmin ? 'Admin' : 'Giarno';
+      const displayName = isAdmin ? 'Admin' : (authSession.username || 'Samsi');
       badge.innerHTML = '<i class="fa-regular fa-sun mr-1.5"></i>' + greeting + ', ' + displayName;
       badge.setAttribute('aria-label', greeting + ', ' + displayName);
       badge.classList.remove('hidden');
