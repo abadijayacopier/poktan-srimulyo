@@ -1277,11 +1277,20 @@
     // Refresh mengikuti halaman yang sedang dibuka, bukan selalu kembali ke dashboard kloter.
     function refreshCurrentPage(isSilent=false){ if(currentActiveTab === "alokasi") return loadAlokasi(); return loadData(isSilent); }
     function applyAlokasiPartition(){
-      let nonStart=Number(alokasiMeta?.nonErdkkStart)||200,nonEnd=Number(alokasiMeta?.nonErdkkEnd)||222;
+      let nonStart=Number(alokasiMeta?.nonErdkkStart)||200;
       const nonHdrIdx=alokasiAllRows.findIndex(r=>String(r.values?.[2]||'').toUpperCase().includes('TIDAK MASUK ERDKK'));
       if(nonHdrIdx>=0) nonStart=alokasiAllRows[nonHdrIdx].row+2;
-      const triIdx=alokasiAllRows.findIndex(r=>String(r.values?.[2]||'').toUpperCase().includes('TRI WAHYUNI'));
-      if(triIdx>=0) nonEnd=alokasiAllRows[triIdx].row;
+      
+      // Rentang akhir Non-eRDKK: sampai sebelum baris TOTAL
+      let nonEnd=240;
+      const totalIdx=alokasiAllRows.findIndex(r=>r.row>nonStart&&String(r.values?.[2]||'').toUpperCase().startsWith('TOTAL'));
+      if(totalIdx>=0) {
+        nonEnd=alokasiAllRows[totalIdx].row-1;
+      } else {
+        const triIdx=alokasiAllRows.findIndex(r=>String(r.values?.[2]||'').toUpperCase().includes('TRI WAHYUNI'));
+        if(triIdx>=0) nonEnd=alokasiAllRows[triIdx].row+20;
+      }
+
       alokasiRows=alokasiJenis==='ERDKK'?alokasiAllRows.filter(r=>r.row>=2&&r.row<=195):alokasiAllRows.filter(r=>r.row>=nonStart&&r.row<=nonEnd&&String(r.values?.[2]||'').trim()!=='');
       document.getElementById('al-search').value='';
       document.getElementById('al-status-filter').value='';
@@ -1294,7 +1303,7 @@
     function switchAlokasiType(type,rerender=true){alokasiJenis=type;if(rerender&&alokasiAllRows.length)applyAlokasiPartition();else if(alokasiAllRows.length)applyAlokasiPartition();}
     async function alokasiApi(action,extra={}){if(!authSession||authSession.role!=='admin')throw Error('Akses ditolak.');const r=await fetch(GAS_API_URL,{method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,token:authSession.token,...extra})});const j=await r.json();if(!j.sukses)throw Error(j.pesan||'Permintaan gagal');return j;}
     async function fetchAlokasiGviz(){
-      const url='https://docs.google.com/spreadsheets/d/1c7R1klPcFSZ7W1PLaZyayZxBUOrVyLh-Lwc24Cf6CEY/gviz/tq?tqx=out:json&sheet=ALOKASI%20PEMBAGIAN&range=A2:N230&headers=0';
+      const url='https://docs.google.com/spreadsheets/d/1c7R1klPcFSZ7W1PLaZyayZxBUOrVyLh-Lwc24Cf6CEY/gviz/tq?tqx=out:json&sheet=ALOKASI%20PEMBAGIAN&range=A2:N245&headers=0';
       const res=await fetch(url);
       const text=await res.text();
       const raw=text.replace(/^[^{]*\{/,'{').replace(/\}[^}]*$/,'}');
