@@ -257,11 +257,11 @@
           <span class="hidden sm:inline">Refresh</span>
         </button>
 
-        <button onclick="window.print()" title="Cetak / PDF"
-                class="hidden lg:flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition active:scale-95 shadow-sm">
+        <a href="laporan.html" title="Pusat Cetak Dokumen & Laporan Resmi"
+           class="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-semibold transition active:scale-95 shadow-sm">
           <i class="fa-solid fa-print text-amber-600"></i>
-          <span>Cetak</span>
-        </button>
+          <span class="hidden sm:inline">Cetak Laporan</span>
+        </a>
 
         <button id="logout-button" onclick="logoutUser()" title="Keluar dari akun"
                 class="hidden w-9 h-9 sm:w-auto sm:px-3 sm:py-2 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 text-xs font-bold transition items-center justify-center gap-1.5 active:scale-95">
@@ -382,7 +382,7 @@
         </section>
 
         <!-- Quick Navigation Shortcuts (Overview Actions) -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           <button type="button" onclick="setActiveTab('dropgudang')" class="p-3.5 bg-white rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-sm hover:border-emerald-300 transition text-left group">
             <div class="flex items-center justify-between mb-1">
               <span class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-sm group-hover:scale-105 transition"><i class="fa-solid fa-warehouse"></i></span>
@@ -422,6 +422,14 @@
             </div>
             <div class="text-xs font-bold text-emerald-950">Sisa Pupuk Terakhir</div>
             <div class="text-[10px] text-emerald-700 font-medium">Formula & Target 71 Sak</div>
+          </a>
+          <a href="laporan.html" class="p-3.5 bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-xl border border-amber-300/80 shadow-2xs hover:shadow-sm hover:border-amber-500 transition text-left group">
+            <div class="flex items-center justify-between mb-1">
+              <span class="w-8 h-8 rounded-lg bg-amber-600 text-white flex items-center justify-center text-sm group-hover:scale-105 transition"><i class="fa-solid fa-print"></i></span>
+              <i class="fa-solid fa-arrow-right text-[11px] text-amber-600 group-hover:translate-x-0.5 transition"></i>
+            </div>
+            <div class="text-xs font-bold text-amber-950">Cetak Laporan</div>
+            <div class="text-[10px] text-amber-700 font-medium">4 Sheet Format Cetak</div>
           </a>
         </div>
 
@@ -781,8 +789,8 @@
             <h2 class="text-lg font-black text-slate-900">Rekapitulasi Alokasi Kloter Surat Kuasa (1 - 10)</h2>
             <p class="text-xs text-slate-500">Daftar perwakilan penerima dan jumlah petani dalam setiap rombongan kloter</p>
           </div>
-          <button data-admin-only onclick="bukaModalKloter()" 
-                  class="hidden px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm shrink-0">
+          <button onclick="bukaModalKloter()" 
+                  class="px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm shrink-0">
             <i class="fa-solid fa-plus"></i>
             <span>Tambah Anggota ke Kloter</span>
           </button>
