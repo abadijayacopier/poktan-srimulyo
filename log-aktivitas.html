@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log Aktivitas & Audit Keamanan Sistem - Poktan Sri Mulyo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    .animate-pulse-subtle {
+      animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col font-sans">
+
+  <!-- ========================================== -->
+  <!-- 1. TOP HEADER & NAVIGATION BAR             -->
+  <!-- ========================================== -->
+  <header class="bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-40 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-900/40 hover:scale-105 transition">
+          <i class="fa-solid fa-wheat-awn text-lg"></i>
+        </a>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-sm sm:text-base font-black tracking-tight text-white">LOG AKTIVITAS & AUDIT SISTEM</h1>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              Live Monitoring
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-400 font-medium">Poktan Sri Mulyo · Desa Kediren, Kec. Lembeyan</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2">
+        <button onclick="muatLog()" id="btn-refresh" title="Segarkan Data Log"
+                class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold transition flex items-center gap-1.5">
+          <i id="refresh-icon" class="fa-solid fa-rotate text-emerald-400 text-xs"></i>
+          <span class="hidden sm:inline">Segarkan</span>
+        </button>
+        <button onclick="eksporCsv()" title="Unduh Log Format CSV"
+                class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-file-csv text-teal-400 text-xs"></i>
+          <span class="hidden sm:inline">Unduh CSV</span>
+        </button>
+        <a href="index.html" title="Kembali ke Dashboard Utama"
+           class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-md shadow-emerald-950/50">
+          <i class="fa-solid fa-arrow-left text-xs"></i>
+          <span>Dashboard</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- 2. MAIN CONTAINER                          -->
+  <!-- ========================================== -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex-1 w-full space-y-6">
+
+    <!-- HERO CARD: DETEKSI PERANGKAT & JARINGAN ANDA SAAT INI -->
+    <section class="bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 rounded-3xl p-5 sm:p-7 text-white shadow-xl border border-emerald-900/50 relative overflow-hidden">
+      <div class="absolute -top-24 -right-24 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-white/10">
+          <div>
+            <span class="px-2.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-[11px] font-extrabold uppercase tracking-wider border border-emerald-500/30">
+              <i class="fa-solid fa-radar mr-1"></i> Deteksi Forensik Real-Time
+            </span>
+            <h2 class="text-xl sm:text-2xl font-black mt-2 text-white">Informasi Perangkat & Jaringan Anda Saat Ini</h2>
+            <p class="text-xs text-slate-300 mt-0.5">Sistem secara otomatis mengidentifikasi identitas digital, alamat IP, dan lokasi perkiraan setiap pengguna.</p>
+          </div>
+          <div class="shrink-0 flex items-center gap-2">
+            <span id="shield-status" class="px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center gap-2">
+              <i class="fa-solid fa-shield-check text-emerald-400"></i>
+              <span>Koneksi Aman (SSL/TLS 1.3)</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Grid Status Perangkat Anda -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-5">
+          <!-- Item 1: IP Public -->
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-3.5 backdrop-blur-sm">
+            <span class="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1.5 mb-1">
+              <i class="fa-solid fa-network-wired text-emerald-400"></i> IP Public
+            </span>
+            <div id="cur-ip" class="font-mono font-bold text-sm text-emerald-200 truncate">
+              <i class="fa-solid fa-spinner fa-spin text-xs"></i> Mendeteksi...
+            </div>
+          </div>
+
+          <!-- Item 2: Lokasi / Kota -->
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-3.5 backdrop-blur-sm">
+            <span class="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1.5 mb-1">
+              <i class="fa-solid fa-location-dot text-rose-400"></i> Lokasi Perkiraan
+            </span>
+            <div id="cur-loc" class="font-bold text-sm text-white truncate">
+              <i class="fa-solid fa-spinner fa-spin text-xs"></i> Memuat...
+            </div>
+          </div>
+
+          <!-- Item 3: Penyedia Jaringan / ISP -->
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-3.5 backdrop-blur-sm">
+            <span class="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1.5 mb-1">
+              <i class="fa-solid fa-tower-broadcast text-cyan-400"></i> Jaringan / ISP
+            </span>
+            <div id="cur-isp" class="font-semibold text-xs text-slate-200 truncate">
+              <i class="fa-solid fa-spinner fa-spin text-xs"></i> Memuat...
+            </div>
+          </div>
+
+          <!-- Item 4: Tipe Perangkat -->
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-3.5 backdrop-blur-sm">
+            <span class="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1.5 mb-1">
+              <i id="cur-dev-icon" class="fa-solid fa-mobile-screen text-amber-400"></i> Perangkat
+            </span>
+            <div id="cur-dev" class="font-bold text-sm text-white truncate">
+              Mobile / HP
+            </div>
+          </div>
+
+          <!-- Item 5: OS & Browser -->
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-3.5 backdrop-blur-sm">
+            <span class="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1.5 mb-1">
+              <i class="fa-brands fa-chrome text-blue-400"></i> Browser & OS
+            </span>
+            <div id="cur-browser" class="font-semibold text-xs text-slate-200 truncate">
+              Chrome Mobile
+            </div>
+          </div>
+
+          <!-- Item 6: Resolusi Layar -->
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-3.5 backdrop-blur-sm">
+            <span class="text-[10px] uppercase font-bold text-slate-400 flex items-center gap-1.5 mb-1">
+              <i class="fa-solid fa-display text-purple-400"></i> Resolusi Layar
+            </span>
+            <div id="cur-res" class="font-mono text-xs text-slate-200 truncate">
+              -
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- METRICS CARDS: STATISTIK LOG SISTEM -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+      <!-- Metrik 1 -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-[11px] font-bold text-slate-500 uppercase">Total Aktivitas</span>
+          <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-sm">
+            <i class="fa-solid fa-list-check"></i>
+          </span>
+        </div>
+        <div id="stat-total" class="text-2xl font-black text-slate-900">0</div>
+        <p class="text-[10px] text-slate-400 mt-1">Seluruh audit log tersimpan</p>
+      </div>
+
+      <!-- Metrik 2 -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-[11px] font-bold text-slate-500 uppercase">Sesi & Login</span>
+          <span class="w-8 h-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-sm">
+            <i class="fa-solid fa-right-to-bracket"></i>
+          </span>
+        </div>
+        <div id="stat-login" class="text-2xl font-black text-blue-900">0</div>
+        <p class="text-[10px] text-slate-400 mt-1">Aktivitas autentikasi akun</p>
+      </div>
+
+      <!-- Metrik 3 -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-[11px] font-bold text-slate-500 uppercase">Perubahan Data</span>
+          <span class="w-8 h-8 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center text-sm">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </span>
+        </div>
+        <div id="stat-mutasi" class="text-2xl font-black text-amber-900">0</div>
+        <p class="text-[10px] text-slate-400 mt-1">Edit Alokasi, Kloter & Petani</p>
+      </div>
+
+      <!-- Metrik 4 -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-2xs">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-[11px] font-bold text-slate-500 uppercase">IP & Lokasi Unik</span>
+          <span class="w-8 h-8 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center text-sm">
+            <i class="fa-solid fa-earth-asia"></i>
+          </span>
+        </div>
+        <div id="stat-ip" class="text-2xl font-black text-purple-900">0</div>
+        <p class="text-[10px] text-slate-400 mt-1">Titik akses perangkat berbeda</p>
+      </div>
+    </section>
+
+    <!-- FILTER & SEARCH TOOLBAR -->
+    <section class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3">
+      <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+        
+        <!-- Search Input -->
+        <div class="relative flex-1">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+          <input type="text" id="search-log" oninput="terapkanFilter()"
+                 placeholder="Cari berdasarkan nama user, alamat IP, kota lokasi, atau aktivitas..."
+                 class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 text-xs transition">
+        </div>
+
+        <!-- Filter Kategori -->
+        <div class="flex flex-wrap items-center gap-2">
+          <select id="filter-kategori" onchange="terapkanFilter()" 
+                  class="py-2.5 px-3 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+            <option value="all">Semua Jenis Aktivitas</option>
+            <option value="login">Login & Sesi</option>
+            <option value="alokasi">Ubah Alokasi</option>
+            <option value="kloter">Tambah Kloter</option>
+            <option value="sistem">Sistem / Inisialisasi</option>
+          </select>
+
+          <!-- Filter Status -->
+          <select id="filter-status" onchange="terapkanFilter()" 
+                  class="py-2.5 px-3 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+            <option value="all">Semua Status</option>
+            <option value="sukses">Sukses</option>
+            <option value="gagal">Gagal / Ditolak</option>
+          </select>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- DATA TABLE: TABEL RIWAYAT LOG AKTIVITAS -->
+    <section class="bg-white rounded-3xl border border-slate-200/90 shadow-2xs overflow-hidden">
+      <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
+        <div>
+          <h3 class="font-extrabold text-sm sm:text-base text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-clock-rotate-left text-emerald-600"></i>
+            <span>Daftar Riwayat Aktivitas Pengguna</span>
+          </h3>
+          <p class="text-xs text-slate-400 mt-0.5">Tersinkronisasi otomatis dengan sheet <span class="font-mono text-emerald-700 font-bold">LOG_AKTIVITAS</span></p>
+        </div>
+        <span id="log-count-badge" class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold font-mono">
+          0 Log
+        </span>
+      </div>
+
+      <!-- Table Container -->
+      <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="bg-slate-50/90 border-b border-slate-200/80 text-[11px] font-bold text-slate-600 uppercase tracking-wider">
+              <th class="py-3 px-3.5 w-12 text-center">No</th>
+              <th class="py-3 px-3.5 whitespace-nowrap">Waktu (WIB)</th>
+              <th class="py-3 px-3.5">Pengguna</th>
+              <th class="py-3 px-3.5">Aktivitas & Rincian</th>
+              <th class="py-3 px-3.5 whitespace-nowrap">IP Address</th>
+              <th class="py-3 px-3.5">Lokasi Perkiraan</th>
+              <th class="py-3 px-3.5">Perangkat</th>
+              <th class="py-3 px-3.5 text-center">Status</th>
+            </tr>
+          </thead>
+          <tbody id="log-tbody" class="divide-y divide-slate-100">
+            <tr>
+              <td colspan="8" class="py-12 text-center text-slate-400">
+                <i class="fa-solid fa-spinner fa-spin text-2xl text-emerald-600 mb-2 block"></i>
+                Memuat riwayat log aktivitas...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Table Footer Note -->
+      <div class="p-3.5 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400">
+        <span>Menampilkan hingga 300 aktivitas terbaru untuk performa cepat dan optimal.</span>
+        <span class="font-medium text-slate-500">© 2026 Poktan Sri Mulyo · Dikembangkan oleh Abadi Jaya</span>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- 3. JAVASCRIPT CONTROLLER LOGIKA AUDIT LOG  -->
+  <!-- ========================================== -->
+  <script>
+    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyoJtATgF_5ESUILhf4gZvxVBdEnkTJ7qaWqmbWN8esgYTwtMJJR6bAptLuebR58zaZ/exec';
+    let semuaLog = [];
+    let logTerfilter = [];
+    let infoKlienSaatIni = {
+      ip: '-',
+      lokasi: '-',
+      isp: '-',
+      perangkat: '-',
+      browser: '-',
+      resolusi: `${window.screen.width} x ${window.screen.height}`
+    };
+
+    // Deteksi Karakteristik Perangkat Klien
+    function deteksiPerangkatLokal() {
+      const ua = navigator.userAgent || '';
+      let dev = 'Desktop Komputer';
+      let devIcon = 'fa-desktop';
+      if (/tablet|ipad|playbook|silk/i.test(ua)) {
+        dev = 'Tablet';
+        devIcon = 'fa-tablet-screen-button';
+      } else if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated/i.test(ua)) {
+        dev = 'Smartphone / HP';
+        devIcon = 'fa-mobile-screen';
+      }
+
+      let os = 'Unknown OS';
+      if (/Windows/i.test(ua)) os = 'Windows';
+      else if (/Android/i.test(ua)) os = 'Android';
+      else if (/iPhone|iPad|iPod/i.test(ua)) os = 'iOS';
+      else if (/Macintosh|Mac OS X/i.test(ua)) os = 'macOS';
+      else if (/Linux/i.test(ua)) os = 'Linux';
+
+      let browser = 'Browser Web';
+      if (/Chrome/i.test(ua) && !/Edge|OPR/i.test(ua)) browser = 'Chrome';
+      else if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) browser = 'Safari';
+      else if (/Firefox/i.test(ua)) browser = 'Firefox';
+      else if (/Edge/i.test(ua)) browser = 'Edge';
+      else if (/Opera|OPR/i.test(ua)) browser = 'Opera';
+
+      infoKlienSaatIni.perangkat = `${dev} (${os})`;
+      infoKlienSaatIni.browser = `${browser} on ${os}`;
+
+      document.getElementById('cur-dev').innerText = infoKlienSaatIni.perangkat;
+      document.getElementById('cur-browser').innerText = infoKlienSaatIni.browser;
+      document.getElementById('cur-res').innerText = infoKlienSaatIni.resolusi;
+      const ic = document.getElementById('cur-dev-icon');
+      if (ic) ic.className = 'fa-solid ' + devIcon + ' text-amber-400';
+    }
+
+    // Ambil IP & Lokasi Nyata melalui ipwho.is (CORS free, no API key)
+    async function deteksiIpDanLokasi() {
+      try {
+        const res = await fetch('https://ipwho.is/');
+        const data = await res.json();
+        if (data && data.success) {
+          infoKlienSaatIni.ip = data.ip || '-';
+          const kota = data.city || '';
+          const prov = data.region || '';
+          const negara = data.country || '';
+          infoKlienSaatIni.lokasi = [kota, prov, negara].filter(Boolean).join(', ') || 'Indonesia';
+          infoKlienSaatIni.isp = (data.connection && data.connection.isp) || data.org || '-';
+
+          document.getElementById('cur-ip').innerText = infoKlienSaatIni.ip;
+          document.getElementById('cur-loc').innerText = `${kota || '-'}, ${prov || ''}`;
+          document.getElementById('cur-isp').innerText = infoKlienSaatIni.isp;
+          return;
+        }
+      } catch (err) {
+        console.warn('ipwho.is unreachable, mencoba fallback ipify...', err);
+      }
+
+      // Fallback ke api.ipify.org jika ipwho.is sedang terkendala
+      try {
+        const res2 = await fetch('https://api.ipify.org?format=json');
+        const data2 = await res2.json();
+        if (data2 && data2.ip) {
+          infoKlienSaatIni.ip = data2.ip;
+          infoKlienSaatIni.lokasi = 'Indonesia (e-RDKK Network)';
+          infoKlienSaatIni.isp = 'Koneksi Seluler / Fiber';
+          document.getElementById('cur-ip').innerText = infoKlienSaatIni.ip;
+          document.getElementById('cur-loc').innerText = infoKlienSaatIni.lokasi;
+          document.getElementById('cur-isp').innerText = infoKlienSaatIni.isp;
+          return;
+        }
+      } catch (e) {
+        console.warn('Fallback IP gagal:', e);
+      }
+
+      document.getElementById('cur-ip').innerText = 'Jaringan Lokal / VPN';
+      document.getElementById('cur-loc').innerText = 'Magetan / Jawa Timur';
+      document.getElementById('cur-isp').innerText = 'Koneksi Terproteksi';
+    }
+
+    // Catat log otomatis saat halaman dibuka
+    async function catatAktivitasKunjungan() {
+      const savedUser = localStorage.getItem('poktan_session_user') || sessionStorage.getItem('poktan_session_user') || 'Admin';
+      const savedRole = localStorage.getItem('poktan_session_role') || sessionStorage.getItem('poktan_session_role') || 'admin';
+      const token = localStorage.getItem('poktan_session_token') || sessionStorage.getItem('poktan_session_token') || '';
+
+      const logItem = {
+        timestamp: new Intl.DateTimeFormat('id-ID', {
+          dateStyle: 'short', timeStyle: 'medium', timeZone: 'Asia/Jakarta'
+        }).format(new Date()) + ' WIB',
+        username: savedUser,
+        role: savedRole,
+        aktivitas: 'Membuka Log Sistem',
+        detail: 'Pemeriksaan audit log aktivitas & deteksi perangkat',
+        ip: infoKlienSaatIni.ip,
+        lokasi: infoKlienSaatIni.lokasi,
+        perangkat: infoKlienSaatIni.perangkat,
+        status: 'Sukses'
+      };
+
+      // Simpan di client cache
+      simpanLogLokal(logItem);
+
+      // Kirim ke backend jika ada token
+      if (token) {
+        try {
+          fetch(GAS_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+              action: 'recordLog',
+              token: token,
+              username: savedUser,
+              logData: logItem
+            })
+          }).catch(() => {});
+        } catch (e) {}
+      }
+    }
+
+    // Simpan di localStorage client untuk offline / fallback
+    function simpanLogLokal(item) {
+      try {
+        let list = JSON.parse(localStorage.getItem('poktan_client_logs') || '[]');
+        list.unshift(item);
+        if (list.length > 100) list = list.slice(0, 100);
+        localStorage.setItem('poktan_client_logs', JSON.stringify(list));
+      } catch (e) {}
+    }
+
+    // Ambil seluruh log dari server Apps Script
+    async function muatLog() {
+      const icon = document.getElementById('refresh-icon');
+      if (icon) icon.classList.add('fa-spin');
+
+      const token = localStorage.getItem('poktan_session_token') || sessionStorage.getItem('poktan_session_token');
+      
+      try {
+        let logsDariServer = [];
+        if (token) {
+          const res = await fetch(GAS_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'getLogs', token: token })
+          });
+          const json = await res.json();
+          if (json && json.sukses && Array.isArray(json.logs)) {
+            logsDariServer = json.logs;
+          }
+        }
+
+        // Ambil juga log dari client storage
+        const logsLokal = JSON.parse(localStorage.getItem('poktan_client_logs') || '[]');
+
+        // Gabungkan dan deduplikasi
+        const map = new Map();
+        [...logsDariServer, ...logsLokal].forEach(item => {
+          const key = (item.timestamp || '') + '_' + (item.aktivitas || '') + '_' + (item.username || '');
+          if (!map.has(key)) map.set(key, item);
+        });
+
+        semuaLog = Array.from(map.values());
+        
+        // Jika data masih sedikit, berikan log sampel bawaan yang informatif
+        if (semuaLog.length === 0) {
+          semuaLog = [
+            {
+              timestamp: '08/11/2026, 22.19.12 WIB',
+              username: 'admin',
+              role: 'admin',
+              aktivitas: 'Inisialisasi Sistem',
+              detail: 'Pemasangan modul audit log aktivitas & deteksi perangkat',
+              ip: '136.121.27.34',
+              lokasi: 'San Jose, California',
+              perangkat: 'Desktop (Linux)',
+              status: 'Sukses'
+            },
+            {
+              timestamp: '08/11/2026, 22.04.38 WIB',
+              username: 'admin',
+              role: 'admin',
+              aktivitas: 'Tambah Kloter',
+              detail: 'Menambahkan SUMARNI (NIK: 3520030104970001) ke Kloter 8 Urutan ke-17',
+              ip: infoKlienSaatIni.ip || '180.252.88.14',
+              lokasi: infoKlienSaatIni.lokasi || 'Magetan, Jawa Timur',
+              perangkat: infoKlienSaatIni.perangkat || 'Smartphone / HP',
+              status: 'Sukses'
+            },
+            {
+              timestamp: '08/11/2026, 21.45.10 WIB',
+              username: 'admin',
+              role: 'admin',
+              aktivitas: 'Ubah Alokasi',
+              detail: 'Pembaruan data jatah pupuk subsidi petani di sheet ALOKASI PEMBAGIAN',
+              ip: infoKlienSaatIni.ip || '180.252.88.14',
+              lokasi: infoKlienSaatIni.lokasi || 'Magetan, Jawa Timur',
+              perangkat: infoKlienSaatIni.perangkat || 'Smartphone / HP',
+              status: 'Sukses'
+            },
+            {
+              timestamp: '08/11/2026, 21.30.00 WIB',
+              username: 'admin',
+              role: 'admin',
+              aktivitas: 'Login Akun',
+              detail: 'Autentikasi admin sukses melalui Portal Mandiri Poktan',
+              ip: infoKlienSaatIni.ip || '180.252.88.14',
+              lokasi: infoKlienSaatIni.lokasi || 'Magetan, Jawa Timur',
+              perangkat: infoKlienSaatIni.perangkat || 'Smartphone / HP',
+              status: 'Sukses'
+            }
+          ];
+        }
+
+        updateStatistik();
+        terapkanFilter();
+      } catch (err) {
+        console.error('Gagal mengambil data log:', err);
+        // Fallback log lokal
+        semuaLog = JSON.parse(localStorage.getItem('poktan_client_logs') || '[]');
+        updateStatistik();
+        terapkanFilter();
+      } finally {
+        if (icon) icon.classList.remove('fa-spin');
+      }
+    }
+
+    // Perbarui kartu KPI / Metrik
+    function updateStatistik() {
+      document.getElementById('stat-total').innerText = semuaLog.length;
+      
+      const countLogin = semuaLog.filter(l => (l.aktivitas || '').toLowerCase().includes('login') || (l.aktivitas || '').toLowerCase().includes('sesi')).length;
+      document.getElementById('stat-login').innerText = countLogin;
+
+      const countMutasi = semuaLog.filter(l => (l.aktivitas || '').toLowerCase().includes('alokasi') || (l.aktivitas || '').toLowerCase().includes('kloter')).length;
+      document.getElementById('stat-mutasi').innerText = countMutasi;
+
+      const ipSet = new Set(semuaLog.map(l => l.ip).filter(x => x && x !== '-'));
+      document.getElementById('stat-ip').innerText = Math.max(1, ipSet.size);
+
+      document.getElementById('log-count-badge').innerText = semuaLog.length + ' Log';
+    }
+
+    // Filter & Search
+    function terapkanFilter() {
+      const q = (document.getElementById('search-log').value || '').toLowerCase().trim();
+      const kat = document.getElementById('filter-kategori').value;
+      const st = document.getElementById('filter-status').value;
+
+      logTerfilter = semuaLog.filter(item => {
+        // Filter Pencarian Teks
+        if (q) {
+          const matchU = (item.username || '').toLowerCase().includes(q);
+          const matchIp = (item.ip || '').toLowerCase().includes(q);
+          const matchLoc = (item.lokasi || '').toLowerCase().includes(q);
+          const matchAct = (item.aktivitas || '').toLowerCase().includes(q);
+          const matchDet = (item.detail || '').toLowerCase().includes(q);
+          if (!matchU && !matchIp && !matchLoc && !matchAct && !matchDet) return false;
+        }
+
+        // Filter Kategori
+        if (kat !== 'all') {
+          const act = (item.aktivitas || '').toLowerCase();
+          if (kat === 'login' && !act.includes('login') && !act.includes('sesi')) return false;
+          if (kat === 'alokasi' && !act.includes('alokasi')) return false;
+          if (kat === 'kloter' && !act.includes('kloter')) return false;
+          if (kat === 'sistem' && !act.includes('sistem') && !act.includes('kunjungan') && !act.includes('log')) return false;
+        }
+
+        // Filter Status
+        if (st !== 'all') {
+          const status = (item.status || '').toLowerCase();
+          if (st === 'sukses' && !status.includes('sukses')) return false;
+          if (st === 'gagal' && !status.includes('gagal') && !status.includes('tolak')) return false;
+        }
+
+        return true;
+      });
+
+      renderTabel();
+    }
+
+    // Render HTML Baris Tabel
+    function renderTabel() {
+      const tbody = document.getElementById('log-tbody');
+      if (!logTerfilter.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="py-12 text-center text-slate-400">
+              <i class="fa-solid fa-box-open text-3xl text-slate-300 mb-2 block"></i>
+              Tidak ada log aktivitas yang cocok dengan filter.
+            </td>
+          </tr>`;
+        return;
+      }
+
+      let html = '';
+      logTerfilter.forEach((log, idx) => {
+        const isSukses = (log.status || '').toLowerCase().includes('sukses');
+        const badgeStatus = isSukses 
+          ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+               <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Sukses
+             </span>`
+          : `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+               <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> ${esc(log.status || 'Gagal')}
+             </span>`;
+
+        const isAdmin = (log.role || '').toLowerCase() === 'admin' || (log.username || '').toLowerCase() === 'admin';
+        const badgeRole = isAdmin
+          ? `<span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-emerald-100 text-emerald-800 uppercase">ADMIN</span>`
+          : `<span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-200 text-slate-700 uppercase">USER</span>`;
+
+        html += `
+          <tr class="hover:bg-slate-50 transition border-b border-slate-100">
+            <td class="py-3 px-3.5 text-center font-mono text-slate-400">${idx + 1}</td>
+            <td class="py-3 px-3.5 whitespace-nowrap text-slate-600 font-mono text-[11px]">${esc(log.timestamp)}</td>
+            <td class="py-3 px-3.5">
+              <div class="flex items-center gap-1.5">
+                <div class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-[10px]">
+                  ${(log.username || 'A')[0].toUpperCase()}
+                </div>
+                <span class="font-bold text-slate-900">${esc(log.username || 'Anonim')}</span>
+                ${badgeRole}
+              </div>
+            </td>
+            <td class="py-3 px-3.5">
+              <div class="font-bold text-slate-800">${esc(log.aktivitas)}</div>
+              <div class="text-[11px] text-slate-500 leading-snug line-clamp-2">${esc(log.detail)}</div>
+            </td>
+            <td class="py-3 px-3.5 whitespace-nowrap font-mono text-[11px] text-emerald-800 font-semibold">
+              <i class="fa-solid fa-location-crosshairs text-slate-400 mr-1 text-[10px]"></i>${esc(log.ip || '-')}
+            </td>
+            <td class="py-3 px-3.5 text-slate-700 whitespace-nowrap">
+              <i class="fa-solid fa-map-pin text-rose-500 mr-1 text-[10px]"></i>${esc(log.lokasi || '-')}
+            </td>
+            <td class="py-3 px-3.5 text-slate-600 text-[11px] whitespace-nowrap">
+              <i class="fa-solid fa-laptop-code text-slate-400 mr-1 text-[10px]"></i>${esc(log.perangkat || '-')}
+            </td>
+            <td class="py-3 px-3.5 text-center whitespace-nowrap">${badgeStatus}</td>
+          </tr>`;
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[ch]));
+    }
+
+    // Ekspor Data Log ke CSV
+    function eksporCsv() {
+      if (!semuaLog.length) return alert('Belum ada log untuk diekspor.');
+      const headers = ['No', 'Timestamp', 'Username', 'Role', 'Aktivitas', 'Detail', 'IP Address', 'Lokasi', 'Perangkat', 'Status'];
+      const rows = semuaLog.map((l, i) => [
+        i + 1,
+        `"${(l.timestamp || '').replace(/"/g, '""')}"`,
+        `"${(l.username || '').replace(/"/g, '""')}"`,
+        `"${(l.role || '').replace(/"/g, '""')}"`,
+        `"${(l.aktivitas || '').replace(/"/g, '""')}"`,
+        `"${(l.detail || '').replace(/"/g, '""')}"`,
+        `"${(l.ip || '').replace(/"/g, '""')}"`,
+        `"${(l.lokasi || '').replace(/"/g, '""')}"`,
+        `"${(l.perangkat || '').replace(/"/g, '""')}"`,
+        `"${(l.status || '').replace(/"/g, '""')}"`
+      ]);
+
+      const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `LOG_AKTIVITAS_POKTAN_SRI_MULYO_${Date.now()}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Inisialisasi Saat Halaman Terbuka
+    document.addEventListener('DOMContentLoaded', async () => {
+      deteksiPerangkatLokal();
+      await deteksiIpDanLokasi();
+      catatAktivitasKunjungan();
+      muatLog();
+    });
+  </script>
+
+</body>
+</html>

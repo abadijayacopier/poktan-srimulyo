@@ -69,6 +69,27 @@ function doPost(e) {
       return createJsonResponse(tambahPetaniKeKloter(payload.nik, payload.kloterTujuan));
     }
 
+    if (action === 'getLogs') {
+      if (role !== 'admin') return createJsonResponse({ sukses: false, pesan: 'Akses ditolak. Log sistem hanya untuk administrator.' });
+      return createJsonResponse(getSystemLogs_());
+    }
+
+    if (action === 'recordLog') {
+      const logData = payload.logData || {};
+      const username = payload.username || (role ? (role === 'admin' ? 'admin' : 'giarno') : 'Pengunjung');
+      logToSheet_(
+        logData.aktivitas,
+        logData.detail,
+        logData.ip,
+        logData.lokasi,
+        logData.perangkat,
+        logData.status,
+        username,
+        role || '-'
+      );
+      return createJsonResponse({ sukses: true });
+    }
+
     return createJsonResponse({ sukses: false, pesan: 'Action tidak dikenali.' });
   } catch (err) {
     return createJsonResponse({ sukses: false, pesan: err.message || String(err) });
@@ -460,6 +481,7 @@ function tambahPetaniKeKloter(nik, kloterTujuan) {
     }
 
     SpreadsheetApp.flush();
+    logToSheet_('Tambah Kloter', 'Menambahkan ' + foundPetani.nama + ' ke ' + targetKloter + ' (Urutan ke-' + (slotKosongIndex + 1) + ')', '-', 'Sistem', 'Dashboard', 'Sukses', 'admin', 'admin');
 
     return {
       sukses: true,
@@ -499,6 +521,61 @@ function saveAlokasiPembagian_(rowNumber, values) {
     });
     sheet.getRange(row, 1, 1, 14).setValues([safe]);
     SpreadsheetApp.flush();
+    logToSheet_('Ubah Alokasi', 'Memperbarui baris ke-' + rowNumber, '-', 'Sistem', 'Dashboard', 'Sukses', 'admin', 'admin');
     return { sukses: true, pesan: 'Data alokasi berhasil diperbarui.', row: row };
   } finally { lock.releaseLock(); }
+}
+
+/**
+ * Modul Audit Log Aktivitas Sistem
+ */
+function logToSheet_(aktivitas, detail, ip, lokasi, perangkat, status, username, role) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = ss.getSheetByName('LOG_AKTIVITAS');
+    if (!sheet) {
+      sheet = ss.insertSheet('LOG_AKTIVITAS');
+      sheet.appendRow(['Timestamp', 'Username', 'Role', 'Aktivitas', 'Detail', 'IP Address', 'Lokasi', 'Perangkat', 'Status']);
+      sheet.getRange(1, 1, 1, 9).setFontWeight('bold').setBackground('#065f46').setFontColor('#ffffff');
+      sheet.setFrozenRows(1);
+    }
+    const now = Utilities.formatDate(new Date(), 'Asia/Jakarta', 'yyyy-MM-dd HH:mm:ss') + ' WIB';
+    sheet.appendRow([
+      now,
+      String(username || 'Anonim'),
+      String(role || '-'),
+      String(aktivitas || '-'),
+      String(detail || '-'),
+      String(ip || '-'),
+      String(lokasi || '-'),
+      String(perangkat || '-'),
+      String(status || 'Sukses')
+    ]);
+  } catch (err) {
+    console.error('Gagal mencatat log aktivitas:', err);
+  }
+}
+
+function getSystemLogs_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('LOG_AKTIVITAS');
+  if (!sheet) return { sukses: true, logs: [] };
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return { sukses: true, logs: [] };
+  const startRow = Math.max(2, lastRow - 299);
+  const numRows = lastRow - startRow + 1;
+  const values = sheet.getRange(startRow, 1, numRows, 9).getDisplayValues();
+  const logs = values.map((r, idx) => ({
+    id: startRow + idx,
+    timestamp: r[0],
+    username: r[1],
+    role: r[2],
+    aktivitas: r[3],
+    detail: r[4],
+    ip: r[5],
+    lokasi: r[6],
+    perangkat: r[7],
+    status: r[8]
+  })).reverse();
+  return { sukses: true, logs: logs };
 }

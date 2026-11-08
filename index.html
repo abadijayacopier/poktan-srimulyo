@@ -308,6 +308,11 @@
             <i class="fa-solid fa-calculator text-emerald-600"></i>
             <span>Sisa Pupuk</span>
           </a>
+          <a href="log-aktivitas.html" data-admin-only
+             class="hidden px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-shield-halved text-slate-600"></i>
+            <span>Log Aktivitas</span>
+          </a>
         </nav>
         <div class="text-[11px] text-slate-400 font-semibold hidden xl:flex items-center gap-1.5">
           <i class="fa-solid fa-circle-check text-emerald-600 text-[10px]"></i>
@@ -444,7 +449,7 @@
         </section>
 
         <!-- Quick Navigation Shortcuts (Overview Actions) -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-7 gap-3 sm:gap-3.5">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-8 gap-3 sm:gap-3.5">
           <button type="button" onclick="setActiveTab('dropgudang')" class="p-3.5 bg-white rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-sm hover:border-emerald-300 transition text-left group">
             <div class="flex items-center justify-between mb-1">
               <span class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-sm group-hover:scale-105 transition"><i class="fa-solid fa-warehouse"></i></span>
@@ -493,13 +498,21 @@
             <div class="text-xs font-bold text-amber-950">Cetak Laporan</div>
             <div class="text-[10px] text-amber-700 font-medium">4 Sheet Format Lengkap</div>
           </a>
-          <a href="cetak-kloter.html" class="col-span-2 sm:col-span-3 md:col-span-2 xl:col-span-1 p-3.5 bg-gradient-to-br from-purple-500/10 to-indigo-500/10 rounded-xl border border-purple-300/80 shadow-2xs hover:shadow-sm hover:border-purple-500 transition text-left group">
+          <a href="cetak-kloter.html" class="p-3.5 bg-gradient-to-br from-purple-500/10 to-indigo-500/10 rounded-xl border border-purple-300/80 shadow-2xs hover:shadow-sm hover:border-purple-500 transition text-left group">
             <div class="flex items-center justify-between mb-1">
               <span class="w-8 h-8 rounded-lg bg-purple-600 text-white flex items-center justify-center text-sm group-hover:scale-105 transition"><i class="fa-solid fa-file-contract"></i></span>
               <i class="fa-solid fa-arrow-right text-[11px] text-purple-600 group-hover:translate-x-0.5 transition"></i>
             </div>
-            <div class="text-xs font-bold text-purple-950">Cetak Surat Kuasa F4</div>
-            <div class="text-[10px] text-purple-700 font-medium">Kloter 1 - 10 (Format Folio)</div>
+            <div class="text-xs font-bold text-purple-950">Cetak Kloter F4</div>
+            <div class="text-[10px] text-purple-700 font-medium">Kloter 1 - 10 (Folio)</div>
+          </a>
+          <a href="log-aktivitas.html" data-admin-only class="hidden p-3.5 bg-gradient-to-br from-slate-800/10 to-slate-900/15 rounded-xl border border-slate-300/90 shadow-2xs hover:shadow-sm hover:border-slate-500 transition text-left group">
+            <div class="flex items-center justify-between mb-1">
+              <span class="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center text-sm group-hover:scale-105 transition"><i class="fa-solid fa-shield-halved"></i></span>
+              <i class="fa-solid fa-arrow-right text-[11px] text-slate-700 group-hover:translate-x-0.5 transition"></i>
+            </div>
+            <div class="text-xs font-bold text-slate-900">Log Sistem</div>
+            <div class="text-[10px] text-slate-500 font-medium">Audit IP & Lokasi</div>
           </a>
         </div>
 
@@ -1340,6 +1353,7 @@
         }
 
         document.getElementById('login-password').value = '';
+        kirimAuditLog('Login Akun', 'Masuk ke dashboard sebagai ' + authSession.role, 'Sukses');
         enterDashboard();
       } catch (error) {
         console.error('Login error:', error);
@@ -1424,9 +1438,53 @@
 
     function logoutUser() {
       const token = authSession && authSession.token;
+      kirimAuditLog('Logout Pengguna', 'Keluar dari aplikasi', 'Sukses');
       // Tutup sesi di perangkat seketika; penghapusan token server berjalan di belakang.
       forceLogout('Anda sudah keluar dari aplikasi.');
       if (token) authApi({ action: 'logout', token }).catch(() => {});
+    }
+
+    async function kirimAuditLog(aktivitas, detail, status = 'Sukses') {
+      try {
+        const ua = navigator.userAgent || '';
+        let dev = 'Desktop';
+        if (/tablet|ipad/i.test(ua)) dev = 'Tablet';
+        else if (/mobile|android|iphone/i.test(ua)) dev = 'Smartphone / HP';
+        let os = 'OS Lain';
+        if (/Windows/i.test(ua)) os = 'Windows';
+        else if (/Android/i.test(ua)) os = 'Android';
+        else if (/iPhone|iPad/i.test(ua)) os = 'iOS';
+        else if (/Mac/i.test(ua)) os = 'macOS';
+        else if (/Linux/i.test(ua)) os = 'Linux';
+        const perangkat = `${dev} (${os})`;
+
+        const logItem = {
+          timestamp: new Intl.DateTimeFormat('id-ID', { dateStyle: 'short', timeStyle: 'medium', timeZone: 'Asia/Jakarta' }).format(new Date()) + ' WIB',
+          username: authSession ? authSession.username : 'admin',
+          role: authSession ? authSession.role : 'admin',
+          aktivitas: aktivitas,
+          detail: detail,
+          ip: '-',
+          lokasi: 'Kediren / Magetan',
+          perangkat: perangkat,
+          status: status
+        };
+
+        // Cache lokal untuk preview cepat
+        let list = JSON.parse(localStorage.getItem('poktan_client_logs') || '[]');
+        list.unshift(logItem);
+        if (list.length > 100) list = list.slice(0, 100);
+        localStorage.setItem('poktan_client_logs', JSON.stringify(list));
+
+        // Kirim asynchronous ke Google Apps Script backend
+        if (authSession && authSession.token) {
+          fetch(GAS_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'recordLog', token: authSession.token, username: authSession.username, logData: logItem })
+          }).catch(() => {});
+        }
+      } catch (e) {}
     }
 
     let alokasiRows=[], alokasiAllRows=[], alokasiBusy=false, alokasiJenis="ERDKK";
