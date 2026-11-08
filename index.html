@@ -1392,12 +1392,12 @@
       if(x.includes('SURAT'))return 'bg-sky-100 text-sky-800';
       return 'bg-slate-100 text-slate-700';
     }
-    function renderAlStatusPicker(row,value){
+    function renderAlStatusPicker(row,value,isOpen=false){
       const selected=alStatusList(value);
       const options = alokasiJenis === 'NON_ERDKK' ? ALOKASI_STATUS_OPTIONS_NONERDKK : ALOKASI_STATUS_OPTIONS_ERDKK;
       const chips=selected.map(x=>'<span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold '+alStatusColor(x)+'">'+escAl(x)+'</span>').join('');
       const checks=options.map(x=>'<label class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-slate-50 cursor-pointer text-xs"><input type="checkbox" '+(selected.includes(x)?'checked':'')+' onchange="changeAlStatus('+row+',\''+x+'\',this.checked)" class="accent-emerald-700"><span class="rounded-full px-2 py-0.5 font-semibold '+alStatusColor(x)+'">'+x+'</span></label>').join('');
-      return '<div class="relative min-w-[170px]"><input type="hidden" data-row="'+row+'" data-col="5" value="'+escAl(selected.join(', '))+'"><details class="group/status"><summary class="min-h-9 flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-2 py-1.5 cursor-pointer list-none hover:border-emerald-400"><span class="flex flex-wrap gap-1">'+(chips||'<span class="text-xs text-slate-400">Pilih status…</span>')+'</span><i class="fa-solid fa-chevron-down text-[10px] text-slate-400 shrink-0"></i></summary><div class="absolute left-0 top-full z-30 mt-1 w-60 rounded-xl border border-slate-200 bg-white p-2 shadow-xl max-h-64 overflow-y-auto">'+checks+'</div></details></div>';
+      return '<div class="relative min-w-[170px]"><input type="hidden" data-row="'+row+'" data-col="5" value="'+escAl(selected.join(', '))+'"><details class="group/status" '+(isOpen?'open':'')+'><summary class="min-h-9 flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-2 py-1.5 cursor-pointer list-none hover:border-emerald-400"><span class="flex flex-wrap gap-1">'+(chips||'<span class="text-xs text-slate-400">Pilih status…</span>')+'</span><i class="fa-solid fa-chevron-down text-[10px] text-slate-400 shrink-0"></i></summary><div class="absolute left-0 top-full z-30 mt-1 w-60 rounded-xl border border-slate-200 bg-white p-2 shadow-xl max-h-64 overflow-y-auto">'+checks+'</div></details></div>';
     }
     function changeAlStatus(row,option,checked){
       const input=document.querySelector('[data-row="'+row+'"][data-col="5"]');
@@ -1405,6 +1405,12 @@
       values=checked?(values.includes(option)?values:[...values,option]):values.filter(x=>x!==option);
       input.value=values.join(', ');
       
+      // Update memory dataset agar filter & render selanjutnya tetap akurat
+      const rItem = alokasiRows.find(x => x.row === row);
+      if (rItem && rItem.values) rItem.values[5] = input.value;
+      const allItem = alokasiAllRows.find(x => x.row === row);
+      if (allItem && allItem.values) allItem.values[5] = input.value;
+
       // Khusus Non-eRDKK, jika opsi adalah status pengambilan, sinkronkan juga ke input kolom 13 (Keterangan) jika relevan
       if (alokasiJenis === 'NON_ERDKK' && (option === 'SUDAH AMBIL' || option === 'BELUM AMBIL')) {
         const inputKet = document.querySelector('[data-row="'+row+'"][data-col="13"]');
@@ -1414,15 +1420,26 @@
           } else if (inputKet.value === 'SDH AMBIL' || inputKet.value === 'BELUM AMBIL') {
             inputKet.value = '';
           }
+          if (rItem && rItem.values) rItem.values[13] = inputKet.value;
+          if (allItem && allItem.values) allItem.values[13] = inputKet.value;
         }
       }
       
       const tr=input.closest('tr');
       const details=tr.querySelector('details');
       const holder=document.createElement('div');
-      holder.innerHTML=renderAlStatusPicker(row,input.value);
+      holder.innerHTML=renderAlStatusPicker(row,input.value,true);
       details.replaceWith(holder.firstElementChild);
     }
+
+    // Menutup dropdown status saat klik di luar
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('details.group\\/status')) {
+        document.querySelectorAll('details.group\\/status[open]').forEach(d => {
+          d.removeAttribute('open');
+        });
+      }
+    });
     function alokasiStatusCategory(r){
       const raw = String(r.values?.[5] || '').toUpperCase();
       return raw;
