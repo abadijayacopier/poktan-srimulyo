@@ -217,14 +217,6 @@
           <i class="fa-solid fa-right-to-bracket"></i>
           <span>Masuk ke Dashboard</span>
         </button>
-
-        <div class="pt-1.5">
-          <a href="panduan-tani.html" 
-             class="w-full rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-900 py-3 px-3 font-bold text-xs transition flex items-center justify-center gap-2 text-center shadow-2xs">
-            <i class="fa-solid fa-wheat-awn text-emerald-600"></i>
-            <span>Buka Kalender Tanam &amp; Dosis Pupuk (Akses Publik)</span>
-          </a>
-        </div>
       </form>
 
       <div class="mt-7 pt-5 border-t border-slate-100 text-center relative z-10">
@@ -383,6 +375,9 @@
               <p class="text-xs sm:text-sm text-emerald-100/80">Pantau kuota alokasi, realisasi kiriman gudang, dan tagihan keuangan secara terpadu tanpa perlu membuka spreadsheet.</p>
             </div>
             <div class="flex flex-wrap items-center gap-2 shrink-0">
+              <a href="panduan-tani.html#laporan-bpp" data-admin-only class="hidden px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black transition shadow-sm flex items-center gap-2">
+                <i class="fa-solid fa-print text-slate-900"></i> Rekap Cetak BPP
+              </a>
               <button data-admin-only onclick="setActiveTab('alokasi')" class="hidden px-4 py-2.5 rounded-xl bg-white text-emerald-900 hover:bg-emerald-50 text-xs font-bold transition shadow-sm flex items-center gap-2">
                 <i class="fa-solid fa-sliders"></i> Buka Editor Sheet
               </button>
@@ -549,6 +544,14 @@
             </div>
             <div class="text-xs font-bold text-slate-900">Log Sistem</div>
             <div class="text-[10px] text-slate-500 font-medium">Audit IP & Lokasi</div>
+          </a>
+          <a href="panduan-tani.html#laporan-bpp" data-admin-only class="hidden p-3.5 bg-gradient-to-br from-amber-500/10 to-yellow-500/15 rounded-xl border border-amber-300/90 shadow-2xs hover:shadow-sm hover:border-amber-500 transition text-left group">
+            <div class="flex items-center justify-between mb-1">
+              <span class="w-8 h-8 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center text-sm group-hover:scale-105 transition"><i class="fa-solid fa-print"></i></span>
+              <i class="fa-solid fa-arrow-right text-[11px] text-amber-700 group-hover:translate-x-0.5 transition"></i>
+            </div>
+            <div class="text-xs font-bold text-slate-900">Rekap Cetak BPP</div>
+            <div class="text-[10px] text-amber-800 font-medium">Laporan Tanam &amp; Hama</div>
           </a>
         </div>
 
