@@ -44,6 +44,19 @@ function doPost(e) {
       return createJsonResponse({ sukses: true });
     }
 
+    // Aksi Publik (Akses Terbuka untuk Petani Tanpa Perlu Login)
+    if (action === 'getDaftarPetaniPublik') {
+      return createJsonResponse(getDaftarPetaniPublik_());
+    }
+
+    if (action === 'simpanRencanaTani') {
+      return createJsonResponse(simpanRencanaTani_(payload));
+    }
+
+    if (action === 'getRencanaTani') {
+      return createJsonResponse(getRencanaTani_());
+    }
+
     const role = getSessionRole_(payload.token);
     if (!role) return createJsonResponse({ sukses: false, pesan: 'Sesi login tidak valid atau sudah berakhir. Silakan login kembali.' });
 
@@ -578,4 +591,117 @@ function getSystemLogs_() {
     status: r[8]
   })).reverse();
   return { sukses: true, logs: logs };
+}
+
+/**
+ * ========================================================
+ * MODUL PUBLIK: KONSULTASI RENCANA TANAM & LAPORAN BPP
+ * ========================================================
+ */
+function getDaftarPetaniPublik_() {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName('ALOKASI ERDKK');
+    if (!sheet) return { sukses: true, petani: [] };
+    const lastRow = sheet.getLastRow();
+    if (lastRow < 2) return { sukses: true, petani: [] };
+    const values = sheet.getRange(2, 2, lastRow - 1, 15).getDisplayValues();
+    const list = [];
+    values.forEach(r => {
+      const nik = String(r[0] || '').trim();
+      const nama = String(r[1] || '').trim();
+      const luas = String(r[2] || '').trim();
+      const urea = String(r[13] || '').trim();
+      const npk = String(r[14] || '').trim();
+      if (nik && nama) {
+        list.push({ nik: nik, nama: nama, luas: luas, urea: urea, npk: npk });
+      }
+    });
+    return { sukses: true, petani: list };
+  } catch (err) {
+    return { sukses: false, pesan: err.message || String(err) };
+  }
+}
+
+function simpanRencanaTani_(payload) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = ss.getSheetByName('KONSULTASI_PETANI');
+    if (!sheet) {
+      sheet = ss.insertSheet('KONSULTASI_PETANI');
+      sheet.appendRow([
+        'Timestamp', 'NIK', 'Nama Petani', 'Musim Tanam', 'Komoditas',
+        'Varietas Benih', 'Luas Lahan (Ha)', 'Tanggal Tanam', 'Perkiraan Panen',
+        'Urea (Kg)', 'NPK (Kg)', 'Catatan Hama', 'Status'
+      ]);
+      sheet.getRange(1, 1, 1, 13).setFontWeight('bold').setBackground('#065f46').setFontColor('#ffffff');
+      sheet.setFrozenRows(1);
+    }
+
+    const p = payload.data || payload;
+    const now = Utilities.formatDate(new Date(), 'Asia/Jakarta', 'dd/MM/yyyy HH:mm:ss') + ' WIB';
+    const nik = String(p.nik || '-').trim();
+    const nama = String(p.nama || 'Petani Anonim').trim();
+    const musim = String(p.musim || 'MT 3 (2026)').trim();
+    const komoditas = String(p.komoditas || 'Padi').trim();
+    const varietas = String(p.varietas || '-').trim();
+    const luas = String(p.luas || '0').trim();
+    const tglTanam = String(p.tglTanam || '-').trim();
+    const estimasiPanen = String(p.estimasiPanen || '-').trim();
+    const urea = String(p.urea || '0').trim();
+    const npk = String(p.npk || '0').trim();
+    const catatan = String(p.catatan || '-').trim();
+    const status = 'Terverifikasi Poktan';
+
+    sheet.appendRow([
+      now, "'" + nik, nama, musim, komoditas,
+      varietas, luas, tglTanam, estimasiPanen,
+      urea, npk, catatan, status
+    ]);
+
+    logToSheet_('Rencana Tanam', 'Petani ' + nama + ' mendaftarkan rencana ' + komoditas + ' ' + varietas, '-', 'Magetan', 'Portal Publik', 'Sukses', nama, 'Petani');
+
+    return {
+      sukses: true,
+      pesan: 'Rencana tanam dan estimasi pupuk berhasil disimpan ke sistem Poktan Sri Mulyo!',
+      id: sheet.getLastRow(),
+      timestamp: now
+    };
+  } catch (err) {
+    return { sukses: false, pesan: err.message || String(err) };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function getRencanaTani_() {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName('KONSULTASI_PETANI');
+    if (!sheet) return { sukses: true, rows: [] };
+    const lastRow = sheet.getLastRow();
+    if (lastRow < 2) return { sukses: true, rows: [] };
+    const values = sheet.getRange(2, 1, lastRow - 1, 13).getDisplayValues();
+    const rows = values.map((r, i) => ({
+      no: i + 1,
+      timestamp: r[0],
+      nik: r[1],
+      nama: r[2],
+      musim: r[3],
+      komoditas: r[4],
+      varietas: r[5],
+      luas: r[6],
+      tglTanam: r[7],
+      estimasiPanen: r[8],
+      urea: r[9],
+      npk: r[10],
+      catatan: r[11],
+      status: r[12]
+    })).filter(x => x.nama);
+    return { sukses: true, rows: rows };
+  } catch (err) {
+    return { sukses: false, pesan: err.message || String(err) };
+  }
 }

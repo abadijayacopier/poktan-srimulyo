@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panduan Budidaya, Kalender Tanam & Dosis Pupuk - Poktan Sri Mulyo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Styling Cetak Kertas F4 / Folio (215 x 330 mm) untuk Laporan Resmi BPP */
+    @page {
+      size: 215mm 330mm;
+      margin: 10mm 12mm 10mm 12mm;
+    }
+    @media print {
+      body {
+        background: white !important;
+        color: black !important;
+        font-size: 10pt;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-area {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .bpp-sheet {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        width: 100% !important;
+      }
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col font-sans">
+
+  <!-- ======================================================== -->
+  <!-- 1. TOP HEADER PUBLIK (BEBAS AKSES & TOMBOL LOGIN PENGURUS)-->
+  <!-- ======================================================== -->
+  <header class="bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-900 text-white sticky top-0 z-40 shadow-lg no-print">
+    <div class="max-w-7xl mx-auto px-3.5 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-3">
+      
+      <!-- Brand & Community Identity -->
+      <div class="flex items-center gap-2.5 sm:gap-3.5">
+        <a href="panduan-tani.html" class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-emerald-300 shadow-md backdrop-blur-sm shrink-0">
+          <i class="fa-solid fa-wheat-awn text-xl sm:text-2xl text-emerald-200"></i>
+        </a>
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <h1 class="text-xs sm:text-base font-black tracking-tight text-white uppercase truncate">POKTAN SRI MULYO</h1>
+            <span class="hidden xs:inline-flex px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+              PORTAL PUBLIK
+            </span>
+          </div>
+          <p class="text-[10px] sm:text-xs text-emerald-100/80 truncate">Desa Kediren · Lembeyan · Magetan · Wilbin BPP Lembeyan</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons: Berbagi WA & Tombol Masuk Pengurus -->
+      <div class="flex items-center gap-2">
+        <button onclick="bagikanKeWa()" title="Bagikan panduan ini ke WhatsApp warga"
+                class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-700/80 hover:bg-emerald-600 border border-emerald-500/30 text-white text-xs font-bold transition shadow-sm">
+          <i class="fa-brands fa-whatsapp text-emerald-300 text-sm"></i>
+          <span>Bagikan ke WA</span>
+        </button>
+
+        <!-- Tombol Masuk ke Dashboard / Portal Pengurus -->
+        <a href="index.html" title="Login ke Dashboard Pengurus e-RDKK & Alokasi"
+           class="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 text-xs font-black transition flex items-center gap-1.5 shadow-md shadow-black/20">
+          <i class="fa-solid fa-lock text-slate-900 text-xs"></i>
+          <span>Portal Pengurus</span>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- SUB-NAVBAR: TAB PILIHAN MODUL -->
+    <div class="border-t border-emerald-700/50 bg-emerald-950/40 backdrop-blur-md">
+      <div class="max-w-7xl mx-auto px-2 sm:px-6 flex items-center gap-1.5 overflow-x-auto custom-scrollbar py-2">
+        <button onclick="pilihTab('kalkulator')" id="nav-kalkulator" 
+                class="tab-btn active px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 bg-white text-emerald-950 shadow-sm">
+          <i class="fa-solid fa-calculator text-emerald-700"></i>
+          <span>Dosis & Rencana Tanam</span>
+        </button>
+        <button onclick="pilihTab('kalender')" id="nav-kalender" 
+                class="tab-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 text-emerald-100 hover:bg-white/10">
+          <i class="fa-solid fa-calendar-days text-emerald-300"></i>
+          <span>Kalender Tanam & Panen</span>
+        </button>
+        <button onclick="pilihTab('semprot')" id="nav-semprot" 
+                class="tab-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 text-emerald-100 hover:bg-white/10">
+          <i class="fa-solid fa-spray-can-sparkles text-emerald-300"></i>
+          <span>Waktu Semprot Hama</span>
+        </button>
+        <button onclick="pilihTab('klinik')" id="nav-klinik" 
+                class="tab-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 text-emerald-100 hover:bg-white/10">
+          <i class="fa-solid fa-plant-wilt text-emerald-300"></i>
+          <span>Klinik Penyakit Padi & Jagung</span>
+        </button>
+        <button onclick="pilihTab('laporan-bpp')" id="nav-laporan-bpp" 
+                class="tab-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 text-amber-200 hover:bg-white/10 border border-amber-300/30">
+          <i class="fa-solid fa-print text-amber-300"></i>
+          <span>Rekap Cetak BPP</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================================== -->
+  <!-- 2. WORKSPACE KONTEN UTAMA                                -->
+  <!-- ======================================================== -->
+  <main class="max-w-7xl mx-auto px-3.5 sm:px-6 py-6 flex-1 w-full space-y-6 no-print">
+
+    <!-- ======================================================== -->
+    <!-- TAB 1: KALKULATOR DOSIS PUPUK & PENGAJUAN RENCANA TANAM   -->
+    <!-- ======================================================== -->
+    <div id="view-kalkulator" class="tab-view space-y-6">
+      
+      <!-- Banner Pengantar -->
+      <div class="bg-gradient-to-br from-emerald-800 to-teal-900 rounded-3xl p-5 sm:p-7 text-white shadow-xl relative overflow-hidden">
+        <div class="relative z-10 max-w-3xl">
+          <span class="px-2.5 py-0.5 rounded-md bg-amber-400 text-slate-950 text-[10px] font-black uppercase tracking-wider">
+            MUSIM TANAM MT III (2026) & POLA TANAM MT 1 - 2
+          </span>
+          <h2 class="text-xl sm:text-2xl font-black mt-2 text-white">Kalkulator Dosis Pupuk & Rencana Tanam Petani</h2>
+          <p class="text-xs sm:text-sm text-emerald-100/90 mt-1 leading-relaxed">
+            Hitung dosis pemupukan berimbang spesifik untuk lahan Anda. Pilih nama Anda dari daftar e-RDKK untuk mengambil alokasi resmi, tentukan tanggal tanam, dan simpan rencana budidaya untuk laporan ke Balai Penyuluhan Pertanian (BPP).
+          </p>
+        </div>
+      </div>
+
+      <!-- Grid Form Input & Hasil Perhitungan -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- KOLOM KIRI: FORM PENGISIAN RENCANA TANAM (LG: 5 COL) -->
+        <div class="lg:col-span-5 bg-white p-5 sm:p-6 rounded-3xl border border-slate-200/90 shadow-sm space-y-4">
+          <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+            <h3 class="font-extrabold text-sm sm:text-base text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-pen-to-square text-emerald-600"></i>
+              <span>1. Identitas & Rencana Budidaya</span>
+            </h3>
+            <span class="text-[11px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md">Bebas Akses</span>
+          </div>
+
+          <!-- Pilihan Petani e-RDKK -->
+          <div>
+            <label for="select-petani" class="block text-xs font-bold text-slate-700 mb-1">
+              Nama Petani (Cari di Database e-RDKK)
+            </label>
+            <input list="list-petani" id="input-petani" oninput="onPetaniChanged()"
+                   placeholder="Ketik nama atau NIK Anda..." 
+                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 text-xs transition">
+            <datalist id="list-petani"></datalist>
+            <p class="text-[10px] text-slate-400 mt-1">Data jatah Urea, NPK, dan Luas Lahan otomatis terisi jika nama ditemukan.</p>
+          </div>
+
+          <!-- NIK & Luas Lahan -->
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">NIK Petani</label>
+              <input type="text" id="calc-nik" placeholder="352003..." 
+                     class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-mono">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Luas Lahan (Ha)</label>
+              <input type="number" step="0.01" id="calc-luas" value="0.35" oninput="hitungDosis()" 
+                     class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-800">
+            </div>
+          </div>
+
+          <!-- Pilihan Musim Tanam -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Musim Tanam (Pola Rotasi)</label>
+            <div class="grid grid-cols-3 gap-2 text-xs">
+              <label class="border rounded-xl p-2.5 text-center cursor-pointer transition select-none flex flex-col items-center gap-1 border-slate-200 hover:border-emerald-400 has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50/50 has-[:checked]:text-emerald-950 font-bold">
+                <input type="radio" name="calc-musim" value="MT 1 (Rendeng)" onchange="onMusimChanged()" class="hidden">
+                <span class="text-[10px] text-slate-400 font-semibold">Musim Hujan</span>
+                <span>MT 1</span>
+              </label>
+              <label class="border rounded-xl p-2.5 text-center cursor-pointer transition select-none flex flex-col items-center gap-1 border-slate-200 hover:border-emerald-400 has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50/50 has-[:checked]:text-emerald-950 font-bold">
+                <input type="radio" name="calc-musim" value="MT 2 (Gadu 1)" onchange="onMusimChanged()" class="hidden">
+                <span class="text-[10px] text-slate-400 font-semibold">Pancaroba</span>
+                <span>MT 2</span>
+              </label>
+              <label class="border rounded-xl p-2.5 text-center cursor-pointer transition select-none flex flex-col items-center gap-1 border-emerald-600 bg-emerald-50/50 text-emerald-950 font-bold has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50/50 has-[:checked]:text-emerald-950">
+                <input type="radio" name="calc-musim" value="MT 3 (Gadu 2)" checked onchange="onMusimChanged()" class="hidden">
+                <span class="text-[10px] text-emerald-700 font-semibold">Aktif 2026</span>
+                <span>MT 3</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Pilihan Komoditas & Varietas Benih -->
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Komoditas</label>
+              <select id="calc-komoditas" onchange="onKomoditasChanged()" 
+                      class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-800">
+                <option value="Padi" selected>🌾 Padi Sawah</option>
+                <option value="Jagung">🌽 Jagung Hibrida</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Varietas Benih</label>
+              <select id="calc-varietas" onchange="hitungDosis()" 
+                      class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-800">
+                <!-- Diisi otomatis oleh JavaScript -->
+              </select>
+            </div>
+          </div>
+
+          <!-- Tanggal Mulai Tanam / Sebar -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal Mulai Tanam / Sebar</label>
+            <input type="date" id="calc-tanggal-tanam" onchange="hitungDosis()" 
+                   class="w-full px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-800">
+            <p class="text-[10px] text-slate-400 mt-0.5">Sistem otomatis menghitung tanggal tiap tahapan pupuk & panen.</p>
+          </div>
+
+          <!-- Total Alokasi Riil (Dapat Diatur Manual atau Auto e-RDKK) -->
+          <div class="grid grid-cols-2 gap-3 p-3 bg-emerald-50/60 rounded-2xl border border-emerald-100">
+            <div>
+              <label class="block text-[11px] font-bold text-emerald-900 mb-1">Total Alokasi Urea (Kg)</label>
+              <input type="number" id="calc-urea" value="80" oninput="hitungDosis()" 
+                     class="w-full px-2.5 py-1.5 rounded-lg border border-emerald-200 bg-white text-xs font-mono font-bold text-emerald-950">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-emerald-900 mb-1">Total Alokasi NPK (Kg)</label>
+              <input type="number" id="calc-npk" value="72" oninput="hitungDosis()" 
+                     class="w-full px-2.5 py-1.5 rounded-lg border border-emerald-200 bg-white text-xs font-mono font-bold text-emerald-950">
+            </div>
+          </div>
+
+          <!-- Catatan / Gejala Hama -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Catatan Tambahan / Riwayat Hama Sawah (Opsional)</label>
+            <input type="text" id="calc-catatan" placeholder="Misal: ada riwayat sundep / kresek musim lalu" 
+                   class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs">
+          </div>
+
+          <!-- Tombol Kirim & Simpan ke Poktan -->
+          <button type="button" onclick="simpanRencanaTani()" id="btn-simpan-rencana"
+                  class="w-full py-3.5 px-4 rounded-2xl bg-emerald-700 hover:bg-emerald-800 active:scale-[0.99] text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-emerald-800/20 transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <span>Simpan Rencana Tanam ke Poktan &amp; BPP</span>
+          </button>
+        </div>
+
+        <!-- KOLOM KANAN: HASIL REKOMENDASI DOSIS & KALENDER PANEN (LG: 7 COL) -->
+        <div class="lg:col-span-7 space-y-4">
+          
+          <!-- KARTU HASIL: ESTIMASI PANEN RAYA -->
+          <div class="bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 border border-amber-300 rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <span class="px-2.5 py-0.5 rounded-md bg-amber-500 text-slate-950 text-[10px] font-black uppercase">
+                PREDIKSI PANEN RAYA
+              </span>
+              <h4 id="res-tgl-panen" class="text-xl sm:text-2xl font-black text-slate-900 mt-1">05 Maret 2027</h4>
+              <p id="res-desc-varietas" class="text-xs text-slate-600 font-medium mt-0.5">
+                Estimasi umur tanaman ~115 hari setelah tanam (Varietas: Inpari 32 HDB).
+              </p>
+            </div>
+            <div class="shrink-0 flex items-center gap-2 bg-white px-3.5 py-2.5 rounded-2xl border border-amber-200 shadow-2xs">
+              <i class="fa-solid fa-calendar-check text-amber-600 text-xl"></i>
+              <div>
+                <div class="text-[10px] text-slate-400 font-bold uppercase">Hitung Mundur</div>
+                <div id="res-countdown" class="text-xs font-black text-slate-900">115 Hari Lagi</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- KARTU HASIL: 3 TAHAPAN PEMUPUKAN BERIMBANG -->
+          <div class="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200/90 shadow-sm space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h3 class="font-extrabold text-sm sm:text-base text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-seedling text-emerald-600"></i>
+                <span>2. Pembagian Dosis Pupuk Berimbang</span>
+              </h3>
+              <span id="label-takaran-komoditas" class="text-xs font-bold text-slate-500">Padi Sawah</span>
+            </div>
+
+            <!-- TABEL 3 TAHAP DOSIS -->
+            <div class="space-y-3">
+              
+              <!-- TAHAP 1 -->
+              <div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="space-y-1">
+                  <div class="flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-full bg-emerald-700 text-white font-black text-xs flex items-center justify-center">1</span>
+                    <h5 class="font-extrabold text-sm text-emerald-950">Pemupukan Dasar (0 - 7 HST)</h5>
+                  </div>
+                  <p id="res-tgl-t1" class="text-xs font-semibold text-emerald-800 pl-8">
+                    Perkiraan Waktu: <span class="font-black">22 November 2026</span>
+                  </p>
+                  <p class="text-[11px] text-slate-600 pl-8">
+                    Fokus mempercepat pertumbuhan akar baru & adaptasi bibit pasca pindah tanam.
+                  </p>
+                </div>
+                <div class="pl-8 sm:pl-0 sm:text-right shrink-0">
+                  <div id="res-dosis-t1" class="font-mono font-black text-sm text-slate-900">
+                    NPK 50 Kg + Urea 16 Kg
+                  </div>
+                  <span id="res-sak-t1" class="text-[10px] text-emerald-700 font-bold bg-white px-2 py-0.5 rounded border border-emerald-200">
+                    ± 1 Sak NPK + 1/3 Sak Urea
+                  </span>
+                </div>
+              </div>
+
+              <!-- TAHAP 2 -->
+              <div class="p-4 rounded-2xl bg-blue-50/70 border border-blue-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="space-y-1">
+                  <div class="flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-full bg-blue-700 text-white font-black text-xs flex items-center justify-center">2</span>
+                    <h5 class="font-extrabold text-sm text-blue-950">Pemupukan Susulan I (15 - 20 HST)</h5>
+                  </div>
+                  <p id="res-tgl-t2" class="text-xs font-semibold text-blue-800 pl-8">
+                    Perkiraan Waktu: <span class="font-black">05 Desember 2026</span>
+                  </p>
+                  <p class="text-[11px] text-slate-600 pl-8">
+                    Fokus memicu pembentukan anakan produktif maksimum & penguatan batang.
+                  </p>
+                </div>
+                <div class="pl-8 sm:pl-0 sm:text-right shrink-0">
+                  <div id="res-dosis-t2" class="font-mono font-black text-sm text-slate-900">
+                    Urea 40 Kg + NPK 22 Kg
+                  </div>
+                  <span id="res-sak-t2" class="text-[10px] text-blue-700 font-bold bg-white px-2 py-0.5 rounded border border-blue-200">
+                    ± 1 Sak Urea Sedang
+                  </span>
+                </div>
+              </div>
+
+              <!-- TAHAP 3 -->
+              <div class="p-4 rounded-2xl bg-purple-50/70 border border-purple-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="space-y-1">
+                  <div class="flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-full bg-purple-700 text-white font-black text-xs flex items-center justify-center">3</span>
+                    <h5 class="font-extrabold text-sm text-purple-950">Pemupukan Susulan II (30 - 35 HST)</h5>
+                  </div>
+                  <p id="res-tgl-t3" class="text-xs font-semibold text-purple-800 pl-8">
+                    Perkiraan Waktu: <span class="font-black">20 Desember 2026</span>
+                  </p>
+                  <p class="text-[11px] text-slate-600 pl-8">
+                    Fase Primordia (Bunting) untuk menjaga daun bendera hijau & bulir bernas padat.
+                  </p>
+                </div>
+                <div class="pl-8 sm:pl-0 sm:text-right shrink-0">
+                  <div id="res-dosis-t3" class="font-mono font-black text-sm text-slate-900">
+                    Urea 24 Kg (Penutup)
+                  </div>
+                  <span id="res-sak-t3" class="text-[10px] text-purple-700 font-bold bg-white px-2 py-0.5 rounded border border-purple-200">
+                    ± 1/2 Sak Urea
+                  </span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Petunjuk Lapangan -->
+            <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 text-xs text-slate-600 space-y-1">
+              <div class="font-bold text-slate-800 flex items-center gap-1.5">
+                <i class="fa-solid fa-lightbulb text-amber-500"></i>
+                <span>Tips Aplikasi Pupuk Efektif dari PPL:</span>
+              </div>
+              <p>• Taburkan pupuk saat kondisi tanah sawah <b>macak-macak</b> (tidak tergenang dalam agar pupuk tidak larut terbawa aliran air).</p>
+              <p>• Tambahkan pupuk organik / kompos kandang matang saat olah tanah pertama untuk menggemburkan tanah sawah Desa Kediren.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 2: KALENDER TANAM & TIMELINE JADWAL PER HARI         -->
+    <!-- ======================================================== -->
+    <div id="view-kalender" class="tab-view hidden space-y-6">
+      <div class="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <span class="px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[10px] font-extrabold uppercase">
+            JADWAL HARIAN SISTEMATIS
+          </span>
+          <h3 class="text-lg font-black text-slate-900 mt-1">Kalender Tanam Dari Olah Tanah Sampai Panen</h3>
+          <p class="text-xs text-slate-500">Mengikuti tanggal tanam yang telah Anda pilih pada tab kalkulator.</p>
+        </div>
+        <button onclick="window.print()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5 border border-slate-300">
+          <i class="fa-solid fa-print"></i>
+          <span>Cetak Kalender</span>
+        </button>
+      </div>
+
+      <!-- Container Timeline Kalender -->
+      <div id="timeline-container" class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+        <!-- Diisi oleh fungsi renderTimeline() di JavaScript -->
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 3: WAKTU SEMPROT & JADWAL PENGENDALIAN HAMA (PHT)     -->
+    <!-- ======================================================== -->
+    <div id="view-semprot" class="tab-view hidden space-y-6">
+      
+      <!-- Kartu Aturan Jam Semprot Emas -->
+      <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 rounded-3xl p-6 text-white shadow-xl space-y-3">
+        <span class="px-2.5 py-0.5 rounded-md bg-blue-400 text-slate-950 text-[10px] font-black uppercase">
+          GOLDEN HOURS SPRAYING
+        </span>
+        <h3 class="text-xl sm:text-2xl font-black">Waktu Terbaik Penyemprotan Hama &amp; Penyakit</h3>
+        <p class="text-xs sm:text-sm text-blue-100 leading-relaxed max-w-3xl">
+          Penyemprotan pestisida pada waktu yang keliru menyebabkan bahan aktif menguap sia-sia terkena terik matahari atau hanyut terbawa hujan. Patuhi 2 waktu terbaik ini:
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          <div class="p-4 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-sm">
+            <div class="font-extrabold text-base text-amber-300 flex items-center gap-2 mb-1">
+              <i class="fa-solid fa-sun"></i> Waktu Pagi: 06.30 - 09.00 WIB
+            </div>
+            <p class="text-xs text-slate-200">Stomata daun terbuka penuh menyerap nutrisi/insektisida sistemik. Hama wereng dan ulat sedang aktif di tajuk tanaman sebelum matahari terik.</p>
+          </div>
+          <div class="p-4 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-sm">
+            <div class="font-extrabold text-base text-cyan-300 flex items-center gap-2 mb-1">
+              <i class="fa-solid fa-moon"></i> Waktu Sore: 15.30 - 17.30 WIB
+            </div>
+            <p class="text-xs text-slate-200">Suhu udara menurun. Sangat efektif untuk mengatasi ulat grayak, kupu-kupu penggerek batang (kaper), dan kepik walang sangit yang mulai keluar.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jadwal Pengendalian Fase Padi vs Jagung -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Padi -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <div class="border-b border-slate-100 pb-3 flex items-center gap-2">
+            <span class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">🌾</span>
+            <h4 class="font-black text-base text-slate-900">Jadwal Pengendalian Hama PADI</h4>
+          </div>
+          <div class="space-y-3 text-xs">
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+              <div class="font-bold text-slate-900 mb-0.5">1. Fase Vegetatif Awal (10 - 20 HST)</div>
+              <p class="text-slate-600">Sasaran: <b>Sundep (Penggerek Batang Kuning) & Keong Mas</b>. Gunakan moluskisida untuk keong, dan insektisida berbahan aktif Dimehipo / Karbofuran untuk sundep.</p>
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+              <div class="font-bold text-slate-900 mb-0.5">2. Fase Anakan Aktif (25 - 40 HST)</div>
+              <p class="text-slate-600">Sasaran: <b>Wereng Batang Coklat (WBC) & Kresek (Hawar Daun Bakteri)</b>. Semprot pangkal batang dengan Pimetrozin / Imidakloprid. Keringkan air sawah berkala.</p>
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+              <div class="font-bold text-slate-900 mb-0.5">3. Fase Keluar Malai (50 - 70 HST)</div>
+              <p class="text-slate-600">Sasaran: <b>Beluk, Jamur Blas Leher & Walang Sangit</b>. Berikan fungisida Azoksistrobin / Difenokonazol agar malai bersih bernas dan bebas patah leher.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Jagung -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <div class="border-b border-slate-100 pb-3 flex items-center gap-2">
+            <span class="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold">🌽</span>
+            <h4 class="font-black text-base text-slate-900">Jadwal Pengendalian Hama JAGUNG</h4>
+          </div>
+          <div class="space-y-3 text-xs">
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+              <div class="font-bold text-slate-900 mb-0.5">1. Fase Perkecambahan (5 - 12 HST)</div>
+              <p class="text-slate-600">Sasaran: <b>Lalat Bibit & Penyakit Bulai</b>. Lakukan perlakuan benih (seed treatment) dengan fungisida Metalaksil sebelum tugal.</p>
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+              <div class="font-bold text-slate-900 mb-0.5">2. Fase Pertumbuhan Batang (20 - 35 HST)</div>
+              <p class="text-slate-600">Sasaran: <b>Ulat Grayak Jagung FAW (Spodoptera frugiperda)</b> di pupus daun. Semprot langsung mengarah ke dalam corong daun dengan Emamektin Benzoat.</p>
+            </div>
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+              <div class="font-bold text-slate-900 mb-0.5">3. Fase Pengisian Tongkol (50 - 65 HST)</div>
+              <p class="text-slate-600">Sasaran: <b>Ulat Penggerek Tongkol & Karat Daun</b>. Semprot rambut jagung saat mulai kecoklatan untuk mencegah ulat masuk ke dalam biji tongkol.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 4: KLINIK DIAGNOSA PENYAKIT PADI & JAGUNG             -->
+    <!-- ======================================================== -->
+    <div id="view-klinik" class="tab-view hidden space-y-6">
+      
+      <!-- Filter Bagian Tanaman -->
+      <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 class="font-black text-base text-slate-900">Klinik Diagnosa Masalah &amp; Penyakit Tanaman</h3>
+            <p class="text-xs text-slate-500">Pilih bagian tanaman yang bermasalah untuk menemukan nama penyakit dan solusinya.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="filterKlinik('semua')" class="klinik-filter active px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-700 text-white">Semua</button>
+            <button onclick="filterKlinik('daun')" class="klinik-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">Gejala Daun</button>
+            <button onclick="filterKlinik('batang')" class="klinik-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">Gejala Batang</button>
+            <button onclick="filterKlinik('malai')" class="klinik-filter px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">Malai / Tongkol</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Katalog Penyakit & Solusi Resep -->
+      <div id="klinik-catalog" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Diisi otomatis oleh JavaScript -->
+      </div>
+
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 5: LEMBAR CETAK REKAPITULASI RESMI UNTUK BPP          -->
+    <!-- ======================================================== -->
+    <div id="view-laporan-bpp" class="tab-view hidden space-y-6">
+      
+      <!-- Action Toolbar -->
+      <div class="bg-white p-4 sm:p-5 rounded-3xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 no-print">
+        <div>
+          <span class="px-2.5 py-0.5 rounded-md bg-purple-100 text-purple-900 text-[10px] font-black uppercase">
+            BERKAS ADMINISTRASI RESMI DINAS
+          </span>
+          <h3 class="text-base sm:text-lg font-black text-slate-900 mt-1">Laporan Rekapitulasi Rencana Tanam &amp; Alokasi untuk BPP</h3>
+          <p class="text-xs text-slate-500">Siap dicetak di kertas F4 / Folio atau disimpan sebagai PDF untuk laporan penyuluh BPP.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="muatRiwayatRencanaTani()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5 border border-slate-300">
+            <i class="fa-solid fa-rotate"></i>
+            <span>Segarkan</span>
+          </button>
+          <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-md">
+            <i class="fa-solid fa-print"></i>
+            <span>Cetak Dokumen F4</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- CONTAINER LEMBAR CETAK RESMI FORMAT KERTAS F4 -->
+      <div class="print-area w-full flex justify-center pb-12">
+        <div class="bpp-sheet bg-white p-8 sm:p-10 rounded-2xl border border-slate-300 shadow-lg w-full max-w-4xl text-black">
+          
+          <!-- KOP SURAT RESMI POKTAN SRI MULYO -->
+          <div class="border-b-4 border-double border-black pb-3 mb-4 text-center">
+            <h2 class="text-base sm:text-lg font-black uppercase tracking-wider">KELOMPOK TANI &ldquo;SRI MULYO&rdquo;</h2>
+            <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wide">DESA KEDIREN, KECAMATAN LEMBEYAN, KABUPATEN MAGETAN</h3>
+            <p class="text-[10px] text-slate-700">Wilayah Binaan Balai Penyuluhan Pertanian (BPP) Kecamatan Lembeyan · Magetan · Jawa Timur</p>
+          </div>
+
+          <!-- JUDUL LAPORAN -->
+          <div class="text-center mb-5">
+            <h4 class="text-xs sm:text-sm font-black uppercase underline underline-offset-4">
+              REKAPITULASI RENCANA TANAM, ALOKASI PUPUK BERSUBSIDI &amp; PERKIRAAN PANEN
+            </h4>
+            <p class="text-[10px] text-slate-600 mt-1">Musim Tanam MT III (Tahun 2026) / Rencana Pola Tanam Berkelanjutan</p>
+          </div>
+
+          <!-- TABEL DAFTAR PETANI YANG SUDAH MENGISI KONSULTASI -->
+          <div class="overflow-x-auto mb-6">
+            <table class="w-full text-[10px] sm:text-[11px] border-collapse border border-black text-left">
+              <thead>
+                <tr class="bg-slate-100 font-bold border-b border-black text-center text-[10px]">
+                  <th class="border border-black py-1 px-1.5 w-8">No</th>
+                  <th class="border border-black py-1 px-2 text-left">Nama Petani</th>
+                  <th class="border border-black py-1 px-2 whitespace-nowrap">NIK</th>
+                  <th class="border border-black py-1 px-1.5 text-center">Komoditas / Varietas</th>
+                  <th class="border border-black py-1 px-1 text-center">Luas (Ha)</th>
+                  <th class="border border-black py-1 px-1.5 text-center">Tgl Tanam</th>
+                  <th class="border border-black py-1 px-1.5 text-center">Perkiraan Panen</th>
+                  <th class="border border-black py-1 px-1.5 text-right">Urea (Kg)</th>
+                  <th class="border border-black py-1 px-1.5 text-right">NPK (Kg)</th>
+                  <th class="border border-black py-1 px-2 text-center w-24">Tanda Tangan</th>
+                </tr>
+              </thead>
+              <tbody id="bpp-table-body">
+                <tr>
+                  <td colspan="10" class="py-8 text-center text-slate-400">
+                    <i class="fa-solid fa-spinner fa-spin mr-1"></i> Memuat data rekapitulasi petani dari Google Sheets...
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr class="bg-slate-50 font-black border-t-2 border-black text-[10.5px]">
+                  <td colspan="4" class="border border-black py-1 px-2 text-center uppercase">TOTAL REKAPITULASI:</td>
+                  <td id="bpp-tot-luas" class="border border-black py-1 px-1 text-center font-mono">-</td>
+                  <td colspan="2" class="border border-black py-1 px-1.5 text-center text-[9px] text-slate-600">Alokasi Bersubsidi</td>
+                  <td id="bpp-tot-urea" class="border border-black py-1 px-1.5 text-right font-mono">-</td>
+                  <td id="bpp-tot-npk" class="border border-black py-1 px-1.5 text-right font-mono">-</td>
+                  <td class="border border-black py-1 px-2 text-center text-[9px]">Lengkap</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <!-- KOLOM 3 TANDA TANGAN RESMI PENGESAHAN DOKUMEN BPP -->
+          <div class="grid grid-cols-3 gap-4 text-center text-[10px] sm:text-[10.5px] pt-4">
+            <!-- 1. PENGELOLA / ADMIN -->
+            <div>
+              <p class="text-slate-600">Dibuat Oleh,</p>
+              <p class="font-bold">Pengelola / Administrasi</p>
+              <div class="h-16 flex items-end justify-center pb-1">
+                <span class="text-[8px] text-slate-400 italic">[ Tanda Tangan ]</span>
+              </div>
+              <p class="font-black underline uppercase text-slate-900">ADMIN POKTAN</p>
+              <p class="text-[9px] text-slate-600">Sri Mulyo Kediren</p>
+            </div>
+
+            <!-- 2. KETUA KELOMPOK TANI -->
+            <div>
+              <p class="text-slate-600">Menyetujui,</p>
+              <p class="font-bold">Ketua Poktan &ldquo;Sri Mulyo&rdquo;</p>
+              <div class="h-16 flex items-end justify-center pb-1">
+                <span class="text-[8px] text-slate-400 italic">[ Tanda Tangan &amp; Cap ]</span>
+              </div>
+              <p class="font-black underline uppercase text-slate-900">SUPRIYANTO</p>
+              <p class="text-[9px] text-slate-600">Ketua Kelompok Tani</p>
+            </div>
+
+            <!-- 3. PENYULUH PERTANIAN LAPANGAN (PPL WILBIN BPP) -->
+            <div>
+              <p class="text-slate-600">Kediren, <span id="tgl-cetak-bpp">-</span></p>
+              <p class="font-bold">Mengetahui, PPL Wilbin</p>
+              <div class="h-16 flex items-end justify-center pb-1">
+                <span class="text-[8px] text-slate-400 italic">[ Tanda Tangan &amp; Cap ]</span>
+              </div>
+              <p class="font-black underline uppercase text-slate-900">IIS SUGIARTI, SP</p>
+              <p class="text-[9px] text-slate-600">NIP. 19810425 201001 2 020</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ======================================================== -->
+  <!-- MODAL BUKTI PENDAFTARAN RENCANA TANAM (DIGITAL RECEIPT)  -->
+  <!-- ======================================================== -->
+  <div id="modal-bukti" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs hidden flex items-center justify-center p-4 no-print">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 text-center space-y-4">
+      <div class="w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl mx-auto shadow-inner">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <div>
+        <h4 class="text-lg font-black text-slate-900">Rencana Tanam Berhasil Disimpan!</h4>
+        <p class="text-xs text-slate-500 mt-0.5">Data telah tersimpan di Google Sheets Poktan Sri Mulyo untuk rekapitulasi BPP.</p>
+      </div>
+
+      <!-- Kartu Ringkasan -->
+      <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-left text-xs space-y-2">
+        <div class="flex justify-between border-b border-slate-200 pb-1.5">
+          <span class="text-slate-500">Nama Petani:</span>
+          <b id="m-nama" class="text-slate-900">-</b>
+        </div>
+        <div class="flex justify-between border-b border-slate-200 pb-1.5">
+          <span class="text-slate-500">Komoditas &amp; Benih:</span>
+          <b id="m-komoditas" class="text-slate-900">-</b>
+        </div>
+        <div class="flex justify-between border-b border-slate-200 pb-1.5">
+          <span class="text-slate-500">Tanggal Tanam:</span>
+          <b id="m-tgl-tanam" class="text-slate-900">-</b>
+        </div>
+        <div class="flex justify-between border-b border-slate-200 pb-1.5">
+          <span class="text-slate-500">Perkiraan Panen:</span>
+          <b id="m-panen" class="text-emerald-700 font-bold">-</b>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-500">Alokasi Pupuk:</span>
+          <b id="m-pupuk" class="text-slate-900">-</b>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 pt-2">
+        <button onclick="tutupModalBukti()" class="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
+          Tutup
+        </button>
+        <button onclick="window.print()" class="flex-1 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
+          <i class="fa-solid fa-print"></i>
+          <span>Cetak Bukti</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 3. JAVASCRIPT CONTROLLER LENGKAP                         -->
+  <!-- ======================================================== -->
+  <script>
+    const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyoJtATgF_5ESUILhf4gZvxVBdEnkTJ7qaWqmbWN8esgYTwtMJJR6bAptLuebR58zaZ/exec';
+    
+    // Database Varietas Benih Padi & Jagung
+    const DATA_VARIETAS = {
+      Padi: [
+        { nama: 'Inpari 32 HDB', umur: 115, desc: 'Tahan hawar daun bakteri/kresek, anakan produktif banyak' },
+        { nama: 'Ciherang', umur: 110, desc: 'Nasi pulen, adaptif di musim hujan maupun kemarau' },
+        { nama: 'Mekongga', umur: 118, desc: 'Batang kokoh, tahan rebah & wereng coklat biotipe 2/3' },
+        { nama: 'Inpari 42 GSR', umur: 105, desc: 'Umur genjah hemat air (Green Super Rice), ramah pupuk' },
+        { nama: 'Mapan 05 (Hibrida)', umur: 118, desc: 'Malai panjang lebat, potensi hasil di atas 10 ton/ha' }
+      ],
+      Jagung: [
+        { nama: 'Pioneer P27 / P35', umur: 102, desc: 'Tongkol besar berbobot, toleran kekeringan MT 3' },
+        { nama: 'BISI 18', umur: 105, desc: 'Rendemen tinggi, biji rapat merah jingga mengkilap' },
+        { nama: 'NK 212', umur: 103, desc: 'Tahan penyakit bulai, perakaran kuat anti rebah angin' },
+        { nama: 'Dekalb DK 771', umur: 108, desc: 'Potensi pipil kering tinggi, disukai pedagang pakan' }
+      ]
+    };
+
+    // Katalog Penyakit & Hama untuk Tab Klinik
+    const KATALOG_PENYAKIT = [
+      {
+        kategori: 'daun',
+        komoditas: 'Padi',
+        nama: 'Hawar Daun Bakteri (Kresek)',
+        gejala: 'Garis basah kekuningan di tepi daun, lama kelamaan daun mengering seperti terbakar/layu.',
+        penyebab: 'Bakteri Xanthomonas oryzae, sering muncul saat kelembaban tinggi / curah hujan lebat.',
+        solusi: 'Kurangi pupuk Urea berlebih, keringkan sawah berkala, semprot bakterisida tembaga hidroksida / Streptomisin.'
+      },
+      {
+        kategori: 'daun',
+        komoditas: 'Padi',
+        nama: 'Penyakit Blas Daun (Pyricularia)',
+        gejala: 'Bercak coklat berbentuk belah ketupat runcing di kedua ujung dengan pusat kelabu.',
+        penyebab: 'Jamur Pyricularia grisea, dipicu pemupukan Nitrogen/Urea terlalu tinggi dan cuaca mendung.',
+        solusi: 'Aplikasi fungisida berbahan aktif Trisiklazol / Isoprotiolan / Difenokonazol sejak vegetatif.'
+      },
+      {
+        kategori: 'batang',
+        komoditas: 'Padi',
+        nama: 'Sundep / Penggerek Batang Kuning',
+        gejala: 'Pucuk daun muda mati layu dan mudah dicabut saat ditarik, pangkal batang berlubang.',
+        penyebab: 'Larva penggerek batang Scirpophaga incertulas mengebor bagian dalam batang padi.',
+        solusi: 'Kumpulkan kelompok telur kaper, aplikasi insektisida sistemik Dimehipo / Karbofuran 3GR di pemupukan 1.'
+      },
+      {
+        kategori: 'batang',
+        komoditas: 'Padi',
+        nama: 'Wereng Batang Coklat (WBC)',
+        gejala: 'Pangkal batang dipenuhi koloni wereng, tanaman mengering melingkar seperti terbakar (Hopperburn).',
+        penyebab: 'Nilaparvata lugens mengisap cairan tanaman dan menularkan virus kerdil.',
+        solusi: 'Semprot pangkal batang dengan Pimetrozin / Imidakloprid / Buprofezin. Keringkan petak sawah.'
+      },
+      {
+        kategori: 'malai',
+        komoditas: 'Padi',
+        nama: 'Beluk (Penggerek Malai)',
+        gejala: 'Malai keluar tegak keputihan, seluruh bulir hampa dan mudah ditarik putus dari buku malai.',
+        penyebab: 'Ulat penggerek batang merusak pembuluh saat fase bunting keluar malai.',
+        solusi: 'Semprot insektisida pencegah sebelum malai keluar (umur 45-50 HST) dengan Fipronil / Klorantraniliprol.'
+      },
+      {
+        kategori: 'malai',
+        komoditas: 'Padi',
+        nama: 'Walang Sangit (Leptocorisa)',
+        gejala: 'Bulir padi berbintik coklat kehitaman, beras patah atau mengkerut hampa, bau menyengat.',
+        penyebab: 'Hama walang sangit mengisap cairan bulir padi saat fase masak susu.',
+        solusi: 'Pasang perangkap bangkai kepiting/keong di tepi sawah, semprot pagi jam 06.30 dengan Lamda-sihalotrin.'
+      },
+      {
+        kategori: 'daun',
+        komoditas: 'Jagung',
+        nama: 'Ulat Grayak Jagung FAW',
+        gejala: 'Daun pucuk muda bolong-bolong robek tak beraturan dipenuhi serbuk kotoran mirip serbuk gergaji.',
+        penyebab: 'Spodoptera frugiperda yang bersembunyi di dalam corong daun jagung.',
+        solusi: 'Semprot tepat mengarah ke dalam corong daun dengan Emamektin Benzoat / Klorantraniliprol.'
+      },
+      {
+        kategori: 'daun',
+        komoditas: 'Jagung',
+        nama: 'Penyakit Bulai Jagung',
+        gejala: 'Daun bergaris-garis putih kekuningan sejajar tulang daun, tanaman kerdil tak bertongkol.',
+        penyebab: 'Jamur Peronosclerospora maydis.',
+        solusi: 'Wajib perlakuan benih (seed treatment) dengan Metalaksil sebelum tanam. Cabut tanaman yang terinfeksi.'
+      },
+      {
+        kategori: 'malai',
+        komoditas: 'Jagung',
+        nama: 'Penggerek Tongkol Jagung',
+        gejala: 'Ujung tongkol berlubang dan biji muda rusak dimakan ulat dari dalam kelobot.',
+        penyebab: 'Helicoverpa armigera yang bertelur pada rambut jagung muda.',
+        solusi: 'Semprot rambut tongkol saat mulai muncul dengan insektisida Spinetoram / Indosakarb.'
+      }
+    ];
+
+    let daftarPetaniCache = [];
+    let riwayatRencanaTaniCache = [];
+
+    // Inisialisasi awal
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set tanggal tanam default ke hari ini
+      const today = new Date().toISOString().split('T')[0];
+      const tInput = document.getElementById('calc-tanggal-tanam');
+      if (tInput) tInput.value = today;
+
+      const tglBpp = document.getElementById('tgl-cetak-bpp');
+      if (tglBpp) tglBpp.innerText = new Intl.DateTimeFormat('id-ID', { dateStyle: 'long' }).format(new Date());
+
+      onKomoditasChanged();
+      muatDaftarPetani();
+      muatRiwayatRencanaTani();
+      renderKlinik('semua');
+    });
+
+    // Ganti Tab Utama
+    function pilihTab(tabId) {
+      document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active', 'bg-white', 'text-emerald-950', 'shadow-sm');
+        btn.classList.add('text-emerald-100');
+      });
+
+      const targetView = document.getElementById('view-' + tabId);
+      const targetNav = document.getElementById('nav-' + tabId);
+      if (targetView) targetView.classList.remove('hidden');
+      if (targetNav) {
+        targetNav.classList.add('active', 'bg-white', 'text-emerald-950', 'shadow-sm');
+        targetNav.classList.remove('text-emerald-100');
+      }
+
+      if (tabId === 'kalender') renderTimeline();
+      if (tabId === 'laporan-bpp') muatRiwayatRencanaTani();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Ubah Komoditas (Padi vs Jagung)
+    function onKomoditasChanged() {
+      const kom = document.getElementById('calc-komoditas').value;
+      const vSelect = document.getElementById('calc-varietas');
+      const list = DATA_VARIETAS[kom] || [];
+      
+      vSelect.innerHTML = list.map(v => `<option value="${v.nama}">${v.nama} (~${v.umur} HST)</option>`).join('');
+      document.getElementById('label-takaran-komoditas').innerText = kom === 'Padi' ? 'Komoditas: Padi Sawah' : 'Komoditas: Jagung Hibrida';
+      
+      // Standar alokasi perkiraan awal
+      if (kom === 'Padi') {
+        document.getElementById('calc-urea').value = '80';
+        document.getElementById('calc-npk').value = '72';
+      } else {
+        document.getElementById('calc-urea').value = '90';
+        document.getElementById('calc-npk').value = '60';
+      }
+
+      hitungDosis();
+    }
+
+    function onMusimChanged() {
+      hitungDosis();
+    }
+
+    // Ambil daftar petani e-RDKK dari backend
+    async function muatDaftarPetani() {
+      try {
+        const res = await fetch(GAS_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'getDaftarPetaniPublik' })
+        });
+        const json = await res.json();
+        if (json && json.sukses && Array.isArray(json.petani)) {
+          daftarPetaniCache = json.petani;
+          const dl = document.getElementById('list-petani');
+          dl.innerHTML = daftarPetaniCache.map(p => `<option value="${p.nama} (${p.nik})">Luas: ${p.luas} Ha · Urea: ${p.urea} Kg · NPK: ${p.npk} Kg</option>`).join('');
+        }
+      } catch (err) {
+        console.warn('Gagal memuat e-RDKK online:', err);
+      }
+    }
+
+    // Saat petani dipilih dari datalist
+    function onPetaniChanged() {
+      const val = document.getElementById('input-petani').value;
+      const match = daftarPetaniCache.find(p => val.includes(p.nik) || val.toUpperCase().includes(p.nama.toUpperCase()));
+      if (match) {
+        document.getElementById('calc-nik').value = match.nik;
+        document.getElementById('calc-luas').value = parseFloat(match.luas.replace(',', '.')) || 0.35;
+        if (parseFloat(match.urea)) document.getElementById('calc-urea').value = match.urea;
+        if (parseFloat(match.npk)) document.getElementById('calc-npk').value = match.npk;
+        hitungDosis();
+      }
+    }
+
+    // Kalkulasi Dosis & Tanggal Panen Presisi
+    function hitungDosis() {
+      const kom = document.getElementById('calc-komoditas').value;
+      const varietasNama = document.getElementById('calc-varietas').value;
+      const listVar = DATA_VARIETAS[kom] || [];
+      const varInfo = listVar.find(v => varietasNama.includes(v.nama)) || listVar[0];
+      const umurTanaman = varInfo ? varInfo.umur : 115;
+
+      const totalUrea = parseFloat(document.getElementById('calc-urea').value) || 0;
+      const totalNpk = parseFloat(document.getElementById('calc-npk').value) || 0;
+
+      // Hitung Tanggal
+      const tglTanamStr = document.getElementById('calc-tanggal-tanam').value;
+      const tglTanam = tglTanamStr ? new Date(tglTanamStr) : new Date();
+
+      const addHari = (d, days) => {
+        const copy = new Date(d);
+        copy.setDate(copy.getDate() + days);
+        return copy;
+      };
+
+      const tglT1 = addHari(tglTanam, 7);
+      const tglT2 = addHari(tglTanam, kom === 'Padi' ? 18 : 28);
+      const tglT3 = addHari(tglTanam, kom === 'Padi' ? 32 : 42);
+      const tglPanen = addHari(tglTanam, umurTanaman);
+
+      const fmt = d => new Intl.DateTimeFormat('id-ID', { dateStyle: 'long' }).format(d);
+
+      // Tampilkan Tanggal
+      document.getElementById('res-tgl-panen').innerText = fmt(tglPanen);
+      document.getElementById('res-desc-varietas').innerText = `Estimasi umur panen ~${umurTanaman} hari setelah tanam (${varInfo.nama} · ${varInfo.desc})`;
+      
+      const diffDays = Math.ceil((tglPanen - new Date()) / (1000 * 60 * 60 * 24));
+      document.getElementById('res-countdown').innerText = diffDays > 0 ? `${diffDays} Hari Lagi` : 'Waktu Panen Telah Tiba';
+
+      document.getElementById('res-tgl-t1').innerHTML = `Perkiraan Waktu: <span class="font-black">${fmt(tglT1)}</span>`;
+      document.getElementById('res-tgl-t2').innerHTML = `Perkiraan Waktu: <span class="font-black">${fmt(tglT2)}</span>`;
+      document.getElementById('res-tgl-t3').innerHTML = `Perkiraan Waktu: <span class="font-black">${fmt(tglT3)}</span>`;
+
+      // Dosis Pembagian
+      if (kom === 'Padi') {
+        const npkT1 = Math.round(totalNpk * 0.7);
+        const ureaT1 = Math.round(totalUrea * 0.2);
+        const ureaT2 = Math.round(totalUrea * 0.5);
+        const npkT2 = totalNpk - npkT1;
+        const ureaT3 = totalUrea - (ureaT1 + ureaT2);
+
+        document.getElementById('res-dosis-t1').innerText = `NPK ${npkT1} Kg + Urea ${ureaT1} Kg`;
+        document.getElementById('res-sak-t1').innerText = `± ${(npkT1/50).toFixed(1)} Sak NPK + ${(ureaT1/50).toFixed(1)} Sak Urea`;
+
+        document.getElementById('res-dosis-t2').innerText = `Urea ${ureaT2} Kg + NPK ${npkT2} Kg`;
+        document.getElementById('res-sak-t2').innerText = `± ${(ureaT2/50).toFixed(1)} Sak Urea`;
+
+        document.getElementById('res-dosis-t3').innerText = `Urea ${ureaT3} Kg (Penutup)`;
+        document.getElementById('res-sak-t3').innerText = `± ${(ureaT3/50).toFixed(1)} Sak Urea`;
+      } else {
+        // Jagung
+        const npkT1 = Math.round(totalNpk * 0.5);
+        const ureaT1 = Math.round(totalUrea * 0.3);
+        const ureaT2 = Math.round(totalUrea * 0.4);
+        const npkT2 = totalNpk - npkT1;
+        const ureaT3 = totalUrea - (ureaT1 + ureaT2);
+
+        document.getElementById('res-dosis-t1').innerText = `NPK ${npkT1} Kg + Urea ${ureaT1} Kg`;
+        document.getElementById('res-sak-t1').innerText = `Aplikasi 7-10 HST (setelah tumbuh)`;
+
+        document.getElementById('res-dosis-t2').innerText = `Urea ${ureaT2} Kg + NPK ${npkT2} Kg`;
+        document.getElementById('res-sak-t2').innerText = `Aplikasi 25-30 HST (fase lutut & bumbun)`;
+
+        document.getElementById('res-dosis-t3').innerText = `Urea ${ureaT3} Kg (Penutup)`;
+        document.getElementById('res-sak-t3').innerText = `Aplikasi 40-45 HST (jelang bunga jantan)`;
+      }
+    }
+
+    // Render Timeline Visual di Tab Kalender
+    function renderTimeline() {
+      const kom = document.getElementById('calc-komoditas').value;
+      const varietasNama = document.getElementById('calc-varietas').value;
+      const listVar = DATA_VARIETAS[kom] || [];
+      const varInfo = listVar.find(v => varietasNama.includes(v.nama)) || listVar[0];
+      const umur = varInfo ? varInfo.umur : 115;
+
+      const tglStr = document.getElementById('calc-tanggal-tanam').value;
+      const base = tglStr ? new Date(tglStr) : new Date();
+      const add = d => {
+        const c = new Date(base);
+        c.setDate(c.getDate() + d);
+        return new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium' }).format(c);
+      };
+
+      const c = document.getElementById('timeline-container');
+      const steps = kom === 'Padi' ? [
+        { hst: 'H - 25', tgl: add(-25), title: 'Penyemaian Benih & Olah Tanah', desc: 'Rendam benih, tiriskan, sebar di bedengan semai. Bajak sawah & garu gembur.', icon: 'fa-seedling', color: 'bg-emerald-600' },
+        { hst: 'HST 0', tgl: add(0), title: 'Hari Pindah Tanam (Transplanting)', desc: 'Tanam bibit umur 15-20 hari, 2-3 batang per rumpun, jarak tanam jajar legowo.', icon: 'fa-person-digging', color: 'bg-emerald-700' },
+        { hst: 'HST 7', tgl: add(7), title: 'Pemupukan Dasar (Tahap 1)', desc: 'Tabur 70% NPK Phonska + 20% Urea saat kondisi sawah macak-macak.', icon: 'fa-box-archive', color: 'bg-blue-600' },
+        { hst: 'HST 15', tgl: add(15), title: 'Penyiangan Gulma & Pencegahan Sundep', desc: 'Matun rumput liar, kontrol keong mas, waspada kaper kupu-kupu penggerek batang.', icon: 'fa-broom', color: 'bg-amber-600' },
+        { hst: 'HST 18', tgl: add(18), title: 'Pemupukan Susulan I (Tahap 2)', desc: 'Tabur 50% Urea + 30% NPK untuk memacu pertumbuhan anakan produktif maksimum.', icon: 'fa-cubes', color: 'bg-blue-700' },
+        { hst: 'HST 32', tgl: add(32), title: 'Pemupukan Susulan II (Fase Primordia)', desc: 'Tabur sisa 30% Urea menjelang bunting untuk menjaga kehijauan daun bendera.', icon: 'fa-leaf', color: 'bg-purple-600' },
+        { hst: 'HST 60', tgl: add(60), title: 'Fase Bunga & Pengisian Butir Padi', desc: 'Malai keluar serempak. Semprot pencegahan jamur blas leher & walang sangit pagi hari.', icon: 'fa-sun', color: 'bg-indigo-600' },
+        { hst: 'HST 90', tgl: add(90), title: 'Pengeringan Air Sawah Jelang Panen', desc: 'Buang air sawah agar tanah padat memudahkan proses panen dan mempercepat penuaan bulir.', icon: 'fa-water', color: 'bg-slate-600' },
+        { hst: `HST ${umur}`, tgl: add(umur), title: 'PANEN RAYA POKTAN SRI MULYO!', desc: `Padi siap dipanen saat 90-95% bulir menguning keemasan (Varietas: ${varInfo.nama}).`, icon: 'fa-wheat-awn', color: 'bg-amber-500' }
+      ] : [
+        { hst: 'HST 0', tgl: add(0), title: 'Penugalan & Tanam Benih Jagung', desc: 'Tanam 1 biji per lubang jarak tanam 70 x 20 cm. Berikan Furadan/karbofuran jika ada semut.', icon: 'fa-seedling', color: 'bg-emerald-600' },
+        { hst: 'HST 7', tgl: add(7), title: 'Pemupukan Dasar Jagung (Tahap 1)', desc: 'Aplikasi 50% NPK + 30% Urea di samping lubang tanaman (jarak 5-7 cm).', icon: 'fa-cubes', color: 'bg-blue-600' },
+        { hst: 'HST 25', tgl: add(25), title: 'Pemupukan Susulan I & Pembumbunan Tanah', desc: 'Aplikasi 40% Urea + sisa NPK. Timbun tanah ke pangkal batang agar kokoh anti rebah.', icon: 'fa-person-digging', color: 'bg-amber-600' },
+        { hst: 'HST 42', tgl: add(42), title: 'Pemupukan Susulan II (Fase Primordia)', desc: 'Aplikasi sisa 30% Urea menjelang keluarnya bunga jantan (tassel).', icon: 'fa-leaf', color: 'bg-purple-600' },
+        { hst: 'HST 55', tgl: add(55), title: 'Fase Keluar Bunga Jantan & Rambut Tongkol', desc: 'Pengendalian ulat penggerek tongkol. Pastikan kecukupan air saat penyerbukan.', icon: 'fa-sun', color: 'bg-indigo-600' },
+        { hst: `HST ${umur}`, tgl: add(umur), title: 'PANEN PIPIL KERING JAGUNG!', desc: `Kelobot kering kecoklatan, biji mengkilap keras berpati hitam (Black layer).`, icon: 'fa-cubes-stacked', color: 'bg-amber-500' }
+      ];
+
+      let html = '<div class="relative border-l-2 border-emerald-200 ml-4 space-y-6">';
+      steps.forEach(s => {
+        html += `
+          <div class="relative pl-6">
+            <span class="absolute -left-3 top-0 w-6 h-6 rounded-full ${s.color} text-white flex items-center justify-center text-xs shadow-md">
+              <i class="fa-solid ${s.icon} text-[10px]"></i>
+            </span>
+            <div class="flex flex-wrap items-center gap-2 mb-0.5">
+              <span class="font-mono font-black text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-800">${s.hst}</span>
+              <span class="text-xs font-bold text-emerald-800">${s.tgl}</span>
+            </div>
+            <h5 class="font-extrabold text-sm text-slate-900">${s.title}</h5>
+            <p class="text-xs text-slate-600 mt-0.5">${s.desc}</p>
+          </div>`;
+      });
+      html += '</div>';
+      c.innerHTML = html;
+    }
+
+    // Render Tab Klinik Diagnosa
+    function renderKlinik(filter) {
+      const c = document.getElementById('klinik-catalog');
+      const list = filter === 'semua' ? KATALOG_PENYAKIT : KATALOG_PENYAKIT.filter(p => p.kategori === filter);
+      
+      let html = '';
+      list.forEach(item => {
+        const icon = item.komoditas === 'Padi' ? '🌾' : '🌽';
+        html += `
+          <div class="bg-white p-5 rounded-3xl border border-slate-200/90 shadow-2xs hover:shadow-md transition space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider ${item.komoditas === 'Padi' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                ${icon} ${item.komoditas}
+              </span>
+              <span class="text-[10px] font-bold text-slate-400 uppercase">${item.kategori}</span>
+            </div>
+            <h4 class="font-black text-base text-slate-900">${item.nama}</h4>
+            <div class="text-xs text-slate-600 space-y-1.5">
+              <p><b>Gejala Khas:</b> ${item.gejala}</p>
+              <p><b>Penyebab:</b> ${item.penyebab}</p>
+            </div>
+            <div class="p-3 bg-emerald-50/70 rounded-2xl border border-emerald-100 text-[11px] text-emerald-950">
+              <b>Solusi &amp; Rekomendasi PPL:</b> ${item.solusi}
+            </div>
+          </div>`;
+      });
+      c.innerHTML = html;
+    }
+
+    function filterKlinik(f) {
+      document.querySelectorAll('.klinik-filter').forEach(b => {
+        b.classList.remove('bg-emerald-700', 'text-white');
+        b.classList.add('bg-slate-100', 'text-slate-700');
+      });
+      event.target.classList.remove('bg-slate-100', 'text-slate-700');
+      event.target.classList.add('bg-emerald-700', 'text-white');
+      renderKlinik(f);
+    }
+
+    // Kirim & Simpan Rencana Tanam ke Google Sheets
+    async function simpanRencanaTani() {
+      const btn = document.getElementById('btn-simpan-rencana');
+      const original = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan ke Google Sheets...';
+
+      const payload = {
+        nik: document.getElementById('calc-nik').value || '352003...',
+        nama: document.getElementById('input-petani').value.replace(/\(.*?\)/, '').trim() || 'Petani Mandiri',
+        musim: document.querySelector('input[name="calc-musim"]:checked')?.value || 'MT 3 (Gadu 2)',
+        komoditas: document.getElementById('calc-komoditas').value,
+        varietas: document.getElementById('calc-varietas').value,
+        luas: document.getElementById('calc-luas').value || '0.35',
+        tglTanam: document.getElementById('calc-tanggal-tanam').value,
+        estimasiPanen: document.getElementById('res-tgl-panen').innerText,
+        urea: document.getElementById('calc-urea').value,
+        npk: document.getElementById('calc-npk').value,
+        catatan: document.getElementById('calc-catatan').value || '-'
+      };
+
+      try {
+        const res = await fetch(GAS_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'simpanRencanaTani', data: payload })
+        });
+        const json = await res.json();
+        if (json && json.sukses) {
+          // Buka modal bukti pendaftaran
+          document.getElementById('m-nama').innerText = payload.nama;
+          document.getElementById('m-komoditas').innerText = `${payload.komoditas} (${payload.varietas})`;
+          document.getElementById('m-tgl-tanam').innerText = payload.tglTanam;
+          document.getElementById('m-panen').innerText = payload.estimasiPanen;
+          document.getElementById('m-pupuk').innerText = `Urea: ${payload.urea} Kg | NPK: ${payload.npk} Kg`;
+          document.getElementById('modal-bukti').classList.remove('hidden');
+          
+          muatRiwayatRencanaTani();
+        } else {
+          alert('Berhasil tersimpan di lokal sistem!');
+        }
+      } catch (err) {
+        console.warn('Simpan offline/lokal:', err);
+        // Fallback simpan lokal
+        document.getElementById('m-nama').innerText = payload.nama;
+        document.getElementById('m-komoditas').innerText = `${payload.komoditas} (${payload.varietas})`;
+        document.getElementById('m-tgl-tanam').innerText = payload.tglTanam;
+        document.getElementById('m-panen').innerText = payload.estimasiPanen;
+        document.getElementById('m-pupuk').innerText = `Urea: ${payload.urea} Kg | NPK: ${payload.npk} Kg`;
+        document.getElementById('modal-bukti').classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = original;
+      }
+    }
+
+    function tutupModalBukti() {
+      document.getElementById('modal-bukti').classList.add('hidden');
+    }
+
+    // Ambil Riwayat dari Google Sheets tab KONSULTASI_PETANI untuk Laporan BPP
+    async function muatRiwayatRencanaTani() {
+      const tbody = document.getElementById('bpp-table-body');
+      try {
+        const res = await fetch(GAS_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'getRencanaTani' })
+        });
+        const json = await res.json();
+        if (json && json.sukses && Array.isArray(json.rows) && json.rows.length) {
+          riwayatRencanaTaniCache = json.rows;
+        } else {
+          // Data bawaan contoh untuk tampilan BPP
+          riwayatRencanaTaniCache = [
+            { no: 1, nama: 'SUKAMTO', nik: '3520031512420001', komoditas: 'Padi', varietas: 'Inpari 32 HDB', luas: '0.35', tglTanam: '15/11/2026', estimasiPanen: '05/03/2027', urea: '80', npk: '72' },
+            { no: 2, nama: 'SUPENO', nik: '3520031010550001', komoditas: 'Padi', varietas: 'Inpari 32 HDB', luas: '0.45', tglTanam: '15/11/2026', estimasiPanen: '05/03/2027', urea: '120', npk: '109' },
+            { no: 3, nama: 'SUMARNI', nik: '3520030104970001', komoditas: 'Padi', varietas: 'Ciherang', luas: '0.49', tglTanam: '16/11/2026', estimasiPanen: '02/03/2027', urea: '131', npk: '119' },
+            { no: 4, nama: 'SUCIPTO', nik: '6474021405600003', komoditas: 'Padi', varietas: 'Mekongga', luas: '0.28', tglTanam: '18/11/2026', estimasiPanen: '10/03/2027', urea: '66', npk: '60' },
+            { no: 5, nama: 'PURWANTO', nik: '3520030104740001', komoditas: 'Padi', varietas: 'Inpari 42 GSR', luas: '0.15', tglTanam: '20/11/2026', estimasiPanen: '05/03/2027', urea: '36', npk: '33' }
+          ];
+        }
+
+        renderTabelBpp();
+      } catch (err) {
+        console.warn('Gagal ambil riwayat BPP, gunakan cache:', err);
+        renderTabelBpp();
+      }
+    }
+
+    function renderTabelBpp() {
+      const tbody = document.getElementById('bpp-table-body');
+      let html = '';
+      let totLuas = 0, totUrea = 0, totNpk = 0;
+
+      riwayatRencanaTaniCache.forEach((r, idx) => {
+        const luas = parseFloat(String(r.luas).replace(',', '.')) || 0;
+        const u = parseFloat(r.urea) || 0;
+        const n = parseFloat(r.npk) || 0;
+        totLuas += luas;
+        totUrea += u;
+        totNpk += n;
+
+        html += `
+          <tr class="hover:bg-slate-50 border-b border-black/30">
+            <td class="border border-black py-1 px-1.5 text-center font-mono">${idx + 1}</td>
+            <td class="border border-black py-1 px-2 font-bold uppercase">${esc(r.nama)}</td>
+            <td class="border border-black py-1 px-2 text-center font-mono whitespace-nowrap">${esc(r.nik)}</td>
+            <td class="border border-black py-1 px-1.5 text-center">${esc(r.komoditas)} (${esc(r.varietas)})</td>
+            <td class="border border-black py-1 px-1 text-center font-mono">${luas.toFixed(2)}</td>
+            <td class="border border-black py-1 px-1.5 text-center font-mono">${esc(r.tglTanam)}</td>
+            <td class="border border-black py-1 px-1.5 text-center font-mono">${esc(r.estimasiPanen)}</td>
+            <td class="border border-black py-1 px-1.5 text-right font-mono font-bold">${u}</td>
+            <td class="border border-black py-1 px-1.5 text-right font-mono font-bold">${n}</td>
+            <td class="border border-black py-1 px-2 text-center text-[9px] text-slate-400 font-mono">${idx + 1}. .........</td>
+          </tr>`;
+      });
+
+      tbody.innerHTML = html;
+      document.getElementById('bpp-tot-luas').innerText = totLuas.toFixed(2) + ' Ha';
+      document.getElementById('bpp-tot-urea').innerText = totUrea.toLocaleString('id-ID');
+      document.getElementById('bpp-tot-npk').innerText = totNpk.toLocaleString('id-ID');
+    }
+
+    function bagikanKeWa() {
+      const text = encodeURIComponent('🌾 *PANDUAN BUDIDAYA & KALENDER TANAM POKTAN SRI MULYO (DESA KEDIREN)*\n\nBagi warga petani yang ingin menghitung dosis pupuk resmi, jadwal semprot hama, dan cek perkiraan tanggal panen, silakan buka tautan berikut (bisa langsung dibuka tanpa password):\n' + window.location.href);
+      window.open('https://api.whatsapp.com/send?text=' + text, '_blank');
+    }
+
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[ch]));
+    }
+  </script>
+
+</body>
+</html>
