@@ -316,8 +316,8 @@
           </div>
         </div>
 
-        <!-- 5 Top KPI Metric Cards (Termasuk Petani Mandiri/Belum & Total Sak) -->
-        <section id="dashboard-kpi-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        <!-- 6 Top KPI Metric Cards (Keuangan, Sak, Masuk Kloter, Mandiri, dan Luas Lahan) -->
+        <section id="dashboard-kpi-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3.5">
           
           <!-- 1. DP / Pembayaran Kios -->
           <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-3.5">
@@ -376,6 +376,24 @@
               <div class="text-[10px] font-bold uppercase tracking-wider text-purple-700">Mandiri / Belum</div>
               <div id="kpi-mandiri-petani" class="text-lg sm:text-xl font-black text-slate-900 tracking-tight truncate">0 Petani</div>
               <div class="text-[11px] text-slate-500 truncate"><span id="kpi-persen-mandiri" class="text-amber-600 font-bold">0%</span> · <span id="kpi-mandiri-sak" class="font-semibold text-slate-700">0 Sak</span></div>
+            </div>
+          </div>
+
+          <!-- 6. Total Luas Lahan (e-RDKK & Non-eRDKK) -->
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-teal-200/90 shadow-sm hover:shadow-md transition flex items-center gap-3.5 col-span-1 sm:col-span-2 lg:col-span-3 xl:col-span-1">
+            <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center text-xl shrink-0">
+              <i class="fa-solid fa-map-location-dot"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="text-[10px] font-bold uppercase tracking-wider text-teal-700">Total Luas Lahan</div>
+              <div class="text-lg sm:text-xl font-black text-teal-900 tracking-tight flex items-baseline gap-1">
+                <span id="kpi-luas-total-all">55,97</span> <span class="text-xs font-semibold text-teal-700">ha</span>
+              </div>
+              <div class="text-[11px] text-slate-600 font-medium truncate flex items-center gap-2 mt-0.5">
+                <span title="Luas Petani e-RDKK"><b class="text-emerald-700">e-RDKK:</b> <span id="kpi-luas-erdkk-val">54,20 ha</span></span>
+                <span>•</span>
+                <span title="Luas Petani Non-eRDKK"><b class="text-blue-700">Non:</b> <span id="kpi-luas-nonerdkk-val">1,77 ha</span></span>
+              </div>
             </div>
           </div>
 
@@ -551,18 +569,22 @@
               <p id="alokasi-page-subtitle" class="text-xs text-slate-500">Ubah status, lahan, atau alokasi sak pupuk secara instan ke Google Sheets</p>
             </div>
 
-            <!-- Sub Tab: e-RDKK vs Non e-RDKK -->
-            <div class="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl border border-slate-200">
-              <button id="tab-alokasi-erdkk" type="button" onclick="switchAlokasiType('ERDKK')" 
-                      class="rounded-lg bg-emerald-700 text-white px-3.5 py-2 text-xs font-bold transition shadow-sm flex items-center gap-1.5">
-                <i class="fa-solid fa-users"></i>
-                <span>e-RDKK</span>
-              </button>
-              <button id="tab-alokasi-nonerdkk" type="button" onclick="switchAlokasiType('NON_ERDKK')" 
-                      class="rounded-lg bg-transparent text-slate-600 hover:text-slate-900 px-3.5 py-2 text-xs font-bold transition flex items-center gap-1.5">
-                <i class="fa-solid fa-users-gear"></i>
-                <span>Non-e-RDKK</span>
-              </button>
+            <!-- Sub Tab: e-RDKK vs Non e-RDKK & KPI Luas Lahan -->
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl border border-slate-200">
+                <button id="tab-alokasi-erdkk" type="button" onclick="switchAlokasiType('ERDKK')" 
+                        class="rounded-lg bg-emerald-700 text-white px-3.5 py-2 text-xs font-bold transition shadow-sm flex items-center gap-1.5">
+                  <i class="fa-solid fa-users"></i>
+                  <span>e-RDKK</span>
+                  <span id="badge-luas-erdkk" class="ml-1 px-1.5 py-0.5 rounded-md bg-emerald-800/80 text-[10px] font-mono font-normal">54,20 ha</span>
+                </button>
+                <button id="tab-alokasi-nonerdkk" type="button" onclick="switchAlokasiType('NON_ERDKK')" 
+                        class="rounded-lg bg-transparent text-slate-600 hover:text-slate-900 px-3.5 py-2 text-xs font-bold transition flex items-center gap-1.5">
+                  <i class="fa-solid fa-users-gear"></i>
+                  <span>Non-e-RDKK</span>
+                  <span id="badge-luas-nonerdkk" class="ml-1 px-1.5 py-0.5 rounded-md bg-slate-200 text-slate-700 text-[10px] font-mono font-normal">1,77 ha</span>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -578,7 +600,7 @@
               </div>
               <div>
                 <div class="text-lg sm:text-xl font-black text-slate-900 tracking-tight"><span id="alokasi-count">0</span> <span class="text-xs font-normal text-slate-500">Petani</span></div>
-                <div class="text-[11px] font-semibold text-slate-600 truncate mt-0.5"><span id="al-total-sak" class="font-mono text-emerald-700 font-bold">0</span> Sak Alokasi</div>
+                <div class="text-[11px] font-semibold text-slate-600 truncate mt-0.5"><span id="al-total-sak" class="font-mono text-emerald-700 font-bold">0</span> Sak · <span id="al-total-luas" class="font-mono text-blue-700 font-bold">0 ha</span></div>
               </div>
             </button>
 
@@ -1296,8 +1318,12 @@
       document.getElementById('al-status-filter').value='';
       document.getElementById('alokasi-page-title').textContent=alokasiJenis==='ERDKK'?'Alokasi Pembagian e-RDKK MT3 2026':'Alokasi Pembagian Petani Non-e-RDKK';
       document.getElementById('alokasi-page-subtitle').textContent=alokasiJenis==='ERDKK'?'Data petani e-RDKK sampai YUWONO':'Data petani Non-e-RDKK pada bagian setelah daftar e-RDKK';
-      document.getElementById('tab-alokasi-erdkk').className=alokasiJenis==='ERDKK'?'rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2.5 text-sm font-bold text-emerald-800':'rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-600';
-      document.getElementById('tab-alokasi-nonerdkk').className=alokasiJenis==='NON_ERDKK'?'rounded-xl border border-blue-300 bg-blue-50 px-4 py-2.5 text-sm font-bold text-blue-800':'rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-600';
+      document.getElementById('tab-alokasi-erdkk').className=alokasiJenis==='ERDKK'?'rounded-lg bg-emerald-700 text-white px-3.5 py-2 text-xs font-bold transition shadow-sm flex items-center gap-1.5':'rounded-lg bg-transparent text-slate-600 hover:text-slate-900 px-3.5 py-2 text-xs font-bold transition flex items-center gap-1.5';
+      document.getElementById('tab-alokasi-nonerdkk').className=alokasiJenis==='NON_ERDKK'?'rounded-lg bg-blue-700 text-white px-3.5 py-2 text-xs font-bold transition shadow-sm flex items-center gap-1.5':'rounded-lg bg-transparent text-slate-600 hover:text-slate-900 px-3.5 py-2 text-xs font-bold transition flex items-center gap-1.5';
+      const bErdkk = document.getElementById('badge-luas-erdkk');
+      if (bErdkk) bErdkk.className = alokasiJenis==='ERDKK' ? 'ml-1 px-1.5 py-0.5 rounded-md bg-emerald-800/80 text-[10px] font-mono font-normal text-emerald-100' : 'ml-1 px-1.5 py-0.5 rounded-md bg-slate-200 text-slate-700 text-[10px] font-mono font-normal';
+      const bNon = document.getElementById('badge-luas-nonerdkk');
+      if (bNon) bNon.className = alokasiJenis==='NON_ERDKK' ? 'ml-1 px-1.5 py-0.5 rounded-md bg-blue-800/80 text-[10px] font-mono font-normal text-blue-100' : 'ml-1 px-1.5 py-0.5 rounded-md bg-slate-200 text-slate-700 text-[10px] font-mono font-normal';
       renderAlokasiTable();
     }
     function switchAlokasiType(type,rerender=true){alokasiJenis=type;if(rerender&&alokasiAllRows.length)applyAlokasiPartition();else if(alokasiAllRows.length)applyAlokasiPartition();}
@@ -1381,6 +1407,13 @@
       return isNaN(num) ? 0 : num;
     }
 
+    function parseLuas(val) {
+      if (val === undefined || val === null) return 0;
+      const str = String(val).replace(/[^0-9.,]/g, '').replace(',', '.');
+      const num = parseFloat(str);
+      return isNaN(num) ? 0 : num;
+    }
+
     function renderAlokasiTable(){
       const q=(document.getElementById('al-search').value||'').trim().toLowerCase(),st=document.getElementById('al-status-filter').value;
       const filtered=alokasiRows.filter(r=>{
@@ -1390,6 +1423,34 @@
       });
       const total=filtered.length;
       document.getElementById('alokasi-count').textContent=alokasiRows.length;
+
+      // Update KPI Luas Lahan (e-RDKK & Non-eRDKK)
+      let luasTotalView = 0;
+      alokasiRows.forEach(r => {
+        const valLahanAsli = parseLuas(r.values[4]);
+        const valLahanRev = parseLuas(r.values[3]);
+        luasTotalView += (valLahanAsli > 0 ? valLahanAsli : valLahanRev);
+      });
+
+      // Cari total resmi langsung dari cell sheet jika ada
+      const rTotalErdkk = alokasiAllRows.find(r => r.row === 196 || (r.row < 198 && String(r.values?.[2]||'').toUpperCase() === 'TOTAL'));
+      const textLuasErdkk = rTotalErdkk && rTotalErdkk.values[3] ? String(rTotalErdkk.values[3]).trim() : '54,20 ha';
+      const elBadgeErdkk = document.getElementById('badge-luas-erdkk');
+      if (elBadgeErdkk) elBadgeErdkk.textContent = textLuasErdkk.includes('ha') ? textLuasErdkk : textLuasErdkk + ' ha';
+
+      const rTotalNon = alokasiAllRows.find(r => String(r.values?.[2]||'').toUpperCase().startsWith('TOTAL :') || String(r.values?.[2]||'').toUpperCase() === 'TOTAL :');
+      const textLuasNon = rTotalNon && (rTotalNon.values[4] || rTotalNon.values[3]) ? String(rTotalNon.values[4] || rTotalNon.values[3]).trim() : (luasTotalView > 0 && alokasiJenis === 'NON_ERDKK' ? luasTotalView.toFixed(2).replace('.', ',') + ' ha' : '1,77 ha');
+      const elBadgeNon = document.getElementById('badge-luas-nonerdkk');
+      if (elBadgeNon) elBadgeNon.textContent = textLuasNon.includes('ha') ? textLuasNon : textLuasNon + ' ha';
+
+      const elTotLuas = document.getElementById('al-total-luas');
+      if (elTotLuas) {
+        if (alokasiJenis === 'ERDKK') {
+          elTotLuas.textContent = textLuasErdkk.includes('ha') ? textLuasErdkk : textLuasErdkk + ' ha';
+        } else {
+          elTotLuas.textContent = textLuasNon.includes('ha') ? textLuasNon : textLuasNon + ' ha';
+        }
+      }
 
       // Hitung Sak Total Semua Baris Alokasi
       let totalSakAlokasi = 0;
