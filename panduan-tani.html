@@ -650,6 +650,21 @@
   </main>
 
   <!-- ======================================================== -->
+  <!-- FOOTER DEVELOPER (OTOMATIS MENYESUAIKAN TAHUN)           -->
+  <!-- ======================================================== -->
+  <footer class="mt-auto py-6 bg-white border-t border-slate-200 text-center text-xs text-slate-500 no-print">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-2 font-semibold text-slate-700">
+        <i class="fa-solid fa-wheat-awn text-emerald-600"></i>
+        <span>Kelompok Tani &ldquo;Sri Mulyo&rdquo; · Desa Kediren, Lembeyan, Magetan</span>
+      </div>
+      <div class="text-[11px] text-slate-500">
+        Developed by <strong class="text-slate-800">Supriyanto · Abadi Jaya</strong> &copy; <span id="tahun-footer">2026</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ======================================================== -->
   <!-- MODAL BUKTI PENDAFTARAN RENCANA TANAM (DIGITAL RECEIPT)  -->
   <!-- ======================================================== -->
   <div id="modal-bukti" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs hidden flex items-center justify-center p-4 no-print">
@@ -809,6 +824,9 @@
 
       const tglBpp = document.getElementById('tgl-cetak-bpp');
       if (tglBpp) tglBpp.innerText = new Intl.DateTimeFormat('id-ID', { dateStyle: 'long' }).format(new Date());
+
+      const tFooter = document.getElementById('tahun-footer');
+      if (tFooter) tFooter.innerText = new Date().getFullYear();
 
       onKomoditasChanged();
       muatDaftarPetani();
