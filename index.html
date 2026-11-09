@@ -939,7 +939,7 @@
                       <th class="bg-slate-50 px-3 py-3 text-center">No</th>
                       <th class="bg-slate-50 px-3 py-3 text-left">NIK</th>
                       <th class="bg-slate-50 px-3 py-3 text-left">Nama Petani</th>
-                      <th class="bg-slate-50 px-2.5 py-3 text-center">Lahan Rev</th>
+                      <th class="bg-slate-50 px-2.5 py-3 text-center">Alokasi ERDKK</th>
                       <th class="bg-slate-50 px-2.5 py-3 text-center">Lahan Asli</th>
                       <th class="bg-slate-50 px-3 py-3 text-left">Status</th>
                       <th class="bg-slate-50 px-2 py-3 text-right">Urea</th>
@@ -1360,31 +1360,32 @@
             <span id="det-lahan-asli" class="text-sm font-black text-slate-900 font-mono">-</span>
           </div>
           <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">LUAS LAHAN REVISI</span>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">LUAS ALOKASI ERDKK</span>
             <span id="det-lahan-rev" class="text-sm font-black text-slate-900 font-mono">-</span>
           </div>
         </div>
 
         <!-- Jatah Resmi Pupuk Bersubsidi -->
         <div class="rounded-2xl border border-slate-200/80 overflow-hidden">
-          <div class="bg-slate-100/80 px-3.5 py-2 border-b border-slate-200 text-[11px] font-bold text-slate-700 uppercase">
-            Jatah Pupuk Bersubsidi Resmi (Kg &amp; Sak)
+          <div class="bg-slate-100/80 px-3.5 py-2 border-b border-slate-200 text-[11px] font-bold text-slate-700 uppercase flex items-center justify-between">
+            <span>Jatah Pupuk Bersubsidi Resmi</span>
+            <span class="text-[10px] font-extrabold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-full">Kg &amp; Sak Otomatis</span>
           </div>
           <div class="p-3 grid grid-cols-3 gap-2.5 text-center">
-            <div class="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-100">
+            <div class="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-100 flex flex-col justify-between">
               <span class="text-[10px] font-bold text-slate-500 uppercase block">Urea (N)</span>
-              <div id="det-urea-kg" class="text-sm font-black text-emerald-900 font-mono">- Kg</div>
-              <div id="det-urea-sak" class="text-[10px] text-slate-500 font-medium">- Sak</div>
+              <div id="det-urea-kg" class="text-sm font-black text-emerald-900 font-mono mt-0.5">- Kg</div>
+              <div id="det-urea-sak" class="text-xs font-black text-emerald-800 bg-white/90 rounded-md py-0.5 mt-1 border border-emerald-200 shadow-2xs">- Sak</div>
             </div>
-            <div class="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-100">
+            <div class="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-100 flex flex-col justify-between">
               <span class="text-[10px] font-bold text-slate-500 uppercase block">NPK Phonska</span>
-              <div id="det-npk-kg" class="text-sm font-black text-emerald-900 font-mono">- Kg</div>
-              <div id="det-npk-sak" class="text-[10px] text-slate-500 font-medium">- Sak</div>
+              <div id="det-npk-kg" class="text-sm font-black text-emerald-900 font-mono mt-0.5">- Kg</div>
+              <div id="det-npk-sak" class="text-xs font-black text-emerald-800 bg-white/90 rounded-md py-0.5 mt-1 border border-emerald-200 shadow-2xs">- Sak</div>
             </div>
-            <div class="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-100">
+            <div class="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-100 flex flex-col justify-between">
               <span class="text-[10px] font-bold text-slate-500 uppercase block">Organik</span>
-              <div id="det-organik-kg" class="text-sm font-black text-emerald-900 font-mono">- Kg</div>
-              <div id="det-organik-sak" class="text-[10px] text-slate-500 font-medium">- Sak</div>
+              <div id="det-organik-kg" class="text-sm font-black text-emerald-900 font-mono mt-0.5">- Kg</div>
+              <div id="det-organik-sak" class="text-xs font-black text-emerald-800 bg-white/90 rounded-md py-0.5 mt-1 border border-emerald-200 shadow-2xs">- Sak</div>
             </div>
           </div>
         </div>
@@ -1442,7 +1443,7 @@
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="mb-1 block text-xs font-bold text-slate-700 uppercase">Luas Lahan Revisi (Ha)</label>
+            <label class="mb-1 block text-xs font-bold text-slate-700 uppercase">Luas Alokasi ERDKK (Ha)</label>
             <input id="edit-lahan-rev" type="text" class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs outline-none focus:border-emerald-500 font-mono" placeholder="0,00">
           </div>
           <div>
@@ -2252,6 +2253,21 @@
       }
     }
 
+    // Helper Perhitungan Sak Otomatis Sesuai Alokasi Pembagian Resmi
+    function hitungSakAlokasi(sheetSak, kgVal, jenis) {
+      const str = String(sheetSak ?? '').trim();
+      const sNum = parseInt(str, 10);
+      if (!isNaN(sNum) && sNum > 0) {
+        return sNum;
+      }
+      const kg = typeof kgVal === 'number' ? kgVal : (parseFloat(String(kgVal || '0').replace(',', '.')) || 0);
+      if (kg <= 0) return 0;
+      if (jenis === 'organik') {
+        return Math.max(1, Math.round(kg / 40));
+      }
+      return Math.max(1, Math.round(kg / 50));
+    }
+
     function renderAlokasiCardItem(r) {
       const v = r.values || [];
       const no = v[0] || '';
@@ -2263,6 +2279,9 @@
       const ureaKg = Math.round(parseFloat(String(v[6] || '0').replace(',', '.')) || 0);
       const npkKg = Math.round(parseFloat(String(v[7] || '0').replace(',', '.')) || 0);
       const organikKg = Math.round(parseFloat(String(v[8] || '0').replace(',', '.')) || 0);
+      const ureaSak = hitungSakAlokasi(v[9], ureaKg, 'urea');
+      const npkSak = hitungSakAlokasi(v[10], npkKg, 'npk');
+      const organikSak = hitungSakAlokasi(v[11], organikKg, 'organik');
       const uang = v[12] || '';
       const ket = v[13] || '';
 
@@ -2271,8 +2290,8 @@
         ? statuses.map(s => `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase border border-current/20 shadow-2xs ${alStatusColor(s)}">${escAl(s)}</span>`).join(' ')
         : `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-slate-100 text-slate-600 border border-slate-200">TERDAFTAR</span>`;
 
-      const lahanDisplay = lahanAsli || lahanRev || '0';
-      const isRevisi = lahanRev && lahanAsli && lahanRev !== lahanAsli;
+      const lahanDisplay = lahanRev || lahanAsli || '0';
+      const isRevisi = lahanAsli && lahanAsli !== '0' && lahanAsli !== lahanRev;
 
       const maskedNik = (nik && nik.length >= 10) 
         ? (nik.substring(0, 6) + '********' + nik.substring(nik.length - 2)) 
@@ -2306,19 +2325,22 @@
           <!-- Body: Key-Value Grid (Sesuai Layout Nomor Meter & Tarif di Contoh User) -->
           <div class="grid grid-cols-2 gap-3 py-2.5 border-t border-b border-slate-100 text-left">
             <div>
-              <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">LUAS LAHAN</span>
+              <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">ALOKASI ERDKK</span>
               <span class="text-xs sm:text-sm font-black text-slate-900 font-mono">
                 ${lahanDisplay} <span class="text-[11px] font-medium text-slate-500">Ha</span>
               </span>
-              ${isRevisi ? `<span class="block text-[10px] text-emerald-700 font-semibold mt-0.5">Rev: ${lahanRev} Ha</span>` : ''}
+              ${isRevisi ? `<span class="block text-[10px] text-emerald-700 font-semibold mt-0.5">Fisik: ${lahanAsli} Ha</span>` : ''}
             </div>
 
             <div>
-              <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">ALOKASI PUPUK</span>
+              <div class="flex items-center justify-between">
+                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">ALOKASI PUPUK</span>
+                <span class="text-[10px] font-black text-emerald-800 bg-emerald-100/70 px-1.5 py-0.2 rounded font-mono">${ureaSak + npkSak + organikSak} Sak</span>
+              </div>
               <div class="text-[11px] font-black text-slate-800 flex flex-wrap gap-1 mt-0.5 font-mono">
-                <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200">U:${ureaKg}</span>
-                <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200">P:${npkKg}</span>
-                <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200">O:${organikKg}</span>
+                <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200" title="Urea: ${ureaKg} Kg (${ureaSak} Sak)">U:${ureaKg}</span>
+                <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200" title="Phonska: ${npkKg} Kg (${npkSak} Sak)">P:${npkKg}</span>
+                <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200" title="Organik: ${organikKg} Kg (${organikSak} Sak)">O:${organikKg}</span>
               </div>
             </div>
           </div>
@@ -2384,19 +2406,24 @@
         : `<span class="px-2.5 py-0.5 rounded-full text-xs font-black uppercase bg-slate-100 text-slate-600">TERDAFTAR</span>`;
 
       document.getElementById('det-uang').textContent = v[12] || 'Rp 0';
-      document.getElementById('det-lahan-asli').textContent = (v[4] || '0') + ' Ha';
+      const lahanAsliText = (v[4] && String(v[4]).trim() && String(v[4]).trim() !== '0') ? (String(v[4]).trim() + ' Ha') : '-';
+      document.getElementById('det-lahan-asli').textContent = lahanAsliText;
       document.getElementById('det-lahan-rev').textContent = (v[3] || '-') + (v[3] ? ' Ha' : '');
 
       const ureaKg = Math.round(parseFloat(String(v[6] || '0').replace(',', '.')) || 0);
       const npkKg = Math.round(parseFloat(String(v[7] || '0').replace(',', '.')) || 0);
       const organikKg = Math.round(parseFloat(String(v[8] || '0').replace(',', '.')) || 0);
 
+      const ureaSak = hitungSakAlokasi(v[9], ureaKg, 'urea');
+      const npkSak = hitungSakAlokasi(v[10], npkKg, 'npk');
+      const organikSak = hitungSakAlokasi(v[11], organikKg, 'organik');
+
       document.getElementById('det-urea-kg').textContent = ureaKg + ' Kg';
-      document.getElementById('det-urea-sak').textContent = (v[9] || '0') + ' Sak';
+      document.getElementById('det-urea-sak').textContent = ureaSak + ' Sak';
       document.getElementById('det-npk-kg').textContent = npkKg + ' Kg';
-      document.getElementById('det-npk-sak').textContent = (v[10] || '0') + ' Sak';
+      document.getElementById('det-npk-sak').textContent = npkSak + ' Sak';
       document.getElementById('det-organik-kg').textContent = organikKg + ' Kg';
-      document.getElementById('det-organik-sak').textContent = (v[11] || '0') + ' Sak';
+      document.getElementById('det-organik-sak').textContent = organikSak + ' Sak';
 
       const ketContainer = document.getElementById('det-ket-container');
       const ketEl = document.getElementById('det-ket');
@@ -2432,9 +2459,14 @@
       document.getElementById('edit-petani-nama').textContent = 'Edit Data: ' + (v[2] || '-');
       document.getElementById('edit-lahan-rev').value = v[3] || '';
       document.getElementById('edit-uang').value = v[12] || '';
-      document.getElementById('edit-sak-urea').value = v[9] || '0';
-      document.getElementById('edit-sak-npk').value = v[10] || '0';
-      document.getElementById('edit-sak-organik').value = v[11] || '0';
+      
+      const uKgEdit = Math.round(parseFloat(String(v[6] || '0').replace(',', '.')) || 0);
+      const pKgEdit = Math.round(parseFloat(String(v[7] || '0').replace(',', '.')) || 0);
+      const oKgEdit = Math.round(parseFloat(String(v[8] || '0').replace(',', '.')) || 0);
+
+      document.getElementById('edit-sak-urea').value = hitungSakAlokasi(v[9], uKgEdit, 'urea');
+      document.getElementById('edit-sak-npk').value = hitungSakAlokasi(v[10], pKgEdit, 'npk');
+      document.getElementById('edit-sak-organik').value = hitungSakAlokasi(v[11], oKgEdit, 'organik');
       document.getElementById('edit-ket').value = v[13] || '';
 
       const currentStatuses = alStatusList(v[5]);
