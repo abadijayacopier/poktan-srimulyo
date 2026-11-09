@@ -1369,7 +1369,7 @@
         <div class="rounded-2xl border border-slate-200/80 overflow-hidden">
           <div class="bg-slate-100/80 px-3.5 py-2 border-b border-slate-200 text-[11px] font-bold text-slate-700 uppercase flex items-center justify-between">
             <span>Jatah Pupuk Bersubsidi Resmi</span>
-            <span class="text-[10px] font-extrabold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-full">Kg &amp; Sak Otomatis</span>
+            <span class="text-[10px] font-extrabold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-full">Kolom J, K, L Sheet</span>
           </div>
           <div class="p-3 grid grid-cols-3 gap-2.5 text-center">
             <div class="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-100 flex flex-col justify-between">
@@ -2253,19 +2253,11 @@
       }
     }
 
-    // Helper Perhitungan Sak Otomatis Sesuai Alokasi Pembagian Resmi
-    function hitungSakAlokasi(sheetSak, kgVal, jenis) {
-      const str = String(sheetSak ?? '').trim();
-      const sNum = parseInt(str, 10);
-      if (!isNaN(sNum) && sNum > 0) {
-        return sNum;
-      }
-      const kg = typeof kgVal === 'number' ? kgVal : (parseFloat(String(kgVal || '0').replace(',', '.')) || 0);
-      if (kg <= 0) return 0;
-      if (jenis === 'organik') {
-        return Math.max(1, Math.round(kg / 40));
-      }
-      return Math.max(1, Math.round(kg / 50));
+    // Format Tampilan Sak Murni Dari Kolom J, K, L Sheet ALOKASI PEMBAGIAN (Tanpa Rumus)
+    function formatSakSheet(val) {
+      if (val === undefined || val === null || String(val).trim() === '') return '0 Sak';
+      const str = String(val).trim();
+      return /sak/i.test(str) ? str : (str + ' Sak');
     }
 
     function renderAlokasiCardItem(r) {
@@ -2279,9 +2271,6 @@
       const ureaKg = Math.round(parseFloat(String(v[6] || '0').replace(',', '.')) || 0);
       const npkKg = Math.round(parseFloat(String(v[7] || '0').replace(',', '.')) || 0);
       const organikKg = Math.round(parseFloat(String(v[8] || '0').replace(',', '.')) || 0);
-      const ureaSak = hitungSakAlokasi(v[9], ureaKg, 'urea');
-      const npkSak = hitungSakAlokasi(v[10], npkKg, 'npk');
-      const organikSak = hitungSakAlokasi(v[11], organikKg, 'organik');
       const uang = v[12] || '';
       const ket = v[13] || '';
 
@@ -2333,14 +2322,11 @@
             </div>
 
             <div>
-              <div class="flex items-center justify-between">
-                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">ALOKASI PUPUK</span>
-                <span class="text-[10px] font-black text-emerald-800 bg-emerald-100/70 px-1.5 py-0.2 rounded font-mono">${ureaSak + npkSak + organikSak} Sak</span>
-              </div>
+              <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">ALOKASI PUPUK</span>
               <div class="text-[11px] font-black text-slate-800 flex flex-wrap gap-1 mt-0.5 font-mono">
-                <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200" title="Urea: ${ureaKg} Kg (${ureaSak} Sak)">U:${ureaKg}</span>
-                <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200" title="Phonska: ${npkKg} Kg (${npkSak} Sak)">P:${npkKg}</span>
-                <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200" title="Organik: ${organikKg} Kg (${organikSak} Sak)">O:${organikKg}</span>
+                <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200" title="Urea: ${ureaKg} Kg · Sak J: ${v[9] || '0'}">U:${ureaKg}</span>
+                <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200" title="Phonska: ${npkKg} Kg · Sak K: ${v[10] || '0'}">P:${npkKg}</span>
+                <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200" title="Organik: ${organikKg} Kg · Sak L: ${v[11] || '0'}">O:${organikKg}</span>
               </div>
             </div>
           </div>
@@ -2414,16 +2400,12 @@
       const npkKg = Math.round(parseFloat(String(v[7] || '0').replace(',', '.')) || 0);
       const organikKg = Math.round(parseFloat(String(v[8] || '0').replace(',', '.')) || 0);
 
-      const ureaSak = hitungSakAlokasi(v[9], ureaKg, 'urea');
-      const npkSak = hitungSakAlokasi(v[10], npkKg, 'npk');
-      const organikSak = hitungSakAlokasi(v[11], organikKg, 'organik');
-
       document.getElementById('det-urea-kg').textContent = ureaKg + ' Kg';
-      document.getElementById('det-urea-sak').textContent = ureaSak + ' Sak';
+      document.getElementById('det-urea-sak').textContent = formatSakSheet(v[9]);
       document.getElementById('det-npk-kg').textContent = npkKg + ' Kg';
-      document.getElementById('det-npk-sak').textContent = npkSak + ' Sak';
+      document.getElementById('det-npk-sak').textContent = formatSakSheet(v[10]);
       document.getElementById('det-organik-kg').textContent = organikKg + ' Kg';
-      document.getElementById('det-organik-sak').textContent = organikSak + ' Sak';
+      document.getElementById('det-organik-sak').textContent = formatSakSheet(v[11]);
 
       const ketContainer = document.getElementById('det-ket-container');
       const ketEl = document.getElementById('det-ket');
@@ -2459,14 +2441,9 @@
       document.getElementById('edit-petani-nama').textContent = 'Edit Data: ' + (v[2] || '-');
       document.getElementById('edit-lahan-rev').value = v[3] || '';
       document.getElementById('edit-uang').value = v[12] || '';
-      
-      const uKgEdit = Math.round(parseFloat(String(v[6] || '0').replace(',', '.')) || 0);
-      const pKgEdit = Math.round(parseFloat(String(v[7] || '0').replace(',', '.')) || 0);
-      const oKgEdit = Math.round(parseFloat(String(v[8] || '0').replace(',', '.')) || 0);
-
-      document.getElementById('edit-sak-urea').value = hitungSakAlokasi(v[9], uKgEdit, 'urea');
-      document.getElementById('edit-sak-npk').value = hitungSakAlokasi(v[10], pKgEdit, 'npk');
-      document.getElementById('edit-sak-organik').value = hitungSakAlokasi(v[11], oKgEdit, 'organik');
+      document.getElementById('edit-sak-urea').value = (v[9] !== undefined && v[9] !== null) ? String(v[9]).trim() : '';
+      document.getElementById('edit-sak-npk').value = (v[10] !== undefined && v[10] !== null) ? String(v[10]).trim() : '';
+      document.getElementById('edit-sak-organik').value = (v[11] !== undefined && v[11] !== null) ? String(v[11]).trim() : '';
       document.getElementById('edit-ket').value = v[13] || '';
 
       const currentStatuses = alStatusList(v[5]);
