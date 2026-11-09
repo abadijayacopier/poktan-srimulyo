@@ -1,4 +1,4 @@
-const CACHE_NAME = "poktan-srimulyo-v59";
+const CACHE_NAME = "poktan-srimulyo-v60";
 const APP_SHELL = ["/", "/cek-petani.html", "/panduan-tani.html", "/konsultasi-agent.html", "/cetak-kloter.html", "/laporan.html", "/manifest.webmanifest", "/icons/poktan.svg"];
 self.addEventListener("install", e => e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(APP_SHELL)).then(() => self.skipWaiting())));
 self.addEventListener("activate", e => e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))).then(() => self.clients.claim())));
