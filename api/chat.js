@@ -96,7 +96,7 @@ Identitas & Karakter Komunikasi:
         model: aiResult.model
       });
     }
-    openAiErr = aiResult.error;
+    openAiErr = aiResult.modelErrors ? JSON.stringify(aiResult.modelErrors) : aiResult.error;
   }
 
   // 2. Jika OpenAI tidak ada atau gagal, coba Gemini AI
@@ -131,8 +131,16 @@ Identitas & Karakter Komunikasi:
 
 // Pemanggil API OpenAI
 async function callOpenAI(apiKey, systemPrompt, prompt, history) {
-  const models = ['gpt-4o-mini', 'gpt-4o', 'gpt-3.5-turbo'];
+  const preferredModel = (process.env.OPENAI_MODEL || '').trim();
+  const candidateModels = [];
+  if (preferredModel) candidateModels.push(preferredModel);
+  candidateModels.push('gpt-4o-mini', 'gpt-4o', 'chatgpt-4o-latest');
+
+  // Hilangkan duplikat dan model usang
+  const models = [...new Set(candidateModels)].filter(m => m && !m.includes('3.5'));
+
   let lastError = null;
+  const modelErrors = {};
 
   const messages = [
     { role: 'system', content: systemPrompt }
@@ -171,6 +179,7 @@ async function callOpenAI(apiKey, systemPrompt, prompt, history) {
       if (!response.ok) {
         const errJson = await response.json().catch(() => ({}));
         lastError = errJson?.error?.message || `HTTP ${response.status}`;
+        modelErrors[model] = lastError;
         continue;
       }
 
@@ -181,10 +190,11 @@ async function callOpenAI(apiKey, systemPrompt, prompt, history) {
       }
     } catch (err) {
       lastError = err.message || String(err);
+      modelErrors[model] = lastError;
     }
   }
 
-  return { success: false, error: lastError };
+  return { success: false, error: lastError, modelErrors: modelErrors };
 }
 
 // Pemanggil API Google Gemini
