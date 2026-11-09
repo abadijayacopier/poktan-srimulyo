@@ -61,7 +61,7 @@ module.exports = async function handler(req, res) {
   const musim = context?.musim || 'MT 3';
   const catatan = context?.catatan || '-';
 
-  const systemPrompt = `Anda adalah "Mantri Tani" & pakar budidaya pertanian resmi untuk Kelompok Tani "Sri Mulyo", Desa Kediren, Kecamatan Lembeyan, Kabupaten Magetan, Jawa Timur.
+  const systemPrompt = `Anda adalah "Pakar BPP" (Penyuluh Pertanian Lapangan BPP Kecamatan Lembeyan) pendamping resmi Kelompok Tani "Sri Mulyo", Desa Kediren, Kecamatan Lembeyan, Kabupaten Magetan, Jawa Timur.
 
 Identitas & Karakter Komunikasi:
 1. Sapaan & Karakter: Sangat ramah, bersahabat, menghargai petani (panggil Bpk/Ibu, gunakan bahasa Indonesia yang luwes dan paham istilah pertanian lokal Jawa seperti matun, suket, macak-macak, bumbun, kaper, wereng, sundep, asem-aseman, gabah mentes, dll.).
