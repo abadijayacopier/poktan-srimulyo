@@ -66,30 +66,30 @@
   <!-- ========================================== -->
   <!-- 1. HEADER NAVIGASI PUBLIK -->
   <!-- ========================================== -->
-  <header class="no-print bg-gradient-to-r from-emerald-950 via-emerald-900 to-teal-950 text-white shadow-lg sticky top-0 z-40 border-b border-emerald-800/50">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <a href="index.html" class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-emerald-300 transition shadow-inner">
-          <i class="fa-solid fa-wheat-awn text-xl"></i>
+  <header class="no-print bg-gradient-to-r from-emerald-950 via-emerald-900 to-teal-950 text-white shadow-lg sticky top-0 z-40 border-b border-emerald-800/50" style="padding-top: env(safe-area-inset-top, 0px);">
+    <div class="max-w-5xl mx-auto px-3.5 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-3">
+      <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+        <a href="index.html" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-emerald-300 transition shadow-inner shrink-0">
+          <i class="fa-solid fa-wheat-awn text-lg sm:text-xl"></i>
         </a>
-        <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-sm sm:text-base font-extrabold tracking-tight uppercase">POKTAN SRI MULYO</h1>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <h1 class="text-xs sm:text-base font-black tracking-tight uppercase truncate">POKTAN SRI MULYO</h1>
+            <span class="hidden min-[400px]:inline-flex px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 shrink-0">
               e-RDKK MT3 2026
             </span>
           </div>
-          <p class="text-[11px] text-emerald-200/80">Desa Kediren · Lembeyan · Magetan</p>
+          <p class="text-[10px] sm:text-[11px] text-emerald-200/80 truncate">Desa Kediren · Lembeyan · Magetan</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-2">
-        <a href="panduan-tani.html" class="px-3 py-1.5 rounded-xl bg-emerald-800/70 hover:bg-emerald-700 text-emerald-100 hover:text-white text-xs font-bold transition flex items-center gap-1.5 border border-emerald-700/50">
-          <i class="fa-solid fa-book-open text-amber-300"></i>
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <a href="panduan-tani.html" title="Panduan Tani & Dosis Pemupukan" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-emerald-800/70 hover:bg-emerald-700 text-emerald-100 hover:text-white text-xs font-bold transition flex items-center gap-1.5 border border-emerald-700/50">
+          <i class="fa-solid fa-book-open text-amber-300 text-xs"></i>
           <span class="hidden sm:inline">Panduan Tani</span>
         </a>
-        <a href="index.html" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
-          <i class="fa-solid fa-arrow-left"></i>
+        <a href="index.html" title="Kembali ke Dashboard Utama" class="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+          <i class="fa-solid fa-arrow-left text-xs"></i>
           <span>Dashboard</span>
         </a>
       </div>
@@ -892,25 +892,36 @@
         selectedPetani = found;
         idleView.classList.add('hidden');
         tidakTerdaftarView.classList.add('hidden');
-        renderTerdaftar(found);
         terdaftarView.classList.remove('hidden');
+        try {
+          renderTerdaftar(found);
+        } catch (err) {
+          console.error('Error saat render data petani:', err);
+        }
       } else {
         selectedPetani = null;
         idleView.classList.add('hidden');
         terdaftarView.classList.add('hidden');
-        document.getElementById('notfound-keyword').textContent = raw;
+        const notFoundEl = document.getElementById('notfound-keyword');
+        if (notFoundEl) notFoundEl.textContent = raw;
         tidakTerdaftarView.classList.remove('hidden');
       }
 
       // Scroll ke hasil
       const target = found ? terdaftarView : tidakTerdaftarView;
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
 
     // Render Data Petani Terdaftar
     function renderTerdaftar(item) {
-      document.getElementById('res-nama').textContent = item.nama || '-';
-      document.getElementById('print-nama-petani').textContent = '( ' + (item.nama || '......................') + ' )';
+      const setTxt = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      };
+
+      setTxt('res-nama', item.nama || '-');
 
       // NIK & Sensor
       isNikSensored = true;
@@ -918,39 +929,38 @@
 
       // Luas Lahan
       const lahanVal = parseFloat(item.lahan) || 0;
-      document.getElementById('res-lahan').textContent = lahanVal > 0 ? lahanVal.toFixed(2) : (item.lahan || '0');
+      setTxt('res-lahan', lahanVal > 0 ? lahanVal.toFixed(2) : (item.lahan || '0'));
 
       // Luas Lahan Revisi
       const revisiVal = parseFloat(item.revisi) || 0;
       const revisiEl = document.getElementById('res-revisi');
       const revisiNote = document.getElementById('res-revisi-note');
-      if (revisiVal > 0) {
-        revisiEl.textContent = revisiVal.toFixed(2);
-        revisiNote.textContent = 'Verifikasi fisik sawah (Aktif)';
-      } else {
-        revisiEl.textContent = '-';
-        revisiNote.textContent = 'Tidak ada penyesuaian lahan';
-      }
+      if (revisiEl) revisiEl.textContent = revisiVal > 0 ? revisiVal.toFixed(2) : '-';
+      if (revisiNote) revisiNote.textContent = revisiVal > 0 ? 'Verifikasi fisik sawah (Aktif)' : 'Tidak ada penyesuaian lahan';
 
       // Status Penebusan Badge
       const statusBadge = document.getElementById('res-status-badge');
       const statusText = (item.status || 'TERDAFTAR').toUpperCase();
-      statusBadge.textContent = statusText;
-      statusBadge.className = 'px-3 py-1.5 rounded-xl text-xs font-extrabold inline-flex items-center gap-1.5 border shadow-2xs ' + getStatusBadgeClass(statusText);
+      if (statusBadge) {
+        statusBadge.textContent = statusText;
+        statusBadge.className = 'px-3 py-1.5 rounded-xl text-xs font-extrabold inline-flex items-center gap-1.5 border shadow-2xs ' + getStatusBadgeClass(statusText);
+      }
 
       // Keterangan / Catatan Kios
       const ketBox = document.getElementById('res-ket-box');
-      if (item.ket && item.ket.trim()) {
-        ketBox.textContent = 'Catatan: ' + item.ket;
-        ketBox.classList.remove('hidden');
-      } else {
-        ketBox.classList.add('hidden');
+      if (ketBox) {
+        if (item.ket && item.ket.trim()) {
+          ketBox.textContent = 'Catatan: ' + item.ket;
+          ketBox.classList.remove('hidden');
+        } else {
+          ketBox.classList.add('hidden');
+        }
       }
 
       // Jatah Pupuk (Pembulatan Resmi Sesuai Sheet ALOKASI PEMBAGIAN - Hanya Menampilkan Kg)
-      document.getElementById('res-urea-kg').textContent = formatBulatKg(item.urea);
-      document.getElementById('res-npk-kg').textContent = formatBulatKg(item.npk);
-      document.getElementById('res-organik-kg').textContent = formatBulatKg(item.organik);
+      setTxt('res-urea-kg', formatBulatKg(item.urea));
+      setTxt('res-npk-kg', formatBulatKg(item.npk));
+      setTxt('res-organik-kg', formatBulatKg(item.organik));
 
       // Link ke Panduan Tani
       const link = document.getElementById('btn-panduan-link');
@@ -959,30 +969,21 @@
       }
 
       // Isi Lembar Dokumen Cetak Bukti Resmi (A4 / Folio)
-      const elPNama = document.getElementById('p-nama');
-      if (elPNama) elPNama.textContent = item.nama || '-';
-      const elPNik = document.getElementById('p-nik');
-      if (elPNik) elPNik.textContent = item.nik || '-';
-      const elPLahan = document.getElementById('p-lahan');
-      if (elPLahan) elPLahan.textContent = lahanVal > 0 ? lahanVal.toFixed(2) : (item.lahan || '0');
-      const elPRevisi = document.getElementById('p-revisi');
-      if (elPRevisi) elPRevisi.textContent = revisiVal > 0 ? (revisiVal.toFixed(2) + ' Ha (Verifikasi Fisik)') : 'Tidak ada revisi (-)';
-      const elPStatus = document.getElementById('p-status');
-      if (elPStatus) elPStatus.textContent = (item.status || 'TERDAFTAR').toUpperCase();
-      const elPUrea = document.getElementById('p-urea');
-      if (elPUrea) elPUrea.textContent = formatBulatKg(item.urea) + ' Kg';
-      const elPNpk = document.getElementById('p-npk');
-      if (elPNpk) elPNpk.textContent = formatBulatKg(item.npk) + ' Kg';
-      const elPOrganik = document.getElementById('p-organik');
-      if (elPOrganik) elPOrganik.textContent = formatBulatKg(item.organik) + ' Kg';
-      const elPTtd = document.getElementById('p-ttd-nama');
-      if (elPTtd) elPTtd.textContent = '( ' + (item.nama || '.....................................') + ' )';
-      const elPTgl = document.getElementById('p-tanggal');
-      if (elPTgl) elPTgl.textContent = 'Kediren, ' + getTanggalIndonesia();
+      setTxt('p-nama', item.nama || '-');
+      setTxt('p-nik', item.nik || '-');
+      setTxt('p-lahan', lahanVal > 0 ? lahanVal.toFixed(2) : (item.lahan || '0'));
+      setTxt('p-revisi', revisiVal > 0 ? (revisiVal.toFixed(2) + ' Ha (Verifikasi Fisik)') : 'Tidak ada revisi (-)');
+      setTxt('p-status', (item.status || 'TERDAFTAR').toUpperCase());
+      setTxt('p-urea', formatBulatKg(item.urea) + ' Kg');
+      setTxt('p-npk', formatBulatKg(item.npk) + ' Kg');
+      setTxt('p-organik', formatBulatKg(item.organik) + ' Kg');
+      setTxt('p-ttd-nama', '( ' + (item.nama || '.....................................') + ' )');
+      setTxt('p-tanggal', 'Kediren, ' + getTanggalIndonesia());
+
       const elPRowKet = document.getElementById('p-row-ket');
       if (elPRowKet) {
         if (item.ket && item.ket.trim()) {
-          document.getElementById('p-ket').textContent = item.ket;
+          setTxt('p-ket', item.ket);
           elPRowKet.classList.remove('hidden');
         } else {
           elPRowKet.classList.add('hidden');
