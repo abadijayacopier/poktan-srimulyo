@@ -1217,6 +1217,166 @@
   </div>
 
   <!-- ======================================================== -->
+  <!-- FLOATING ROUND BUTTON (FAB) AGENT SRI MULYO              -->
+  <!-- ======================================================== -->
+  <div id="fab-chat-agent" class="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40 no-print flex items-center gap-2.5 select-none transition-all duration-300">
+    <div id="fab-chat-pill" onclick="bukaFloatingChat()" class="cursor-pointer hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-full bg-slate-900/90 hover:bg-slate-900 text-white border border-emerald-500/40 shadow-xl backdrop-blur-sm transition-all hover:scale-105 active:scale-95 group">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+      <span class="text-xs font-black tracking-wide">Agent Sri Mulyo</span>
+      <span class="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-400/30">Online</span>
+    </div>
+    <button type="button" onclick="bukaFloatingChat()" id="btn-fab-agent-round" aria-label="Buka Chat Agent Poktan Sri Mulyo" title="Tanya Agent Poktan Sri Mulyo"
+            class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-tr from-emerald-700 via-emerald-600 to-teal-400 text-white shadow-2xl hover:shadow-emerald-500/40 hover:scale-110 active:scale-95 transition-all flex items-center justify-center relative cursor-pointer border-2 border-emerald-300/40">
+      <i class="fa-solid fa-headset text-2xl sm:text-3xl text-amber-300 drop-shadow"></i>
+      <span class="absolute top-0 right-0 w-4 h-4 bg-emerald-500 border-2 border-slate-900 rounded-full flex items-center justify-center shadow">
+        <span class="w-2 h-2 bg-white rounded-full animate-ping"></span>
+      </span>
+    </button>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- FLOATING CHAT WIDGET AGENT SRI MULYO (MINIMIZABLE)       -->
+  <!-- ======================================================== -->
+  <div id="widget-chat-agent" class="fixed inset-x-2 bottom-2 sm:inset-auto sm:bottom-6 sm:right-6 z-50 w-auto sm:w-[420px] md:w-[460px] h-[85vh] sm:h-[620px] max-h-[88vh] bg-slate-950/95 backdrop-blur-md rounded-3xl border border-emerald-500/40 shadow-2xl flex flex-col overflow-hidden text-slate-100 hidden no-print transition-all duration-300">
+    
+    <!-- Header Widget -->
+    <div class="bg-slate-900/90 border-b border-emerald-500/20 px-3.5 sm:px-4 py-2.5 shrink-0 flex items-center justify-between z-20">
+      <div class="flex items-center gap-2.5 overflow-hidden">
+        <div class="relative shrink-0">
+          <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-0.5 shadow-md flex items-center justify-center">
+            <div class="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center text-emerald-300 text-sm">
+              <i class="fa-solid fa-headset text-amber-300"></i>
+            </div>
+          </div>
+          <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-slate-900 rounded-full flex items-center justify-center">
+            <span class="w-1.5 h-1.5 bg-white rounded-full animate-ping"></span>
+          </span>
+        </div>
+        <div class="truncate">
+          <div class="flex items-center gap-1.5">
+            <h4 class="text-xs sm:text-sm font-black text-white truncate">Agent Poktan Sri Mulyo</h4>
+          </div>
+          <div class="flex items-center gap-1.5 text-[10px] text-slate-400">
+            <span id="widget-badge-status" class="text-emerald-400 font-bold flex items-center gap-1">
+              <i id="widget-badge-icon" class="fa-solid fa-sparkles text-[8px] text-amber-300"></i>
+              <span id="widget-badge-text">Agent Sri Mulyo Online</span>
+            </span>
+            <span>•</span>
+            <span class="text-slate-400 truncate">Kediren</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tombol Header: Minimize, Standalone & Exit -->
+      <div class="flex items-center gap-1.5 shrink-0">
+        <!-- Tombol Minimize -->
+        <button type="button" onclick="minimizeFloatingChat()" title="Perkecil Obrolan (Lanjut Lihat Data Lahan)"
+                class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white flex items-center justify-center transition active:scale-90 cursor-pointer">
+          <i class="fa-solid fa-minus text-xs"></i>
+        </button>
+        <!-- Tombol Buka Halaman Penuh -->
+        <button type="button" onclick="bukaHalamanPenuhChat()" title="Buka Mode Layar Lebar"
+                class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white flex items-center justify-center transition active:scale-90 cursor-pointer">
+          <i class="fa-solid fa-up-right-from-square text-xs"></i>
+        </button>
+        <!-- Tombol Akhiri / Keluar Sesi -->
+        <button type="button" onclick="bukaModalKeluarWidget()" title="Akhiri Obrolan Hari Ini"
+                class="w-8 h-8 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 hover:text-rose-200 border border-rose-500/30 flex items-center justify-center transition active:scale-90 cursor-pointer">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Bar Konteks Petani Aktif -->
+    <div class="bg-emerald-950/40 border-b border-emerald-500/20 px-3.5 py-1.5 shrink-0 flex items-center justify-between gap-2 text-[10.5px]">
+      <div class="truncate flex items-center gap-1.5 text-slate-300">
+        <i class="fa-solid fa-user-check text-emerald-400 text-[10px]"></i>
+        <span class="truncate font-bold text-white" id="widget-ctx-petani">Petani Mandiri</span>
+      </div>
+      <div class="flex items-center gap-1.5 text-[10px] shrink-0 font-bold">
+        <span class="px-2 py-0.5 rounded-md bg-white/10 text-emerald-300 truncate max-w-[120px]" id="widget-ctx-komoditas">Padi Sawah</span>
+        <span class="px-1.5 py-0.5 rounded-md bg-white/10 text-amber-300" id="widget-ctx-luas">0.35 Ha</span>
+      </div>
+    </div>
+
+    <!-- Chat Stream Container -->
+    <div id="widget-chat-stream" class="flex-1 overflow-y-auto p-3.5 space-y-3 text-xs">
+      <!-- Pesan obrolan di-render secara dinamis -->
+    </div>
+
+    <!-- Quick Prompts Chips -->
+    <div class="px-3 py-1.5 bg-slate-900/80 border-t border-white/5 overflow-x-auto whitespace-nowrap flex items-center gap-1.5 text-[10.5px] shrink-0">
+      <span class="text-slate-400 font-bold shrink-0 text-[10px] flex items-center gap-1">
+        <i class="fa-solid fa-bolt text-amber-400"></i> Cepat:
+      </span>
+      <button type="button" onclick="pilihCepatWidget('Berapa takaran semprot pupuk daun (Gandasil / POC) dan waktu aplikasinya?')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-emerald-200 transition shrink-0 cursor-pointer active:scale-95">
+        Takaran Pupuk Daun?
+      </button>
+      <button type="button" onclick="pilihCepatWidget('Bagaimana langkah mengatasi wereng coklat dan sundep paling manjur?')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-emerald-200 transition shrink-0 cursor-pointer active:scale-95">
+        Obat Wereng &amp; Sundep?
+      </button>
+      <button type="button" onclick="pilihCepatWidget('Daun tanaman menguning asem-aseman, berapa dosis dolomit dan cara taburnya?')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-emerald-200 transition shrink-0 cursor-pointer active:scale-95">
+        Tanah Asem-Aseman?
+      </button>
+      <button type="button" onclick="pilihCepatWidget('Berapa hari sebelum panen raya saluran air sawah harus dikeringkan total?')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-emerald-200 transition shrink-0 cursor-pointer active:scale-95">
+        Pengeringan Air Sawah?
+      </button>
+    </div>
+
+    <!-- Input Form -->
+    <div class="p-2.5 sm:p-3 bg-slate-900 border-t border-emerald-500/20 shrink-0 flex items-center gap-2">
+      <input type="text" id="widget-chat-input" onkeydown="if(event.key==='Enter') kirimPesanWidget()" 
+             placeholder="Tanya hama, pupuk, atau keluhan sawah..." 
+             class="flex-1 px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/15 text-xs text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition select-text">
+      <button type="button" onclick="kirimPesanWidget()" id="btn-widget-kirim" 
+              class="px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 transition active:scale-95 shrink-0 cursor-pointer shadow-sm">
+        <i class="fa-solid fa-paper-plane text-xs"></i>
+        <span class="hidden sm:inline">Kirim</span>
+      </button>
+      <button type="button" onclick="hubungiWaPengurusWidget()" title="WhatsApp Pengurus Poktan"
+              class="w-9 h-9 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 text-emerald-400 flex items-center justify-center transition active:scale-95 shrink-0 cursor-pointer">
+        <i class="fa-brands fa-whatsapp text-base"></i>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL KONFIRMASI KELUAR / AKHIRI OBROLAN WIDGET          -->
+  <!-- ======================================================== -->
+  <div id="modal-keluar-widget" class="fixed inset-0 z-[60] bg-slate-950/80 backdrop-blur-xs hidden flex items-center justify-center p-4 no-print">
+    <div class="bg-gradient-to-b from-slate-900 to-slate-950 rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-rose-500/30 text-center space-y-3.5 animate-fadeIn">
+      <div class="w-12 h-12 rounded-2xl bg-rose-500/20 border border-rose-500/30 text-rose-400 flex items-center justify-center text-xl mx-auto shadow-inner">
+        <i class="fa-solid fa-door-open"></i>
+      </div>
+      <div>
+        <h3 class="text-base font-black text-white">Akhiri Obrolan Kita Hari Ini?</h3>
+        <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+          Menutup obrolan berarti mengakhiri sesi konsultasi hari ini. <b>Histori percakapan tidak akan disimpan</b> demi privasi dan efisiensi memori.
+        </p>
+      </div>
+      <div class="p-2.5 bg-white/5 rounded-xl border border-white/10 text-[11px] text-slate-300 text-left">
+        <p class="font-bold text-emerald-300 flex items-center gap-1.5">
+          <i class="fa-solid fa-circle-info text-emerald-400 text-[10px]"></i>
+          <span>Tips Praktis:</span>
+        </p>
+        <p class="text-slate-300 mt-0.5">
+          Jika ingin melihat kalender atau data pupuk tanpa menghapus percakapan, klik tombol <b>Minimalkan (-)</b> di atas.
+        </p>
+      </div>
+      <div class="flex items-center gap-2 pt-1">
+        <button type="button" onclick="tutupModalKeluarWidget()" class="flex-1 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 text-xs font-bold transition cursor-pointer">
+          Lanjut Mengobrol
+        </button>
+        <button type="button" onclick="eksekusiKeluarWidget()" class="flex-1 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-black transition flex items-center justify-center gap-1 shadow-md cursor-pointer active:scale-95">
+          <i class="fa-solid fa-right-from-bracket text-xs"></i>
+          <span>Ya, Akhiri &amp; Tutup</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
   <!-- 3. JAVASCRIPT CONTROLLER LENGKAP                         -->
   <!-- ======================================================== -->
   <script>
@@ -2828,28 +2988,384 @@
     }
 
     // ========================================================
-    // BUKA HALAMAN BARU: KONSULTASI AGENT POKTAN SRI MULYO
+    // FLOATING CHAT AGENT WIDGET CONTROLLER (MINIMIZABLE)
     // ========================================================
-    function bukaKonsultasiAgentPoktan() {
-      const nama = (document.getElementById('input-petani').value || '').replace(/\(.*?\)/, '').trim() || 'Petani Mandiri';
-      const rawKom = document.getElementById('calc-komoditas').value;
-      const kom = getKomoditasAktif();
-      const varInfo = getVarietasAktif();
-      const luas = document.getElementById('calc-luas').value || '0.35';
-      const musim = getMusimAktif();
-      const catatan = (document.getElementById('calc-catatan').value || '').trim();
+    let widgetChatMessages = [];
 
-      const params = new URLSearchParams({
+    function getWidgetFarmerContext() {
+      const inpPetani = document.getElementById('input-petani');
+      const nama = (inpPetani ? inpPetani.value : '').replace(/\(.*?\)/, '').trim() || 'Petani Mandiri';
+      const kom = typeof getKomoditasAktif === 'function' ? getKomoditasAktif() : 'Padi Sawah';
+      const varInfo = typeof getVarietasAktif === 'function' ? getVarietasAktif() : { nama: 'Inpari 32 HDB' };
+      const calcLuas = document.getElementById('calc-luas');
+      const luas = (calcLuas ? calcLuas.value : '0.35') || '0.35';
+      const musim = typeof getMusimAktif === 'function' ? getMusimAktif() : 'MT 3';
+      const calcCatatan = document.getElementById('calc-catatan');
+      const catatan = (calcCatatan ? calcCatatan.value : '').trim();
+
+      return {
         nama: nama,
         komoditas: kom,
-        varietas: varInfo.nama,
+        varietas: varInfo.nama || 'Standar',
         luas: luas,
-        musim: musim
-      });
-      if (catatan) params.append('catatan', catatan);
+        musim: musim,
+        catatan: catatan
+      };
+    }
 
+    function updateWidgetContextUI() {
+      const ctx = getWidgetFarmerContext();
+      const elPetani = document.getElementById('widget-ctx-petani');
+      const elKomoditas = document.getElementById('widget-ctx-komoditas');
+      const elLuas = document.getElementById('widget-ctx-luas');
+      if (elPetani) elPetani.innerText = ctx.nama;
+      if (elKomoditas) elKomoditas.innerText = `${ctx.komoditas} (${ctx.varietas})`;
+      if (elLuas) elLuas.innerText = `${ctx.luas} Ha`;
+    }
+
+    function bukaFloatingChat() {
+      const widget = document.getElementById('widget-chat-agent');
+      const fab = document.getElementById('fab-chat-agent');
+      if (!widget) return;
+
+      updateWidgetContextUI();
+      widget.classList.remove('hidden');
+      if (fab) fab.classList.add('hidden');
+
+      // Jika belum ada pesan dalam sesi ini, tampilkan salam pembuka
+      if (widgetChatMessages.length === 0) {
+        inisialisasiWidgetSapaan();
+      }
+
+      // Scroll ke bawah & fokus input
+      const box = document.getElementById('widget-chat-stream');
+      if (box) box.scrollTop = box.scrollHeight;
+      setTimeout(() => {
+        document.getElementById('widget-chat-input')?.focus();
+      }, 100);
+    }
+
+    function minimizeFloatingChat() {
+      const widget = document.getElementById('widget-chat-agent');
+      const fab = document.getElementById('fab-chat-agent');
+      if (widget) widget.classList.add('hidden');
+      if (fab) {
+        fab.classList.remove('hidden');
+        const pillText = document.querySelector('#fab-chat-pill span.font-black');
+        if (pillText && widgetChatMessages.length > 0) {
+          pillText.innerText = 'Lanjut Chat Agent';
+        }
+      }
+    }
+
+    function bukaModalKeluarWidget() {
+      const modal = document.getElementById('modal-keluar-widget');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function tutupModalKeluarWidget() {
+      const modal = document.getElementById('modal-keluar-widget');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function eksekusiKeluarWidget() {
+      // Hapus seluruh histori percakapan sesi ini
+      widgetChatMessages = [];
+      const box = document.getElementById('widget-chat-stream');
+      if (box) box.innerHTML = '';
+      sessionStorage.removeItem('poktan_chat_saved_session');
+      
+      const pillText = document.querySelector('#fab-chat-pill span.font-black');
+      if (pillText) pillText.innerText = 'Agent Sri Mulyo';
+
+      tutupModalKeluarWidget();
+      minimizeFloatingChat();
+    }
+
+    function bukaHalamanPenuhChat() {
+      const ctx = getWidgetFarmerContext();
+      sessionStorage.setItem('poktan_chat_saved_session', JSON.stringify({
+        messages: widgetChatMessages,
+        context: ctx
+      }));
+      const params = new URLSearchParams({
+        nama: ctx.nama,
+        komoditas: ctx.komoditas,
+        varietas: ctx.varietas,
+        luas: ctx.luas,
+        musim: ctx.musim,
+        restore: '1'
+      });
+      if (ctx.catatan) params.append('catatan', ctx.catatan);
       window.location.href = 'konsultasi-agent.html?' + params.toString();
     }
+
+    // Tombol kartu konsultasi utama sekarang membuka floating chat
+    function bukaKonsultasiAgentPoktan() {
+      bukaFloatingChat();
+    }
+
+    function inisialisasiWidgetSapaan() {
+      const c = getWidgetFarmerContext();
+      let text = `Sugeng rawuh <b>Bpk/Ibu ${esc(c.nama)}</b>.<br><br>` +
+                 `Saya <b>Agent Poktan Sri Mulyo</b> siap mendampingi konsultasi budidaya <b>${esc(c.komoditas)} (${esc(c.varietas)})</b> pada lahan seluas <b>${c.luas} Ha</b> di musim <b>${esc(c.musim)}</b>.<br><br>`;
+      
+      if (c.catatan && c.catatan !== '-') {
+        text += `Tercatat kendala awal lahan: <i>"${esc(c.catatan)}"</i>.<br>Silakan tanyakan takaran dosis obat per tangki, waktu semprot, atau cara mengatasinya.`;
+      } else {
+        text += `Ada kendala hama tanaman, takaran pupuk daun, atau jadwal pengairan sawah yang ingin ditanyakan hari ini?`;
+      }
+
+      tambahPesanKeWidgetUI('agent', text, 'pakar');
+    }
+
+    function pilihCepatWidget(pertanyaan) {
+      const inp = document.getElementById('widget-chat-input');
+      if (inp) {
+        inp.value = pertanyaan;
+        kirimPesanWidget();
+      }
+    }
+
+    function tambahPesanKeWidgetUI(sender, htmlText, source) {
+      const container = document.getElementById('widget-chat-stream');
+      if (!container) return;
+      const timeStr = new Intl.DateTimeFormat('id-ID', { hour: '2-digit', minute: '2-digit' }).format(new Date());
+
+      const msgDiv = document.createElement('div');
+
+      if (sender === 'user') {
+        msgDiv.className = 'flex justify-end animate-fadeIn';
+        msgDiv.innerHTML = `
+          <div class="max-w-[85%] bg-emerald-700 text-white p-3 rounded-2xl rounded-tr-xs shadow-md">
+            <p class="text-xs leading-relaxed">${htmlText}</p>
+            <div class="text-[9px] text-emerald-200 mt-1 flex items-center justify-end gap-1">
+              <span>${timeStr}</span>
+              <i class="fa-solid fa-check-double text-[8px]"></i>
+            </div>
+          </div>`;
+      } else {
+        msgDiv.className = 'flex items-start gap-2 animate-fadeIn';
+        let badgeSource;
+        if (source === 'openai') {
+          badgeSource = '<span class="text-[8.5px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-bold">🌾 Mantri Tani</span>';
+        } else if (source === 'gemini') {
+          badgeSource = '<span class="text-[8.5px] px-1.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 font-bold">🌿 Pakar BPP</span>';
+        } else {
+          badgeSource = '<span class="text-[8.5px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-bold">🌾 Pakar Sri Mulyo</span>';
+        }
+
+        msgDiv.innerHTML = `
+          <div class="w-7 h-7 rounded-xl bg-slate-900 border border-emerald-500/30 text-emerald-300 flex items-center justify-center text-[11px] shrink-0 mt-0.5 shadow-sm">
+            <i class="fa-solid fa-headset text-amber-300"></i>
+          </div>
+          <div class="max-w-[88%] bg-slate-900/90 border border-white/10 text-slate-100 p-3 rounded-2xl rounded-tl-xs shadow-lg space-y-1.5">
+            <div class="flex items-center justify-between gap-1.5 border-b border-white/10 pb-1">
+              <span class="text-[10px] font-black uppercase text-amber-300 tracking-wide">Agent Sri Mulyo</span>
+              ${badgeSource}
+            </div>
+            <div class="text-xs leading-relaxed text-slate-200 space-y-1.5">
+              ${htmlText}
+            </div>
+            <div class="text-[8.5px] text-slate-400 text-right pt-0.5">
+              ${timeStr} WIB
+            </div>
+          </div>`;
+      }
+
+      container.appendChild(msgDiv);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function setTypingWidget(aktif) {
+      const existing = document.getElementById('widget-typing-box');
+      if (existing) existing.remove();
+
+      if (aktif) {
+        const container = document.getElementById('widget-chat-stream');
+        if (!container) return;
+        const typing = document.createElement('div');
+        typing.id = 'widget-typing-box';
+        typing.className = 'flex items-center gap-2 pl-9 text-[11px] text-emerald-300 italic animate-pulse';
+        typing.innerHTML = `
+          <div class="flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-bounce"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-bounce" style="animation-delay: 0.2s"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-bounce" style="animation-delay: 0.4s"></span>
+          </div>
+          <span>Sedang menganalisis tanaman...</span>`;
+        container.appendChild(typing);
+        container.scrollTop = container.scrollHeight;
+      }
+    }
+
+    function updateWidgetHeaderBadge(source) {
+      const elText = document.getElementById('widget-badge-text');
+      const elIcon = document.getElementById('widget-badge-icon');
+      if (!elText) return;
+
+      if (source === 'openai') {
+        elText.innerText = 'Mantri Tani';
+        if (elIcon) elIcon.className = 'fa-solid fa-wheat-awn text-[8px] text-amber-300';
+      } else if (source === 'gemini') {
+        elText.innerText = 'Pakar BPP';
+        if (elIcon) elIcon.className = 'fa-solid fa-leaf text-[8px] text-amber-300';
+      } else {
+        elText.innerText = 'Pakar Sri Mulyo';
+        if (elIcon) elIcon.className = 'fa-solid fa-seedling text-[8px] text-emerald-300';
+      }
+    }
+
+    async function kirimPesanWidget() {
+      const inp = document.getElementById('widget-chat-input');
+      const text = (inp ? inp.value : '').trim();
+      if (!text) return;
+
+      inp.value = '';
+      tambahPesanKeWidgetUI('user', esc(text), 'user');
+      widgetChatMessages.push({ sender: 'user', text: text });
+
+      setTypingWidget(true);
+
+      const btn = document.getElementById('btn-widget-kirim');
+      if (btn) btn.disabled = true;
+
+      const currentContext = getWidgetFarmerContext();
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            prompt: text,
+            context: currentContext,
+            history: widgetChatMessages
+          })
+        });
+
+        const data = await res.json().catch(() => null);
+        setTypingWidget(false);
+
+        if (data && data.success && data.text) {
+          const formatted = formatMarkdownToHtml(data.text);
+          const src = data.source || 'gemini';
+          tambahPesanKeWidgetUI('agent', formatted, src);
+          widgetChatMessages.push({ sender: 'agent', text: data.text, source: src });
+          updateWidgetHeaderBadge(src);
+        } else {
+          const fallback = responSistemPakarLokalWidget(text, currentContext);
+          tambahPesanKeWidgetUI('agent', fallback, 'pakar');
+          widgetChatMessages.push({ sender: 'agent', text: fallback, source: 'pakar' });
+          updateWidgetHeaderBadge('pakar');
+        }
+      } catch (err) {
+        console.warn('Gagal koneksi AI online, fallback ke Sistem Pakar lokal:', err);
+        setTypingWidget(false);
+        const fallback = responSistemPakarLokalWidget(text, currentContext);
+        tambahPesanKeWidgetUI('agent', fallback, 'pakar');
+        widgetChatMessages.push({ sender: 'agent', text: fallback, source: 'pakar' });
+        updateWidgetHeaderBadge('pakar');
+      } finally {
+        if (btn) btn.disabled = false;
+        inp.focus();
+      }
+    }
+
+    function formatMarkdownToHtml(raw) {
+      if (!raw) return '';
+      let s = esc(raw);
+      s = s.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+      s = s.replace(/\*(.*?)\*/g, '<i>$1</i>');
+      s = s.replace(/(?:^|\n)[•*-]\s+(.+)/g, '<br>• $1');
+      s = s.replace(/\n\n/g, '<br><br>');
+      s = s.replace(/\n/g, '<br>');
+      return s;
+    }
+
+    function responSistemPakarLokalWidget(q, c) {
+      const qLower = q.toLowerCase();
+      const isPadi = (c.komoditas || '').toLowerCase().includes('padi');
+      const luas = parseFloat(c.luas) || 0.35;
+
+      if (/pupuk cair|gandasil|nutrisi|daun menguning|poc|semprot pupuk/i.test(qLower)) {
+        if (isPadi) {
+          return `Untuk pertanaman <b>Padi ${esc(c.varietas)}</b>:<br>
+          • <b>Fase Vegetatif (15-30 HST):</b> Pupuk daun Nitrogen (Gandasil D / POC) dosis <b>2 - 3 sdm/tangki 16L</b>.<br>
+          • <b>Fase Generatif (45-65 HST):</b> Pupuk Kalium (Gandasil B / MKP) dosis <b>2 - 3 sdm/tangki</b> untuk bulir bernas padat.<br>
+          • <b>Waktu Semprot:</b> Pukul 06.30 - 08.30 WIB pagi saat stomata daun terbuka.`;
+        } else {
+          return `Untuk tanaman <b>Jagung ${esc(c.varietas)}</b>:<br>
+          • Semprot pupuk daun umur <b>15-35 HST</b> dosis <b>30-40 gr/tangki</b>.<br>
+          • Semprotkan ke daun dan corong tanaman pada pagi hari.`;
+        }
+      }
+
+      if (/wereng|bph|sundep|beluk|kaper|penggerek/i.test(qLower)) {
+        return `Penanganan hama <b>Wereng & Sundep POKTAN SRI MULYO</b>:<br>
+        1. <b>Wereng Coklat:</b> Gunakan bahan aktif <i>Pimetrozin</i> (Chess 50 WG) dosis <b>15-20 gr/tangki</b>. Arahkan nozel langsung ke <b>PANGKAL BATANG</b> padi.<br>
+        2. <b>Sundep / Beluk:</b> Bahan aktif <i>Dimehipo</i> (Spontan) dosis <b>30-40 ml/tangki</b> atau <i>Prevathon</i> <b>15 ml/tangki</b>.<br>
+        3. <b>Manajemen Air:</b> Keringkan sawah macak-macak 3 hari agar rumpun tidak lembab.`;
+      }
+
+      if (/asem|masam|karat|merah|dolomit|ph/i.test(qLower)) {
+        return `Penanganan <b>Tanah Asem-Aseman</b> di Kediren:<br>
+        • Keringkan sawah hingga tanah retak rambut untuk buang gas fermentasi jerami.<br>
+        • Taburkan <b>Kapur Dolomit</b> 1-2 sak untuk luas ${luas} Ha.<br>
+        • <u>JANGAN</u> tabur Urea saat tanaman masih asem-aseman. Tunggu tumbuh akar putih baru.`;
+      }
+
+      if (/kering|air|buang air|panen|kapan panen/i.test(qLower)) {
+        return `Panduan <b>Pengairan & Waktu Panen</b>:<br>
+        • <b>Fase Bunting s.d. Keluar Malai:</b> Air macak-macak 2 cm.<br>
+        • <b>Keringkan Total:</b> <b>10 s.d. 14 hari sebelum hari perkiraan panen</b> agar gabah matang serempak & tanah padat untuk mesin panen.`;
+      }
+
+      if (/bulai|bule|ulat|grayak|faw/i.test(qLower)) {
+        return `Pengendalian <b>Jamur Bulai & Ulat Grayak Jagung</b>:<br>
+        • <b>Bulai:</b> Benih wajib seed dressing <i>Metalaksil</i>. Jika tanaman bergaris putih klorosis, cabut dan musnahkan.<br>
+        • <b>Ulat Grayak (FAW):</b> Semprot <i>Emamektin Benzoat</i> ke corong daun sore hari pukul 16.00 WIB.`;
+      }
+
+      return `Matur suwun atas pertanyaannya Bpk/Ibu ${esc(c.nama)}.<br><br>` +
+             `Untuk pertanaman <b>${esc(c.komoditas)} (${esc(c.varietas)})</b> seluas <b>${luas} Ha</b>, pastikan aplikasi pupuk dan obat mengikuti jadwal kalender tanam resmi.<br>` +
+             `Jika butuh pendampingan langsung ke sawah, gunakan tombol <b>WhatsApp Pengurus Poktan</b> di bawah.`;
+    }
+
+    function hubungiWaPengurusWidget() {
+      const c = getWidgetFarmerContext();
+      const lastUserMsg = [...widgetChatMessages].reverse().find(m => m.sender === 'user')?.text || 'Konsultasi budidaya tanaman';
+      const pesan = `🌾 *KONSULTASI PETANI - POKTAN SRI MULYO KEDIREN*\n\n` +
+                    `*Nama Petani:* ${c.nama}\n` +
+                    `*Lahan:* ${c.luas} Ha | *Komoditas:* ${c.komoditas} (${c.varietas})\n` +
+                    `*Musim:* ${c.musim}\n` +
+                    `*Pertanyaan:* ${lastUserMsg}\n\n` +
+                    `Mohon arahan dan petunjuk dari Pengurus Poktan Sri Mulyo / PPL BPP Lembeyan. Matur suwun.`;
+      window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(pesan), '_blank');
+    }
+
+    // Auto-check apakah ada sesi yang dipulihkan dari konsultasi-agent atau parameter chat_open
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('chat_open') === '1') {
+        const savedRaw = sessionStorage.getItem('poktan_chat_saved_session');
+        if (savedRaw) {
+          try {
+            const parsed = JSON.parse(savedRaw);
+            if (Array.isArray(parsed.messages) && parsed.messages.length > 0) {
+              widgetChatMessages = parsed.messages;
+              parsed.messages.forEach(m => {
+                if (m.sender === 'user') {
+                  tambahPesanKeWidgetUI('user', esc(m.text), 'user');
+                } else {
+                  tambahPesanKeWidgetUI('agent', formatMarkdownToHtml(m.text || m.html), m.source || 'gemini');
+                }
+              });
+            }
+          } catch (e) {}
+        }
+        bukaFloatingChat();
+      }
+    });
   </script>
 
 </body>
