@@ -342,25 +342,35 @@
 
       </div>
 
-      <!-- Action Buttons (no print) -->
-      <div class="no-print print-btn-group flex flex-wrap items-center justify-between gap-3 pt-2">
-        <div class="flex items-center gap-2 flex-wrap">
-          <button onclick="window.print()" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition flex items-center gap-2 shadow-sm">
-            <i class="fa-solid fa-print"></i>
-            <span>Cetak / PDF Bukti</span>
-          </button>
-          <a id="btn-panduan-link" href="panduan-tani.html" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition flex items-center gap-2 shadow-sm">
-            <i class="fa-solid fa-seedling"></i>
-            <span>Buka Kalender &amp; Panduan Tani</span>
+      <!-- Action Buttons Card (no print) -->
+      <div class="no-print pt-2 space-y-3">
+        <!-- Tombol Utama: Cetak / Simpan PDF Lembar Bukti Resmi -->
+        <button type="button" onclick="window.print()" 
+                class="w-full py-3.5 px-5 rounded-2xl bg-slate-900 hover:bg-slate-800 active:scale-98 text-white font-black text-xs sm:text-sm transition shadow-md flex items-center justify-center gap-2.5 group">
+          <i class="fa-solid fa-print text-sm sm:text-base group-hover:scale-110 transition"></i>
+          <span>CETAK / SIMPAN PDF BUKTI ALOKASI RESMI</span>
+        </button>
+
+        <!-- Tombol Sekunder Grid (2 Kolom Rapi & Konsisten) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <a id="btn-panduan-link" href="panduan-tani.html" 
+             class="py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-98 text-white font-bold text-xs transition shadow-xs flex items-center justify-center gap-2">
+            <i class="fa-solid fa-seedling text-amber-200"></i>
+            <span>Buka Rekomendasi Dosis Tani</span>
           </a>
-          <button onclick="hubungiWaPengurus()" class="px-4 py-2.5 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold text-xs transition flex items-center gap-2 shadow-sm">
-            <i class="fa-brands fa-whatsapp text-sm"></i>
+
+          <button type="button" onclick="hubungiWaPengurus()" 
+                  class="py-3 px-4 rounded-xl bg-emerald-800 hover:bg-emerald-700 active:scale-98 text-white font-bold text-xs transition shadow-xs flex items-center justify-center gap-2">
+            <i class="fa-brands fa-whatsapp text-sm text-emerald-300"></i>
             <span>Konfirmasi Pengurus via WA</span>
           </button>
         </div>
-        <button onclick="resetSearch()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center gap-1.5 border border-slate-200">
-          <i class="fa-solid fa-rotate-left"></i>
-          <span>Cek NIK Lain</span>
+
+        <!-- Tombol Cek NIK / Nama Petani Lain -->
+        <button type="button" onclick="resetSearch()" 
+                class="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center justify-center gap-2 border border-slate-200">
+          <i class="fa-solid fa-rotate-left text-xs"></i>
+          <span>Cari NIK / Nama Petani Lain</span>
         </button>
       </div>
 
@@ -448,21 +458,26 @@
       </div>
 
       <!-- Action Buttons -->
-      <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
-        <div class="flex items-center gap-2 flex-wrap">
-          <button onclick="hubungiWaPengajuan()" class="px-4 py-2.5 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold text-xs transition flex items-center gap-2 shadow-sm">
-            <i class="fa-brands fa-whatsapp text-sm"></i>
-            <span>Kirim WhatsApp ke Pengurus (0856-5562-0979)</span>
-          </button>
-          <a href="panduan-tani.html#kalkulator" class="px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs transition flex items-center gap-2 shadow-sm">
+      <div class="pt-2 space-y-2.5">
+        <button type="button" onclick="hubungiWaPengajuan()" 
+                class="w-full py-3 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 active:scale-98 text-white font-black text-xs transition flex items-center justify-center gap-2 shadow-sm">
+          <i class="fa-brands fa-whatsapp text-sm text-emerald-300"></i>
+          <span>Kirim WhatsApp ke Pengurus (0856-5562-0979)</span>
+        </button>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <a href="panduan-tani.html#kalkulator" 
+             class="py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-98 text-white font-bold text-xs transition flex items-center justify-center gap-2 shadow-xs">
             <i class="fa-solid fa-calculator text-amber-300"></i>
             <span>Hitung Kebutuhan Pupuk Mandiri</span>
           </a>
+
+          <button type="button" onclick="resetSearch()" 
+                  class="py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center justify-center gap-2 border border-slate-200">
+            <i class="fa-solid fa-rotate-left text-xs"></i>
+            <span>Cari Petani Lain</span>
+          </button>
         </div>
-        <button onclick="resetSearch()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center gap-1.5 border border-slate-200">
-          <i class="fa-solid fa-rotate-left"></i>
-          <span>Cari Petani Lain</span>
-        </button>
       </div>
 
   </main>
@@ -647,6 +662,20 @@
       const num = parseFloat(str.replace(',', '.'));
       if (isNaN(num)) return str;
       return String(Math.round(num));
+    }
+
+    // Helper Parsing & Format Luas Lahan (Mendukung format koma dan titik desimal)
+    function parseLuas(val) {
+      if (val === undefined || val === null || val === '') return 0;
+      const str = String(val).replace(/[^0-9.,]/g, '').replace(',', '.');
+      const num = parseFloat(str);
+      return isNaN(num) ? 0 : num;
+    }
+
+    function formatLuas(val) {
+      const num = typeof val === 'number' ? val : parseLuas(val);
+      if (num <= 0) return '-';
+      return num.toFixed(2).replace('.', ',');
     }
 
     // Inisialisasi Saat Load
@@ -927,15 +956,15 @@
       isNikSensored = true;
       updateNikDisplay(item.nik);
 
-      // Luas Lahan
-      const lahanVal = parseFloat(item.lahan) || 0;
-      setTxt('res-lahan', lahanVal > 0 ? lahanVal.toFixed(2) : (item.lahan || '0'));
+      // Luas Lahan e-RDKK
+      const lahanVal = parseLuas(item.lahan);
+      setTxt('res-lahan', lahanVal > 0 ? formatLuas(lahanVal) : (item.lahan || '0'));
 
-      // Luas Lahan Revisi
-      const revisiVal = parseFloat(item.revisi) || 0;
+      // Luas Lahan Revisi Fisik
+      const revisiVal = parseLuas(item.revisi);
       const revisiEl = document.getElementById('res-revisi');
       const revisiNote = document.getElementById('res-revisi-note');
-      if (revisiEl) revisiEl.textContent = revisiVal > 0 ? revisiVal.toFixed(2) : '-';
+      if (revisiEl) revisiEl.textContent = revisiVal > 0 ? formatLuas(revisiVal) : '-';
       if (revisiNote) revisiNote.textContent = revisiVal > 0 ? 'Verifikasi fisik sawah (Aktif)' : 'Tidak ada penyesuaian lahan';
 
       // Status Penebusan Badge
@@ -971,8 +1000,8 @@
       // Isi Lembar Dokumen Cetak Bukti Resmi (A4 / Folio)
       setTxt('p-nama', item.nama || '-');
       setTxt('p-nik', item.nik || '-');
-      setTxt('p-lahan', lahanVal > 0 ? lahanVal.toFixed(2) : (item.lahan || '0'));
-      setTxt('p-revisi', revisiVal > 0 ? (revisiVal.toFixed(2) + ' Ha (Verifikasi Fisik)') : 'Tidak ada revisi (-)');
+      setTxt('p-lahan', (lahanVal > 0 ? formatLuas(lahanVal) : (item.lahan || '0')) + ' Ha');
+      setTxt('p-revisi', revisiVal > 0 ? (formatLuas(revisiVal) + ' Ha (Verifikasi Fisik)') : 'Tidak ada revisi (-)');
       setTxt('p-status', (item.status || 'TERDAFTAR').toUpperCase());
       setTxt('p-urea', formatBulatKg(item.urea) + ' Kg');
       setTxt('p-npk', formatBulatKg(item.npk) + ' Kg');
