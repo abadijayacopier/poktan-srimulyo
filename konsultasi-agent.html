@@ -72,8 +72,8 @@
             <span>Agent Poktan Sri Mulyo</span>
           </h1>
           <span id="badge-ai-status" class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 flex items-center gap-1">
-            <i class="fa-solid fa-sparkles text-[8px] text-amber-300"></i>
-            <span id="badge-ai-text">AI Agent Online</span>
+            <i id="badge-ai-icon" class="fa-solid fa-seedling text-[8px] text-amber-300"></i>
+            <span id="badge-ai-text">Pakar Sri Mulyo</span>
           </span>
         </div>
         <p class="text-[10.5px] sm:text-xs text-slate-400 mt-0.5 flex items-center gap-1.5">
@@ -320,11 +320,11 @@
         msgDiv.className = 'flex items-start gap-2.5 sm:gap-3.5 animate-fadeIn';
         let badgeSource;
         if (source === 'openai') {
-          badgeSource = '<span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-bold">✨ OpenAI GPT</span>';
+          badgeSource = '<span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-bold">🌾 Mantri Tani</span>';
         } else if (source === 'gemini') {
-          badgeSource = '<span class="text-[9px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 font-bold">✨ Gemini AI</span>';
+          badgeSource = '<span class="text-[9px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 font-bold">🌿 Pakar BPP</span>';
         } else {
-          badgeSource = '<span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-bold">🌿 Pakar BPP</span>';
+          badgeSource = '<span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-bold">🌾 Pakar Sri Mulyo</span>';
         }
 
         msgDiv.innerHTML = `
@@ -374,17 +374,21 @@
     // Update Header Badge Status
     function updateHeaderBadge(source) {
       const elText = document.getElementById('badge-ai-text');
+      const elIcon = document.getElementById('badge-ai-icon');
       const elStatus = document.getElementById('badge-ai-status');
       if (!elText || !elStatus) return;
 
       if (source === 'openai') {
-        elText.innerText = 'OpenAI Active';
+        elText.innerText = 'Mantri Tani';
+        if (elIcon) elIcon.className = 'fa-solid fa-wheat-awn text-[8px] text-amber-300';
         elStatus.className = 'px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-500/25 text-emerald-300 border border-emerald-400/40 flex items-center gap-1 shadow-sm';
       } else if (source === 'gemini') {
-        elText.innerText = 'Gemini Active';
+        elText.innerText = 'Pakar BPP';
+        if (elIcon) elIcon.className = 'fa-solid fa-leaf text-[8px] text-amber-300';
         elStatus.className = 'px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-400/40 flex items-center gap-1 shadow-sm';
       } else {
-        elText.innerText = 'Pakar BPP Mode';
+        elText.innerText = 'Pakar Sri Mulyo';
+        if (elIcon) elIcon.className = 'fa-solid fa-seedling text-[8px] text-emerald-300';
         elStatus.className = 'px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-teal-500/20 text-teal-300 border border-teal-400/40 flex items-center gap-1 shadow-sm';
       }
     }
