@@ -85,21 +85,7 @@ Identitas & Karakter Komunikasi:
   let openAiErr = null;
   let geminiErr = null;
 
-  // 1. Prioritaskan OpenAI jika API Key tersedia
-  if (openaiApiKey) {
-    const aiResult = await callOpenAI(openaiApiKey, systemPrompt, prompt, history);
-    if (aiResult.success) {
-      return res.status(200).json({
-        success: true,
-        text: aiResult.text,
-        source: 'openai',
-        model: aiResult.model
-      });
-    }
-    openAiErr = aiResult.modelErrors ? JSON.stringify(aiResult.modelErrors) : aiResult.error;
-  }
-
-  // 2. Jika OpenAI tidak ada atau gagal, coba Gemini AI
+  // 1. Prioritaskan Gemini Flash (Cepat, kuota gratis, responsif)
   if (geminiApiKey) {
     const geminiResult = await callGemini(geminiApiKey, systemPrompt, prompt, history);
     if (geminiResult.success) {
@@ -111,6 +97,20 @@ Identitas & Karakter Komunikasi:
       });
     }
     geminiErr = geminiResult.error;
+  }
+
+  // 2. Jika Gemini tidak ada atau gagal, coba OpenAI
+  if (openaiApiKey) {
+    const aiResult = await callOpenAI(openaiApiKey, systemPrompt, prompt, history);
+    if (aiResult.success) {
+      return res.status(200).json({
+        success: true,
+        text: aiResult.text,
+        source: 'openai',
+        model: aiResult.model
+      });
+    }
+    openAiErr = aiResult.modelErrors ? JSON.stringify(aiResult.modelErrors) : aiResult.error;
   }
 
   // Filter daftar env key yang aman untuk diagnosa (tanpa membocorkan nilai)
@@ -197,13 +197,12 @@ async function callOpenAI(apiKey, systemPrompt, prompt, history) {
   return { success: false, error: lastError, modelErrors: modelErrors };
 }
 
-// Pemanggil API Google Gemini
+// Pemanggil API Google Gemini (Khusus Flash Models)
 async function callGemini(apiKey, systemPrompt, prompt, history) {
   const models = [
     'gemini-1.5-flash',
     'gemini-2.0-flash',
-    'gemini-2.5-flash',
-    'gemini-1.5-pro'
+    'gemini-2.5-flash'
   ];
   let lastError = null;
 
