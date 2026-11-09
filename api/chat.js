@@ -1,5 +1,5 @@
 // Vercel Serverless Function: /api/chat.js
-// Penghubung Langsung ke OpenAI API & Google Gemini AI dengan Environment Variable Vercel
+// Penghubung Langsung ke OpenAI API & Google Gemini AI dengan Auto-Detection Environment Variable
 
 module.exports = async function handler(req, res) {
   // Set CORS headers
@@ -19,25 +19,33 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Deteksi berbagai kemungkinan penamaan environment variable OpenAI & Gemini di Vercel
-  const openaiApiKey =
-    process.env.OPENAI_API_KEY ||
-    process.env.OPENAI_KEY ||
-    process.env.OPEN_AI_KEY ||
-    process.env.OPEN_AI_API_KEY ||
-    process.env.KEY_OPEN_AI ||
-    process.env.KEY_OPENAI ||
-    process.env.OPENAI_APIKEY ||
-    process.env.OPENAI ||
-    process.env.OPEN_AI;
+  // 1. Scan cerdas semua kemungkinan penamaan environment variable di Vercel
+  let openaiApiKey = null;
+  let geminiApiKey = null;
 
-  const geminiApiKey =
-    process.env.GEMINI_API_KEY ||
-    process.env.GOOGLE_API_KEY ||
-    process.env.GEMINI_KEY ||
-    process.env.GOOGLE_GEMINI_API_KEY ||
-    process.env.AI_API_KEY ||
-    process.env.API_KEY;
+  for (const [key, val] of Object.entries(process.env)) {
+    if (!val || typeof val !== 'string' || !val.trim()) continue;
+    const cleanKey = key.toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+    // Cek OpenAI: OPENAI_API_KEY, OPENAI_KEY, OPEN_AI, KEY_OPEN_AI, OPENAI, KEYOPENAI, dsb.
+    if (!openaiApiKey && (
+      cleanKey.includes('OPENAI') ||
+      cleanKey.includes('CHATGPT') ||
+      (cleanKey.includes('KEY') && cleanKey.includes('OPEN')) ||
+      (cleanKey.startsWith('OPEN') && cleanKey.includes('AI'))
+    )) {
+      openaiApiKey = val.trim();
+    }
+
+    // Cek Gemini: GEMINI_API_KEY, GOOGLE_API_KEY, GEMINI_KEY, dsb.
+    if (!geminiApiKey && (
+      cleanKey.includes('GEMINI') ||
+      cleanKey === 'GOOGLEAPIKEY' ||
+      cleanKey === 'APIKEY'
+    )) {
+      geminiApiKey = val.trim();
+    }
+  }
 
   const { prompt, context, history } = req.body || {};
 
@@ -74,8 +82,11 @@ Identitas & Karakter Komunikasi:
    - Rapi, gunakan poin-poin/bullet list yang nyaman dibaca di layar HP smartphone petani.
    - Jawaban langsung pada inti solusi tanpa bertele-tele.`;
 
+  let openAiErr = null;
+  let geminiErr = null;
+
   // 1. Prioritaskan OpenAI jika API Key tersedia
-  if (openaiApiKey && openaiApiKey.trim()) {
+  if (openaiApiKey) {
     const aiResult = await callOpenAI(openaiApiKey, systemPrompt, prompt, history);
     if (aiResult.success) {
       return res.status(200).json({
@@ -85,10 +96,11 @@ Identitas & Karakter Komunikasi:
         model: aiResult.model
       });
     }
+    openAiErr = aiResult.error;
   }
 
   // 2. Jika OpenAI tidak ada atau gagal, coba Gemini AI
-  if (geminiApiKey && geminiApiKey.trim()) {
+  if (geminiApiKey) {
     const geminiResult = await callGemini(geminiApiKey, systemPrompt, prompt, history);
     if (geminiResult.success) {
       return res.status(200).json({
@@ -98,13 +110,21 @@ Identitas & Karakter Komunikasi:
         model: geminiResult.model
       });
     }
+    geminiErr = geminiResult.error;
   }
+
+  // Filter daftar env key yang aman untuk diagnosa (tanpa membocorkan nilai)
+  const safeEnvKeys = Object.keys(process.env).filter(
+    k => !k.startsWith('VERCEL') && !k.startsWith('AWS') && !k.startsWith('npm_') && !k.startsWith('_') && !k.includes('PASS') && !k.includes('SECRET')
+  );
 
   // 3. Jika API key belum terisi atau keduanya gagal, kirim sinyal fallback ke sistem pakar
   return res.status(200).json({
     success: false,
     isFallback: true,
     pesan: 'API key OpenAI / Gemini belum aktif di environment variable Vercel atau kuota sedang habis.',
+    error: openAiErr || geminiErr || (openaiApiKey ? 'OpenAI call failed' : 'OpenAI key not found in env'),
+    debugEnvKeys: safeEnvKeys,
     text: null
   });
 };
