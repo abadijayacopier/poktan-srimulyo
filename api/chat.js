@@ -1,5 +1,5 @@
 // Vercel Serverless Function: /api/chat.js
-// Penghubung Langsung ke Google Gemini AI dengan Environment Variable Vercel
+// Penghubung Langsung ke OpenAI API & Google Gemini AI dengan Environment Variable Vercel
 
 module.exports = async function handler(req, res) {
   // Set CORS headers
@@ -19,29 +19,30 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Deteksi berbagai kemungkinan penamaan environment variable di Vercel
-  const apiKey =
+  // Deteksi berbagai kemungkinan penamaan environment variable OpenAI & Gemini di Vercel
+  const openaiApiKey =
+    process.env.OPENAI_API_KEY ||
+    process.env.OPENAI_KEY ||
+    process.env.OPEN_AI_KEY ||
+    process.env.OPEN_AI_API_KEY ||
+    process.env.KEY_OPEN_AI ||
+    process.env.KEY_OPENAI ||
+    process.env.OPENAI_APIKEY ||
+    process.env.OPENAI ||
+    process.env.OPEN_AI;
+
+  const geminiApiKey =
     process.env.GEMINI_API_KEY ||
     process.env.GOOGLE_API_KEY ||
-    process.env.API_KEY ||
     process.env.GEMINI_KEY ||
+    process.env.GOOGLE_GEMINI_API_KEY ||
     process.env.AI_API_KEY ||
-    process.env.GOOGLE_GEMINI_API_KEY;
+    process.env.API_KEY;
 
   const { prompt, context, history } = req.body || {};
 
   if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
     return res.status(400).json({ error: 'Pertanyaan tidak boleh kosong.' });
-  }
-
-  // Jika API key belum terpasang di Vercel, kirim sinyal fallback
-  if (!apiKey) {
-    return res.status(200).json({
-      success: false,
-      isFallback: true,
-      pesan: 'API key Gemini belum terbaca di environment variable Vercel.',
-      text: null
-    });
   }
 
   // Siapkan konteks spesifik petani Poktan Sri Mulyo
@@ -73,46 +74,131 @@ Identitas & Karakter Komunikasi:
    - Rapi, gunakan poin-poin/bullet list yang nyaman dibaca di layar HP smartphone petani.
    - Jawaban langsung pada inti solusi tanpa bertele-tele.`;
 
-  // Model Gemini yang dicoba berurutan
+  // 1. Prioritaskan OpenAI jika API Key tersedia
+  if (openaiApiKey && openaiApiKey.trim()) {
+    const aiResult = await callOpenAI(openaiApiKey, systemPrompt, prompt, history);
+    if (aiResult.success) {
+      return res.status(200).json({
+        success: true,
+        text: aiResult.text,
+        source: 'openai',
+        model: aiResult.model
+      });
+    }
+  }
+
+  // 2. Jika OpenAI tidak ada atau gagal, coba Gemini AI
+  if (geminiApiKey && geminiApiKey.trim()) {
+    const geminiResult = await callGemini(geminiApiKey, systemPrompt, prompt, history);
+    if (geminiResult.success) {
+      return res.status(200).json({
+        success: true,
+        text: geminiResult.text,
+        source: 'gemini',
+        model: geminiResult.model
+      });
+    }
+  }
+
+  // 3. Jika API key belum terisi atau keduanya gagal, kirim sinyal fallback ke sistem pakar
+  return res.status(200).json({
+    success: false,
+    isFallback: true,
+    pesan: 'API key OpenAI / Gemini belum aktif di environment variable Vercel atau kuota sedang habis.',
+    text: null
+  });
+};
+
+// Pemanggil API OpenAI
+async function callOpenAI(apiKey, systemPrompt, prompt, history) {
+  const models = ['gpt-4o-mini', 'gpt-4o', 'gpt-3.5-turbo'];
+  let lastError = null;
+
+  const messages = [
+    { role: 'system', content: systemPrompt }
+  ];
+
+  if (Array.isArray(history) && history.length > 0) {
+    history.slice(-8).forEach(item => {
+      messages.push({
+        role: item.sender === 'user' ? 'user' : 'assistant',
+        content: String(item.text || '')
+      });
+    });
+  }
+
+  messages.push({
+    role: 'user',
+    content: prompt
+  });
+
+  for (const model of models) {
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey.trim()}`
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: messages,
+          temperature: 0.7,
+          max_tokens: 1200
+        })
+      });
+
+      if (!response.ok) {
+        const errJson = await response.json().catch(() => ({}));
+        lastError = errJson?.error?.message || `HTTP ${response.status}`;
+        continue;
+      }
+
+      const data = await response.json();
+      const reply = data?.choices?.[0]?.message?.content;
+      if (reply) {
+        return { success: true, text: reply, model: model };
+      }
+    } catch (err) {
+      lastError = err.message || String(err);
+    }
+  }
+
+  return { success: false, error: lastError };
+}
+
+// Pemanggil API Google Gemini
+async function callGemini(apiKey, systemPrompt, prompt, history) {
   const models = [
     'gemini-1.5-flash',
     'gemini-2.0-flash',
     'gemini-2.5-flash',
     'gemini-1.5-pro'
   ];
-
-  let replyText = null;
   let lastError = null;
+
+  const contents = [];
+  if (Array.isArray(history) && history.length > 0) {
+    history.slice(-6).forEach(item => {
+      contents.push({
+        role: item.sender === 'user' ? 'user' : 'model',
+        parts: [{ text: String(item.text || '') }]
+      });
+    });
+  }
+  contents.push({
+    role: 'user',
+    parts: [{ text: prompt }]
+  });
 
   for (const model of models) {
     try {
-      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-
-      const contents = [];
-
-      // Riwayat percakapan sesi ini (jika ada)
-      if (Array.isArray(history) && history.length > 0) {
-        history.slice(-6).forEach(item => {
-          contents.push({
-            role: item.sender === 'user' ? 'user' : 'model',
-            parts: [{ text: String(item.text || '') }]
-          });
-        });
-      }
-
-      // Input pertanyaan terbaru
-      contents.push({
-        role: 'user',
-        parts: [{ text: prompt }]
-      });
-
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey.trim()}`;
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          systemInstruction: {
-            parts: [{ text: systemPrompt }]
-          },
+          systemInstruction: { parts: [{ text: systemPrompt }] },
           contents: contents,
           generationConfig: {
             temperature: 0.7,
@@ -130,26 +216,12 @@ Identitas & Karakter Komunikasi:
       const data = await response.json();
       const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
       if (text) {
-        replyText = text;
-        break;
+        return { success: true, text: text, model: model };
       }
     } catch (err) {
       lastError = err.message || String(err);
     }
   }
 
-  if (replyText) {
-    return res.status(200).json({
-      success: true,
-      text: replyText,
-      source: 'gemini'
-    });
-  } else {
-    return res.status(200).json({
-      success: false,
-      isFallback: true,
-      error: lastError,
-      text: null
-    });
-  }
-};
+  return { success: false, error: lastError };
+}

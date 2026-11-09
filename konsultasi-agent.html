@@ -73,7 +73,7 @@
           </h1>
           <span id="badge-ai-status" class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 flex items-center gap-1">
             <i class="fa-solid fa-sparkles text-[8px] text-amber-300"></i>
-            <span id="badge-ai-text">Gemini AI Active</span>
+            <span id="badge-ai-text">AI Agent Online</span>
           </span>
         </div>
         <p class="text-[10.5px] sm:text-xs text-slate-400 mt-0.5 flex items-center gap-1.5">
@@ -318,9 +318,14 @@
           </div>`;
       } else {
         msgDiv.className = 'flex items-start gap-2.5 sm:gap-3.5 animate-fadeIn';
-        const badgeSource = source === 'gemini' 
-          ? '<span class="text-[9px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 font-bold">✨ Gemini AI</span>'
-          : '<span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-bold">🌿 Pakar BPP</span>';
+        let badgeSource;
+        if (source === 'openai') {
+          badgeSource = '<span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-bold">✨ OpenAI GPT</span>';
+        } else if (source === 'gemini') {
+          badgeSource = '<span class="text-[9px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 font-bold">✨ Gemini AI</span>';
+        } else {
+          badgeSource = '<span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-bold">🌿 Pakar BPP</span>';
+        }
 
         msgDiv.innerHTML = `
           <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-2xl bg-slate-900 border border-emerald-500/30 text-emerald-300 flex items-center justify-center text-xs shrink-0 mt-0.5 shadow-sm">
@@ -366,6 +371,24 @@
       }
     }
 
+    // Update Header Badge Status
+    function updateHeaderBadge(source) {
+      const elText = document.getElementById('badge-ai-text');
+      const elStatus = document.getElementById('badge-ai-status');
+      if (!elText || !elStatus) return;
+
+      if (source === 'openai') {
+        elText.innerText = 'OpenAI Active';
+        elStatus.className = 'px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-500/25 text-emerald-300 border border-emerald-400/40 flex items-center gap-1 shadow-sm';
+      } else if (source === 'gemini') {
+        elText.innerText = 'Gemini Active';
+        elStatus.className = 'px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-400/40 flex items-center gap-1 shadow-sm';
+      } else {
+        elText.innerText = 'Pakar BPP Mode';
+        elStatus.className = 'px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-teal-500/20 text-teal-300 border border-teal-400/40 flex items-center gap-1 shadow-sm';
+      }
+    }
+
     // Kirim Pertanyaan Petani ke AI
     async function kirimPesan() {
       const inp = document.getElementById('chat-input');
@@ -382,7 +405,7 @@
       if (btn) btn.disabled = true;
 
       try {
-        // Panggil Serverless Function Vercel /api/chat yang terhubung ke Gemini API Key
+        // Panggil Serverless Function Vercel /api/chat yang terhubung ke OpenAI / Gemini API Key
         const res = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -400,13 +423,16 @@
         if (data && data.success && data.text) {
           // Format markdown sederhana ke HTML
           const formatted = formatMarkdownToHtml(data.text);
-          tambahPesanKeUI('agent', formatted, 'gemini');
+          const src = data.source || 'openai';
+          tambahPesanKeUI('agent', formatted, src);
           sessionMessages.push({ sender: 'agent', text: data.text });
+          updateHeaderBadge(src);
         } else {
           // Fallback cerdas ke Sistem Pakar Agronomi Poktan jika API offline/limit
           const fallbackJawaban = responSistemPakarLokal(text);
           tambahPesanKeUI('agent', fallbackJawaban, 'pakar');
           sessionMessages.push({ sender: 'agent', text: fallbackJawaban });
+          updateHeaderBadge('pakar');
         }
       } catch (err) {
         console.warn('Gagal koneksi AI online, beralih ke Sistem Pakar lokal:', err);
@@ -414,6 +440,7 @@
         const fallbackJawaban = responSistemPakarLokal(text);
         tambahPesanKeUI('agent', fallbackJawaban, 'pakar');
         sessionMessages.push({ sender: 'agent', text: fallbackJawaban });
+        updateHeaderBadge('pakar');
       } finally {
         if (btn) btn.disabled = false;
         inp.focus();
