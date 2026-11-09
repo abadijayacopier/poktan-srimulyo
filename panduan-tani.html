@@ -476,19 +476,17 @@
               </div>
             </div>
 
-            <!-- Penjelasan Rumus Alokasi Resmi Poktan Sri Mulyo -->
+            <!-- Keterangan Alokasi Resmi Dari Kementerian Pertanian -->
             <div id="info-rumus-alokasi" class="hidden text-[11px] p-3 bg-emerald-50/90 rounded-2xl border border-emerald-200/90 text-emerald-950 space-y-1.5 animate-fadeIn">
               <div class="font-extrabold flex items-center justify-between text-emerald-900">
                 <span class="flex items-center gap-1.5">
-                  <i class="fa-solid fa-calculator text-emerald-600"></i>
-                  <span>Rumus Alokasi Resmi Poktan Sri Mulyo:</span>
+                  <i class="fa-solid fa-building-columns text-emerald-600"></i>
+                  <span>Alokasi Resmi Dari Kementerian Pertanian</span>
                 </span>
-                <span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-600 text-white font-black uppercase">Database Sheet</span>
+                <span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-700 text-white font-black uppercase tracking-wider">KEMENTAN RI</span>
               </div>
-              <p class="text-[10.5px] text-slate-600 leading-relaxed">
-                Dihitung dari rasio total alokasi pupuk di sheet e-RDKK dibagi total luas lahan Poktan Sri Mulyo (<b>54,20 Ha</b>):<br>
-                • <b>Urea:</b> (13.500 Kg ÷ 54,20 Ha) × Luas = <b class="text-emerald-900">249,08 Kg/Ha × Luas Lahan</b><br>
-                • <b>NPK Phonska:</b> (12.650 Kg ÷ 54,20 Ha) × Luas = <b class="text-emerald-900">233,39 Kg/Ha × Luas Lahan</b>
+              <p class="text-[10.5px] text-slate-700 leading-relaxed">
+                Dihitung dari alokasi dan luas lahan masing-masing petani, bukan wewenang pengurus kelompok tani, kios, dan BPP untuk merubah alokasi tersebut karena bisa dikenakan sanksi dari pemerintah pusat.
               </p>
             </div>
 
@@ -3382,12 +3380,12 @@
         const uRec = Math.round((13500 / 54.2) * luas);
         const nRec = Math.round((12650 / 54.2) * luas);
         const oRec = Math.round((10000 / 54.2) * luas);
-        return `Perhitungan <b>Alokasi Pupuk Resmi Poktan Sri Mulyo</b> untuk lahan <b>${luas} Ha</b>:<br>
-        • <b>Rumus Resmi Sheet:</b> (Total Alokasi di Sheet ÷ Total Luas 54,20 Ha) × Luas Lahan Petani.<br>
-        • <b>Urea Bersubsidi:</b> (13.500 kg ÷ 54,20 Ha) × ${luas} Ha = <b>${uRec} Kg</b> (± ${(uRec/50).toFixed(1)} Sak).<br>
-        • <b>NPK Phonska:</b> (12.650 kg ÷ 54,20 Ha) × ${luas} Ha = <b>${nRec} Kg</b> (± ${(nRec/50).toFixed(1)} Sak).<br>
-        • <b>Organik:</b> (10.000 kg ÷ 54,20 Ha) × ${luas} Ha = <b>${oRec} Kg</b> (± ${(oRec/50).toFixed(1)} Sak).<br><br>
-        Aplikasi pupuk dibagi ke dalam 3 tahapan (Dasar 0-7 HST, Susulan I 15-20 HST, dan Susulan II 30-35 HST) sesuai kalender tanam resmi.`;
+        return `Perkiraan <b>Alokasi Pupuk Resmi Dari Kementerian Pertanian</b> untuk lahan <b>${luas} Ha</b>:<br>
+        • <b>Urea Bersubsidi:</b> <b>${uRec} Kg</b> (± ${(uRec/50).toFixed(1)} Sak)<br>
+        • <b>NPK Phonska:</b> <b>${nRec} Kg</b> (± ${(nRec/50).toFixed(1)} Sak)<br>
+        • <b>Organik:</b> <b>${oRec} Kg</b> (± ${(oRec/50).toFixed(1)} Sak)<br><br>
+        <i>Catatan Resmi:</i> Alokasi ini dihitung dari alokasi dan luas lahan masing-masing petani sesuai ketetapan e-RDKK Kementerian Pertanian. Bukan wewenang pengurus kelompok tani, kios, maupun BPP untuk merubah alokasi tersebut karena bisa dikenakan sanksi dari pemerintah pusat.<br><br>
+        Aplikasi pupuk dibagi ke dalam 3 tahapan (Dasar 0-7 HST, Susulan I 15-20 HST, dan Susulan II 30-35 HST) sesuai jadwal kalender tanam resmi.`;
       }
 
       return `Matur suwun atas pertanyaannya Bpk/Ibu ${esc(c.nama)}.<br><br>` +
