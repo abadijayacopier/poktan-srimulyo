@@ -566,6 +566,18 @@
         • <b>Ulat Grayak (FAW):</b> Semprot bahan aktif <i>Emamektin Benzoat</i> (Proclaim) atau <i>Spinetoram</i> (Endure) tepat ke dalam corong pucuk tanaman sore hari pukul 16.00 WIB.`;
       }
 
+      if (/dosis pupuk|berapa pupuk|kebutuhan pupuk|jatah pupuk|hitung pupuk|alokasi pupuk|takaran pupuk/i.test(qLower)) {
+        const uRec = Math.round((13500 / 54.2) * luas);
+        const nRec = Math.round((12650 / 54.2) * luas);
+        const oRec = Math.round((10000 / 54.2) * luas);
+        return `Perhitungan <b>Alokasi Pupuk Resmi Poktan Sri Mulyo</b> untuk lahan <b>${luas} Ha</b>:<br>
+        • <b>Rumus Resmi Sheet:</b> (Total Alokasi di Sheet ÷ Total Luas 54,20 Ha) × Luas Lahan Petani.<br>
+        • <b>Urea Bersubsidi:</b> (13.500 kg ÷ 54,20 Ha) × ${luas} Ha = <b>${uRec} Kg</b> (± ${(uRec/50).toFixed(1)} Sak).<br>
+        • <b>NPK Phonska:</b> (12.650 kg ÷ 54,20 Ha) × ${luas} Ha = <b>${nRec} Kg</b> (± ${(nRec/50).toFixed(1)} Sak).<br>
+        • <b>Organik:</b> (10.000 kg ÷ 54,20 Ha) × ${luas} Ha = <b>${oRec} Kg</b> (± ${(oRec/50).toFixed(1)} Sak).<br><br>
+        Aplikasi pupuk dibagi ke dalam 3 tahapan (Dasar 0-7 HST, Susulan I 15-20 HST, dan Susulan II 30-35 HST) sesuai jadwal kalender tanam resmi.`;
+      }
+
       return `Matur suwun atas pertanyaannya Bpk/Ibu ${esc(c.nama)}.<br><br>` +
              `Untuk pertanaman <b>${esc(c.komoditas)} (${esc(c.varietas)})</b> seluas <b>${luas} Ha</b>, pastikan aplikasi pupuk dan obat mengikuti jadwal kalender tanam resmi.<br>` +
              `Jika panjenengan ingin pendampingan langsung ke petak sawah, silakan gunakan tombol <b>WhatsApp Pengurus Poktan</b> di bawah ini.`;

@@ -476,6 +476,22 @@
               </div>
             </div>
 
+            <!-- Penjelasan Rumus Alokasi Resmi Poktan Sri Mulyo -->
+            <div id="info-rumus-alokasi" class="hidden text-[11px] p-3 bg-emerald-50/90 rounded-2xl border border-emerald-200/90 text-emerald-950 space-y-1.5 animate-fadeIn">
+              <div class="font-extrabold flex items-center justify-between text-emerald-900">
+                <span class="flex items-center gap-1.5">
+                  <i class="fa-solid fa-calculator text-emerald-600"></i>
+                  <span>Rumus Alokasi Resmi Poktan Sri Mulyo:</span>
+                </span>
+                <span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-600 text-white font-black uppercase">Database Sheet</span>
+              </div>
+              <p class="text-[10.5px] text-slate-600 leading-relaxed">
+                Dihitung dari rasio total alokasi pupuk di sheet e-RDKK dibagi total luas lahan Poktan Sri Mulyo (<b>54,20 Ha</b>):<br>
+                • <b>Urea:</b> (13.500 Kg ÷ 54,20 Ha) × Luas = <b class="text-emerald-900">249,08 Kg/Ha × Luas Lahan</b><br>
+                • <b>NPK Phonska:</b> (12.650 Kg ÷ 54,20 Ha) × Luas = <b class="text-emerald-900">233,39 Kg/Ha × Luas Lahan</b>
+              </p>
+            </div>
+
             <!-- Catatan / Gejala Hama & Pilihan Rekomendasi Cepat -->
             <div>
               <div class="flex items-center justify-between mb-1">
@@ -1399,6 +1415,23 @@
       ]
     };
 
+    // Database Resmi Alokasi Pupuk Poktan Sri Mulyo (Tab ALOKASI PEMBAGIAN Google Sheet)
+    const ALOKASI_POKTAN = {
+      totalLuasLahan: 54.20, // Total Luas Lahan Sri Mulyo (Ha)
+      urea: {
+        totalKg: 13500, // Total Alokasi Urea di Sheet (Kg)
+        rasioPerHa: 13500 / 54.20 // 249.0775 Kg/Ha
+      },
+      npk: {
+        totalKg: 12650, // Total Alokasi Phonska/NPK di Sheet (Kg)
+        rasioPerHa: 12650 / 54.20 // 233.3948 Kg/Ha
+      },
+      organik: {
+        totalKg: 10000, // Total Alokasi Organik di Sheet (Kg)
+        rasioPerHa: 10000 / 54.20 // 184.5018 Kg/Ha
+      }
+    };
+
     // Katalog Penyakit & Hama untuk Tab Klinik
     const KATALOG_PENYAKIT = [
       {
@@ -1593,20 +1626,19 @@
       const komLabel = rawKom === 'Padi' ? 'Komoditas: Padi Sawah' : (rawKom === 'Jagung' ? 'Komoditas: Jagung Hibrida' : 'Komoditas: Tanaman Pilihan');
       document.getElementById('label-takaran-komoditas').innerText = komLabel;
       
-      // Standar alokasi perkiraan awal jika mode mandiri
+      // Standar alokasi perkiraan awal jika mode mandiri (Berdasarkan rasio resmi Sheet Poktan Sri Mulyo)
       if (window.isModeMandiri) {
         const luas = parseFloat(document.getElementById('calc-luas')?.value) || 0.35;
+        const rasioUrea = (ALOKASI_POKTAN.urea.totalKg / ALOKASI_POKTAN.totalLuasLahan);
+        const rasioNpk = (ALOKASI_POKTAN.npk.totalKg / ALOKASI_POKTAN.totalLuasLahan);
+        document.getElementById('calc-urea').value = Math.round(luas * rasioUrea);
+        document.getElementById('calc-npk').value = Math.round(luas * rasioNpk);
+
         if (rawKom === 'Padi') {
-          document.getElementById('calc-urea').value = Math.round(luas * 250);
-          document.getElementById('calc-npk').value = Math.round(luas * 300);
           document.getElementById('calc-umur-kustom').value = '115';
         } else if (rawKom === 'Jagung') {
-          document.getElementById('calc-urea').value = Math.round(luas * 300);
-          document.getElementById('calc-npk').value = Math.round(luas * 350);
           document.getElementById('calc-umur-kustom').value = '105';
         } else {
-          document.getElementById('calc-urea').value = Math.round(luas * 200);
-          document.getElementById('calc-npk').value = Math.round(luas * 250);
           document.getElementById('calc-umur-kustom').value = '100';
         }
       } else if (!petaniAktifTerpilih) {
@@ -1665,7 +1697,7 @@
       }
 
       // Prioritas 2: Tarik live data seketika dari Google Sheet Tab ALOKASI PEMBAGIAN (GViz API)
-      const GVIZ_URL = 'https://docs.google.com/spreadsheets/d/1c7R1klPcFSZ7W1PLaZyayZxBUOrVyLh-Lwc24Cf6CEY/gviz/tq?tqx=out:json&sheet=ALOKASI%20PEMBAGIAN&range=A2:N245&headers=0';
+      const GVIZ_URL = 'https://docs.google.com/spreadsheets/d/1c7R1klPcFSZ7W1PLaZyayZxBUOrVyLh-Lwc24Cf6CEY/gviz/tq?tqx=out:json&sheet=ALOKASI%20PEMBAGIAN&range=A2:S245&headers=0';
       try {
         const res = await fetch(GVIZ_URL);
         const txt = await res.text();
@@ -1673,6 +1705,20 @@
         const data = JSON.parse(jsonStr);
         const rows = data.table && data.table.rows;
         if (Array.isArray(rows) && rows.length > 0) {
+          // Baca live total alokasi dan rasio per Ha resmi dari sheet Poktan
+          if (rows[0] && rows[0].c && rows[0].c[15]) {
+            const valUrea = parseFloat(String(rows[0].c[15].v || '').replace(/[^0-9.]/g, ''));
+            const rasioU = rows[0].c[16] ? parseFloat(String(rows[0].c[16].v || '').replace(',', '.')) : 0;
+            if (valUrea > 0) ALOKASI_POKTAN.urea.totalKg = valUrea;
+            if (rasioU > 0) ALOKASI_POKTAN.urea.rasioPerHa = rasioU;
+          }
+          if (rows[1] && rows[1].c && rows[1].c[15]) {
+            const valNpk = parseFloat(String(rows[1].c[15].v || '').replace(/[^0-9.]/g, ''));
+            const rasioN = rows[1].c[16] ? parseFloat(String(rows[1].c[16].v || '').replace(',', '.')) : 0;
+            if (valNpk > 0) ALOKASI_POKTAN.npk.totalKg = valNpk;
+            if (rasioN > 0) ALOKASI_POKTAN.npk.rasioPerHa = rasioN;
+          }
+
           const list = [];
           rows.forEach(r => {
             const c = r.c;
@@ -1860,7 +1906,10 @@
       const lblUrea = document.getElementById('label-urea-tipe');
       const lblNpk = document.getElementById('label-npk-tipe');
 
+      const infoRumus = document.getElementById('info-rumus-alokasi');
+
       if (isMandiri) {
+        if (infoRumus) infoRumus.classList.remove('hidden');
         if (inpUrea) {
           inpUrea.readOnly = false;
           inpUrea.classList.remove('cursor-not-allowed', 'bg-white');
@@ -1876,6 +1925,7 @@
         if (lblUrea) lblUrea.innerHTML = '<span class="text-emerald-700 font-bold">🌾 Rekomendasi Poktan Sri Mulyo</span>';
         if (lblNpk) lblNpk.innerHTML = '<span class="text-emerald-700 font-bold">🌾 Rekomendasi Poktan Sri Mulyo</span>';
       } else {
+        if (infoRumus) infoRumus.classList.add('hidden');
         if (inpUrea) {
           inpUrea.readOnly = true;
           inpUrea.classList.add('cursor-not-allowed', 'bg-white');
@@ -1896,12 +1946,14 @@
     function onLuasLahanInput() {
       if (window.isModeMandiri) {
         const luas = parseFloat(document.getElementById('calc-luas')?.value) || 0;
-        const rawKom = document.getElementById('calc-komoditas')?.value || 'Padi';
-        const isPadi = (rawKom === 'Padi');
-        const isJagung = (rawKom === 'Jagung');
+        // Rumus Alokasi Resmi Poktan Sri Mulyo dari Sheet ALOKASI PEMBAGIAN:
+        // Urea = (Total Alokasi 13.500 kg ÷ Total Luas 54,20 Ha) × Luas Petani
+        // NPK = (Total Alokasi 12.650 kg ÷ Total Luas 54,20 Ha) × Luas Petani
+        const rasioUrea = (ALOKASI_POKTAN.urea.totalKg / ALOKASI_POKTAN.totalLuasLahan);
+        const rasioNpk = (ALOKASI_POKTAN.npk.totalKg / ALOKASI_POKTAN.totalLuasLahan);
 
-        const recUrea = isPadi ? Math.round(luas * 250) : (isJagung ? Math.round(luas * 300) : Math.round(luas * 200));
-        const recNpk = isPadi ? Math.round(luas * 300) : (isJagung ? Math.round(luas * 350) : Math.round(luas * 250));
+        const recUrea = Math.round(luas * rasioUrea);
+        const recNpk = Math.round(luas * rasioNpk);
 
         const inpUrea = document.getElementById('calc-urea');
         const inpNpk = document.getElementById('calc-npk');
@@ -3324,6 +3376,18 @@
         return `Pengendalian <b>Jamur Bulai & Ulat Grayak Jagung</b>:<br>
         • <b>Bulai:</b> Benih wajib seed dressing <i>Metalaksil</i>. Jika tanaman bergaris putih klorosis, cabut dan musnahkan.<br>
         • <b>Ulat Grayak (FAW):</b> Semprot <i>Emamektin Benzoat</i> ke corong daun sore hari pukul 16.00 WIB.`;
+      }
+
+      if (/dosis pupuk|berapa pupuk|kebutuhan pupuk|jatah pupuk|hitung pupuk|alokasi pupuk|takaran pupuk/i.test(qLower)) {
+        const uRec = Math.round((13500 / 54.2) * luas);
+        const nRec = Math.round((12650 / 54.2) * luas);
+        const oRec = Math.round((10000 / 54.2) * luas);
+        return `Perhitungan <b>Alokasi Pupuk Resmi Poktan Sri Mulyo</b> untuk lahan <b>${luas} Ha</b>:<br>
+        • <b>Rumus Resmi Sheet:</b> (Total Alokasi di Sheet ÷ Total Luas 54,20 Ha) × Luas Lahan Petani.<br>
+        • <b>Urea Bersubsidi:</b> (13.500 kg ÷ 54,20 Ha) × ${luas} Ha = <b>${uRec} Kg</b> (± ${(uRec/50).toFixed(1)} Sak).<br>
+        • <b>NPK Phonska:</b> (12.650 kg ÷ 54,20 Ha) × ${luas} Ha = <b>${nRec} Kg</b> (± ${(nRec/50).toFixed(1)} Sak).<br>
+        • <b>Organik:</b> (10.000 kg ÷ 54,20 Ha) × ${luas} Ha = <b>${oRec} Kg</b> (± ${(oRec/50).toFixed(1)} Sak).<br><br>
+        Aplikasi pupuk dibagi ke dalam 3 tahapan (Dasar 0-7 HST, Susulan I 15-20 HST, dan Susulan II 30-35 HST) sesuai kalender tanam resmi.`;
       }
 
       return `Matur suwun atas pertanyaannya Bpk/Ibu ${esc(c.nama)}.<br><br>` +
