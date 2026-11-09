@@ -306,12 +306,18 @@
             </div>
 
             <!-- NOTIFIKASI JIKA TIDAK TERDAFTAR DI e-RDKK -->
-            <div id="notif-tidak-terdaftar" class="hidden mt-2 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-start gap-2.5 transition animate-fadeIn">
-              <i class="fa-solid fa-triangle-exclamation text-rose-600 text-sm mt-0.5 shrink-0"></i>
-              <div class="flex-1 leading-tight">
-                <span class="font-bold text-rose-900">Nama / NIK tidak terdaftar di e-RDKK Kementerian Pertanian</span>
-                <p class="text-[10px] text-rose-600 font-normal mt-0.5">Pastikan ejaan nama atau NIK 16 digit sudah sesuai dengan data kelompok tani Poktan Sri Mulyo.</p>
+            <div id="notif-tidak-terdaftar" class="hidden mt-2 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-semibold space-y-2 transition animate-fadeIn">
+              <div class="flex items-start gap-2.5">
+                <i class="fa-solid fa-circle-info text-amber-600 text-sm mt-0.5 shrink-0"></i>
+                <div class="flex-1 leading-tight">
+                  <span class="font-bold text-amber-950">Nama / NIK belum tercantum di e-RDKK</span>
+                  <p class="text-[10px] text-amber-700 font-normal mt-0.5">Panjenengan tetap bisa menyusun rencana tanam dan menghitung kebutuhan pupuk presisi.</p>
+                </div>
               </div>
+              <button type="button" onclick="aktifkanModeMandiri()" class="w-full py-2 px-3 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm active:scale-95 cursor-pointer">
+                <i class="fa-solid fa-calculator"></i>
+                <span>Lanjut Input Mandiri (Masukkan Luas Lahan)</span>
+              </button>
             </div>
 
             <!-- NOTIFIKASI JIKA TERDAFTAR DI e-RDKK -->
@@ -322,167 +328,221 @@
               </div>
             </div>
 
-            <p id="helper-teks-petani" class="text-[10px] text-slate-400 mt-1">Data jatah Urea, NPK, dan Luas Lahan otomatis terisi jika terdaftar.</p>
-          </div>
-
-          <!-- NIK & Luas Lahan -->
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">NIK Petani</label>
-              <input type="text" id="calc-nik" placeholder="352003..." 
-                     class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-mono">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Luas Lahan (Ha)</label>
-              <input type="number" step="0.01" id="calc-luas" value="0.35" oninput="hitungDosis()" 
-                     class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-800">
+            <div class="mt-2.5 flex items-center justify-between text-xs">
+              <p id="helper-teks-petani" class="text-[10px] text-slate-400">Ketik nama petani atau NIK di atas.</p>
+              <button type="button" onclick="aktifkanModeMandiri()" id="btn-opsi-mandiri" class="text-[11px] text-emerald-700 hover:text-emerald-800 font-bold flex items-center gap-1 transition underline underline-offset-2 cursor-pointer">
+                <i class="fa-solid fa-user-plus text-[10px] text-emerald-600"></i>
+                <span>Petani Mandiri (Non e-RDKK)</span>
+              </button>
             </div>
           </div>
 
-          <!-- Pilihan Musim Tanam -->
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1.5">Musim Tanam (Pola Rotasi)</label>
-            <div class="grid grid-cols-3 gap-2 text-xs">
-              <label class="border rounded-xl p-2.5 text-center cursor-pointer transition select-none flex flex-col items-center gap-1 border-slate-200 hover:border-emerald-400 has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50/50 has-[:checked]:text-emerald-950 font-bold">
-                <input type="radio" name="calc-musim" value="MT 1 (Rendeng)" onchange="onMusimChanged()" class="hidden">
-                <span class="text-[10px] text-slate-400 font-semibold">Musim Hujan</span>
-                <span>MT 1</span>
-              </label>
-              <label class="border rounded-xl p-2.5 text-center cursor-pointer transition select-none flex flex-col items-center gap-1 border-slate-200 hover:border-emerald-400 has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50/50 has-[:checked]:text-emerald-950 font-bold">
-                <input type="radio" name="calc-musim" value="MT 2 (Gadu 1)" onchange="onMusimChanged()" class="hidden">
-                <span class="text-[10px] text-slate-400 font-semibold">Pancaroba</span>
-                <span>MT 2</span>
-              </label>
-              <label class="border rounded-xl p-2.5 text-center cursor-pointer transition select-none flex flex-col items-center gap-1 border-emerald-600 bg-emerald-50/50 text-emerald-950 font-bold has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50/50 has-[:checked]:text-emerald-950">
-                <input type="radio" name="calc-musim" value="MT 3 (Gadu 2)" checked onchange="onMusimChanged()" class="hidden">
-                <span class="text-[10px] text-emerald-700 font-semibold">Aktif 2026</span>
-                <span>MT 3</span>
-              </label>
+          <!-- ======================================================== -->
+          <!-- CONTAINER FORM DETAIL: HANYA MUNCUL SETELAH NIK/NAMA DIPILIH ATAU MODE MANDIRI -->
+          <!-- ======================================================== -->
+          <div id="container-form-detail" class="hidden space-y-4 animate-fadeIn">
+            
+            <!-- BANNER STATUS PETANI AKTIF -->
+            <div id="banner-status-petani" class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2 truncate">
+                <i id="icon-status-petani" class="fa-solid fa-id-card text-emerald-600"></i>
+                <span id="teks-status-petani" class="font-bold truncate">Data Petani Terbuka</span>
+              </div>
+              <button type="button" onclick="resetPencarianPetani()" class="text-[10px] text-rose-600 hover:text-rose-700 font-bold underline shrink-0 cursor-pointer">
+                Ganti Petani
+              </button>
             </div>
-          </div>
 
-          <!-- Pilihan Komoditas & Varietas Benih -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Komoditas</label>
-              <select id="calc-komoditas" onchange="onKomoditasChanged()" 
-                      class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
-                <option value="Padi" selected>🌾 Padi Sawah</option>
-                <option value="Jagung">🌽 Jagung Hibrida</option>
-                <option value="LAINNYA">🌱 Komoditas Lainnya (Ketik Sendiri...)</option>
-              </select>
-              
-              <!-- Input Kustom jika Komoditas Lainnya dipilih -->
-              <div id="wrapper-komoditas-kustom" class="hidden mt-2 animate-fadeIn">
-                <label class="block text-[10px] font-bold text-emerald-800 mb-1">Ketik Nama Komoditas</label>
-                <input type="text" id="calc-komoditas-kustom" oninput="hitungDosis()" 
-                       placeholder="Misal: Kedelai, Kacang Hijau..." 
-                       class="w-full px-3 py-1.5 rounded-xl border border-emerald-300 bg-emerald-50/50 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+            <!-- NIK & Luas Lahan -->
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">NIK Petani</label>
+                <input type="text" id="calc-nik" placeholder="352003..." readonly
+                       class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-mono text-slate-700 cursor-not-allowed select-none">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Luas Lahan (Ha)</label>
+                <input type="number" step="0.01" id="calc-luas" value="0.35" oninput="onLuasLahanInput()" 
+                       class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
               </div>
             </div>
 
+            <!-- Pilihan Musim Tanam -->
             <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Varietas Benih</label>
-              <select id="calc-varietas" onchange="onVarietasChanged()" 
-                      class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
-                <!-- Diisi otomatis oleh JavaScript -->
-              </select>
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">Musim Tanam (Pola Rotasi)</label>
+              <div class="grid grid-cols-3 gap-2 text-xs">
+                <label class="border rounded-xl p-2.5 text-center cursor-pointer transition select-none flex flex-col items-center gap-1 border-slate-200 hover:border-emerald-400 has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50/50 has-[:checked]:text-emerald-950 font-bold">
+                  <input type="radio" name="calc-musim" value="MT 1 (Rendeng)" onchange="onMusimChanged()" class="hidden">
+                  <span class="text-[10px] text-slate-400 font-semibold">Musim Hujan</span>
+                  <span>MT 1</span>
+                </label>
+                <label class="border rounded-xl p-2.5 text-center cursor-pointer transition select-none flex flex-col items-center gap-1 border-slate-200 hover:border-emerald-400 has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50/50 has-[:checked]:text-emerald-950 font-bold">
+                  <input type="radio" name="calc-musim" value="MT 2 (Gadu 1)" onchange="onMusimChanged()" class="hidden">
+                  <span class="text-[10px] text-slate-400 font-semibold">Pancaroba</span>
+                  <span>MT 2</span>
+                </label>
+                <label class="border rounded-xl p-2.5 text-center cursor-pointer transition select-none flex flex-col items-center gap-1 border-emerald-600 bg-emerald-50/50 text-emerald-950 font-bold has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50/50 has-[:checked]:text-emerald-950">
+                  <input type="radio" name="calc-musim" value="MT 3 (Gadu 2)" checked onchange="onMusimChanged()" class="hidden">
+                  <span class="text-[10px] text-emerald-700 font-semibold">Aktif 2026</span>
+                  <span>MT 3</span>
+                </label>
+              </div>
             </div>
 
-            <!-- Panel Khusus Ketik Varietas / Jenis Padi/Jagung Sendiri -->
-            <div id="wrapper-varietas-kustom" class="hidden sm:col-span-2 p-3 bg-emerald-50/70 rounded-2xl border border-emerald-200 space-y-2 animate-fadeIn">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-black text-emerald-950 flex items-center gap-1.5">
-                  <i class="fa-solid fa-pen-nib text-emerald-600"></i>
-                  <span>Ketik Nama Jenis / Varietas Sendiri</span>
-                </span>
-                <span class="text-[10px] text-emerald-700 font-bold bg-white px-2 py-0.5 rounded-full border border-emerald-200">Kustom</span>
-              </div>
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                <div class="sm:col-span-2">
-                  <label class="block text-[10px] font-bold text-slate-600 mb-1">Nama Jenis Benih / Varietas</label>
-                  <input type="text" id="calc-varietas-kustom" oninput="hitungDosis()" 
-                         placeholder="Misal: Inpari 48 Blas, Ketan Grendeng, BISI 2..." 
-                         class="w-full px-3 py-2 rounded-xl border border-emerald-300 bg-white text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+            <!-- Pilihan Komoditas & Varietas Benih -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Komoditas</label>
+                <select id="calc-komoditas" onchange="onKomoditasChanged()" 
+                        class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+                  <option value="Padi" selected>🌾 Padi Sawah</option>
+                  <option value="Jagung">🌽 Jagung Hibrida</option>
+                  <option value="LAINNYA">🌱 Komoditas Lainnya (Ketik Sendiri...)</option>
+                </select>
+                
+                <!-- Input Kustom jika Komoditas Lainnya dipilih -->
+                <div id="wrapper-komoditas-kustom" class="hidden mt-2 animate-fadeIn">
+                  <label class="block text-[10px] font-bold text-emerald-800 mb-1">Ketik Nama Komoditas</label>
+                  <input type="text" id="calc-komoditas-kustom" oninput="hitungDosis()" 
+                         placeholder="Misal: Kedelai, Kacang Hijau..." 
+                         class="w-full px-3 py-1.5 rounded-xl border border-emerald-300 bg-emerald-50/50 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
                 </div>
-                <div>
-                  <label class="block text-[10px] font-bold text-slate-600 mb-1">Perkiraan Umur Panen (HST)</label>
-                  <div class="relative">
-                    <input type="number" id="calc-umur-kustom" min="60" max="180" value="115" oninput="hitungDosis()" 
-                           class="w-full px-3 py-2 pr-10 rounded-xl border border-emerald-300 bg-white text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
-                    <span class="absolute right-2.5 top-2 text-[10px] font-bold text-slate-400">Hari</span>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Varietas Benih</label>
+                <select id="calc-varietas" onchange="onVarietasChanged()" 
+                        class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+                  <!-- Diisi otomatis oleh JavaScript -->
+                </select>
+              </div>
+
+              <!-- Panel Khusus Ketik Varietas / Jenis Padi/Jagung Sendiri -->
+              <div id="wrapper-varietas-kustom" class="hidden sm:col-span-2 p-3 bg-emerald-50/70 rounded-2xl border border-emerald-200 space-y-2 animate-fadeIn">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-black text-emerald-950 flex items-center gap-1.5">
+                    <i class="fa-solid fa-pen-nib text-emerald-600"></i>
+                    <span>Ketik Nama Jenis / Varietas Sendiri</span>
+                  </span>
+                  <span class="text-[10px] text-emerald-700 font-bold bg-white px-2 py-0.5 rounded-full border border-emerald-200">Kustom</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  <div class="sm:col-span-2">
+                    <label class="block text-[10px] font-bold text-slate-600 mb-1">Nama Jenis Benih / Varietas</label>
+                    <input type="text" id="calc-varietas-kustom" oninput="hitungDosis()" 
+                           placeholder="Misal: Inpari 48 Blas, Ketan Grendeng, BISI 2..." 
+                           class="w-full px-3 py-2 rounded-xl border border-emerald-300 bg-white text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+                  </div>
+                  <div>
+                    <label class="block text-[10px] font-bold text-slate-600 mb-1">Perkiraan Umur Panen (HST)</label>
+                    <div class="relative">
+                      <input type="number" id="calc-umur-kustom" min="60" max="180" value="115" oninput="hitungDosis()" 
+                             class="w-full px-3 py-2 pr-10 rounded-xl border border-emerald-300 bg-white text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+                      <span class="absolute right-2.5 top-2 text-[10px] font-bold text-slate-400">Hari</span>
+                    </div>
                   </div>
                 </div>
+                <p class="text-[10px] text-emerald-800/90 leading-tight">Umur panen digunakan untuk menghitung otomatis tanggal panen raya serta jadwal pemupukan berimbang.</p>
               </div>
-              <p class="text-[10px] text-emerald-800/90 leading-tight">Umur panen digunakan untuk menghitung otomatis tanggal panen raya serta jadwal pemupukan berimbang.</p>
             </div>
-          </div>
 
-          <!-- Tanggal Mulai Tanam / Sebar -->
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal Mulai Tanam / Sebar</label>
-            <input type="date" id="calc-tanggal-tanam" onchange="hitungDosis()" 
-                   class="w-full px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-800">
-            <p class="text-[10px] text-slate-400 mt-0.5">Sistem otomatis menghitung tanggal tiap tahapan pupuk & panen.</p>
-          </div>
+            <!-- Tanggal Mulai Tanam / Sebar -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal Mulai Tanam / Sebar</label>
+              <input type="date" id="calc-tanggal-tanam" onchange="hitungDosis()" 
+                     class="w-full px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-800">
+              <p class="text-[10px] text-slate-400 mt-0.5">Sistem otomatis menghitung tanggal tiap tahapan pupuk & panen.</p>
+            </div>
 
-          <!-- Total Alokasi Riil (Terkunci Sesuai e-RDKK Resmi - Read Only) -->
-          <div class="grid grid-cols-2 gap-3 p-3 bg-slate-100/80 rounded-2xl border border-slate-200">
+            <!-- Total Alokasi Riil / Rekomendasi Mandiri -->
+            <div class="grid grid-cols-2 gap-3 p-3 bg-slate-100/80 rounded-2xl border border-slate-200">
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="block text-[11px] font-bold text-slate-700">Total Alokasi Urea (Kg)</label>
+                  <i id="icon-lock-urea" class="fa-solid fa-lock text-[10px] text-slate-400" title="Terkunci resmi e-RDKK (hanya baca)"></i>
+                </div>
+                <input type="number" id="calc-urea" value="80" readonly
+                       class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-mono font-bold text-slate-700 cursor-not-allowed select-none shadow-2xs">
+                <span id="label-urea-tipe" class="block text-[9px] text-slate-400 font-medium mt-1">e-RDKK Resmi (Read-Only)</span>
+              </div>
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="block text-[11px] font-bold text-slate-700">Total Alokasi NPK (Kg)</label>
+                  <i id="icon-lock-npk" class="fa-solid fa-lock text-[10px] text-slate-400" title="Terkunci resmi e-RDKK (hanya baca)"></i>
+                </div>
+                <input type="number" id="calc-npk" value="72" readonly
+                       class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-mono font-bold text-slate-700 cursor-not-allowed select-none shadow-2xs">
+                <span id="label-npk-tipe" class="block text-[9px] text-slate-400 font-medium mt-1">e-RDKK Resmi (Read-Only)</span>
+              </div>
+            </div>
+
+            <!-- Catatan / Gejala Hama & Pilihan Rekomendasi Cepat -->
             <div>
               <div class="flex items-center justify-between mb-1">
-                <label class="block text-[11px] font-bold text-slate-700">Total Alokasi Urea (Kg)</label>
-                <i class="fa-solid fa-lock text-[10px] text-slate-400" title="Terkunci resmi e-RDKK (hanya baca)"></i>
+                <label class="block text-xs font-bold text-slate-700">Catatan Riwayat Hama Sawah &amp; Kondisi Tanah</label>
+                <span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1">
+                  <i class="fa-solid fa-seedling"></i> Rekomendasi PPL &amp; BPP
+                </span>
               </div>
-              <input type="number" id="calc-urea" value="80" readonly
-                     class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-mono font-bold text-slate-700 cursor-not-allowed select-none shadow-2xs">
-              <span class="block text-[9px] text-slate-400 font-medium mt-1">e-RDKK Resmi (Read-Only)</span>
-            </div>
-            <div>
-              <div class="flex items-center justify-between mb-1">
-                <label class="block text-[11px] font-bold text-slate-700">Total Alokasi NPK (Kg)</label>
-                <i class="fa-solid fa-lock text-[10px] text-slate-400" title="Terkunci resmi e-RDKK (hanya baca)"></i>
+              <input type="text" id="calc-catatan" oninput="hitungDosis()" placeholder="Misal: ada riwayat wereng / sundep / kresek musim lalu" 
+                     class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-800 font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+              <!-- Pilihan Cepat Gejala Hama untuk Petani -->
+              <div class="mt-2 flex flex-wrap gap-1.5 items-center">
+                <span class="text-[10px] font-bold text-slate-500 mr-0.5"><i class="fa-solid fa-wand-magic-sparkles text-emerald-600"></i> Pilih Gejala:</span>
+                <button type="button" onclick="tambahGejalaHama('Wereng Coklat')" class="px-2 py-0.5 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 text-[10px] font-bold transition active:scale-95 shadow-2xs">+ Wereng</button>
+                <button type="button" onclick="tambahGejalaHama('Sundep Penggerek')" class="px-2 py-0.5 rounded-lg bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200 text-[10px] font-bold transition active:scale-95 shadow-2xs">+ Sundep</button>
+                <button type="button" onclick="tambahGejalaHama('Kresek Bakteri')" class="px-2 py-0.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 text-[10px] font-bold transition active:scale-95 shadow-2xs">+ Kresek (BLB)</button>
+                <button type="button" onclick="tambahGejalaHama('Jamur Blas Leher')" class="px-2 py-0.5 rounded-lg bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 text-[10px] font-bold transition active:scale-95 shadow-2xs">+ Jamur Blas</button>
+                <button type="button" onclick="tambahGejalaHama('Tanah Asem-Aseman')" class="px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 text-[10px] font-bold transition active:scale-95 shadow-2xs">+ Tanah Asem</button>
+                <button type="button" onclick="tambahGejalaHama('Tikus Sawah')" class="px-2 py-0.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 text-[10px] font-bold transition active:scale-95 shadow-2xs">+ Tikus</button>
+                <button type="button" onclick="tambahGejalaHama('Ulat Grayak')" class="px-2 py-0.5 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 text-[10px] font-bold transition active:scale-95 shadow-2xs">+ Ulat Grayak</button>
               </div>
-              <input type="number" id="calc-npk" value="72" readonly
-                     class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-mono font-bold text-slate-700 cursor-not-allowed select-none shadow-2xs">
-              <span class="block text-[9px] text-slate-400 font-medium mt-1">e-RDKK Resmi (Read-Only)</span>
             </div>
-          </div>
 
-          <!-- Catatan / Gejala Hama & Pilihan Rekomendasi Cepat -->
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <label class="block text-xs font-bold text-slate-700">Catatan Riwayat Hama Sawah &amp; Kondisi Tanah</label>
-              <span class="text-[10px] text-emerald-700 font-bold flex items-center gap-1">
-                <i class="fa-solid fa-seedling"></i> Rekomendasi PPL &amp; BPP
-              </span>
-            </div>
-            <input type="text" id="calc-catatan" oninput="hitungDosis()" placeholder="Misal: ada riwayat wereng / sundep / kresek musim lalu" 
-                   class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-800 font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
-            <!-- Pilihan Cepat Gejala Hama untuk Petani -->
-            <div class="mt-2 flex flex-wrap gap-1.5 items-center">
-              <span class="text-[10px] font-bold text-slate-500 mr-0.5"><i class="fa-solid fa-wand-magic-sparkles text-emerald-600"></i> Pilih Gejala:</span>
-              <button type="button" onclick="tambahGejalaHama('Wereng Coklat')" class="px-2 py-0.5 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 text-[10px] font-bold transition active:scale-95 shadow-2xs">+ Wereng</button>
-              <button type="button" onclick="tambahGejalaHama('Sundep Penggerek')" class="px-2 py-0.5 rounded-lg bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200 text-[10px] font-bold transition active:scale-95 shadow-2xs">+ Sundep</button>
-              <button type="button" onclick="tambahGejalaHama('Kresek Bakteri')" class="px-2 py-0.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 text-[10px] font-bold transition active:scale-95 shadow-2xs">+ Kresek (BLB)</button>
-              <button type="button" onclick="tambahGejalaHama('Jamur Blas Leher')" class="px-2 py-0.5 rounded-lg bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-200 text-[10px] font-bold transition active:scale-95 shadow-2xs">+ Jamur Blas</button>
-              <button type="button" onclick="tambahGejalaHama('Tanah Asem-Aseman')" class="px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 text-[10px] font-bold transition active:scale-95 shadow-2xs">+ Tanah Asem</button>
-              <button type="button" onclick="tambahGejalaHama('Tikus Sawah')" class="px-2 py-0.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 text-[10px] font-bold transition active:scale-95 shadow-2xs">+ Tikus</button>
-              <button type="button" onclick="tambahGejalaHama('Ulat Grayak')" class="px-2 py-0.5 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 text-[10px] font-bold transition active:scale-95 shadow-2xs">+ Ulat Grayak</button>
-            </div>
+            <!-- Tombol Kirim & Simpan ke Poktan -->
+            <button type="button" onclick="simpanRencanaTani()" id="btn-simpan-rencana"
+                    class="w-full py-3.5 px-4 rounded-2xl bg-emerald-700 hover:bg-emerald-800 active:scale-[0.99] text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-emerald-800/20 transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <span>Simpan Rencana Tanam ke Poktan &amp; BPP</span>
+            </button>
           </div>
-
-          <!-- Tombol Kirim & Simpan ke Poktan -->
-          <button type="button" onclick="simpanRencanaTani()" id="btn-simpan-rencana"
-                  class="w-full py-3.5 px-4 rounded-2xl bg-emerald-700 hover:bg-emerald-800 active:scale-[0.99] text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-emerald-800/20 transition flex items-center justify-center gap-2">
-            <i class="fa-solid fa-cloud-arrow-up"></i>
-            <span>Simpan Rencana Tanam ke Poktan &amp; BPP</span>
-          </button>
         </div>
 
         <!-- KOLOM KANAN: HASIL REKOMENDASI DOSIS & KALENDER PANEN (LG: 7 COL) -->
         <div class="lg:col-span-7 space-y-4">
           
-          <!-- KARTU HASIL: ESTIMASI PANEN RAYA -->
+          <!-- PLACEHOLDER SEBELUM PETANI MEMILIH NIK/NAMA ATAU JALUR MANDIRI -->
+          <div id="placeholder-belum-pilih" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/90 shadow-sm flex flex-col items-center justify-center text-center space-y-4 min-h-[460px] animate-fadeIn">
+            <div class="w-16 h-16 rounded-3xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center text-2xl shadow-inner">
+              <i class="fa-solid fa-wheat-awn"></i>
+            </div>
+            <div class="max-w-md space-y-1.5">
+              <h3 class="text-base sm:text-lg font-black text-slate-900">Rencana Budidaya Tani &amp; Dosis Presisi</h3>
+              <p class="text-xs text-slate-500 leading-relaxed">
+                Silakan cari <b>Nama Petani</b> atau <b>NIK 16 Digit</b> Anda di kotak pencarian untuk menampilkan jatah alokasi e-RDKK resmi, musim tanam, dan jadwal pemupukan berimbang.
+              </p>
+            </div>
+            
+            <div class="p-3.5 bg-emerald-50/60 rounded-2xl border border-emerald-200/80 text-xs text-slate-600 max-w-sm text-left space-y-1.5">
+              <div class="font-bold text-emerald-950 flex items-center gap-1.5 text-xs">
+                <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                <span>Belum Terdaftar di e-RDKK?</span>
+              </div>
+              <p class="text-[11px] text-slate-600 leading-relaxed">
+                Tetap bisa dihitung! Cukup klik tombol <b>Input Mandiri</b> untuk memasukkan luas petak sawah. Dosis pupuk dan jadwal panen akan dihitung otomatis sesuai standar resmi Poktan Sri Mulyo.
+              </p>
+            </div>
+
+            <button type="button" onclick="aktifkanModeMandiri()" class="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-md shadow-emerald-800/20 transition flex items-center gap-2 active:scale-95 cursor-pointer">
+              <i class="fa-solid fa-calculator"></i>
+              <span>Buka Sebagai Petani Mandiri</span>
+            </button>
+          </div>
+
+          <!-- KARTU HASIL: HANYA MUNCUL SETELAH NIK/NAMA DIPILIH ATAU MODE MANDIRI DIAKTIFKAN -->
+          <div id="container-hasil-rencana" class="hidden space-y-4 animate-fadeIn">
+            
+            <!-- KARTU HASIL: ESTIMASI PANEN RAYA -->
           <div class="bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 border border-amber-300 rounded-3xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <span class="px-2.5 py-0.5 rounded-md bg-amber-500 text-slate-950 text-[10px] font-black uppercase">
@@ -689,9 +749,11 @@
               </button>
             </div>
 
-          </div>
+          </div> <!-- Akhir card-ai-agronomi -->
 
-        </div>
+        </div> <!-- Akhir container-hasil-rencana -->
+
+      </div> <!-- Akhir lg:col-span-7 -->
 
       </div>
 
@@ -1269,6 +1331,13 @@
       const tFooter = document.getElementById('tahun-footer');
       if (tFooter) tFooter.innerText = new Date().getFullYear();
 
+      // Sembunyikan formulir detail & hasil sampai NIK/Nama dicari atau Petani Mandiri dipilih
+      petaniAktifTerpilih = null;
+      window.isModeMandiri = false;
+      document.getElementById('container-form-detail')?.classList.add('hidden');
+      document.getElementById('container-hasil-rencana')?.classList.add('hidden');
+      document.getElementById('placeholder-belum-pilih')?.classList.remove('hidden');
+
       onKomoditasChanged();
       muatDaftarPetani();
       muatRiwayatRencanaTani();
@@ -1364,15 +1433,28 @@
       const komLabel = rawKom === 'Padi' ? 'Komoditas: Padi Sawah' : (rawKom === 'Jagung' ? 'Komoditas: Jagung Hibrida' : 'Komoditas: Tanaman Pilihan');
       document.getElementById('label-takaran-komoditas').innerText = komLabel;
       
-      // Standar alokasi perkiraan awal
-      if (rawKom === 'Padi') {
-        document.getElementById('calc-urea').value = '80';
-        document.getElementById('calc-npk').value = '72';
-        document.getElementById('calc-umur-kustom').value = '115';
-      } else if (rawKom === 'Jagung') {
-        document.getElementById('calc-urea').value = '90';
-        document.getElementById('calc-npk').value = '60';
-        document.getElementById('calc-umur-kustom').value = '105';
+      // Standar alokasi perkiraan awal jika mode mandiri
+      if (window.isModeMandiri) {
+        const luas = parseFloat(document.getElementById('calc-luas')?.value) || 0.35;
+        if (rawKom === 'Padi') {
+          document.getElementById('calc-urea').value = Math.round(luas * 250);
+          document.getElementById('calc-npk').value = Math.round(luas * 300);
+          document.getElementById('calc-umur-kustom').value = '115';
+        } else if (rawKom === 'Jagung') {
+          document.getElementById('calc-urea').value = Math.round(luas * 300);
+          document.getElementById('calc-npk').value = Math.round(luas * 350);
+          document.getElementById('calc-umur-kustom').value = '105';
+        } else {
+          document.getElementById('calc-urea').value = Math.round(luas * 200);
+          document.getElementById('calc-npk').value = Math.round(luas * 250);
+          document.getElementById('calc-umur-kustom').value = '100';
+        }
+      } else if (!petaniAktifTerpilih) {
+        if (rawKom === 'Padi') {
+          document.getElementById('calc-umur-kustom').value = '115';
+        } else if (rawKom === 'Jagung') {
+          document.getElementById('calc-umur-kustom').value = '105';
+        }
       }
 
       onVarietasChanged();
@@ -1563,13 +1645,122 @@
       }
     }
 
+    window.isModeMandiri = false;
+
+    function aktifkanModeMandiri() {
+      window.isModeMandiri = true;
+      const inputCari = document.getElementById('input-petani');
+      let namaInput = (inputCari ? inputCari.value : '').trim();
+      if (!namaInput) namaInput = 'Petani Mandiri';
+
+      const elLuas = document.getElementById('calc-luas');
+      const luasVal = parseFloat(elLuas?.value) || 0.35;
+
+      petaniAktifTerpilih = {
+        nama: namaInput,
+        nik: 'MANDIRI',
+        luas: luasVal,
+        urea: 0,
+        npk: 0,
+        isMandiri: true
+      };
+
+      if (inputCari) inputCari.value = namaInput;
+      const elNik = document.getElementById('calc-nik');
+      if (elNik) elNik.value = '(Non e-RDKK / Petani Mandiri)';
+      if (elLuas) elLuas.value = luasVal;
+
+      document.getElementById('notif-tidak-terdaftar')?.classList.add('hidden');
+      document.getElementById('notif-terdaftar')?.classList.add('hidden');
+      document.getElementById('dropdown-petani')?.classList.add('hidden');
+
+      // Tampilkan form detail & kolom hasil rekomendasi
+      document.getElementById('container-form-detail')?.classList.remove('hidden');
+      document.getElementById('container-hasil-rencana')?.classList.remove('hidden');
+      document.getElementById('placeholder-belum-pilih')?.classList.add('hidden');
+
+      const teksStatus = document.getElementById('teks-status-petani');
+      if (teksStatus) teksStatus.innerText = `Mode Petani Mandiri: ${namaInput} (Rekomendasi Presisi Poktan)`;
+
+      const badgeStatus = document.getElementById('badge-pencarian');
+      if (badgeStatus) badgeStatus.innerText = 'Petani Mandiri';
+
+      const btnClear = document.getElementById('btn-clear-petani');
+      if (btnClear) btnClear.classList.remove('hidden');
+
+      setPupukMode(true);
+      onLuasLahanInput();
+    }
+
+    function setPupukMode(isMandiri) {
+      const inpUrea = document.getElementById('calc-urea');
+      const inpNpk = document.getElementById('calc-npk');
+      const lockUrea = document.getElementById('icon-lock-urea');
+      const lockNpk = document.getElementById('icon-lock-npk');
+      const lblUrea = document.getElementById('label-urea-tipe');
+      const lblNpk = document.getElementById('label-npk-tipe');
+
+      if (isMandiri) {
+        if (inpUrea) {
+          inpUrea.readOnly = false;
+          inpUrea.classList.remove('cursor-not-allowed', 'bg-white');
+          inpUrea.classList.add('bg-emerald-50/40', 'border-emerald-300');
+        }
+        if (inpNpk) {
+          inpNpk.readOnly = false;
+          inpNpk.classList.remove('cursor-not-allowed', 'bg-white');
+          inpNpk.classList.add('bg-emerald-50/40', 'border-emerald-300');
+        }
+        if (lockUrea) lockUrea.className = 'fa-solid fa-calculator text-[10px] text-emerald-600';
+        if (lockNpk) lockNpk.className = 'fa-solid fa-calculator text-[10px] text-emerald-600';
+        if (lblUrea) lblUrea.innerHTML = '<span class="text-emerald-700 font-bold">🌾 Rekomendasi Poktan Sri Mulyo</span>';
+        if (lblNpk) lblNpk.innerHTML = '<span class="text-emerald-700 font-bold">🌾 Rekomendasi Poktan Sri Mulyo</span>';
+      } else {
+        if (inpUrea) {
+          inpUrea.readOnly = true;
+          inpUrea.classList.add('cursor-not-allowed', 'bg-white');
+          inpUrea.classList.remove('bg-emerald-50/40', 'border-emerald-300');
+        }
+        if (inpNpk) {
+          inpNpk.readOnly = true;
+          inpNpk.classList.add('cursor-not-allowed', 'bg-white');
+          inpNpk.classList.remove('bg-emerald-50/40', 'border-emerald-300');
+        }
+        if (lockUrea) lockUrea.className = 'fa-solid fa-lock text-[10px] text-slate-400';
+        if (lockNpk) lockNpk.className = 'fa-solid fa-lock text-[10px] text-slate-400';
+        if (lblUrea) lblUrea.innerText = 'e-RDKK Resmi (Read-Only)';
+        if (lblNpk) lblNpk.innerText = 'e-RDKK Resmi (Read-Only)';
+      }
+    }
+
+    function onLuasLahanInput() {
+      if (window.isModeMandiri) {
+        const luas = parseFloat(document.getElementById('calc-luas')?.value) || 0;
+        const rawKom = document.getElementById('calc-komoditas')?.value || 'Padi';
+        const isPadi = (rawKom === 'Padi');
+        const isJagung = (rawKom === 'Jagung');
+
+        const recUrea = isPadi ? Math.round(luas * 250) : (isJagung ? Math.round(luas * 300) : Math.round(luas * 200));
+        const recNpk = isPadi ? Math.round(luas * 300) : (isJagung ? Math.round(luas * 350) : Math.round(luas * 250));
+
+        const inpUrea = document.getElementById('calc-urea');
+        const inpNpk = document.getElementById('calc-npk');
+        if (inpUrea) inpUrea.value = recUrea;
+        if (inpNpk) inpNpk.value = recNpk;
+      }
+      hitungDosis();
+    }
+
     function terapkanPetani(petani, tutupDropdown = true) {
+      window.isModeMandiri = false;
       petaniAktifTerpilih = petani;
       document.getElementById('input-petani').value = petani.nama;
       document.getElementById('calc-nik').value = petani.nik;
       document.getElementById('calc-luas').value = parseFloat(String(petani.luas).replace(',', '.')) || 0.35;
       if (parseFloat(petani.urea)) document.getElementById('calc-urea').value = petani.urea;
       if (parseFloat(petani.npk)) document.getElementById('calc-npk').value = petani.npk;
+
+      setPupukMode(false);
 
       if (tutupDropdown) {
         document.getElementById('dropdown-petani').classList.add('hidden');
@@ -1583,6 +1774,14 @@
         notifSuccess.classList.remove('hidden');
       }
 
+      // Tampilkan form detail & kolom hasil rekomendasi
+      document.getElementById('container-form-detail')?.classList.remove('hidden');
+      document.getElementById('container-hasil-rencana')?.classList.remove('hidden');
+      document.getElementById('placeholder-belum-pilih')?.classList.add('hidden');
+
+      const teksStatus = document.getElementById('teks-status-petani');
+      if (teksStatus) teksStatus.innerText = `Terdaftar e-RDKK: ${petani.nama}`;
+
       const badgeStatus = document.getElementById('badge-pencarian');
       if (badgeStatus) badgeStatus.innerText = 'Terverifikasi e-RDKK';
 
@@ -1593,6 +1792,7 @@
     }
 
     function resetPencarianPetani() {
+      window.isModeMandiri = false;
       document.getElementById('input-petani').value = '';
       document.getElementById('calc-nik').value = '';
       document.getElementById('btn-clear-petani').classList.add('hidden');
@@ -1600,6 +1800,11 @@
       document.getElementById('notif-tidak-terdaftar').classList.add('hidden');
       document.getElementById('notif-terdaftar').classList.add('hidden');
       
+      // Sembunyikan form dan hasil, kembalikan ke placeholder awal
+      document.getElementById('container-form-detail')?.classList.add('hidden');
+      document.getElementById('container-hasil-rencana')?.classList.add('hidden');
+      document.getElementById('placeholder-belum-pilih')?.classList.remove('hidden');
+
       const badgeStatus = document.getElementById('badge-pencarian');
       if (badgeStatus) badgeStatus.innerText = 'Cari Nama / NIK';
 
