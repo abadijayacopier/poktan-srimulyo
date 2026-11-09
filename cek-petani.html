@@ -475,7 +475,7 @@
           <span>Tempat Penyerahan Berkas</span>
         </div>
         <p class="text-xs text-amber-950 leading-relaxed">
-          Serahkan langsung berkas kepada <strong>Pengurus Poktan Sri Mulyo</strong> di Desa Kediren, Kecamatan Lembeyan. Berkas akan diverifikasi bersama Petugas Penyuluh Lapangan (PPL BPP Kec. Lembeyan) untuk pengusulan kuota pupuk musim berikutnya.
+          Serahkan langsung berkas kepada <strong>Pengurus Poktan Sri Mulyo</strong> di Desa Kediren, Kecamatan Lembeyan (WhatsApp: <a href="https://wa.me/6285655620979" target="_blank" class="font-bold underline text-emerald-800">0856-5562-0979</a>). Berkas akan diverifikasi bersama Petugas Penyuluh Lapangan (PPL BPP Kec. Lembeyan) untuk pengusulan kuota pupuk musim berikutnya.
         </p>
       </div>
 
@@ -484,7 +484,7 @@
         <div class="flex items-center gap-2 flex-wrap">
           <button onclick="hubungiWaPengajuan()" class="px-4 py-2.5 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold text-xs transition flex items-center gap-2 shadow-sm">
             <i class="fa-brands fa-whatsapp text-sm"></i>
-            <span>Kirim Pesan WhatsApp ke Pengurus</span>
+            <span>Kirim WhatsApp ke Pengurus (0856-5562-0979)</span>
           </button>
           <a href="panduan-tani.html#kalkulator" class="px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs transition flex items-center gap-2 shadow-sm">
             <i class="fa-solid fa-calculator text-amber-300"></i>
@@ -881,6 +881,9 @@
       return 'bg-slate-100 text-slate-800 border-slate-300';
     }
 
+    // Nomor WhatsApp Resmi Pengurus Poktan Sri Mulyo
+    const NO_WA_PENGURUS = '6285655620979';
+
     // WhatsApp Pengurus Konfirmasi Terdaftar
     function hubungiWaPengurus() {
       if (!selectedPetani) return;
@@ -892,14 +895,14 @@
       const organik = selectedPetani.organik || '0';
 
       const pesan = `Halo Pengurus Poktan Sri Mulyo Desa Kediren,\n\nSaya ingin konfirmasi pengambilan alokasi pupuk e-RDKK MT3 2026:\n- Nama: ${nama}\n- NIK: ${nik}\n- Status Saat Ini: ${status}\n- Alokasi Pupuk: Urea ${urea} Kg, NPK ${npk} Kg, Organik ${organik} Kg.\n\nMohon informasi jadwal penebusan di kios / pengumpulan KTP. Terima kasih.`;
-      window.open('https://wa.me/?text=' + encodeURIComponent(pesan), '_blank');
+      window.open('https://wa.me/' + NO_WA_PENGURUS + '?text=' + encodeURIComponent(pesan), '_blank');
     }
 
     // WhatsApp Pengajuan Berkas Baru
     function hubungiWaPengajuan() {
       const kw = document.getElementById('notfound-keyword').textContent || '';
       const pesan = `Halo Pengurus Poktan Sri Mulyo Desa Kediren,\n\nSaya mengecek data di website dengan NIK/Nama: "${kw}" dan belum terdaftar dalam e-RDKK MT3 2026.\n\nSaya berniat mengajukan pendaftaran e-RDKK dengan melampirkan berkas persyaratan:\n1. Fotocopy KTP Pemilik/Penggarap\n2. Fotocopy Kartu Keluarga (KK)\n3. Fotocopy Pipil Pajak / SPPT PBB Sawah\n\nKapan saya bisa menyerahkan berkas fisik ini kepada pengurus? Terima kasih.`;
-      window.open('https://wa.me/?text=' + encodeURIComponent(pesan), '_blank');
+      window.open('https://wa.me/' + NO_WA_PENGURUS + '?text=' + encodeURIComponent(pesan), '_blank');
     }
 
     function escapeHtml(text) {
