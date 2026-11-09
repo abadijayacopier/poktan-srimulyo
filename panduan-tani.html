@@ -681,7 +681,7 @@
 
             <!-- TOMBOL KONSULTASI INTERAKTIF AGENT POKTAN SRI MULYO -->
             <div class="pt-3 border-t border-white/10">
-              <button type="button" onclick="bukaKonsultasiAgentPoktan()" id="btn-tanya-agent" 
+              <button type="button" id="btn-tanya-agent" 
                       class="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-600 text-white font-black text-xs sm:text-sm shadow-lg hover:shadow-emerald-500/25 transition active:scale-98 flex items-center justify-center gap-2 border border-emerald-400/40 cursor-pointer">
                 <i class="fa-solid fa-headset text-amber-300 text-base"></i>
                 <span>Konsultasi Agent Poktan Sri Mulyo</span>
@@ -2747,6 +2747,22 @@
       renderChatAgent();
       document.getElementById('modal-konsultasi-agent').classList.remove('hidden');
       setTimeout(() => document.getElementById('agent-chat-input')?.focus(), 150);
+    }
+
+    // Ekspos handler secara eksplisit dan pasang listener langsung agar tombol
+    // tetap berfungsi konsisten pada deployment statis/Preview Vercel.
+    window.bukaKonsultasiAgentPoktan = bukaKonsultasiAgentPoktan;
+    const tombolBukaAgent = document.getElementById('btn-tanya-agent');
+    if (tombolBukaAgent) {
+      tombolBukaAgent.addEventListener('click', function (event) {
+        event.preventDefault();
+        try {
+          window.bukaKonsultasiAgentPoktan();
+        } catch (error) {
+          console.error('Gagal membuka konsultasi Agent Poktan:', error);
+          alert('Konsultasi belum dapat dibuka. Muat ulang halaman dan coba kembali.');
+        }
+      });
     }
 
     function tutupKonsultasiAgentPoktan() {
