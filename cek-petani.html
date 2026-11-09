@@ -31,29 +31,32 @@
       font-family: var(--font-mono);
     }
 
-    /* Print Styling untuk Cetak Kartu / Bukti Alokasi Petani */
+    /* Print Styling untuk Cetak Surat Bukti Alokasi Resmi Petani */
     @page {
       size: A4 portrait;
       margin: 12mm 15mm;
     }
     @media print {
-      body {
+      html, body {
         background: white !important;
-        color: #0f172a !important;
+        color: #000000 !important;
+        font-size: 11pt !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
-      .no-print, header, footer, #search-card, #state-idle, #state-tidak-terdaftar, #toast-container, .print-btn-group {
+      /* Sembunyikan SEMUA elemen web UI saat cetak */
+      header, footer, main, .no-print, #search-card, #state-idle, #state-terdaftar, #state-tidak-terdaftar, #print-kop, .card-printable, .print-btn-group {
         display: none !important;
       }
-      #print-kop {
+      /* Tampilkan HANYA dokumen surat bukti resmi */
+      #print-surat-bukti {
         display: block !important;
-      }
-      .card-printable {
-        box-shadow: none !important;
-        border: 1px solid #cbd5e1 !important;
+        visibility: visible !important;
+        width: 100% !important;
+        margin: 0 !important;
         padding: 0 !important;
-      }
-      .print-border {
-        border-color: #94a3b8 !important;
       }
     }
   </style>
@@ -157,17 +160,6 @@
               <span id="sync-counter">195 Petani Terdata</span>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PRINT-ONLY KOP SURAT (Hanya tampil saat cetak) -->
-    <div id="print-kop" class="hidden pb-4 mb-4 border-b-2 border-slate-800 text-center">
-      <div class="flex items-center justify-center gap-3">
-        <div>
-          <h2 class="text-lg font-black tracking-wider uppercase text-slate-900">KELOMPOK TANI SRI MULYO</h2>
-          <h3 class="text-xs font-bold text-slate-700 tracking-wide uppercase">DESA KEDIREN, KECAMATAN LEMBEYAN, KABUPATEN MAGETAN</h3>
-          <p class="text-[10px] text-slate-500 mt-0.5">Wilayah Binaan BPP Kecamatan Lembeyan · Alokasi Resmi e-RDKK MT III 2026</p>
         </div>
       </div>
     </div>
@@ -348,22 +340,6 @@
           </p>
         </div>
 
-        <!-- Tanda Tangan / Pengesahan saat dicetak -->
-        <div class="hidden print:block pt-8 text-xs text-slate-800">
-          <div class="grid grid-cols-2 gap-8 text-center">
-            <div>
-              <p class="text-[11px] text-slate-500">Petani Yang Bersangkutan,</p>
-              <div class="h-16"></div>
-              <p class="font-black underline" id="print-nama-petani">( ..................................... )</p>
-            </div>
-            <div>
-              <p class="text-[11px] text-slate-500">Pengurus Poktan Sri Mulyo,</p>
-              <div class="h-16"></div>
-              <p class="font-black underline">( Pengurus Poktan Sri Mulyo )</p>
-            </div>
-          </div>
-        </div>
-
       </div>
 
       <!-- Action Buttons (no print) -->
@@ -489,9 +465,151 @@
         </button>
       </div>
 
-    </div>
-
   </main>
+
+  <!-- ======================================================== -->
+  <!-- LEMBAR CETAK RESMI: BUKTI ALOKASI & PENEBUSAN e-RDKK     -->
+  <!-- Hanya tampil saat Cetak / Print / PDF                    -->
+  <!-- ======================================================== -->
+  <div id="print-surat-bukti" class="hidden">
+    <div class="max-w-3xl mx-auto p-4 text-black font-sans leading-relaxed">
+      
+      <!-- KOP SURAT RESMI POKTAN SRI MULYO -->
+      <div class="border-b-4 border-double border-black pb-3 mb-4 text-center">
+        <h2 class="text-xl font-black uppercase tracking-widest text-black">KELOMPOK TANI &ldquo;SRI MULYO&rdquo;</h2>
+        <h3 class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-black mt-0.5">DESA KEDIREN, KECAMATAN LEMBEYAN, KABUPATEN MAGETAN</h3>
+        <p class="text-[11px] text-slate-700 mt-1">
+          Sekretariat: Desa Kediren RT 08 / RW 02, Kec. Lembeyan, Kab. Magetan, Jawa Timur · Kontak: 0856-5562-0979
+        </p>
+        <p class="text-[10px] text-slate-600 italic">Wilayah Binaan Balai Penyuluhan Pertanian (BPP) Kecamatan Lembeyan</p>
+      </div>
+
+      <!-- JUDUL SURAT KETERANGAN -->
+      <div class="text-center mb-5">
+        <h3 class="text-sm sm:text-base font-black uppercase tracking-wide text-black underline underline-offset-4">
+          SURAT BUKTI ALOKASI RESMI e-RDKK &amp; STATUS PENEBUSAN
+        </h3>
+        <p class="text-xs font-semibold text-slate-700 mt-0.5">Musim Tanam III (MT 3) Tahun 2026</p>
+      </div>
+
+      <!-- BAGIAN I: DATA PETANI PENERIMA -->
+      <div class="mb-5">
+        <h4 class="text-xs font-black uppercase tracking-wider text-black bg-slate-100 px-2 py-1 border border-slate-300 mb-2">
+          I. IDENTITAS PETANI TERDAFTAR:
+        </h4>
+        <table class="w-full text-xs border-collapse">
+          <tbody>
+            <tr class="border-b border-slate-200">
+              <td class="py-1.5 font-bold w-48 text-slate-700">Nama Lengkap Petani</td>
+              <td class="w-4">:</td>
+              <td class="py-1.5 font-black uppercase text-sm" id="p-nama">-</td>
+            </tr>
+            <tr class="border-b border-slate-200">
+              <td class="py-1.5 font-bold text-slate-700">Nomor Induk Kependudukan (NIK)</td>
+              <td>:</td>
+              <td class="py-1.5 font-mono font-bold text-sm tracking-wider" id="p-nik">-</td>
+            </tr>
+            <tr class="border-b border-slate-200">
+              <td class="py-1.5 font-bold text-slate-700">Kelompok Tani / Desa</td>
+              <td>:</td>
+              <td class="py-1.5 font-medium">Poktan Sri Mulyo · Desa Kediren, Kec. Lembeyan, Magetan</td>
+            </tr>
+            <tr class="border-b border-slate-200">
+              <td class="py-1.5 font-bold text-slate-700">Luas Lahan Terdaftar (e-RDKK)</td>
+              <td>:</td>
+              <td class="py-1.5 font-bold"><span id="p-lahan">-</span> Hektar (Ha)</td>
+            </tr>
+            <tr class="border-b border-slate-200">
+              <td class="py-1.5 font-bold text-slate-700">Luas Lahan Revisi</td>
+              <td>:</td>
+              <td class="py-1.5 font-bold" id="p-revisi">-</td>
+            </tr>
+            <tr class="border-b border-slate-200">
+              <td class="py-1.5 font-bold text-slate-700">Status Penebusan di Kios</td>
+              <td>:</td>
+              <td class="py-1.5">
+                <span id="p-status" class="font-black px-2 py-0.5 rounded border border-black bg-slate-100 uppercase text-[11px]">-</span>
+              </td>
+            </tr>
+            <tr id="p-row-ket" class="border-b border-slate-200 hidden">
+              <td class="py-1.5 font-bold text-slate-700">Catatan Khusus Kios</td>
+              <td>:</td>
+              <td class="py-1.5 italic" id="p-ket">-</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- BAGIAN II: RINCIAN ALOKASI PUPUK BERSUBSIDI -->
+      <div class="mb-5">
+        <h4 class="text-xs font-black uppercase tracking-wider text-black bg-slate-100 px-2 py-1 border border-slate-300 mb-2">
+          II. RINCIAN JATAH ALOKASI PUPUK BERSUBSIDI (RESMI KEMENTAN RI):
+        </h4>
+        <table class="w-full text-xs border border-black text-center border-collapse">
+          <thead>
+            <tr class="bg-slate-100 border-b border-black">
+              <th class="py-2 px-3 border-r border-black w-12 font-black">NO</th>
+              <th class="py-2 px-3 border-r border-black font-black text-left">JENIS PUPUK BERSUBSIDI</th>
+              <th class="py-2 px-3 border-r border-black font-black w-44">JATAH ALOKASI RESMI</th>
+              <th class="py-2 px-3 font-black text-left">KETERANGAN</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-black">
+              <td class="py-2 px-3 border-r border-black font-bold">1</td>
+              <td class="py-2 px-3 border-r border-black font-black text-left">🌾 UREA BERSUBSIDI (N)</td>
+              <td class="py-2 px-3 border-r border-black font-black text-sm" id="p-urea">- Kg</td>
+              <td class="py-2 px-3 text-left text-[11px]">Alokasi Resmi e-RDKK MT3 2026</td>
+            </tr>
+            <tr class="border-b border-black">
+              <td class="py-2 px-3 border-r border-black font-bold">2</td>
+              <td class="py-2 px-3 border-r border-black font-black text-left">🌿 NPK / PHONSKA BERSUBSIDI</td>
+              <td class="py-2 px-3 border-r border-black font-black text-sm" id="p-npk">- Kg</td>
+              <td class="py-2 px-3 text-left text-[11px]">Alokasi Resmi e-RDKK MT3 2026</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-3 border-r border-black font-bold">3</td>
+              <td class="py-2 px-3 border-r border-black font-black text-left">🍂 PUPUK ORGANIK BERSUBSIDI</td>
+              <td class="py-2 px-3 border-r border-black font-black text-sm" id="p-organik">- Kg</td>
+              <td class="py-2 px-3 text-left text-[11px]">Alokasi Resmi e-RDKK MT3 2026</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- PERNYATAAN / DISCLAIMER KEMENTAN -->
+      <div class="mb-6 p-3 border border-slate-300 rounded bg-slate-50 text-[10.5px] leading-relaxed text-slate-700">
+        <p class="font-black text-black uppercase mb-0.5">Ketentuan Resmi Alokasi Pupuk:</p>
+        <p>
+          Alokasi resmi bersumber dari Kementerian Pertanian Republik Indonesia yang dihitung berdasarkan alokasi kuota dan luas lahan masing-masing petani. Bukan wewenang pengurus kelompok tani, kios, maupun BPP untuk merubah alokasi tersebut karena dapat dikenakan sanksi peraturan perundang-undangan dari pemerintah pusat.
+        </p>
+      </div>
+
+      <!-- TANDA TANGAN / PENGESAHAN DOKUMEN -->
+      <div class="pt-2 text-xs">
+        <div class="flex justify-end mb-2">
+          <span class="text-xs" id="p-tanggal">Kediren, 9 November 2026</span>
+        </div>
+        <div class="grid grid-cols-2 gap-8 text-center pt-2">
+          <div>
+            <p class="font-bold text-slate-700">Petani Penerima,</p>
+            <div class="h-20 flex items-center justify-center text-[10px] text-slate-300 italic">
+              (Tanda Tangan &amp; KTP)
+            </div>
+            <p class="font-black uppercase underline underline-offset-2" id="p-ttd-nama">( ..................................... )</p>
+          </div>
+          <div>
+            <p class="font-bold text-slate-700">Pengurus Kelompok Tani Sri Mulyo,</p>
+            <div class="h-20 flex items-center justify-center text-[10px] text-slate-300 italic">
+              (Tanda Tangan &amp; Stempel)
+            </div>
+            <p class="font-black uppercase underline underline-offset-2">( PENGURUS POKTAN SRI MULYO )</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 
   <!-- ========================================== -->
   <!-- 4. FOOTER -->
@@ -839,6 +957,43 @@
       if (link) {
         link.href = 'panduan-tani.html?nik=' + encodeURIComponent(item.nik || item.nama);
       }
+
+      // Isi Lembar Dokumen Cetak Bukti Resmi (A4 / Folio)
+      const elPNama = document.getElementById('p-nama');
+      if (elPNama) elPNama.textContent = item.nama || '-';
+      const elPNik = document.getElementById('p-nik');
+      if (elPNik) elPNik.textContent = item.nik || '-';
+      const elPLahan = document.getElementById('p-lahan');
+      if (elPLahan) elPLahan.textContent = lahanVal > 0 ? lahanVal.toFixed(2) : (item.lahan || '0');
+      const elPRevisi = document.getElementById('p-revisi');
+      if (elPRevisi) elPRevisi.textContent = revisiVal > 0 ? (revisiVal.toFixed(2) + ' Ha (Verifikasi Fisik)') : 'Tidak ada revisi (-)';
+      const elPStatus = document.getElementById('p-status');
+      if (elPStatus) elPStatus.textContent = (item.status || 'TERDAFTAR').toUpperCase();
+      const elPUrea = document.getElementById('p-urea');
+      if (elPUrea) elPUrea.textContent = formatBulatKg(item.urea) + ' Kg';
+      const elPNpk = document.getElementById('p-npk');
+      if (elPNpk) elPNpk.textContent = formatBulatKg(item.npk) + ' Kg';
+      const elPOrganik = document.getElementById('p-organik');
+      if (elPOrganik) elPOrganik.textContent = formatBulatKg(item.organik) + ' Kg';
+      const elPTtd = document.getElementById('p-ttd-nama');
+      if (elPTtd) elPTtd.textContent = '( ' + (item.nama || '.....................................') + ' )';
+      const elPTgl = document.getElementById('p-tanggal');
+      if (elPTgl) elPTgl.textContent = 'Kediren, ' + getTanggalIndonesia();
+      const elPRowKet = document.getElementById('p-row-ket');
+      if (elPRowKet) {
+        if (item.ket && item.ket.trim()) {
+          document.getElementById('p-ket').textContent = item.ket;
+          elPRowKet.classList.remove('hidden');
+        } else {
+          elPRowKet.classList.add('hidden');
+        }
+      }
+    }
+
+    function getTanggalIndonesia() {
+      const bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+      const d = new Date();
+      return d.getDate() + ' ' + bulan[d.getMonth()] + ' ' + d.getFullYear();
     }
 
     // Toggle Sensor NIK
