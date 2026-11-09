@@ -311,13 +311,13 @@
               <!-- Item hasil pencarian akan dirender di sini via JavaScript -->
             </div>
 
-            <!-- NOTIFIKASI JIKA TIDAK TERDAFTAR DI e-RDKK -->
-            <div id="notif-tidak-terdaftar" class="hidden mt-2 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-semibold space-y-2 transition animate-fadeIn">
+            <!-- NOTIFIKASI JIKA TIDAK TERDAFTAR DI e-RDKK (NON e-RDKK) -->
+            <div id="notif-tidak-terdaftar" class="hidden mt-2 p-3 rounded-xl bg-amber-50 border border-amber-300 text-amber-950 text-xs font-semibold space-y-2 transition animate-fadeIn">
               <div class="flex items-start gap-2.5">
-                <i class="fa-solid fa-circle-info text-amber-600 text-sm mt-0.5 shrink-0"></i>
+                <i class="fa-solid fa-triangle-exclamation text-amber-600 text-sm mt-0.5 shrink-0"></i>
                 <div class="flex-1 leading-tight">
-                  <span class="font-bold text-amber-950">Nama / NIK belum tercantum di e-RDKK</span>
-                  <p class="text-[10px] text-amber-700 font-normal mt-0.5">Panjenengan tetap bisa menyusun rencana tanam dan menghitung kebutuhan pupuk presisi.</p>
+                  <span class="font-black text-amber-950 uppercase tracking-wide">Belum Terverifikasi e-RDKK / Non e-RDKK</span>
+                  <p class="text-[10px] text-amber-800 font-normal mt-0.5">Nama atau NIK ini masuk kategori Non e-RDKK. Panjenengan tetap bisa menyusun rencana tanam dan menghitung kebutuhan pupuk presisi.</p>
                 </div>
               </div>
               <div class="flex flex-col sm:flex-row gap-2">
@@ -348,7 +348,7 @@
               <p id="helper-teks-petani" class="text-[10px] text-slate-400">Ketik nama petani atau NIK di atas.</p>
               <button type="button" onclick="aktifkanModeMandiri()" id="btn-opsi-mandiri" class="text-[11px] text-emerald-700 hover:text-emerald-800 font-bold flex items-center gap-1 transition underline underline-offset-2 cursor-pointer">
                 <i class="fa-solid fa-user-plus text-[10px] text-emerald-600"></i>
-                <span>Petani Mandiri (Non e-RDKK)</span>
+                <span>Petani Mandiri (Belum Terverifikasi e-RDKK / Non e-RDKK)</span>
               </button>
             </div>
           </div>
@@ -1851,7 +1851,7 @@
 
         if (q.length >= 2) {
           notifError.classList.remove('hidden');
-          if (badgeStatus) badgeStatus.innerText = 'Tidak Terdaftar';
+          if (badgeStatus) badgeStatus.innerText = 'Belum Terverifikasi e-RDKK / Non e-RDKK';
         } else {
           notifError.classList.add('hidden');
           if (badgeStatus) badgeStatus.innerText = 'Cari Nama / NIK';
@@ -1887,7 +1887,7 @@
 
       if (inputCari) inputCari.value = namaInput;
       const elNik = document.getElementById('calc-nik');
-      if (elNik) elNik.value = '(Non e-RDKK / Petani Mandiri)';
+      if (elNik) elNik.value = '(Belum Terverifikasi e-RDKK / Non e-RDKK)';
       if (elLuas) elLuas.value = luasVal;
 
       document.getElementById('notif-tidak-terdaftar')?.classList.add('hidden');
@@ -1900,10 +1900,10 @@
       document.getElementById('placeholder-belum-pilih')?.classList.add('hidden');
 
       const teksStatus = document.getElementById('teks-status-petani');
-      if (teksStatus) teksStatus.innerText = `Mode Petani Mandiri: ${namaInput} (Rekomendasi Presisi Poktan)`;
+      if (teksStatus) teksStatus.innerText = `Status: Belum Terverifikasi e-RDKK / Non e-RDKK (${namaInput})`;
 
       const badgeStatus = document.getElementById('badge-pencarian');
-      if (badgeStatus) badgeStatus.innerText = 'Petani Mandiri';
+      if (badgeStatus) badgeStatus.innerText = 'Belum Terverifikasi e-RDKK / Non e-RDKK';
 
       const btnClear = document.getElementById('btn-clear-petani');
       if (btnClear) btnClear.classList.remove('hidden');

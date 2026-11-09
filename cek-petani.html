@@ -402,20 +402,24 @@
 
     </div>
 
-    <!-- STATE 2: PETANI TIDAK TERDAFTAR -->
-    <div id="state-tidak-terdaftar" class="hidden bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-rose-200 space-y-6">
+    <!-- STATE 2: PETANI BELUM TERVERIFIKASI e-RDKK / NON e-RDKK -->
+    <div id="state-tidak-terdaftar" class="hidden bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-amber-300 space-y-6">
       
       <!-- Warning Banner -->
-      <div class="flex items-start gap-4 p-5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-900">
-        <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-2xl shrink-0 shadow-inner">
-          <i class="fa-solid fa-circle-exclamation"></i>
+      <div class="flex items-start gap-4 p-5 rounded-2xl bg-amber-50 border border-amber-300/80 text-amber-950">
+        <div class="w-12 h-12 rounded-2xl bg-amber-200/80 text-amber-800 flex items-center justify-center text-2xl shrink-0 shadow-inner">
+          <i class="fa-solid fa-triangle-exclamation"></i>
         </div>
-        <div class="space-y-1">
-          <h3 class="text-base font-extrabold text-rose-950">
-            NIK atau Nama Petani Tidak Ditemukan
+        <div class="space-y-1.5">
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-black bg-amber-200 text-amber-950 border border-amber-300">
+            <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+            <span>STATUS: BELUM TERVERIFIKASI e-RDKK / NON e-RDKK</span>
+          </div>
+          <h3 class="text-base sm:text-lg font-black text-amber-950">
+            Belum Terverifikasi e-RDKK / Non e-RDKK
           </h3>
-          <p class="text-xs text-rose-800 leading-relaxed">
-            Data dengan kata kunci <span id="notfound-keyword" class="font-black text-rose-950 font-mono bg-rose-200/60 px-1.5 py-0.5 rounded">-</span> belum terdaftar dalam database Alokasi e-RDKK MT III 2026 Kelompok Tani Sri Mulyo Desa Kediren.
+          <p class="text-xs text-amber-900 leading-relaxed">
+            Data NIK / Nama Petani <span id="notfound-keyword" class="font-black text-amber-950 font-mono bg-amber-200/90 px-1.5 py-0.5 rounded">-</span> masuk dalam kategori <strong>Belum Terverifikasi e-RDKK / Non e-RDKK</strong> di Kelompok Tani Sri Mulyo Desa Kediren.
           </p>
         </div>
       </div>
@@ -898,10 +902,10 @@
       window.open('https://wa.me/' + NO_WA_PENGURUS + '?text=' + encodeURIComponent(pesan), '_blank');
     }
 
-    // WhatsApp Pengajuan Berkas Baru
+    // WhatsApp Pengajuan Berkas Baru (Belum Terverifikasi e-RDKK / Non e-RDKK)
     function hubungiWaPengajuan() {
       const kw = document.getElementById('notfound-keyword').textContent || '';
-      const pesan = `Halo Pengurus Poktan Sri Mulyo Desa Kediren,\n\nSaya mengecek data di website dengan NIK/Nama: "${kw}" dan belum terdaftar dalam e-RDKK MT3 2026.\n\nSaya berniat mengajukan pendaftaran e-RDKK dengan melampirkan berkas persyaratan:\n1. Fotocopy KTP Pemilik/Penggarap\n2. Fotocopy Kartu Keluarga (KK)\n3. Fotocopy Pipil Pajak / SPPT PBB Sawah\n\nKapan saya bisa menyerahkan berkas fisik ini kepada pengurus? Terima kasih.`;
+      const pesan = `Halo Pengurus Poktan Sri Mulyo Desa Kediren,\n\nSaya mengecek data di website dengan NIK/Nama: "${kw}".\nStatus saya: *Belum Terverifikasi e-RDKK / Non e-RDKK*.\n\nSaya berniat mengajukan pendaftaran e-RDKK dengan melampirkan 3 berkas persyaratan:\n1. Fotocopy KTP Pemilik/Penggarap Lahan\n2. Fotocopy Kartu Keluarga (KK)\n3. Fotocopy Pipil Pajak / SPPT PBB Sawah\n\nKapan saya bisa menyerahkan berkas fisik ini kepada pengurus? Terima kasih.`;
       window.open('https://wa.me/' + NO_WA_PENGURUS + '?text=' + encodeURIComponent(pesan), '_blank');
     }
 
