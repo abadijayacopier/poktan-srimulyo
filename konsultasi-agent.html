@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Konsultasi Agent Poktan Sri Mulyo - BPP Lembeyan</title>
+  
+  <!-- Tailwind CSS & FontAwesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="icon" type="image/svg+xml" href="icons/poktan.svg">
+  <meta name="theme-color" content="#064e3b">
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(16, 185, 129, 0.3);
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(16, 185, 129, 0.6);
+    }
+    @keyframes pulseSoft {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(0.98); }
+    }
+    .animate-pulse-soft {
+      animation: pulseSoft 3s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 flex flex-col h-screen overflow-hidden select-none">
+
+  <!-- ======================================================== -->
+  <!-- 1. HEADER UTAMA KONSULTASI AGENT                         -->
+  <!-- ======================================================== -->
+  <header class="bg-slate-900/90 backdrop-blur-md border-b border-emerald-500/20 px-3 sm:px-5 py-3 shrink-0 flex items-center justify-between z-20 shadow-md">
+    
+    <!-- Profil Agent Poktan -->
+    <div class="flex items-center gap-3">
+      <div class="relative">
+        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-0.5 shadow-lg flex items-center justify-center">
+          <div class="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center text-emerald-300 text-lg">
+            <i class="fa-solid fa-headset text-amber-300"></i>
+          </div>
+        </div>
+        <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-slate-900 rounded-full flex items-center justify-center">
+          <span class="w-1.5 h-1.5 bg-white rounded-full animate-ping"></span>
+        </span>
+      </div>
+
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-sm sm:text-base font-black tracking-tight text-white flex items-center gap-1.5">
+            <span>Agent Poktan Sri Mulyo</span>
+          </h1>
+          <span id="badge-ai-status" class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 flex items-center gap-1">
+            <i class="fa-solid fa-sparkles text-[8px] text-amber-300"></i>
+            <span id="badge-ai-text">Gemini AI Active</span>
+          </span>
+        </div>
+        <p class="text-[10.5px] sm:text-xs text-slate-400 mt-0.5 flex items-center gap-1.5">
+          <span>Desa Kediren, BPP Lembeyan</span>
+          <span>•</span>
+          <span class="text-emerald-400 font-bold">Siap Menjawab</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Tombol Keluar / Akhiri Sesi -->
+    <div>
+      <button type="button" onclick="bukaModalKeluar()" 
+              class="px-3 sm:px-4 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 text-xs font-bold transition active:scale-95 flex items-center gap-1.5 cursor-pointer shadow-sm">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span class="hidden sm:inline">Keluar / Selesai</span>
+        <span class="sm:hidden">Keluar</span>
+      </button>
+    </div>
+
+  </header>
+
+  <!-- ======================================================== -->
+  <!-- 2. BAR KONTEKS DATA LAHAN PETANI (SESI AKTIF)             -->
+  <!-- ======================================================== -->
+  <div class="bg-emerald-950/40 border-b border-emerald-500/20 px-3 sm:px-5 py-2 shrink-0 flex flex-wrap items-center justify-between gap-2 text-xs">
+    
+    <div class="flex items-center gap-2 overflow-hidden text-ellipsis whitespace-nowrap">
+      <div class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs shrink-0">
+        <i class="fa-solid fa-user-check"></i>
+      </div>
+      <div class="truncate">
+        <span class="text-slate-400 text-[11px]">Petani:</span>
+        <b id="ctx-nama" class="text-white font-bold ml-1">Petani Mandiri</b>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2 text-[11px]">
+      <span class="px-2 py-0.5 rounded-lg bg-white/10 text-emerald-200 border border-white/10 font-bold" id="ctx-komoditas">
+        Padi Sawah
+      </span>
+      <span class="px-2 py-0.5 rounded-lg bg-white/10 text-slate-300 font-mono font-bold" id="ctx-luas">
+        0.35 Ha
+      </span>
+      <span class="px-2 py-0.5 rounded-lg bg-white/10 text-amber-200 font-mono font-bold" id="ctx-musim">
+        MT 3
+      </span>
+    </div>
+
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 3. CONTAINER AREA CHAT (SCROLLABLE & TIDAK MENYIMPAN HISTORI) -->
+  <!-- ======================================================== -->
+  <main id="chat-stream-box" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+    <!-- Chat bubbles di-render dinamis oleh JavaScript -->
+  </main>
+
+  <!-- ======================================================== -->
+  <!-- 4. PERTANYAAN CEPAT (QUICK PROMPT CHIPS)                 -->
+  <!-- ======================================================== -->
+  <div class="px-3 sm:px-5 py-2 bg-slate-900/80 border-t border-white/5 overflow-x-auto whitespace-nowrap flex items-center gap-2 text-[11px] shrink-0">
+    <span class="text-slate-400 font-bold shrink-0 text-[10px] flex items-center gap-1">
+      <i class="fa-solid fa-bolt text-amber-400"></i> Pilihan Cepat:
+    </span>
+    <button type="button" onclick="pilihCepat('Berapa takaran semprot pupuk daun (Gandasil / POC) dan waktu aplikasinya?')" class="px-3 py-1 rounded-full bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-emerald-200 transition shrink-0 cursor-pointer active:scale-95">
+      Takaran Pupuk Daun?
+    </button>
+    <button type="button" onclick="pilihCepat('Bagaimana langkah mengatasi wereng coklat dan sundep paling manjur?')" class="px-3 py-1 rounded-full bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-emerald-200 transition shrink-0 cursor-pointer active:scale-95">
+      Obat Wereng &amp; Sundep?
+    </button>
+    <button type="button" onclick="pilihCepat('Daun tanaman menguning asem-aseman, berapa dosis kapur dolomit dan cara taburnya?')" class="px-3 py-1 rounded-full bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-emerald-200 transition shrink-0 cursor-pointer active:scale-95">
+      Tanah Asem-Aseman?
+    </button>
+    <button type="button" onclick="pilihCepat('Berapa hari sebelum panen raya saluran air sawah harus dikeringkan total?')" class="px-3 py-1 rounded-full bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-emerald-200 transition shrink-0 cursor-pointer active:scale-95">
+      Pengeringan Air Sawah?
+    </button>
+    <button type="button" onclick="pilihCepat('Bagaimana cara mencegah jamur bulai dan ulat grayak jagung?')" class="px-3 py-1 rounded-full bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-emerald-200 transition shrink-0 cursor-pointer active:scale-95">
+      Penyakit Bulai Jagung?
+    </button>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 5. FORM INPUT PENGIRIMAN PESAN                           -->
+  <!-- ======================================================== -->
+  <footer class="p-3 sm:p-4 bg-slate-900 border-t border-emerald-500/20 shrink-0">
+    <div class="max-w-4xl mx-auto flex items-center gap-2">
+      
+      <input type="text" id="chat-input" onkeydown="if(event.key==='Enter') kirimPesan()" 
+             placeholder="Ketik pertanyaan keluhan hama, pupuk, atau budidaya panjenengan..." 
+             class="flex-1 px-4 py-3 rounded-2xl bg-white/10 border border-white/15 text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white/15 transition select-text">
+      
+      <button type="button" onclick="kirimPesan()" id="btn-kirim" 
+              class="px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm flex items-center gap-2 transition active:scale-95 shadow-lg shadow-emerald-900/30 shrink-0 cursor-pointer">
+        <i class="fa-solid fa-paper-plane text-xs"></i>
+        <span class="hidden sm:inline">Kirim</span>
+      </button>
+
+      <button type="button" onclick="hubungiWaPengurus()" title="Kirim ke WhatsApp Pengurus Poktan"
+              class="w-11 h-11 rounded-2xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 text-emerald-400 flex items-center justify-center transition active:scale-95 shrink-0 cursor-pointer">
+        <i class="fa-brands fa-whatsapp text-lg"></i>
+      </button>
+
+    </div>
+  </footer>
+
+  <!-- ======================================================== -->
+  <!-- 6. MODAL NOTIFIKASI KELUAR & AKHIRI OBROLAN HARI INI     -->
+  <!-- ======================================================== -->
+  <div id="modal-keluar" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="bg-gradient-to-b from-slate-900 to-slate-950 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-rose-500/30 text-center space-y-4 animate-fadeIn">
+      
+      <div class="w-14 h-14 rounded-2xl bg-rose-500/20 border border-rose-500/30 text-rose-400 flex items-center justify-center text-2xl mx-auto shadow-inner">
+        <i class="fa-solid fa-door-open"></i>
+      </div>
+
+      <div>
+        <h3 class="text-base sm:text-lg font-black text-white">Akhiri Obrolan Kita Hari Ini?</h3>
+        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+          Menutup obrolan berarti mengakhiri sesi konsultasi hari ini. <b>Histori percakapan tidak akan disimpan</b> demi privasi dan efisiensi memori smartphone.
+        </p>
+      </div>
+
+      <div class="p-3 bg-white/5 rounded-2xl border border-white/10 text-xs text-slate-300 text-left space-y-1">
+        <p class="font-bold text-emerald-300 flex items-center gap-1.5">
+          <i class="fa-solid fa-circle-info text-emerald-400"></i>
+          <span>Saat masuk kembali nanti:</span>
+        </p>
+        <p class="text-[11px] text-slate-300">
+          Anda akan memulai obrolan baru yang bersih dan segar sesuai perkembangan tanaman terbaru di sawah.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2 pt-2">
+        <button type="button" onclick="tutupModalKeluar()" class="flex-1 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 text-xs font-bold transition cursor-pointer">
+          Lanjut Mengobrol
+        </button>
+        <button type="button" onclick="eksekusiKeluar()" class="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-black transition flex items-center justify-center gap-1.5 shadow-md cursor-pointer active:scale-95">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Ya, Akhiri &amp; Keluar</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 7. LOGIKA JAVASCRIPT & KONEKSI KE GEMINI AI              -->
+  <!-- ======================================================== -->
+  <script>
+    // Konfigurasi & State Sesi (Hanya di memori RAM, tidak ada histori di localStorage)
+    let sessionMessages = [];
+    let currentFarmerContext = {
+      nama: 'Petani Mandiri',
+      komoditas: 'Padi Sawah',
+      varietas: 'Standar',
+      luas: '0.35',
+      musim: 'MT 3',
+      catatan: ''
+    };
+
+    // Saat Halaman Pertama Kali Dibuka: Bersihkan data lama, mulai sesi obrolan baru
+    window.addEventListener('DOMContentLoaded', () => {
+      // 1. Pastikan TIDAK ADA histori lama yang dimuat
+      sessionStorage.removeItem('poktan_chat_history');
+      localStorage.removeItem('poktan_chat_history');
+
+      // 2. Baca konteks petani dari URL Query Parameter atau Session aktif
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('nama')) currentFarmerContext.nama = urlParams.get('nama');
+      if (urlParams.get('komoditas')) currentFarmerContext.komoditas = urlParams.get('komoditas');
+      if (urlParams.get('varietas')) currentFarmerContext.varietas = urlParams.get('varietas');
+      if (urlParams.get('luas')) currentFarmerContext.luas = urlParams.get('luas');
+      if (urlParams.get('musim')) currentFarmerContext.musim = urlParams.get('musim');
+      if (urlParams.get('catatan')) currentFarmerContext.catatan = urlParams.get('catatan');
+
+      // Tampilkan di Bar Konteks
+      document.getElementById('ctx-nama').innerText = currentFarmerContext.nama;
+      document.getElementById('ctx-komoditas').innerText = `${currentFarmerContext.komoditas} (${currentFarmerContext.varietas})`;
+      document.getElementById('ctx-luas').innerText = `${currentFarmerContext.luas} Ha`;
+      document.getElementById('ctx-musim').innerText = currentFarmerContext.musim;
+
+      // 3. Tampilkan Pesan Sapaan Awal dari Agent Poktan
+      inisialisasiSapaanAwal();
+      
+      document.getElementById('chat-input')?.focus();
+    });
+
+    function inisialisasiSapaanAwal() {
+      const c = currentFarmerContext;
+      let text = `Sugeng rawuh <b>Bpk/Ibu ${esc(c.nama)}</b>.<br><br>` +
+                 `Saya <b>Agent Poktan Sri Mulyo</b> siap mendampingi konsultasi budidaya <b>${esc(c.komoditas)} (${esc(c.varietas)})</b> pada lahan seluas <b>${c.luas} Ha</b> di musim <b>${esc(c.musim)}</b>.<br><br>`;
+      
+      if (c.catatan && c.catatan !== '-') {
+        text += `Tercatat keluhan awal sawah panjenengan: <i>"${esc(c.catatan)}"</i>.<br>` +
+                `Silakan tanyakan takaran dosis obat per tangki, waktu semprot, atau tindakan pencegahan yang tepat.`;
+      } else {
+        text += `Ada kendala hama tanaman, takaran pupuk daun, atau jadwal pengairan sawah yang ingin ditanyakan hari ini?`;
+      }
+
+      tambahPesanKeUI('agent', text, 'pakar');
+    }
+
+    // Modal Keluar
+    function bukaModalKeluar() {
+      document.getElementById('modal-keluar').classList.remove('hidden');
+    }
+
+    function tutupModalKeluar() {
+      document.getElementById('modal-keluar').classList.add('hidden');
+    }
+
+    function eksekusiKeluar() {
+      // Bersihkan seluruh riwayat di RAM dan Storage
+      sessionMessages = [];
+      sessionStorage.clear();
+      // Arahkan kembali ke Panduan Tani
+      window.location.href = 'panduan-tani.html';
+    }
+
+    function pilihCepat(pertanyaan) {
+      document.getElementById('chat-input').value = pertanyaan;
+      kirimPesan();
+    }
+
+    // Render pesan ke tampilan
+    function tambahPesanKeUI(sender, htmlText, source) {
+      const container = document.getElementById('chat-stream-box');
+      const timeStr = new Intl.DateTimeFormat('id-ID', { hour: '2-digit', minute: '2-digit' }).format(new Date());
+
+      const msgDiv = document.createElement('div');
+
+      if (sender === 'user') {
+        msgDiv.className = 'flex justify-end animate-fadeIn';
+        msgDiv.innerHTML = `
+          <div class="max-w-[85%] sm:max-w-[75%] bg-emerald-700 text-white p-3.5 sm:p-4 rounded-3xl rounded-tr-xs shadow-md">
+            <p class="text-xs sm:text-sm leading-relaxed">${htmlText}</p>
+            <div class="text-[9px] text-emerald-200 mt-1.5 flex items-center justify-end gap-1">
+              <span>${timeStr}</span>
+              <i class="fa-solid fa-check-double text-[8px]"></i>
+            </div>
+          </div>`;
+      } else {
+        msgDiv.className = 'flex items-start gap-2.5 sm:gap-3.5 animate-fadeIn';
+        const badgeSource = source === 'gemini' 
+          ? '<span class="text-[9px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 font-bold">✨ Gemini AI</span>'
+          : '<span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-bold">🌿 Pakar BPP</span>';
+
+        msgDiv.innerHTML = `
+          <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-2xl bg-slate-900 border border-emerald-500/30 text-emerald-300 flex items-center justify-center text-xs shrink-0 mt-0.5 shadow-sm">
+            <i class="fa-solid fa-headset text-amber-300"></i>
+          </div>
+          <div class="max-w-[88%] sm:max-w-[80%] bg-slate-900/90 border border-white/10 text-slate-100 p-4 sm:p-5 rounded-3xl rounded-tl-xs shadow-lg space-y-2">
+            <div class="flex items-center justify-between gap-2 border-b border-white/10 pb-1.5">
+              <span class="text-[11px] font-black uppercase text-amber-300 tracking-wider">Agent Poktan Sri Mulyo</span>
+              ${badgeSource}
+            </div>
+            <div class="text-xs sm:text-sm leading-relaxed text-slate-200 space-y-2">
+              ${htmlText}
+            </div>
+            <div class="text-[9px] text-slate-400 text-right pt-1">
+              ${timeStr} WIB
+            </div>
+          </div>`;
+      }
+
+      container.appendChild(msgDiv);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    // Tampilkan Indikator Mengetik
+    function setTyping(aktif) {
+      const existing = document.getElementById('typing-box');
+      if (existing) existing.remove();
+
+      if (aktif) {
+        const container = document.getElementById('chat-stream-box');
+        const typing = document.createElement('div');
+        typing.id = 'typing-box';
+        typing.className = 'flex items-center gap-3 pl-11 text-xs text-emerald-300 italic animate-pulse';
+        typing.innerHTML = `
+          <div class="flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-bounce"></span>
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-bounce" style="animation-delay: 0.2s"></span>
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-bounce" style="animation-delay: 0.4s"></span>
+          </div>
+          <span>Agent Poktan Sri Mulyo sedang menganalisis agronomi lahan...</span>`;
+        container.appendChild(typing);
+        container.scrollTop = container.scrollHeight;
+      }
+    }
+
+    // Kirim Pertanyaan Petani ke AI
+    async function kirimPesan() {
+      const inp = document.getElementById('chat-input');
+      const text = (inp.value || '').trim();
+      if (!text) return;
+
+      inp.value = '';
+      tambahPesanKeUI('user', esc(text), 'user');
+      sessionMessages.push({ sender: 'user', text: text });
+
+      setTyping(true);
+
+      const btn = document.getElementById('btn-kirim');
+      if (btn) btn.disabled = true;
+
+      try {
+        // Panggil Serverless Function Vercel /api/chat yang terhubung ke Gemini API Key
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            prompt: text,
+            context: currentFarmerContext,
+            history: sessionMessages
+          })
+        });
+
+        const data = await res.json().catch(() => null);
+
+        setTyping(false);
+
+        if (data && data.success && data.text) {
+          // Format markdown sederhana ke HTML
+          const formatted = formatMarkdownToHtml(data.text);
+          tambahPesanKeUI('agent', formatted, 'gemini');
+          sessionMessages.push({ sender: 'agent', text: data.text });
+        } else {
+          // Fallback cerdas ke Sistem Pakar Agronomi Poktan jika API offline/limit
+          const fallbackJawaban = responSistemPakarLokal(text);
+          tambahPesanKeUI('agent', fallbackJawaban, 'pakar');
+          sessionMessages.push({ sender: 'agent', text: fallbackJawaban });
+        }
+      } catch (err) {
+        console.warn('Gagal koneksi AI online, beralih ke Sistem Pakar lokal:', err);
+        setTyping(false);
+        const fallbackJawaban = responSistemPakarLokal(text);
+        tambahPesanKeUI('agent', fallbackJawaban, 'pakar');
+        sessionMessages.push({ sender: 'agent', text: fallbackJawaban });
+      } finally {
+        if (btn) btn.disabled = false;
+        inp.focus();
+      }
+    }
+
+    // Helper: Format Markdown Teks AI ke HTML
+    function formatMarkdownToHtml(raw) {
+      if (!raw) return '';
+      let s = esc(raw);
+      // bold **teks**
+      s = s.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+      // italic *teks*
+      s = s.replace(/\*(.*?)\*/g, '<i>$1</i>');
+      // bullet points
+      s = s.replace(/(?:^|\n)[•*-]\s+(.+)/g, '<br>• $1');
+      // newlines
+      s = s.replace(/\n\n/g, '<br><br>');
+      s = s.replace(/\n/g, '<br>');
+      return s;
+    }
+
+    // Sistem Pakar Lokal (Auto-Fallback apabila koneksi internet lemah atau API key belum terisi)
+    function responSistemPakarLokal(q) {
+      const qLower = q.toLowerCase();
+      const c = currentFarmerContext;
+      const isPadi = (c.komoditas || '').toLowerCase().includes('padi');
+      const luas = parseFloat(c.luas) || 0.35;
+
+      if (/pupuk cair|gandasil|nutrisi|daun menguning|poc|semprot pupuk/i.test(qLower)) {
+        if (isPadi) {
+          return `Untuk pertanaman <b>Padi ${esc(c.varietas)}</b>:<br>
+          • <b>Fase Vegetatif (HST 15-30):</b> Gunakan pupuk daun tinggi Nitrogen (misal: <i>Gandasil D</i> atau POC Hayati) dosis <b>2 - 3 sendok makan</b> per tangki 16L untuk memperbanyak anakan produktif.<br>
+          • <b>Fase Generatif (HST 45-65):</b> Beralih ke pupuk daun tinggi Kalium (misal: <i>Gandasil B / MKP</i>) dosis <b>2 - 3 sendok makan</b> per tangki untuk mempercepat pengisian malai dan mencegah bulir hampa.<br>
+          • <b>Waktu Semprot:</b> Pukul 06.30 - 08.30 WIB pagi saat embun mengering dan stomata daun terbuka sempurna.`;
+        } else {
+          return `Untuk budidaya <b>Jagung ${esc(c.varietas)}</b>:<br>
+          • Semprot pupuk daun umur <b>15-35 HST</b> dengan dosis <b>30-40 gram</b> per tangki 16 Liter air.<br>
+          • Arahkan nozel ke permukaan daun dan corong pucuk tanaman pada pagi hari.`;
+        }
+      }
+
+      if (/wereng|bph|sundep|beluk|kaper|penggerek/i.test(qLower)) {
+        return `Penanganan hama <b>Wereng Coklat & Sundep POKTAN SRI MULYO</b>:<br>
+        1. <b>Wereng Coklat:</b> Gunakan bahan aktif <i>Pimetrozin 50%</i> (contoh: Chess 50 WG) atau <i>Imidakloprid</i>. Dosis: <b>15-20 gram/tangki 16L</b>. Nozel wajib diarahkan langsung ke <b>PANGKAL BATANG</b> rumpun padi.<br>
+        2. <b>Sundep / Beluk:</b> Gunakan bahan aktif <i>Dimehipo</i> (Spontan 400 SL) dosis <b>30-40 ml/tangki</b> atau <i>Klorantraniliprol</i> (Prevathon) <b>15 ml/tangki</b>.<br>
+        3. <b>Manajemen Air:</b> Keringkan air sawah 3 hari agar sirkulasi udara di bawah rumpun padi tidak lembab.`;
+      }
+
+      if (/asem|masam|karat|merah|dolomit|ph/i.test(qLower)) {
+        return `Penanganan <b>Tanah Asem-Aseman (pH Rendah)</b> di Kediren:<br>
+        • <b>Tindakan Cepat:</b> Keringkan sawah hingga tanah retak rambut untuk membuang gas beracun hasil fermentasi jerami.<br>
+        • <b>Aplikasi:</b> Taburkan <b>Kapur Pertanian (Dolomit)</b> sebanyak 1-2 sak untuk luas petak ${luas} Ha.<br>
+        • <b>Peringatan Keras:</b> <u>JANGAN</u> menabur pupuk Urea saat tanaman masih merah/asem-aseman. Tunggu 7-10 hari hingga tumbuh akar baru berwarna putih bersih.`;
+      }
+
+      if (/kering|air|buang air|panen|kapan panen/i.test(qLower)) {
+        return `Panduan <b>Pengairan & Waktu Panen</b>:<br>
+        • <b>Fase Bunting s.d. Berbunga:</b> Jaga air tergenang macak-macak 2 cm agar pembungaan serempak.<br>
+        • <b>Pengeringan Pra-Panen:</b> Keringkan petak sawah secara total pada <b>10 s.d. 14 hari sebelum hari perkiraan panen</b>. Ini bertujuan menyerempakkan pematangan gabah dan memudahkan mesin panen masuk ke sawah.`;
+      }
+
+      if (/bulai|bule|ulat|grayak|faw/i.test(qLower)) {
+        return `Pengendalian <b>Hama Jamur Bulai & Ulat</b>:<br>
+        • <b>Bulai Jagung:</b> Wajib perlakuan benih (seed dressing) dengan <i>Metalaksil 35 SD</i> (5 gr/kg benih). Jika tanaman di sawah sudah putih total, segera cabut dan timbun.<br>
+        • <b>Ulat Grayak (FAW):</b> Semprot bahan aktif <i>Emamektin Benzoat</i> (Proclaim) atau <i>Spinetoram</i> (Endure) tepat ke dalam corong pucuk tanaman sore hari pukul 16.00 WIB.`;
+      }
+
+      return `Matur suwun atas pertanyaannya Bpk/Ibu ${esc(c.nama)}.<br><br>` +
+             `Untuk pertanaman <b>${esc(c.komoditas)} (${esc(c.varietas)})</b> seluas <b>${luas} Ha</b>, pastikan aplikasi pupuk dan obat mengikuti jadwal kalender tanam resmi.<br>` +
+             `Jika panjenengan ingin pendampingan langsung ke petak sawah, silakan gunakan tombol <b>WhatsApp Pengurus Poktan</b> di bawah ini.`;
+    }
+
+    // Kirim Ringkasan Konsultasi ke WhatsApp Pengurus Poktan / PPL
+    function hubungiWaPengurus() {
+      const c = currentFarmerContext;
+      const lastUserMsg = [...sessionMessages].reverse().find(m => m.sender === 'user')?.text || 'Konsultasi budidaya tanaman';
+
+      const pesan = `🌾 *KONSULTASI PETANI - POKTAN SRI MULYO KEDIREN*\n\n` +
+                    `*Nama Petani:* ${c.nama}\n` +
+                    `*Lahan:* ${c.luas} Ha | *Komoditas:* ${c.komoditas} (${c.varietas})\n` +
+                    `*Musim:* ${c.musim}\n` +
+                    `*Pertanyaan:* ${lastUserMsg}\n\n` +
+                    `Mohon arahan dan petunjuk lapangan dari Pengurus Poktan Sri Mulyo / PPL BPP Lembeyan. Matur suwun.`;
+
+      window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(pesan), '_blank');
+    }
+
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[ch]));
+    }
+  </script>
+
+</body>
+</html>
