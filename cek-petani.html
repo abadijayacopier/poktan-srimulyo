@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#022c22">
+  <meta name="description" content="Pengecekan NIK KTP & Nama Petani Terdaftar e-RDKK MT III 2026 - Poktan Sri Mulyo Desa Kediren">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+  <title>Cek NIK KTP & Status e-RDKK - POKTAN SRI MULYO</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      background-color: #f8fafc;
+    }
+    .font-mono {
+      font-family: var(--font-mono);
+    }
+
+    /* Print Styling untuk Cetak Kartu / Bukti Alokasi Petani */
+    @page {
+      size: A4 portrait;
+      margin: 12mm 15mm;
+    }
+    @media print {
+      body {
+        background: white !important;
+        color: #0f172a !important;
+      }
+      .no-print, header, footer, #search-card, #state-idle, #state-tidak-terdaftar, #toast-container, .print-btn-group {
+        display: none !important;
+      }
+      #print-kop {
+        display: block !important;
+      }
+      .card-printable {
+        box-shadow: none !important;
+        border: 1px solid #cbd5e1 !important;
+        padding: 0 !important;
+      }
+      .print-border {
+        border-color: #94a3b8 !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col text-slate-800">
+
+  <!-- ========================================== -->
+  <!-- 1. HEADER NAVIGASI PUBLIK -->
+  <!-- ========================================== -->
+  <header class="no-print bg-gradient-to-r from-emerald-950 via-emerald-900 to-teal-950 text-white shadow-lg sticky top-0 z-40 border-b border-emerald-800/50">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-emerald-300 transition shadow-inner">
+          <i class="fa-solid fa-wheat-awn text-xl"></i>
+        </a>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-sm sm:text-base font-extrabold tracking-tight uppercase">POKTAN SRI MULYO</h1>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+              e-RDKK MT3 2026
+            </span>
+          </div>
+          <p class="text-[11px] text-emerald-200/80">Desa Kediren · Lembeyan · Magetan</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <a href="panduan-tani.html" class="px-3 py-1.5 rounded-xl bg-emerald-800/70 hover:bg-emerald-700 text-emerald-100 hover:text-white text-xs font-bold transition flex items-center gap-1.5 border border-emerald-700/50">
+          <i class="fa-solid fa-book-open text-amber-300"></i>
+          <span class="hidden sm:inline">Panduan Tani</span>
+        </a>
+        <a href="index.html" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Dashboard</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- 2. KONTEN UTAMA -->
+  <!-- ========================================== -->
+  <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
+
+    <!-- HERO SEARCH CARD -->
+    <div id="search-card" class="bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 rounded-3xl p-5 sm:p-7 text-white shadow-xl relative overflow-hidden border border-emerald-700/50">
+      <div class="absolute -right-8 -bottom-8 opacity-10 pointer-events-none text-emerald-200">
+        <i class="fa-solid fa-id-card text-9xl"></i>
+      </div>
+
+      <div class="relative z-10 space-y-3">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <span>Pengecekan Mandiri Warga Petani</span>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-black tracking-tight leading-snug">
+          Cek Status NIK KTP &amp; Alokasi Pupuk e-RDKK
+        </h2>
+        <p class="text-xs sm:text-sm text-emerald-100/90 leading-relaxed max-w-2xl">
+          Masukkan 16 digit NIK KTP atau Nama Petani untuk memeriksa status kepesertaan, luas lahan terdaftar, status penebusan di kios, dan jatah resmi pupuk bersubsidi.
+        </p>
+
+        <!-- Search Form -->
+        <div class="pt-2">
+          <div class="relative">
+            <div class="flex flex-col sm:flex-row gap-2">
+              <div class="relative flex-1">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-base pointer-events-none">
+                  <i class="fa-solid fa-address-card"></i>
+                </span>
+                <input id="search-input" type="text" autocomplete="off"
+                       placeholder="Masukkan 16 digit NIK atau Nama Petani..."
+                       class="w-full pl-11 pr-10 py-3.5 rounded-2xl bg-white text-slate-800 font-semibold text-sm placeholder:text-slate-400 placeholder:font-normal focus:outline-none focus:ring-4 focus:ring-emerald-400/40 shadow-inner">
+                <button id="btn-clear" onclick="clearSearch()" class="hidden absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 w-6 h-6 rounded-full flex items-center justify-center">
+                  <i class="fa-solid fa-circle-xmark text-sm"></i>
+                </button>
+              </div>
+              <button id="btn-cek" onclick="handleSearch()" class="px-6 py-3.5 rounded-2xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-sm transition shadow-lg flex items-center justify-center gap-2 shrink-0">
+                <i class="fa-solid fa-search"></i>
+                <span>CEK PETANI</span>
+              </button>
+            </div>
+
+            <!-- Auto-suggest Dropdown -->
+            <div id="suggestions-box" class="hidden absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50 max-h-64 overflow-y-auto">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Quick Samples & Counter -->
+          <div class="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-emerald-200">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="opacity-80">Contoh pencarian:</span>
+              <button onclick="quickFill('AGUS JAENURI')" class="underline hover:text-white font-medium">Agus Jaenuri</button> ·
+              <button onclick="quickFill('BARIYAH')" class="underline hover:text-white font-medium">Bariyah</button> ·
+              <button onclick="quickFill('BEJO')" class="underline hover:text-white font-medium">Bejo</button> ·
+              <button onclick="quickFill('BOIMIN')" class="underline hover:text-white font-medium">Boimin</button>
+            </div>
+            <div class="flex items-center gap-1 font-semibold text-emerald-300">
+              <i class="fa-solid fa-database text-[10px]"></i>
+              <span id="sync-counter">195 Petani Terdata</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRINT-ONLY KOP SURAT (Hanya tampil saat cetak) -->
+    <div id="print-kop" class="hidden pb-4 mb-4 border-b-2 border-slate-800 text-center">
+      <div class="flex items-center justify-center gap-3">
+        <div>
+          <h2 class="text-lg font-black tracking-wider uppercase text-slate-900">KELOMPOK TANI SRI MULYO</h2>
+          <h3 class="text-xs font-bold text-slate-700 tracking-wide uppercase">DESA KEDIREN, KECAMATAN LEMBEYAN, KABUPATEN MAGETAN</h3>
+          <p class="text-[10px] text-slate-500 mt-0.5">Wilayah Binaan BPP Kecamatan Lembeyan · Alokasi Resmi e-RDKK MT III 2026</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 3. STATE VIEWS -->
+    <!-- ========================================== -->
+
+    <!-- STATE 0: PANDUAN PENGECEKAN (IDLE) -->
+    <div id="state-idle" class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+      <div class="text-center max-w-lg mx-auto space-y-2">
+        <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center mx-auto text-2xl mb-3 shadow-inner">
+          <i class="fa-solid fa-clipboard-check"></i>
+        </div>
+        <h3 class="text-base sm:text-lg font-extrabold text-slate-800">Panduan Pengecekan Mandiri Petani</h3>
+        <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+          Sistem ini disediakan untuk transparansi alokasi pupuk bersubsidi dan memudahkan petani memeriksa status penebusan di Poktan Sri Mulyo.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+          <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">1</div>
+          <h4 class="text-xs font-bold text-slate-800">Ketik NIK atau Nama</h4>
+          <p class="text-[11px] text-slate-500 leading-relaxed">Masukkan 16 digit NIK yang tertera pada e-KTP atau ketikkan nama lengkap petani.</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+          <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">2</div>
+          <h4 class="text-xs font-bold text-slate-800">Klik "CEK PETANI"</h4>
+          <p class="text-[11px] text-slate-500 leading-relaxed">Pilih nama yang muncul dari saran otomatis atau tekan tombol cek berwarna kuning.</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+          <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">3</div>
+          <h4 class="text-xs font-bold text-slate-800">Lihat Rincian &amp; Unduh</h4>
+          <p class="text-[11px] text-slate-500 leading-relaxed">Status penebusan, jatah Urea, NPK, dan Organik dapat langsung dicetak atau disimpan.</p>
+        </div>
+      </div>
+
+      <!-- Info Tambahan -->
+      <div class="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200 text-xs text-emerald-900 flex items-start gap-3">
+        <i class="fa-solid fa-circle-info text-emerald-600 text-base mt-0.5 shrink-0"></i>
+        <div class="space-y-1">
+          <p class="font-bold">Informasi Privasi &amp; Keamanan Data</p>
+          <p class="text-emerald-800 leading-relaxed text-[11px]">
+            Secara default, digit tengah NIK KTP Anda disensor demi keamanan privasi. Anda dapat mengklik ikon mata pada hasil pencarian untuk melihat nomor NIK lengkap jika diperlukan untuk pencocokan berkas KTP.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATE 1: PETANI DITEMUKAN / TERDAFTAR -->
+    <div id="state-terdaftar" class="hidden space-y-6">
+      
+      <!-- Main Printable Card -->
+      <div class="card-printable bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-6">
+        
+        <!-- Header Hasil -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-100">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-200 inline-flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                <span>TERDAFTAR RESMI e-RDKK</span>
+              </span>
+              <span class="text-xs font-bold text-slate-500">MT III 2026</span>
+            </div>
+            <h3 class="text-xl sm:text-2xl font-black text-slate-900 mt-2 uppercase tracking-tight" id="res-nama">-</h3>
+            <p class="text-xs text-slate-500 font-medium mt-0.5">
+              Poktan Sri Mulyo · Desa Kediren · Kec. Lembeyan · Kab. Magetan
+            </p>
+          </div>
+
+          <!-- NIK Box with Sensor Toggle -->
+          <div class="bg-slate-50 rounded-2xl p-3 border border-slate-200 sm:text-right shrink-0">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Nomor Induk Kependudukan (NIK)</span>
+            <div class="flex items-center sm:justify-end gap-2 mt-0.5">
+              <span id="res-nik" class="font-mono text-sm sm:text-base font-extrabold text-slate-800 tracking-wider">-</span>
+              <button onclick="toggleNikSensor()" title="Lihat / Sensor NIK" class="no-print text-slate-400 hover:text-emerald-700 p-1 rounded-lg transition">
+                <i id="btn-eye-nik" class="fa-solid fa-eye-slash text-xs"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Luas Lahan & Status Penebusan Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <!-- Luas Lahan Terdaftar -->
+          <div class="p-4 rounded-2xl bg-slate-50/80 border border-slate-200">
+            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Luas Lahan e-RDKK</span>
+            <div class="flex items-baseline gap-1 mt-1">
+              <span id="res-lahan" class="text-2xl font-black text-slate-900">-</span>
+              <span class="text-xs font-bold text-slate-500">Hektar (Ha)</span>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-1">Data dasar sistem e-RDKK</p>
+          </div>
+
+          <!-- Luas Lahan Revisi -->
+          <div class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200">
+            <span class="text-[11px] font-bold text-amber-800 uppercase tracking-wider block">Luas Lahan Revisi</span>
+            <div class="flex items-baseline gap-1 mt-1">
+              <span id="res-revisi" class="text-2xl font-black text-amber-900">-</span>
+              <span class="text-xs font-bold text-amber-700">Hektar (Ha)</span>
+            </div>
+            <p id="res-revisi-note" class="text-[10px] text-amber-700/80 mt-1">Sesuai verifikasi fisik sawah</p>
+          </div>
+
+          <!-- Status Penebusan di Kios -->
+          <div class="p-4 rounded-2xl bg-slate-50/80 border border-slate-200">
+            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Status Penebusan</span>
+            <div class="mt-2">
+              <span id="res-status-badge" class="px-3 py-1.5 rounded-xl text-xs font-extrabold inline-flex items-center gap-1.5 border shadow-2xs">
+                -
+              </span>
+            </div>
+            <p id="res-ket-box" class="text-[10px] text-slate-500 mt-2 italic hidden"></p>
+          </div>
+        </div>
+
+        <!-- Rincian Alokasi Pupuk Resmi -->
+        <div class="space-y-3 pt-2">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs sm:text-sm font-extrabold text-slate-800 uppercase tracking-wide flex items-center gap-2">
+              <i class="fa-solid fa-boxes-stacked text-emerald-600"></i>
+              <span>Rincian Jatah Alokasi Pupuk Bersubsidi</span>
+            </h4>
+            <span class="text-[10px] font-bold text-slate-400">Musim Tanam III 2026</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            
+            <!-- UREA -->
+            <div class="p-4 rounded-2xl bg-emerald-50/80 border border-emerald-200 relative overflow-hidden">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-black text-emerald-950 uppercase tracking-wider">UREA</span>
+                <span class="w-7 h-7 rounded-lg bg-emerald-200/80 text-emerald-900 flex items-center justify-center text-xs font-black">N</span>
+              </div>
+              <div class="mt-3 flex items-baseline gap-1.5">
+                <span id="res-urea-kg" class="text-2xl sm:text-3xl font-black text-emerald-950">-</span>
+                <span class="text-sm font-bold text-emerald-800">Kg</span>
+              </div>
+              <div class="mt-1.5 pt-2 border-t border-emerald-200/60 flex items-center justify-between text-xs">
+                <span class="text-emerald-700 font-medium">Kemasan:</span>
+                <span id="res-urea-sak" class="font-extrabold text-emerald-950">- Sak</span>
+              </div>
+            </div>
+
+            <!-- NPK / PHONSKA -->
+            <div class="p-4 rounded-2xl bg-amber-50/80 border border-amber-200 relative overflow-hidden">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-black text-amber-950 uppercase tracking-wider">NPK / PHONSKA</span>
+                <span class="w-7 h-7 rounded-lg bg-amber-200/80 text-amber-900 flex items-center justify-center text-xs font-black">NPK</span>
+              </div>
+              <div class="mt-3 flex items-baseline gap-1.5">
+                <span id="res-npk-kg" class="text-2xl sm:text-3xl font-black text-amber-950">-</span>
+                <span class="text-sm font-bold text-amber-800">Kg</span>
+              </div>
+              <div class="mt-1.5 pt-2 border-t border-amber-200/60 flex items-center justify-between text-xs">
+                <span class="text-amber-700 font-medium">Kemasan:</span>
+                <span id="res-npk-sak" class="font-extrabold text-amber-950">- Sak</span>
+              </div>
+            </div>
+
+            <!-- ORGANIK -->
+            <div class="p-4 rounded-2xl bg-teal-50/80 border border-teal-200 relative overflow-hidden">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-black text-teal-950 uppercase tracking-wider">ORGANIK</span>
+                <span class="w-7 h-7 rounded-lg bg-teal-200/80 text-teal-900 flex items-center justify-center text-xs font-black">ORG</span>
+              </div>
+              <div class="mt-3 flex items-baseline gap-1.5">
+                <span id="res-organik-kg" class="text-2xl sm:text-3xl font-black text-teal-950">-</span>
+                <span class="text-sm font-bold text-teal-800">Kg</span>
+              </div>
+              <div class="mt-1.5 pt-2 border-t border-teal-200/60 flex items-center justify-between text-xs">
+                <span class="text-teal-700 font-medium">Kemasan:</span>
+                <span id="res-organik-sak" class="font-extrabold text-teal-950">- Sak</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Disclaimer Resmi Kementerian Pertanian (Wajib Ada) -->
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-slate-700 space-y-1.5">
+          <div class="flex items-center gap-2 text-xs font-bold text-slate-900">
+            <i class="fa-solid fa-scale-balanced text-emerald-700"></i>
+            <span>Alokasi Resmi Dari Kementerian Pertanian</span>
+          </div>
+          <p class="text-[11px] text-slate-600 leading-relaxed">
+            Dihitung dari alokasi dan luas lahan masing-masing petani, bukan wewenang pengurus kelompok tani, kios, dan BPP untuk merubah alokasi tersebut karena bisa dikenakan sanksi dari pemerintah pusat.
+          </p>
+        </div>
+
+        <!-- Tanda Tangan / Pengesahan saat dicetak -->
+        <div class="hidden print:block pt-8 text-xs text-slate-800">
+          <div class="grid grid-cols-2 gap-8 text-center">
+            <div>
+              <p class="text-[11px] text-slate-500">Petani Yang Bersangkutan,</p>
+              <div class="h-16"></div>
+              <p class="font-black underline" id="print-nama-petani">( ..................................... )</p>
+            </div>
+            <div>
+              <p class="text-[11px] text-slate-500">Pengurus Poktan Sri Mulyo,</p>
+              <div class="h-16"></div>
+              <p class="font-black underline">( Pengurus Poktan Sri Mulyo )</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Buttons (no print) -->
+      <div class="no-print print-btn-group flex flex-wrap items-center justify-between gap-3 pt-2">
+        <div class="flex items-center gap-2 flex-wrap">
+          <button onclick="window.print()" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition flex items-center gap-2 shadow-sm">
+            <i class="fa-solid fa-print"></i>
+            <span>Cetak / PDF Bukti</span>
+          </button>
+          <a id="btn-panduan-link" href="panduan-tani.html" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition flex items-center gap-2 shadow-sm">
+            <i class="fa-solid fa-seedling"></i>
+            <span>Buka Kalender &amp; Panduan Tani</span>
+          </a>
+          <button onclick="hubungiWaPengurus()" class="px-4 py-2.5 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold text-xs transition flex items-center gap-2 shadow-sm">
+            <i class="fa-brands fa-whatsapp text-sm"></i>
+            <span>Konfirmasi Pengurus via WA</span>
+          </button>
+        </div>
+        <button onclick="resetSearch()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center gap-1.5 border border-slate-200">
+          <i class="fa-solid fa-rotate-left"></i>
+          <span>Cek NIK Lain</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- STATE 2: PETANI TIDAK TERDAFTAR -->
+    <div id="state-tidak-terdaftar" class="hidden bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-rose-200 space-y-6">
+      
+      <!-- Warning Banner -->
+      <div class="flex items-start gap-4 p-5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-900">
+        <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-2xl shrink-0 shadow-inner">
+          <i class="fa-solid fa-circle-exclamation"></i>
+        </div>
+        <div class="space-y-1">
+          <h3 class="text-base font-extrabold text-rose-950">
+            NIK atau Nama Petani Tidak Ditemukan
+          </h3>
+          <p class="text-xs text-rose-800 leading-relaxed">
+            Data dengan kata kunci <span id="notfound-keyword" class="font-black text-rose-950 font-mono bg-rose-200/60 px-1.5 py-0.5 rounded">-</span> belum terdaftar dalam database Alokasi e-RDKK MT III 2026 Kelompok Tani Sri Mulyo Desa Kediren.
+          </p>
+        </div>
+      </div>
+
+      <!-- Panduan Pendaftaran Berkas Fisik -->
+      <div class="space-y-3">
+        <div class="flex items-center gap-2 text-slate-900">
+          <i class="fa-solid fa-folder-open text-emerald-600"></i>
+          <h4 class="text-sm font-extrabold uppercase tracking-wide">
+            Syarat Pengajuan e-RDKK Poktan Sri Mulyo
+          </h4>
+        </div>
+        <p class="text-xs text-slate-600 leading-relaxed">
+          Bagi warga petani pemilik lahan atau penggarap sawah di wilayah Poktan Sri Mulyo (Desa Kediren) yang belum terdaftar di e-RDKK, silakan mengajukan permohonan pendaftaran e-RDKK musim berikutnya dengan menyerahkan <strong class="text-slate-900">3 berkas fisik</strong> berikut kepada Pengurus Poktan:
+        </p>
+
+        <!-- 3 Dokumen Persyaratan -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-1">
+          
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+            <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-black text-sm">
+              <i class="fa-solid fa-id-card"></i>
+            </div>
+            <h5 class="text-xs font-black text-slate-900">1. Fotocopy KTP</h5>
+            <p class="text-[11px] text-slate-500 leading-relaxed">
+              Fotocopy e-KTP Pemilik atau Penggarap Lahan (1 lembar, pastikan NIK terbaca jelas dan aktif).
+            </p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+            <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-black text-sm">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <h5 class="text-xs font-black text-slate-900">2. Fotocopy KK</h5>
+            <p class="text-[11px] text-slate-500 leading-relaxed">
+              Fotocopy Kartu Keluarga (KK) terbaru untuk verifikasi keabsahan data domisili keluarga.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+            <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-black text-sm">
+              <i class="fa-solid fa-file-invoice"></i>
+            </div>
+            <h5 class="text-xs font-black text-slate-900">3. Pipil / SPPT PBB</h5>
+            <p class="text-[11px] text-slate-500 leading-relaxed">
+              Fotocopy Pipil Pajak / SPPT PBB Sawah untuk verifikasi letak blok dan luas baku lahan garapan.
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Lokasi Penyerahan & Bantuan Petani -->
+      <div class="p-4 rounded-2xl bg-amber-50/80 border border-amber-200 space-y-2">
+        <div class="flex items-center gap-2 text-xs font-extrabold text-amber-900">
+          <i class="fa-solid fa-location-dot text-amber-600"></i>
+          <span>Tempat Penyerahan Berkas</span>
+        </div>
+        <p class="text-xs text-amber-950 leading-relaxed">
+          Serahkan langsung berkas kepada <strong>Pengurus Poktan Sri Mulyo</strong> di Desa Kediren, Kecamatan Lembeyan. Berkas akan diverifikasi bersama Petugas Penyuluh Lapangan (PPL BPP Kec. Lembeyan) untuk pengusulan kuota pupuk musim berikutnya.
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+        <div class="flex items-center gap-2 flex-wrap">
+          <button onclick="hubungiWaPengajuan()" class="px-4 py-2.5 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold text-xs transition flex items-center gap-2 shadow-sm">
+            <i class="fa-brands fa-whatsapp text-sm"></i>
+            <span>Kirim Pesan WhatsApp ke Pengurus</span>
+          </button>
+          <a href="panduan-tani.html#kalkulator" class="px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs transition flex items-center gap-2 shadow-sm">
+            <i class="fa-solid fa-calculator text-amber-300"></i>
+            <span>Hitung Kebutuhan Pupuk Mandiri</span>
+          </a>
+        </div>
+        <button onclick="resetSearch()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center gap-1.5 border border-slate-200">
+          <i class="fa-solid fa-rotate-left"></i>
+          <span>Cari Petani Lain</span>
+        </button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- 4. FOOTER -->
+  <!-- ========================================== -->
+  <footer class="no-print bg-white border-t border-slate-200 py-6 mt-12 text-center text-xs text-slate-500 space-y-2">
+    <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <span class="w-6 h-6 rounded-lg bg-emerald-800 text-emerald-200 flex items-center justify-center text-[10px] font-black">SM</span>
+        <span class="font-extrabold text-slate-700">Poktan Sri Mulyo</span>
+        <span>· Desa Kediren, Lembeyan, Magetan</span>
+      </div>
+      <div class="flex items-center gap-4 text-slate-400">
+        <a href="panduan-tani.html" class="hover:text-emerald-700 transition">Panduan Budidaya</a>
+        <a href="index.html" class="hover:text-emerald-700 transition">Portal Pengurus</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================== -->
+  <!-- 5. JAVASCRIPT LOGIC & DATA SEED -->
+  <!-- ========================================== -->
+  <script>
+    // 195 Petani terdata dari Sheet ALOKASI PEMBAGIAN Poktan Sri Mulyo
+    const SEED_PETANI = [{"no":"1","nik":"3520032402810001","nama":"AGUS JAENURI","lahan":"0.32","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"80","npk":"75","organik":"59","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"","ket":""},{"no":"2","nik":"3520031206890003","nama":"AGUS SUTOPO","lahan":"0.75","revisi":"","status":"BELUM SETOR KTP","urea":"187","npk":"175","organik":"138","urea_sak":"3","npk_sak":"3","organik_sak":"3","uang":"","ket":""},{"no":"3","nik":"3520031308700002","nama":"AHMAD MUNIR","lahan":"0.29","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"72","npk":"68","organik":"54","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"4","nik":"3520034602850002","nama":"ANIK RIYANA","lahan":"0.14","revisi":"","status":"BELUM AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"","ket":""},{"no":"5","nik":"3520032211850001","nama":"ARIF GUNAWAN","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":"BOJONE RUM JAMITUL + JAGUNG 2025"},{"no":"6","nik":"3520030810910001","nama":"BAMBANG SUCIPTO","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"0","npk_sak":"1","organik_sak":"1","uang":"Rp 145.000","ket":""},{"no":"7","nik":"3520034606650001","nama":"BARIYAH","lahan":"0.14","revisi":"0.28","status":"SUDAH AMBIL, BELUM SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":"KTP DIAMBIL BUAT PERIKSA"},{"no":"8","nik":"3520031003560002","nama":"BEJO","lahan":"0.38","revisi":"0.32","status":"SUDAH AMBIL, SETOR KTP","urea":"95","npk":"89","organik":"70","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"9","nik":"3520020410890001","nama":"BENI IRMAWAN","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"10","nik":"3520031208590001","nama":"BINGAN","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, FOTO DI KIOS, SURAT KUASA","urea":"35","npk":"33","organik":"26","urea_sak":"0","npk_sak":"1","organik_sak":"1","uang":"Rp 145.000","ket":"wes di jupuk sarmo"},{"no":"11","nik":"3520030701510001","nama":"BOIMIN","lahan":"0.14","revisi":"0.20","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":"LAHAN 125 RU"},{"no":"12","nik":"3520031005710001","nama":"BOIMIN","lahan":"0.28","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"70","npk":"65","organik":"52","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"13","nik":"3520031809730002","nama":"BOIRIN","lahan":"0.7","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"174","npk":"163","organik":"129","urea_sak":"3","npk_sak":"3","organik_sak":"3","uang":"Rp 750.000","ket":""},{"no":"14","nik":"3520035202490002","nama":"DJAMI","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"0","npk_sak":"1","organik_sak":"1","uang":"Rp 145.000","ket":"KTP KLOTER KE 7"},{"no":"15","nik":"3520032310050001","nama":"DWI OKTA ROHMADANI","lahan":"0.14","revisi":"","status":"BELUM SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"","ket":""},{"no":"16","nik":"3520020307790001","nama":"EDI MARGONO","lahan":"0.26","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"65","npk":"61","organik":"48","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"17","nik":"3520025508910004","nama":"EMI PURWATI","lahan":"0.12","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"30","npk":"28","organik":"22","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"18","nik":"3520036101870001","nama":"ENDANG RETNO WINARSIH","lahan":"0.66","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"164","npk":"154","organik":"122","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":""},{"no":"19","nik":"3520034407700005","nama":"ERNA YULIATI","lahan":"0.9","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"224","npk":"210","organik":"166","urea_sak":"4","npk_sak":"4","organik_sak":"4","uang":"Rp 1.000.000","ket":""},{"no":"20","nik":"3520030107500011","nama":"HARJO BOWOH","lahan":"0.19","revisi":"","status":"BELUM SETOR KTP","urea":"47","npk":"44","organik":"35","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"","ket":""},{"no":"21","nik":"3520030604590001","nama":"HARJO LOSO","lahan":"0.33","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"82","npk":"77","organik":"61","urea_sak":"2","npk_sak":"1","organik_sak":"1","uang":"Rp 355.000","ket":""},{"no":"22","nik":"3520031401820001","nama":"HARYADI","lahan":"0.14","revisi":"","status":"BELUM SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"","ket":"MANTUNE KAERUN RT 08"},{"no":"23","nik":"1811070810900003","nama":"HERI GUNAWAN","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"Rp 105.000","ket":""},{"no":"24","nik":"3520030305850001","nama":"HERI SUSANTO","lahan":"0.17","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"42","npk":"40","organik":"31","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp -","ket":"POTONG KAS WES JUPUK"},{"no":"25","nik":"3520030310830001","nama":"IHWAN NUDDIN","lahan":"0.14","revisi":"","status":"BELUM SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"0","npk_sak":"1","organik_sak":"1","uang":"Rp 145.000","ket":""},{"no":"26","nik":"3520030705700001","nama":"IMAM SUKADI","lahan":"0.12","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"30","npk":"28","organik":"22","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"Rp 105.000","ket":"WES JUPUK"},{"no":"27","nik":"3520035605710001","nama":"ISMIATUN","lahan":"0.28","revisi":"","status":"SUDAH AMBIL, FOTO DI KIOS","urea":"70","npk":"65","organik":"52","urea_sak":"0","npk_sak":"0","organik_sak":"0","uang":"","ket":""},{"no":"28","nik":"3520032002720001","nama":"ISWAHYUDI","lahan":"0.16","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"40","npk":"37","organik":"30","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"Rp 105.000","ket":""},{"no":"29","nik":"3520035405590001","nama":"JAMINEM","lahan":"0.21","revisi":"","status":"SETOR KTP, BELUM AMBIL, SUDAH BAYAR","urea":"52","npk":"49","organik":"39","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"30","nik":"3520030111660001","nama":"JAMIRAN","lahan":"0.38","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"95","npk":"89","organik":"70","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":""},{"no":"31","nik":"3520032809770001","nama":"JANTU WARSITA","lahan":"0.2","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"50","npk":"47","organik":"37","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"32","nik":"3520030104550001","nama":"JEMALI","lahan":"0.71","revisi":"0.42","status":"SUDAH AMBIL, SETOR KTP","urea":"177","npk":"166","organik":"131","urea_sak":"3","npk_sak":"2","organik_sak":"2","uang":"Rp 605.000","ket":""},{"no":"33","nik":"3520101504660001","nama":"JOHAN ARIFIN","lahan":"0.09","revisi":"","status":"SUDAH AMBIL, SURAT KUASA","urea":"22","npk":"21","organik":"17","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"Rp 105.000","ket":"Wes dijupuk pak lan"},{"no":"34","nik":"3520032711850001","nama":"JOKO WASKITO","lahan":"0.06","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"15","npk":"14","organik":"11","urea_sak":"0","npk_sak":"1","organik_sak":"1","uang":"Rp 145.000","ket":""},{"no":"35","nik":"3520031006510001","nama":"JOYO","lahan":"0.14","revisi":"","status":"BELUM SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"","ket":""},{"no":"36","nik":"3520032510550001","nama":"JUMARI","lahan":"0.17","revisi":"","status":"SUDAH AMBIL, BELUM SETOR KTP","urea":"42","npk":"40","organik":"31","urea_sak":"0","npk_sak":"1","organik_sak":"1","uang":"Rp 145.000","ket":""},{"no":"37","nik":"3520036305880001","nama":"JUWITA ERNAWATI","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"Rp 105.000","ket":""},{"no":"38","nik":"3520031110460001","nama":"KADEMIN","lahan":"0.45","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"112","npk":"105","organik":"83","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":""},{"no":"39","nik":"3520032602440001","nama":"KADEMUN","lahan":"0.28","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"70","npk":"65","organik":"52","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"40","nik":"3520031201550001","nama":"KADIMIN","lahan":"0.2","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"50","npk":"47","organik":"37","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"41","nik":"3520032506700001","nama":"KADIMUN","lahan":"0.28","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"70","npk":"65","organik":"52","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"42","nik":"3520033006540001","nama":"KADIRUN","lahan":"0.77","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"192","npk":"180","organik":"142","urea_sak":"3","npk_sak":"3","organik_sak":"3","uang":"Rp 750.000","ket":""},{"no":"43","nik":"3520035007730001","nama":"KADIYEM","lahan":"0.24","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"60","npk":"56","organik":"44","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"44","nik":"3520031802580001","nama":"KAIRUN","lahan":"0.23","revisi":"","status":"SUDAH AMBIL, BELUM SETOR KTP","urea":"57","npk":"54","organik":"42","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":"KTP DI JUPUK PERPANJANG BPJS"},{"no":"45","nik":"3520031507790001","nama":"KAMIN SAMSULI","lahan":"0.48","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"120","npk":"112","organik":"89","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":""},{"no":"46","nik":"3520030702710001","nama":"KARIMUN","lahan":"0.2","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"50","npk":"47","organik":"37","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"47","nik":"3520034612980001","nama":"KARINA HARDIANA WAHYU FARANANDA","lahan":"0.24","revisi":"","status":"BELUM SETOR KTP","urea":"60","npk":"56","organik":"44","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"","ket":"ANAKE PAK EDI KIOS"},{"no":"48","nik":"3520031112630004","nama":"KARNI","lahan":"0.17","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"42","npk":"40","organik":"31","urea_sak":"0","npk_sak":"1","organik_sak":"1","uang":"Rp 145.000","ket":""},{"no":"49","nik":"3520031204460001","nama":"KARNO","lahan":"0.06","revisi":"0.14","status":"SUDAH AMBIL, FOTO DI KIOS","urea":"15","npk":"14","organik":"11","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"Rp 105.000","ket":""},{"no":"50","nik":"3520030606670001","nama":"KASENO","lahan":"0.62","revisi":"0.48","status":"SUDAH AMBIL, SETOR KTP","urea":"154","npk":"145","organik":"114","urea_sak":"3","npk_sak":"3","organik_sak":"3","uang":"Rp 750.000","ket":""},{"no":"51","nik":"3520033007610001","nama":"KASIMUN","lahan":"0.39","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"97","npk":"91","organik":"72","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":""},{"no":"52","nik":"3520030707450001","nama":"KASIYO","lahan":"0.29","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"72","npk":"68","organik":"54","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"53","nik":"3520033006560001","nama":"KASMAN","lahan":"0.42","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"105","npk":"98","organik":"77","urea_sak":"2","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":"Lunas"},{"no":"54","nik":"3520034804710002","nama":"KASMIATI","lahan":"0.51","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"127","npk":"119","organik":"94","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":"Lunas"},{"no":"55","nik":"3520031403520001","nama":"KATIMUN","lahan":"0.49","revisi":"0.28","status":"SUDAH AMBIL, SETOR KTP","urea":"122","npk":"114","organik":"90","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":""},{"no":"56","nik":"3520031805590001","nama":"KEMIS","lahan":"0.28","revisi":"0.10","status":"BELUM SETOR KTP","urea":"70","npk":"65","organik":"52","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"","ket":"SUDAH DI BELI ISWAHYUDI RT 5 lahan asli 0,10"},{"no":"57","nik":"3520033006360001","nama":"KIMAN","lahan":"0.42","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"105","npk":"98","organik":"77","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":""},{"no":"58","nik":"3520030107740005","nama":"LASIMIN","lahan":"0.28","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"70","npk":"65","organik":"52","urea_sak":"1","npk_sak":"2","organik_sak":"2","uang":"Rp 360.000","ket":""},{"no":"59","nik":"3520031005640001","nama":"MANTO","lahan":"0.14","revisi":"","status":"BELUM AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"","ket":"KLOTER 4"},{"no":"60","nik":"3520034212500001","nama":"MARIYEM","lahan":"0.27","revisi":"0.32","status":"SUDAH AMBIL, SETOR KTP","urea":"67","npk":"63","organik":"50","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 500.000","ket":""},{"no":"61","nik":"3520030404640001","nama":"MARJI","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"Rp 105.000","ket":""},{"no":"62","nik":"3520037005650001","nama":"MARSINI","lahan":"0.44","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"110","npk":"103","organik":"81","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":""},{"no":"63","nik":"3520035704450001","nama":"MIREM","lahan":"0.2","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"50","npk":"47","organik":"37","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"64","nik":"3520032411650001","nama":"MISLAN SARJIANTO","lahan":"0.22","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"55","npk":"51","organik":"41","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":"Wes jupuk sepaket,"},{"no":"65","nik":"3520033112660001","nama":"MISNI","lahan":"0.12","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"30","npk":"28","organik":"22","urea_sak":"0","npk_sak":"1","organik_sak":"1","uang":"Rp 145.000","ket":""},{"no":"66","nik":"3520030107690008","nama":"MISPAN","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"Rp 105.000","ket":""},{"no":"67","nik":"3520036202680002","nama":"MISRATI","lahan":"0.11","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"27","npk":"26","organik":"20","urea_sak":"0","npk_sak":"1","organik_sak":"1","uang":"Rp 145.000","ket":"Wes jupuk"},{"no":"68","nik":"3520031204560001","nama":"MOBIN","lahan":"0.3","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"75","npk":"70","organik":"55","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"69","nik":"3520030904560002","nama":"MOH PANUDIN","lahan":"0.08","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"20","npk":"19","organik":"15","urea_sak":"0","npk_sak":"1","organik_sak":"1","uang":"Rp 105.000","ket":""},{"no":"70","nik":"3520030101620016","nama":"MUH BIBIT","lahan":"0.1","revisi":"0.28","status":"SUDAH AMBIL, SETOR KTP","urea":"25","npk":"23","organik":"18","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"Rp 105.000","ket":""},{"no":"71","nik":"3520030101760002","nama":"NGADINO","lahan":"0.31","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"77","npk":"72","organik":"57","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"72","nik":"3520031204650001","nama":"NUR HADI TOMO","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"Rp 105.000","ket":"Wes di jupuk"},{"no":"73","nik":"3520031708560001","nama":"PAIMIN","lahan":"0.28","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"70","npk":"65","organik":"52","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"74","nik":"3520035403440002","nama":"PAINEM","lahan":"0.18","revisi":"","status":"BELUM SETOR KTP","urea":"45","npk":"42","organik":"33","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"","ket":""},{"no":"75","nik":"3520030304530001","nama":"PANIJO","lahan":"0.29","revisi":"0.22","status":"SUDAH AMBIL, SETOR KTP","urea":"72","npk":"68","organik":"54","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"76","nik":"3520032311630001","nama":"PANIJO","lahan":"0.2","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"50","npk":"47","organik":"37","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":"PENGGARAP SENEN MBELIK"},{"no":"77","nik":"3520021207700005","nama":"PARDI","lahan":"0.22","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"55","npk":"51","organik":"41","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"78","nik":"3520031404540001","nama":"PARDI","lahan":"0.08","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"20","npk":"19","organik":"15","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"Rp 105.000","ket":""},{"no":"79","nik":"3520034704580001","nama":"PARMI","lahan":"0.2","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"50","npk":"47","organik":"37","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"80","nik":"3520031506650002","nama":"PARNI","lahan":"0.14","revisi":"","status":"BELUM SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"","ket":""},{"no":"81","nik":"3520032808880001","nama":"PARNI","lahan":"0.41","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"102","npk":"96","organik":"76","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":""},{"no":"82","nik":"3520031006580001","nama":"PARNO","lahan":"0.77","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"192","npk":"180","organik":"142","urea_sak":"3","npk_sak":"3","organik_sak":"3","uang":"Rp 750.000","ket":""},{"no":"83","nik":"3520031012640001","nama":"PARTO SAMAN","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"Rp 105.000","ket":""},{"no":"84","nik":"3520035607820001","nama":"PUJIATI","lahan":"0.28","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"70","npk":"65","organik":"52","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"85","nik":"3520030104740001","nama":"PURWANTO","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"Rp 105.000","ket":""},{"no":"86","nik":"3520034107450032","nama":"RATUN","lahan":"0.19","revisi":"","status":"BELUM SETOR KTP","urea":"47","npk":"44","organik":"35","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"","ket":""},{"no":"87","nik":"3520036303860001","nama":"RINI BUDI LESTARI","lahan":"0.26","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"65","npk":"61","organik":"48","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"88","nik":"3520034503770001","nama":"RIRIT ARMIYANTI","lahan":"0.28","revisi":"0.21","status":"SUDAH AMBIL, SETOR KTP","urea":"70","npk":"65","organik":"52","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"89","nik":"3520031810950002","nama":"ROBBY DWIYANTO","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, FOTO DI KIOS","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"","ket":"Wes jupuk"},{"no":"90","nik":"3520030104640002","nama":"SABAR","lahan":"0.19","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"47","npk":"44","organik":"35","urea_sak":"2","npk_sak":"0","organik_sak":"1","uang":"Rp 245.000","ket":"Abange njalok diganti urea"},{"no":"91","nik":"3520030101750001","nama":"SADIRAN","lahan":"0.14","revisi":"0.21","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"92","nik":"3520032512400001","nama":"SADIRAN","lahan":"0.14","revisi":"0.17","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"0","npk_sak":"1","organik_sak":"1","uang":"Rp 145.000","ket":""},{"no":"93","nik":"3520032212650001","nama":"SAIFUDIN JUHRI","lahan":"0.26","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"65","npk":"61","organik":"48","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"94","nik":"3520031510560002","nama":"SAIRUN","lahan":"0.23","revisi":"0.28","status":"SUDAH AMBIL, SETOR KTP","urea":"57","npk":"54","organik":"42","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"95","nik":"3520032909500001","nama":"SAKIP","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"96","nik":"3520030509660001","nama":"SAMAN","lahan":"0.1","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"25","npk":"23","organik":"18","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"97","nik":"3520030212520001","nama":"SAMIDI","lahan":"0.54","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"135","npk":"126","organik":"100","urea_sak":"3","npk_sak":"2","organik_sak":"2","uang":"Rp 605.000","ket":""},{"no":"98","nik":"3520033012690002","nama":"SAMIJAN","lahan":"0.34","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"85","npk":"79","organik":"63","urea_sak":"2","npk_sak":"1","organik_sak":"1","uang":"Rp 355.000","ket":"LUWEH 100 EWU"},{"no":"99","nik":"3520035703770003","nama":"SAMINEM","lahan":"0.33","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"82","npk":"77","organik":"61","urea_sak":"2","npk_sak":"1","organik_sak":"1","uang":"Rp 355.000","ket":""},{"no":"100","nik":"3520031805600001","nama":"SAMINGOEN","lahan":"0.28","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"70","npk":"65","organik":"52","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":""},{"no":"101","nik":"3502150602630004","nama":"SAMIRAN","lahan":"0.11","revisi":"0.14","status":"BELUM AMBIL, SETOR KTP","urea":"27","npk":"26","organik":"20","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"","ket":""},{"no":"102","nik":"3520030905670001","nama":"SAMIRAN","lahan":"0.37","revisi":"0.28","status":"SUDAH AMBIL, SETOR KTP","urea":"92","npk":"86","organik":"68","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":"KLOTER 8"},{"no":"103","nik":"3520032202660001","nama":"SAMSI","lahan":"0.66","revisi":"","status":"BELUM SETOR KTP","urea":"164","npk":"154","organik":"122","urea_sak":"3","npk_sak":"3","organik_sak":"3","uang":"","ket":""},{"no":"104","nik":"3520034104520010","nama":"SAMSITIN","lahan":"0.31","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"77","npk":"72","organik":"57","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":"tapen"},{"no":"105","nik":"3520031109460001","nama":"SAMSUDIN","lahan":"0.28","revisi":"","status":"BELUM AMBIL, SETOR KTP","urea":"70","npk":"65","organik":"52","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"","ket":""},{"no":"106","nik":"3520030107910005","nama":"SAMSUL MA'ARIF","lahan":"0.28","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"70","npk":"65","organik":"52","urea_sak":"0","npk_sak":"1","organik_sak":"1","uang":"Rp 145.000","ket":"WES DIJUPUK PA TRISNAN KTP BELOM SETOR"},{"no":"107","nik":"3520030308890001","nama":"SAMSURI","lahan":"0.14","revisi":"","status":"BELUM SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"","ket":""},{"no":"108","nik":"3520031809730001","nama":"SAMSURI","lahan":"0.28","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"70","npk":"65","organik":"52","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"","ket":""},{"no":"109","nik":"3520033103810001","nama":"SAMUDI","lahan":"0.28","revisi":"","status":"SUDAH AMBIL, FOTO DI KIOS","urea":"70","npk":"65","organik":"52","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"110","nik":"3520031204530001","nama":"SAMUJI","lahan":"0.14","revisi":"","status":"BELUM SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"","ket":""},{"no":"111","nik":"3520030107530009","nama":"SARDI","lahan":"0.35","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"87","npk":"82","organik":"65","urea_sak":"2","npk_sak":"1","organik_sak":"1","uang":"Rp 355.000","ket":""},{"no":"112","nik":"3520031106510001","nama":"SARDI","lahan":"0.38","revisi":"","status":"BELUM AMBIL, SETOR KTP, SUDAH BAYAR","urea":"95","npk":"89","organik":"70","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":"LUNAS URUNG JUPUK"},{"no":"113","nik":"3520031708570001","nama":"SARDI","lahan":"1.05","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"262","npk":"245","organik":"194","urea_sak":"4","npk_sak":"4","organik_sak":"4","uang":"Rp 1.000.000","ket":""},{"no":"114","nik":"3520032701690002","nama":"SARIJO","lahan":"0.42","revisi":"","status":"BELUM AMBIL, SETOR KTP","urea":"105","npk":"98","organik":"77","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"","ket":""},{"no":"115","nik":"3520033112590001","nama":"SARIMIN","lahan":"0.42","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"105","npk":"98","organik":"77","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":""},{"no":"116","nik":"3520031505650002","nama":"SARNI","lahan":"0.07","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"17","npk":"16","organik":"13","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"Rp 105.000","ket":""},{"no":"117","nik":"3520031707710001","nama":"SARNO","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"0","npk_sak":"1","organik_sak":"1","uang":"Rp 145.000","ket":""},{"no":"118","nik":"3520030101550011","nama":"SEMUN","lahan":"0.21","revisi":"","status":"BELUM AMBIL, SETOR KTP","urea":"52","npk":"49","organik":"39","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"","ket":""},{"no":"119","nik":"3520031406550001","nama":"SENEN","lahan":"0.06","revisi":"0.23","status":"SUDAH AMBIL, SETOR KTP","urea":"15","npk":"14","organik":"11","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"120","nik":"3520033012630001","nama":"SENEN","lahan":"0.17","revisi":"0.26","status":"BELUM AMBIL, SETOR KTP","urea":"42","npk":"40","organik":"31","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"","ket":""},{"no":"121","nik":"3520031008490001","nama":"SENI FADKUR","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, BELUM SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"Rp 105.000","ket":"SUDAH AMBIL BELOM SETOR KTP"},{"no":"122","nik":"3520033107730002","nama":"SIMIN","lahan":"0.7","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"174","npk":"163","organik":"129","urea_sak":"3","npk_sak":"3","organik_sak":"3","uang":"Rp 750.000","ket":""},{"no":"123","nik":"3520031505510001","nama":"SIRUN","lahan":"0.1","revisi":"","status":"BELUM SETOR KTP","urea":"25","npk":"23","organik":"18","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"","ket":""},{"no":"124","nik":"3520031501680001","nama":"SLAMET","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"0","npk_sak":"1","organik_sak":"1","uang":"Rp 145.000","ket":""},{"no":"125","nik":"3520034802790001","nama":"SRI HIDAYATI","lahan":"0.19","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"47","npk":"44","organik":"35","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"126","nik":"3520030608690001","nama":"SUBANDI","lahan":"0.42","revisi":"","status":"BELUM SETOR KTP","urea":"105","npk":"98","organik":"77","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"","ket":""},{"no":"127","nik":"3520031808760001","nama":"SUBANI","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, FOTO DI KIOS","urea":"35","npk":"33","organik":"26","urea_sak":"0","npk_sak":"1","organik_sak":"1","uang":"Rp 145.000","ket":"Sudah foto di kios"},{"no":"128","nik":"3520031504600001","nama":"SUCIPTO","lahan":"0.22","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"55","npk":"51","organik":"41","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"129","nik":"6474021405600003","nama":"SUCIPTO","lahan":"0.25","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"62","npk":"58","organik":"46","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"130","nik":"3520032305770002","nama":"SUDARNO","lahan":"0.22","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"55","npk":"51","organik":"41","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"131","nik":"3520030901750004","nama":"SUGENG","lahan":"0.2","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"50","npk":"47","organik":"37","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"132","nik":"3520032106850001","nama":"SUGENG PURWANTO","lahan":"0.29","revisi":"","status":"SUDAH AMBIL, FOTO DI KIOS","urea":"72","npk":"68","organik":"54","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"133","nik":"3520031610910001","nama":"SUGENG RIYANTO","lahan":"0.41","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"102","npk":"96","organik":"76","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":"foto kios"},{"no":"134","nik":"3520030707590001","nama":"SUGITO","lahan":"0.33","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"82","npk":"77","organik":"61","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"135","nik":"3520031107610001","nama":"SUGIYANTO","lahan":"0.22","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"55","npk":"51","organik":"41","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"136","nik":"3520032005730001","nama":"SUGIYONO","lahan":"0.14","revisi":"0.21","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"137","nik":"3520032012770003","nama":"SUGIYONO","lahan":"0.38","revisi":"","status":"SUDAH AMBIL, FOTO DI KIOS","urea":"95","npk":"89","organik":"70","urea_sak":"2","npk_sak":"1","organik_sak":"1","uang":"Rp 355.000","ket":"FOTO KIOS"},{"no":"138","nik":"3520030302740002","nama":"SUKADI","lahan":"0.1","revisi":"","status":"BELUM SETOR KTP","urea":"25","npk":"23","organik":"18","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"","ket":""},{"no":"139","nik":"3520030205790004","nama":"SUKAMTO","lahan":"0.56","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"139","npk":"131","organik":"103","urea_sak":"3","npk_sak":"3","organik_sak":"3","uang":"Rp 750.000","ket":"1 paket mbak warti"},{"no":"140","nik":"3520031306620001","nama":"SUKAMTO","lahan":"0.06","revisi":"","status":"BELUM SETOR KTP","urea":"15","npk":"14","organik":"11","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"","ket":""},{"no":"141","nik":"3520031512420001","nama":"SUKAMTO","lahan":"0.3","revisi":"0.25","status":"SUDAH AMBIL, SETOR KTP","urea":"75","npk":"70","organik":"55","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":"PENGGARAP ANAK E HARIS RT 7"},{"no":"142","nik":"3520032702660001","nama":"SUKARDI","lahan":"0.18","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"45","npk":"42","organik":"33","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"143","nik":"3520035710760001","nama":"SUKARTINI","lahan":"0.11","revisi":"","status":"SUDAH AMBIL, SURAT KUASA","urea":"27","npk":"26","organik":"20","urea_sak":"0","npk_sak":"1","organik_sak":"1","uang":"Rp 145.000","ket":"PENGGARAP SUNARTI"},{"no":"144","nik":"3520031607570001","nama":"SUKAT","lahan":"0.4","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"100","npk":"93","organik":"74","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"145","nik":"3520030107380072","nama":"SUKIMAN","lahan":"0.28","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"70","npk":"65","organik":"52","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"146","nik":"3520034202560001","nama":"SULASMI","lahan":"0.08","revisi":"","status":"SUDAH AMBIL, BELUM SETOR KTP","urea":"20","npk":"19","organik":"15","urea_sak":"0","npk_sak":"1","organik_sak":"1","uang":"Rp 145.000","ket":"JUPUK GITO"},{"no":"147","nik":"3520034703860003","nama":"SULISTYOWATI","lahan":"0.56","revisi":"0.42","status":"SUDAH AMBIL, SETOR KTP","urea":"139","npk":"131","organik":"103","urea_sak":"4","npk_sak":"2","organik_sak":"2","uang":"Rp 710.000","ket":"1 SAK AMOH"},{"no":"148","nik":"3520030104970001","nama":"SUMARNI","lahan":"0.49","revisi":"","status":"BELUM SETOR KTP","urea":"122","npk":"114","organik":"90","urea_sak":"3","npk_sak":"3","organik_sak":"3","uang":"","ket":""},{"no":"149","nik":"3520035105820001","nama":"SUMARTI","lahan":"0.31","revisi":"","status":"BELUM AMBIL, SETOR KTP","urea":"77","npk":"72","organik":"57","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"","ket":""},{"no":"150","nik":"3520030305500002","nama":"SUMIRAN","lahan":"0.47","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"117","npk":"110","organik":"87","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":""},{"no":"151","nik":"3520035112870001","nama":"SUNARTI","lahan":"0.32","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"80","npk":"75","organik":"59","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"152","nik":"3520032101840001","nama":"SUNARYO","lahan":"0.29","revisi":"","status":"BELUM SETOR KTP","urea":"72","npk":"68","organik":"54","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"","ket":""},{"no":"153","nik":"3520033112640001","nama":"SUPARNO","lahan":"0.27","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"67","npk":"63","organik":"50","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"154","nik":"3520031010550001","nama":"SUPENO","lahan":"0.45","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"112","npk":"105","organik":"83","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":""},{"no":"155","nik":"3520030307790001","nama":"SUPRIONO","lahan":"0.08","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"20","npk":"19","organik":"15","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"156","nik":"3520033010900002","nama":"SUPRIYANTO","lahan":"0.19","revisi":"","status":"BELUM SETOR KTP","urea":"47","npk":"44","organik":"35","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"","ket":""},{"no":"157","nik":"6472050910800010","nama":"SUPRIYANTO","lahan":"0.17","revisi":"","status":"SUDAH AMBIL, FOTO DI KIOS","urea":"42","npk":"40","organik":"31","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"158","nik":"3520030511720001","nama":"SUPRIYONO","lahan":"0.28","revisi":"0.44","status":"SUDAH AMBIL, SETOR KTP","urea":"70","npk":"65","organik":"52","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":"Tambah Lahan 0,16 belum masuk Sawah Mbambung"},{"no":"159","nik":"3520030807740001","nama":"SUPRIYONO","lahan":"0.28","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"70","npk":"65","organik":"52","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"160","nik":"3520031704560004","nama":"SURADI","lahan":"0.42","revisi":"","status":"SUDAH AMBIL, FOTO DI KIOS","urea":"105","npk":"98","organik":"77","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":""},{"no":"161","nik":"3520036707750001","nama":"SURATI","lahan":"0.35","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"87","npk":"82","organik":"65","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"162","nik":"3520031108800003","nama":"SURATNO","lahan":"0.42","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"105","npk":"98","organik":"77","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":""},{"no":"163","nik":"3520035710810001","nama":"SURINI","lahan":"0.13","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"32","npk":"30","organik":"24","urea_sak":"0","npk_sak":"1","organik_sak":"1","uang":"Rp 145.000","ket":""},{"no":"164","nik":"3520033006510001","nama":"SUTADI","lahan":"0.42","revisi":"","status":"SUDAH AMBIL, FOTO DI KIOS","urea":"105","npk":"98","organik":"77","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":""},{"no":"165","nik":"3520034406650001","nama":"SUTARTI","lahan":"0.24","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"60","npk":"56","organik":"44","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"166","nik":"3520033112650005","nama":"SUTIKNO","lahan":"0.28","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"70","npk":"65","organik":"52","urea_sak":"1","npk_sak":"2","organik_sak":"2","uang":"Rp 365.000","ket":""},{"no":"167","nik":"3520034906630001","nama":"SUTINI","lahan":"0.28","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"70","npk":"65","organik":"52","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"168","nik":"3520031805700001","nama":"SUTOMO","lahan":"0.16","revisi":"","status":"BELUM AMBIL, SETOR KTP","urea":"40","npk":"37","organik":"30","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"","ket":""},{"no":"169","nik":"3520030607600001","nama":"SUTRISNO","lahan":"0.43","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"107","npk":"100","organik":"79","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":""},{"no":"170","nik":"3520031506700001","nama":"SUTRISNO","lahan":"0.5","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"125","npk":"117","organik":"92","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":""},{"no":"171","nik":"3520032909800001","nama":"SUTRISNO","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"Rp 105.000","ket":""},{"no":"172","nik":"3520032807750002","nama":"SUWANTO","lahan":"0.53","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"132","npk":"124","organik":"98","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":""},{"no":"173","nik":"3520030505590001","nama":"SUWARNO","lahan":"0.23","revisi":"0.36","status":"SUDAH AMBIL, FOTO DI KIOS","urea":"57","npk":"54","organik":"42","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"174","nik":"3520030505610001","nama":"SUWITO","lahan":"0.19","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"47","npk":"44","organik":"35","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"175","nik":"3502162705810004","nama":"SUYADI","lahan":"0.35","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"87","npk":"82","organik":"65","urea_sak":"2","npk_sak":"1","organik_sak":"1","uang":"Rp 355.000","ket":""},{"no":"176","nik":"3520035710710002","nama":"SUYATI","lahan":"0.12","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"30","npk":"28","organik":"22","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":"WES JUPUK TAHUN NGAREP GAK OLEH RABUK"},{"no":"177","nik":"3520031408670002","nama":"SUYITNO","lahan":"0.84","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"209","npk":"196","organik":"155","urea_sak":"4","npk_sak":"3","organik_sak":"3","uang":"Rp 855.000","ket":""},{"no":"178","nik":"3520030202770002","nama":"SUYONO","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"179","nik":"3520037005390001","nama":"TAYEM","lahan":"0.19","revisi":"","status":"SUDAH AMBIL, FOTO DI KIOS","urea":"47","npk":"44","organik":"35","urea_sak":"0","npk_sak":"1","organik_sak":"1","uang":"Rp 145.000","ket":"SUDAH FOTO KIOS DAN SURAT KUASA AHLI WARIS SUTAR LENGKAP"},{"no":"180","nik":"3520036606700001","nama":"TRI WINDARTI","lahan":"0.12","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"30","npk":"28","organik":"22","urea_sak":"0","npk_sak":"1","organik_sak":"1","uang":"","ket":"BELUM BAYAR"},{"no":"181","nik":"3520030104720001","nama":"TUKIRAN","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"182","nik":"3520030604650001","nama":"TUKIRAN","lahan":"0.27","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"67","npk":"63","organik":"50","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"183","nik":"3520030405850004","nama":"TUNGGUL HARDIYONO","lahan":"0.28","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"70","npk":"65","organik":"52","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"184","nik":"3520031210540001","nama":"WAGIMIN","lahan":"0.24","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"60","npk":"56","organik":"44","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"185","nik":"3520031303630001","nama":"WAGIMUN","lahan":"0.11","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"27","npk":"26","organik":"20","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"186","nik":"3520036505570001","nama":"WAGINEM","lahan":"0.14","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"0","npk_sak":"1","organik_sak":"1","uang":"Rp 145.000","ket":"Wes jupuk"},{"no":"187","nik":"3520030405620001","nama":"WAKINO","lahan":"1","revisi":"0.52","status":"SUDAH AMBIL, FOTO DI KIOS","urea":"249","npk":"233","organik":"185","urea_sak":"0","npk_sak":"0","organik_sak":"0","uang":"","ket":"JUPUK KIOS LANGSUNG"},{"no":"188","nik":"3520031208740005","nama":"WARSIYAT","lahan":"0.14","revisi":"0.21","status":"SUDAH AMBIL, SETOR KTP","urea":"35","npk":"33","organik":"26","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"189","nik":"3520035604580001","nama":"WIJI","lahan":"0.34","revisi":"0.14","status":"SUDAH AMBIL, SETOR KTP","urea":"85","npk":"79","organik":"63","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"190","nik":"3520020103680003","nama":"WIJIANTO","lahan":"0.31","revisi":"","status":"BELUM SETOR KTP","urea":"77","npk":"72","organik":"57","urea_sak":"2","npk_sak":"1","organik_sak":"1","uang":"","ket":""},{"no":"191","nik":"3520030510650001","nama":"WIR SADIRUN","lahan":"0.41","revisi":"","status":"SUDAH AMBIL, SURAT KUASA","urea":"102","npk":"96","organik":"76","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":""},{"no":"192","nik":"3520030111760001","nama":"YITNO","lahan":"0.27","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"67","npk":"63","organik":"50","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 500.000","ket":""},{"no":"193","nik":"3520034807860001","nama":"YULIANA","lahan":"0.36","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"90","npk":"84","organik":"66","urea_sak":"2","npk_sak":"2","organik_sak":"2","uang":"Rp 500.000","ket":""},{"no":"194","nik":"3520030111500001","nama":"YUWONO","lahan":"0.28","revisi":"","status":"SUDAH AMBIL, SETOR KTP","urea":"70","npk":"65","organik":"52","urea_sak":"1","npk_sak":"1","organik_sak":"1","uang":"Rp 250.000","ket":""},{"no":"","nik":"3520030603530001","nama":"SADIRUN","lahan":"","revisi":"0.14","status":"PENGAJUAN DATA BARU","urea":"0","npk":"0","organik":"0","urea_sak":"1","npk_sak":"0","organik_sak":"0","uang":"","ket":"BELUM AMBIL"}];
+
+    // State Aplikasi
+    let currentData = [...SEED_PETANI];
+    let selectedPetani = null;
+    let isNikSensored = true;
+
+    // Inisialisasi Saat Load
+    document.addEventListener('DOMContentLoaded', () => {
+      // Coba load cache terbaru dari localStorage jika ada
+      try {
+        const cached = localStorage.getItem('poktan_alokasi_pembagian_v1');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            currentData = parsed;
+            updateSyncCounter(currentData.length);
+          }
+        }
+      } catch (e) {
+        console.warn('Gagal membaca cache lokal:', e);
+      }
+
+      // Sync background dari Google Sheet GViz
+      fetchLatestSheetData();
+
+      // Setup Event Listeners
+      const input = document.getElementById('search-input');
+      const clearBtn = document.getElementById('btn-clear');
+
+      input.addEventListener('input', handleInputChange);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleSearch();
+        }
+      });
+
+      // Tutup suggestions jika klik di luar
+      document.addEventListener('click', (e) => {
+        const box = document.getElementById('suggestions-box');
+        if (!box.contains(e.target) && e.target !== input) {
+          box.classList.add('hidden');
+        }
+      });
+
+      // Cek Query Param URL (?nik=... atau ?nama=... atau ?q=...)
+      checkUrlParams();
+    });
+
+    // Periksa Query Parameter dari URL
+    function checkUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      const q = params.get('nik') || params.get('nama') || params.get('q');
+      if (q && q.trim()) {
+        const input = document.getElementById('search-input');
+        input.value = q.trim();
+        handleSearch();
+      }
+    }
+
+    // Background fetch dari Google Sheet GViz
+    async function fetchLatestSheetData() {
+      const gvizUrl = 'https://docs.google.com/spreadsheets/d/1c7R1klPcFSZ7W1PLaZyayZxBUOrVyLh-Lwc24Cf6CEY/gviz/tq?tqx=out:json&sheet=ALOKASI%20PEMBAGIAN&range=A2:N245&headers=0';
+      try {
+        const res = await fetch(gvizUrl);
+        if (!res.ok) throw new Error('Network status: ' + res.status);
+        const text = await res.text();
+        const jsonStr = text.replace(/^[^{]*/, '').replace(/[^}]*$/, '');
+        const data = JSON.parse(jsonStr);
+
+        if (data.table && Array.isArray(data.table.rows)) {
+          const parsed = [];
+          data.table.rows.forEach(r => {
+            const c = r.c || [];
+            const no = c[0] ? String(c[0].v || '').trim() : '';
+            const nik = c[1] ? String(c[1].v || '').trim() : '';
+            const nama = c[2] ? String(c[2].v || '').trim() : '';
+            if (!nama && !nik) return;
+
+            const lahan = c[3] ? String(c[3].v ?? '').trim() : '';
+            const revisi = c[4] ? String(c[4].v ?? '').trim() : '';
+            const status = c[5] ? String(c[5].v ?? '').trim() : '';
+            const urea = c[6] ? String(c[6].v ?? '').trim() : '';
+            const npk = c[7] ? String(c[7].v ?? '').trim() : '';
+            const organik = c[8] ? String(c[8].v ?? '').trim() : '';
+            const urea_sak = c[9] ? String(c[9].v ?? '').trim() : '';
+            const npk_sak = c[10] ? String(c[10].v ?? '').trim() : '';
+            const organik_sak = c[11] ? String(c[11].v ?? '').trim() : '';
+            const uang = c[12] ? String(c[12].v ?? '').trim() : '';
+            const ket = c[13] ? String(c[13].v ?? '').trim() : '';
+
+            parsed.push({
+              no, nik, nama, lahan, revisi, status,
+              urea, npk, organik,
+              urea_sak, npk_sak, organik_sak,
+              uang, ket
+            });
+          });
+
+          if (parsed.length > 50) {
+            currentData = parsed;
+            localStorage.setItem('poktan_alokasi_pembagian_v1', JSON.stringify(parsed));
+            updateSyncCounter(parsed.length);
+          }
+        }
+      } catch (err) {
+        console.warn('Gagal sinkronisasi data online, menggunakan seed offline:', err.message);
+      }
+    }
+
+    function updateSyncCounter(count) {
+      const el = document.getElementById('sync-counter');
+      if (el) el.textContent = count + ' Petani Terdata (Online)';
+    }
+
+    // Auto-suggest saat mengetik
+    function handleInputChange(e) {
+      const query = e.target.value.trim().toLowerCase();
+      const clearBtn = document.getElementById('btn-clear');
+      const box = document.getElementById('suggestions-box');
+
+      if (query.length > 0) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+        box.classList.add('hidden');
+        return;
+      }
+
+      if (query.length < 2) {
+        box.classList.add('hidden');
+        return;
+      }
+
+      // Cari kecocokan
+      const matches = currentData.filter(d => {
+        const n = (d.nama || '').toLowerCase();
+        const nik = (d.nik || '');
+        return n.includes(query) || nik.includes(query);
+      }).slice(0, 8);
+
+      if (matches.length === 0) {
+        box.innerHTML = `<div class="p-3 text-xs text-slate-400 text-center">Tidak ada nama / NIK yang cocok</div>`;
+        box.classList.remove('hidden');
+        return;
+      }
+
+      box.innerHTML = matches.map(m => {
+        const masked = maskNik(m.nik);
+        return `
+          <button type="button" onclick="selectItem('${m.nik || m.nama}')" 
+                  class="w-full p-3 hover:bg-emerald-50/80 transition flex items-center justify-between text-left border-b border-slate-100 last:border-none">
+            <div class="min-w-0 pr-2">
+              <p class="text-xs font-bold text-slate-800 uppercase truncate">${escapeHtml(m.nama)}</p>
+              <p class="text-[11px] text-slate-400 font-mono mt-0.5">NIK: ${masked}</p>
+            </div>
+            <div class="text-right shrink-0">
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${getStatusBadgeClass(m.status)}">
+                ${escapeHtml(m.status || 'TERDAFTAR')}
+              </span>
+            </div>
+          </button>
+        `;
+      }).join('');
+
+      box.classList.remove('hidden');
+    }
+
+    function selectItem(key) {
+      const input = document.getElementById('search-input');
+      input.value = key;
+      document.getElementById('suggestions-box').classList.add('hidden');
+      handleSearch();
+    }
+
+    function quickFill(val) {
+      const input = document.getElementById('search-input');
+      input.value = val;
+      handleSearch();
+    }
+
+    function clearSearch() {
+      const input = document.getElementById('search-input');
+      input.value = '';
+      document.getElementById('btn-clear').classList.add('hidden');
+      document.getElementById('suggestions-box').classList.add('hidden');
+      input.focus();
+    }
+
+    function resetSearch() {
+      clearSearch();
+      selectedPetani = null;
+      document.getElementById('state-terdaftar').classList.add('hidden');
+      document.getElementById('state-tidak-terdaftar').classList.add('hidden');
+      document.getElementById('state-idle').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Fungsi Utama Eksekusi Pencarian
+    function handleSearch() {
+      const input = document.getElementById('search-input');
+      const box = document.getElementById('suggestions-box');
+      box.classList.add('hidden');
+
+      const raw = input.value.trim();
+      if (!raw) {
+        input.focus();
+        return;
+      }
+
+      const q = raw.toLowerCase();
+
+      // Cari persis NIK atau Nama
+      let found = currentData.find(d => {
+        const nik = (d.nik || '').trim();
+        const nama = (d.nama || '').trim().toLowerCase();
+        return nik === q || nama === q;
+      });
+
+      // Jika belum ketemu persis, coba substring
+      if (!found) {
+        found = currentData.find(d => {
+          const nik = (d.nik || '').trim();
+          const nama = (d.nama || '').trim().toLowerCase();
+          return nik.includes(q) || nama.includes(q);
+        });
+      }
+
+      const idleView = document.getElementById('state-idle');
+      const terdaftarView = document.getElementById('state-terdaftar');
+      const tidakTerdaftarView = document.getElementById('state-tidak-terdaftar');
+
+      if (found) {
+        selectedPetani = found;
+        idleView.classList.add('hidden');
+        tidakTerdaftarView.classList.add('hidden');
+        renderTerdaftar(found);
+        terdaftarView.classList.remove('hidden');
+      } else {
+        selectedPetani = null;
+        idleView.classList.add('hidden');
+        terdaftarView.classList.add('hidden');
+        document.getElementById('notfound-keyword').textContent = raw;
+        tidakTerdaftarView.classList.remove('hidden');
+      }
+
+      // Scroll ke hasil
+      const target = found ? terdaftarView : tidakTerdaftarView;
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Render Data Petani Terdaftar
+    function renderTerdaftar(item) {
+      document.getElementById('res-nama').textContent = item.nama || '-';
+      document.getElementById('print-nama-petani').textContent = '( ' + (item.nama || '......................') + ' )';
+
+      // NIK & Sensor
+      isNikSensored = true;
+      updateNikDisplay(item.nik);
+
+      // Luas Lahan
+      const lahanVal = parseFloat(item.lahan) || 0;
+      document.getElementById('res-lahan').textContent = lahanVal > 0 ? lahanVal.toFixed(2) : (item.lahan || '0');
+
+      // Luas Lahan Revisi
+      const revisiVal = parseFloat(item.revisi) || 0;
+      const revisiEl = document.getElementById('res-revisi');
+      const revisiNote = document.getElementById('res-revisi-note');
+      if (revisiVal > 0) {
+        revisiEl.textContent = revisiVal.toFixed(2);
+        revisiNote.textContent = 'Verifikasi fisik sawah (Aktif)';
+      } else {
+        revisiEl.textContent = '-';
+        revisiNote.textContent = 'Tidak ada penyesuaian lahan';
+      }
+
+      // Status Penebusan Badge
+      const statusBadge = document.getElementById('res-status-badge');
+      const statusText = (item.status || 'TERDAFTAR').toUpperCase();
+      statusBadge.textContent = statusText;
+      statusBadge.className = 'px-3 py-1.5 rounded-xl text-xs font-extrabold inline-flex items-center gap-1.5 border shadow-2xs ' + getStatusBadgeClass(statusText);
+
+      // Keterangan / Catatan Kios
+      const ketBox = document.getElementById('res-ket-box');
+      if (item.ket && item.ket.trim()) {
+        ketBox.textContent = 'Catatan: ' + item.ket;
+        ketBox.classList.remove('hidden');
+      } else {
+        ketBox.classList.add('hidden');
+      }
+
+      // Jatah Pupuk
+      document.getElementById('res-urea-kg').textContent = item.urea || '0';
+      document.getElementById('res-urea-sak').textContent = (item.urea_sak || '0') + ' Sak';
+
+      document.getElementById('res-npk-kg').textContent = item.npk || '0';
+      document.getElementById('res-npk-sak').textContent = (item.npk_sak || '0') + ' Sak';
+
+      document.getElementById('res-organik-kg').textContent = item.organik || '0';
+      document.getElementById('res-organik-sak').textContent = (item.organik_sak || '0') + ' Sak';
+
+      // Link ke Panduan Tani
+      const link = document.getElementById('btn-panduan-link');
+      if (link) {
+        link.href = 'panduan-tani.html?nik=' + encodeURIComponent(item.nik || item.nama);
+      }
+    }
+
+    // Toggle Sensor NIK
+    function toggleNikSensor() {
+      if (!selectedPetani) return;
+      isNikSensored = !isNikSensored;
+      updateNikDisplay(selectedPetani.nik);
+    }
+
+    function updateNikDisplay(nik) {
+      const el = document.getElementById('res-nik');
+      const btn = document.getElementById('btn-eye-nik');
+      if (!nik) {
+        el.textContent = '-';
+        return;
+      }
+      if (isNikSensored) {
+        el.textContent = maskNik(nik);
+        btn.className = 'fa-solid fa-eye-slash text-xs';
+      } else {
+        el.textContent = nik;
+        btn.className = 'fa-solid fa-eye text-xs text-emerald-600';
+      }
+    }
+
+    function maskNik(nik) {
+      if (!nik || nik.length < 10) return nik || '-';
+      return nik.substring(0, 6) + '********' + nik.substring(nik.length - 2);
+    }
+
+    // Warna Badge Status
+    function getStatusBadgeClass(status) {
+      const s = (status || '').toUpperCase();
+      if (s.includes('SUDAH AMBIL') && s.includes('SETOR KTP')) {
+        return 'bg-emerald-100 text-emerald-800 border-emerald-300';
+      }
+      if (s.includes('BELUM AMBIL') && s.includes('SETOR KTP')) {
+        return 'bg-blue-100 text-blue-800 border-blue-300';
+      }
+      if (s.includes('BELUM SETOR KTP')) {
+        return 'bg-amber-100 text-amber-800 border-amber-300';
+      }
+      if (s.includes('SURAT KUASA') || s.includes('FOTO DI KIOS')) {
+        return 'bg-purple-100 text-purple-800 border-purple-300';
+      }
+      if (s.includes('SUDAH BAYAR')) {
+        return 'bg-teal-100 text-teal-800 border-teal-300';
+      }
+      return 'bg-slate-100 text-slate-800 border-slate-300';
+    }
+
+    // WhatsApp Pengurus Konfirmasi Terdaftar
+    function hubungiWaPengurus() {
+      if (!selectedPetani) return;
+      const nama = selectedPetani.nama || '';
+      const nik = selectedPetani.nik || '';
+      const status = selectedPetani.status || '';
+      const urea = selectedPetani.urea || '0';
+      const npk = selectedPetani.npk || '0';
+      const organik = selectedPetani.organik || '0';
+
+      const pesan = `Halo Pengurus Poktan Sri Mulyo Desa Kediren,\n\nSaya ingin konfirmasi pengambilan alokasi pupuk e-RDKK MT3 2026:\n- Nama: ${nama}\n- NIK: ${nik}\n- Status Saat Ini: ${status}\n- Alokasi Pupuk: Urea ${urea} Kg, NPK ${npk} Kg, Organik ${organik} Kg.\n\nMohon informasi jadwal penebusan di kios / pengumpulan KTP. Terima kasih.`;
+      window.open('https://wa.me/?text=' + encodeURIComponent(pesan), '_blank');
+    }
+
+    // WhatsApp Pengajuan Berkas Baru
+    function hubungiWaPengajuan() {
+      const kw = document.getElementById('notfound-keyword').textContent || '';
+      const pesan = `Halo Pengurus Poktan Sri Mulyo Desa Kediren,\n\nSaya mengecek data di website dengan NIK/Nama: "${kw}" dan belum terdaftar dalam e-RDKK MT3 2026.\n\nSaya berniat mengajukan pendaftaran e-RDKK dengan melampirkan berkas persyaratan:\n1. Fotocopy KTP Pemilik/Penggarap\n2. Fotocopy Kartu Keluarga (KK)\n3. Fotocopy Pipil Pajak / SPPT PBB Sawah\n\nKapan saya bisa menyerahkan berkas fisik ini kepada pengurus? Terima kasih.`;
+      window.open('https://wa.me/?text=' + encodeURIComponent(pesan), '_blank');
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+  </script>
+</body>
+</html>

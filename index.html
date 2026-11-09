@@ -155,19 +155,38 @@
         <p class="text-xs text-slate-500 font-medium mt-1">Desa Kediren · Lembeyan · Magetan</p>
       </div>
 
-      <!-- Banner Sambutan untuk Warga Petani -->
-      <div class="mb-5 p-3.5 rounded-2xl bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-700 text-white shadow-md text-left flex items-center justify-between gap-3 relative z-10 border border-emerald-500/30">
-        <div class="min-w-0">
-          <span class="text-[10px] font-black uppercase tracking-wider text-amber-300 flex items-center gap-1">
-            <i class="fa-solid fa-wheat-awn"></i> Akses Petani Tanpa Login
-          </span>
-          <h4 class="text-xs font-black text-white mt-0.5">Kalender Tanam & Dosis Pupuk Resmi</h4>
-          <p class="text-[11px] text-emerald-100">Cek jatah e-RDKK, cuaca GPS & jadwal panen.</p>
-        </div>
-        <a href="panduan-tani.html" class="px-3.5 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-xs shrink-0 shadow-sm transition flex items-center gap-1.5">
-          <span>Buka</span>
-          <i class="fa-solid fa-arrow-right text-[10px]"></i>
+      <!-- Banner Akses Layanan Mandiri Petani -->
+      <div class="mb-5 space-y-2 relative z-10">
+        <!-- Card 1: Khusus Pengecekan NIK / e-RDKK Petani -->
+        <a href="cek-petani.html" class="block p-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 text-slate-950 shadow-md text-left hover:brightness-105 active:scale-[0.99] transition border border-amber-300">
+          <div class="flex items-center justify-between gap-3">
+            <div class="min-w-0">
+              <span class="text-[10px] font-black uppercase tracking-wider text-amber-950/80 flex items-center gap-1">
+                <i class="fa-solid fa-id-card"></i> Pengecekan Khusus Petani
+              </span>
+              <h4 class="text-xs font-black text-slate-950 mt-0.5">🔍 Cek Status NIK KTP &amp; e-RDKK</h4>
+              <p class="text-[11px] text-amber-950/80 font-medium">Periksa jatah pupuk &amp; status penebusan di kios.</p>
+            </div>
+            <span class="w-8 h-8 rounded-xl bg-slate-950 text-amber-400 flex items-center justify-center text-xs shrink-0 font-black shadow-sm">
+              <i class="fa-solid fa-arrow-right"></i>
+            </span>
+          </div>
         </a>
+
+        <!-- Card 2: Kalender Tanam & Dosis Pupuk -->
+        <div class="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-800 via-emerald-700 to-teal-800 text-white shadow-md text-left flex items-center justify-between gap-3 border border-emerald-600/40">
+          <div class="min-w-0">
+            <span class="text-[10px] font-black uppercase tracking-wider text-emerald-300 flex items-center gap-1">
+              <i class="fa-solid fa-wheat-awn"></i> Akses Petani Tanpa Login
+            </span>
+            <h4 class="text-xs font-black text-white mt-0.5">Kalender Tanam &amp; Dosis Pupuk</h4>
+            <p class="text-[11px] text-emerald-100">Kalkulator dosis resmi &amp; konsultasi Pakar BPP.</p>
+          </div>
+          <a href="panduan-tani.html" class="px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-white font-black text-xs shrink-0 shadow-sm transition flex items-center gap-1.5">
+            <span>Buka</span>
+            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </a>
+        </div>
       </div>
 
       <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4 relative z-10">
@@ -318,6 +337,11 @@
             <i class="fa-solid fa-file-signature text-slate-400"></i>
             <span>Daftar Surat Kuasa</span>
           </button>
+          <a href="cek-petani.html"
+             class="px-3 py-1.5 rounded-lg text-xs font-bold text-amber-900 bg-amber-50 hover:bg-amber-100 border border-amber-300/80 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-id-card text-amber-600"></i>
+            <span>Cek NIK e-RDKK</span>
+          </a>
           <a href="panduan-tani.html"
              class="px-3 py-1.5 rounded-lg text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/90 transition flex items-center gap-1.5">
             <i class="fa-solid fa-wheat-awn text-emerald-600"></i>
@@ -505,6 +529,14 @@
             <div class="text-xs font-bold text-slate-800">Surat Kuasa</div>
             <div class="text-[10px] text-slate-400">Daftar Petani Penerima</div>
           </button>
+          <a href="cek-petani.html" class="p-3.5 bg-gradient-to-br from-amber-500/10 to-yellow-500/15 rounded-xl border border-amber-300/90 shadow-2xs hover:shadow-sm hover:border-amber-500 transition text-left group">
+            <div class="flex items-center justify-between mb-1">
+              <span class="w-8 h-8 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center text-sm group-hover:scale-105 transition"><i class="fa-solid fa-id-card"></i></span>
+              <i class="fa-solid fa-arrow-right text-[11px] text-amber-700 group-hover:translate-x-0.5 transition"></i>
+            </div>
+            <div class="text-xs font-bold text-amber-950">Cek NIK Petani</div>
+            <div class="text-[10px] text-amber-700 font-medium">Status Penebusan e-RDKK</div>
+          </a>
           <a href="panduan-tani.html" class="p-3.5 bg-gradient-to-br from-emerald-500/10 to-teal-500/15 rounded-xl border border-emerald-300/90 shadow-2xs hover:shadow-sm hover:border-emerald-500 transition text-left group">
             <div class="flex items-center justify-between mb-1">
               <span class="w-8 h-8 rounded-lg bg-emerald-700 text-white flex items-center justify-center text-sm group-hover:scale-105 transition"><i class="fa-solid fa-wheat-awn"></i></span>

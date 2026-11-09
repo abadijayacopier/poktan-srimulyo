@@ -137,6 +137,12 @@
           <span>Bagikan ke WA</span>
         </button>
 
+        <a href="cek-petani.html" title="Pengecekan NIK e-RDKK & Alokasi Pupuk"
+           class="px-3 sm:px-3.5 py-2 sm:py-2.5 rounded-xl bg-emerald-800/80 hover:bg-emerald-700 text-emerald-100 hover:text-white text-xs font-bold transition flex items-center gap-1.5 border border-emerald-500/30">
+          <i class="fa-solid fa-id-card text-amber-300 text-xs"></i>
+          <span class="hidden xs:inline">Cek NIK Petani</span>
+        </a>
+
         <!-- Tombol Masuk ke Dashboard / Portal Pengurus -->
         <a href="index.html" title="Login ke Dashboard Pengurus e-RDKK & Alokasi"
            class="px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 text-xs font-black transition flex items-center gap-1.5 shadow-md shadow-black/20">
@@ -314,18 +320,28 @@
                   <p class="text-[10px] text-amber-700 font-normal mt-0.5">Panjenengan tetap bisa menyusun rencana tanam dan menghitung kebutuhan pupuk presisi.</p>
                 </div>
               </div>
-              <button type="button" onclick="aktifkanModeMandiri()" class="w-full py-2 px-3 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm active:scale-95 cursor-pointer">
-                <i class="fa-solid fa-calculator"></i>
-                <span>Lanjut Input Mandiri (Masukkan Luas Lahan)</span>
-              </button>
+              <div class="flex flex-col sm:flex-row gap-2">
+                <button type="button" onclick="aktifkanModeMandiri()" class="flex-1 py-2 px-3 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm active:scale-95 cursor-pointer">
+                  <i class="fa-solid fa-calculator"></i>
+                  <span>Lanjut Input Mandiri (Masukkan Luas Lahan)</span>
+                </button>
+                <a href="cek-petani.html" class="py-2 px-3 rounded-lg bg-amber-200/80 hover:bg-amber-300 text-amber-950 font-bold text-xs flex items-center justify-center gap-1.5 border border-amber-300 transition text-center">
+                  <i class="fa-solid fa-file-circle-question text-amber-800"></i>
+                  <span>Syarat Berkas KTP/KK/Pipil</span>
+                </a>
+              </div>
             </div>
 
             <!-- NOTIFIKASI JIKA TERDAFTAR DI e-RDKK -->
-            <div id="notif-terdaftar" class="hidden mt-2 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center gap-2 transition animate-fadeIn">
-              <i class="fa-solid fa-circle-check text-emerald-600 text-sm shrink-0"></i>
-              <div class="flex-1 leading-tight">
-                <span>Terverifikasi di e-RDKK: <b id="teks-nama-terdaftar" class="text-emerald-950 font-bold"></b></span>
+            <div id="notif-terdaftar" class="hidden mt-2 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center justify-between gap-2 transition animate-fadeIn flex-wrap">
+              <div class="flex items-center gap-2 leading-tight min-w-0">
+                <i class="fa-solid fa-circle-check text-emerald-600 text-sm shrink-0"></i>
+                <span class="truncate">Terverifikasi di e-RDKK: <b id="teks-nama-terdaftar" class="text-emerald-950 font-bold"></b></span>
               </div>
+              <a id="link-cek-petani-terdaftar" href="cek-petani.html" class="text-[10px] font-bold text-emerald-800 hover:text-emerald-950 underline flex items-center gap-1 shrink-0 bg-white/60 px-2 py-1 rounded-lg border border-emerald-200">
+                <i class="fa-solid fa-id-card"></i>
+                <span>Cek Status Penebusan ➔</span>
+              </a>
             </div>
 
             <div class="mt-2.5 flex items-center justify-between text-xs">
@@ -1981,6 +1997,10 @@
       const teksSuccess = document.getElementById('teks-nama-terdaftar');
       if (notifSuccess && teksSuccess) {
         teksSuccess.innerText = `${petani.nama} (NIK: ${petani.nik})`;
+        const linkCek = document.getElementById('link-cek-petani-terdaftar');
+        if (linkCek) {
+          linkCek.href = 'cek-petani.html?nik=' + encodeURIComponent(petani.nik || petani.nama);
+        }
         notifSuccess.classList.remove('hidden');
       }
 
