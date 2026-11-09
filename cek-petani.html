@@ -299,7 +299,7 @@
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             
             <!-- UREA -->
-            <div class="p-4 rounded-2xl bg-emerald-50/80 border border-emerald-200 relative overflow-hidden">
+            <div class="p-4 sm:p-5 rounded-2xl bg-emerald-50/80 border border-emerald-200 relative overflow-hidden">
               <div class="flex items-center justify-between">
                 <span class="text-xs font-black text-emerald-950 uppercase tracking-wider">UREA</span>
                 <span class="w-7 h-7 rounded-lg bg-emerald-200/80 text-emerald-900 flex items-center justify-center text-xs font-black">N</span>
@@ -308,14 +308,10 @@
                 <span id="res-urea-kg" class="text-2xl sm:text-3xl font-black text-emerald-950">-</span>
                 <span class="text-sm font-bold text-emerald-800">Kg</span>
               </div>
-              <div class="mt-1.5 pt-2 border-t border-emerald-200/60 flex items-center justify-between text-xs">
-                <span class="text-emerald-700 font-medium">Kemasan:</span>
-                <span id="res-urea-sak" class="font-extrabold text-emerald-950">- Sak</span>
-              </div>
             </div>
 
             <!-- NPK / PHONSKA -->
-            <div class="p-4 rounded-2xl bg-amber-50/80 border border-amber-200 relative overflow-hidden">
+            <div class="p-4 sm:p-5 rounded-2xl bg-amber-50/80 border border-amber-200 relative overflow-hidden">
               <div class="flex items-center justify-between">
                 <span class="text-xs font-black text-amber-950 uppercase tracking-wider">NPK / PHONSKA</span>
                 <span class="w-7 h-7 rounded-lg bg-amber-200/80 text-amber-900 flex items-center justify-center text-xs font-black">NPK</span>
@@ -324,14 +320,10 @@
                 <span id="res-npk-kg" class="text-2xl sm:text-3xl font-black text-amber-950">-</span>
                 <span class="text-sm font-bold text-amber-800">Kg</span>
               </div>
-              <div class="mt-1.5 pt-2 border-t border-amber-200/60 flex items-center justify-between text-xs">
-                <span class="text-amber-700 font-medium">Kemasan:</span>
-                <span id="res-npk-sak" class="font-extrabold text-amber-950">- Sak</span>
-              </div>
             </div>
 
             <!-- ORGANIK -->
-            <div class="p-4 rounded-2xl bg-teal-50/80 border border-teal-200 relative overflow-hidden">
+            <div class="p-4 sm:p-5 rounded-2xl bg-teal-50/80 border border-teal-200 relative overflow-hidden">
               <div class="flex items-center justify-between">
                 <span class="text-xs font-black text-teal-950 uppercase tracking-wider">ORGANIK</span>
                 <span class="w-7 h-7 rounded-lg bg-teal-200/80 text-teal-900 flex items-center justify-center text-xs font-black">ORG</span>
@@ -339,10 +331,6 @@
               <div class="mt-3 flex items-baseline gap-1.5">
                 <span id="res-organik-kg" class="text-2xl sm:text-3xl font-black text-teal-950">-</span>
                 <span class="text-sm font-bold text-teal-800">Kg</span>
-              </div>
-              <div class="mt-1.5 pt-2 border-t border-teal-200/60 flex items-center justify-between text-xs">
-                <span class="text-teal-700 font-medium">Kemasan:</span>
-                <span id="res-organik-sak" class="font-extrabold text-teal-950">- Sak</span>
               </div>
             </div>
 
@@ -841,15 +829,10 @@
         ketBox.classList.add('hidden');
       }
 
-      // Jatah Pupuk (Pembulatan Resmi Sesuai Sheet ALOKASI PEMBAGIAN)
+      // Jatah Pupuk (Pembulatan Resmi Sesuai Sheet ALOKASI PEMBAGIAN - Hanya Menampilkan Kg)
       document.getElementById('res-urea-kg').textContent = formatBulatKg(item.urea);
-      document.getElementById('res-urea-sak').textContent = (item.urea_sak || '0') + ' Sak';
-
       document.getElementById('res-npk-kg').textContent = formatBulatKg(item.npk);
-      document.getElementById('res-npk-sak').textContent = (item.npk_sak || '0') + ' Sak';
-
       document.getElementById('res-organik-kg').textContent = formatBulatKg(item.organik);
-      document.getElementById('res-organik-sak').textContent = (item.organik_sak || '0') + ' Sak';
 
       // Link ke Panduan Tani
       const link = document.getElementById('btn-panduan-link');
