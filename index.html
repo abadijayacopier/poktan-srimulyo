@@ -860,6 +860,20 @@
             </div>
 
             <div class="flex items-center gap-2 shrink-0">
+              <!-- Switcher Tampilan Kartu Modern vs Tabel Spreadsheet -->
+              <div class="inline-flex rounded-xl bg-slate-100 p-0.5 border border-slate-200">
+                <button type="button" id="btn-view-card" onclick="setAlokasiViewMode('card')" 
+                        class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-white text-emerald-800 shadow-2xs">
+                  <i class="fa-solid fa-address-card text-emerald-600"></i>
+                  <span>Kartu</span>
+                </button>
+                <button type="button" id="btn-view-table" onclick="setAlokasiViewMode('table')" 
+                        class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-600 hover:text-slate-900">
+                  <i class="fa-solid fa-table-cells text-slate-500"></i>
+                  <span>Tabel</span>
+                </button>
+              </div>
+
               <button type="button" onclick="openAddAlokasiModal()" 
                       class="w-full sm:w-auto px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm">
                 <i class="fa-solid fa-user-plus"></i>
@@ -868,70 +882,80 @@
             </div>
           </div>
 
-          <!-- Table Inner Card -->
+          <!-- Table & Card Container -->
           <div class="p-4 sm:p-6 space-y-3">
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
               <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-                <i class="fa-solid fa-table-cells text-emerald-600"></i> Lembar Data Alokasi Pupuk & Penebusan
+                <i class="fa-solid fa-table-cells text-emerald-600"></i> Lembar Data Alokasi Pupuk &amp; Penebusan
               </h3>
               <div class="flex items-center gap-2 text-xs text-slate-400">
                 <span id="alokasi-sync-badge" class="hidden inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-medium text-[11px] border border-emerald-200">
                   <i class="fa-solid fa-circle-notch fa-spin text-[10px]"></i> Sinkronisasi Sheet...
                 </span>
-                <span>Sinkronisasi Langsung ke Google Sheets</span>
+                <span class="hidden sm:inline">Sinkronisasi Langsung ke Google Sheets</span>
               </div>
             </div>
 
-            <!-- The Full Interactive Spreadsheet Table -->
-            <div id="alokasi-table-scroll" class="relative overflow-x-auto max-h-[640px] rounded-xl border border-slate-200">
-              <!-- Loading Overlay inside Table (Overlay tidak mendorong/menggeser tombol dan tabel) -->
+            <!-- Wrapper Konten (Kartu & Tabel) dengan Overlay Loading Bersama -->
+            <div class="relative min-h-[160px]">
+              <!-- Loading Overlay -->
               <div id="alokasi-loading" class="hidden absolute inset-0 z-20 bg-white/75 backdrop-blur-[1.5px] flex flex-col items-center justify-center p-8 transition-opacity">
                 <div class="p-4 rounded-2xl bg-white shadow-xl border border-slate-100 flex flex-col items-center max-w-xs text-center">
                   <i class="fa-solid fa-circle-notch fa-spin text-3xl text-emerald-700 mb-2.5"></i>
                   <p class="text-xs font-bold text-slate-800">Memperbarui lembar Alokasi...</p>
-                  <p class="text-[11px] text-slate-500 mt-0.5">Menyelaraskan data e-RDKK & Non-eRDKK</p>
+                  <p class="text-[11px] text-slate-500 mt-0.5">Menyelaraskan data e-RDKK &amp; Non-eRDKK</p>
                 </div>
               </div>
 
-              <table class="w-full min-w-[1430px] table-fixed border-separate border-spacing-0 text-left text-xs">
-                <colgroup>
-                  <col style="width:46px">
-                  <col style="width:175px">
-                  <col style="width:165px">
-                  <col style="width:80px">
-                  <col style="width:80px">
-                  <col style="width:170px">
-                  <col style="width:76px">
-                  <col style="width:82px">
-                  <col style="width:82px">
-                  <col style="width:78px">
-                  <col style="width:88px">
-                  <col style="width:88px">
-                  <col style="width:100px">
-                  <col style="width:140px">
-                  <col style="width:90px">
-                </colgroup>
-                <thead class="sticky top-0 z-20 bg-slate-50 text-slate-700">
-                  <tr class="divide-x divide-slate-200 border-b border-slate-200 text-slate-700 text-xs font-bold uppercase">
-                    <th class="bg-slate-50 px-3 py-3 text-center">No</th>
-                    <th class="bg-slate-50 px-3 py-3 text-left">NIK</th>
-                    <th class="bg-slate-50 px-3 py-3 text-left">Nama Petani</th>
-                    <th class="bg-slate-50 px-2.5 py-3 text-center">Lahan Rev</th>
-                    <th class="bg-slate-50 px-2.5 py-3 text-center">Lahan Asli</th>
-                    <th class="bg-slate-50 px-3 py-3 text-left">Status</th>
-                    <th class="bg-slate-50 px-2 py-3 text-right">Urea</th>
-                    <th class="bg-slate-50 px-2 py-3 text-right">Phonska</th>
-                    <th class="bg-slate-50 px-2 py-3 text-right">Organik</th>
-                    <th class="bg-slate-50 px-2 py-3 text-center font-bold text-slate-800">Sak Urea</th>
-                    <th class="bg-slate-50 px-2 py-3 text-center font-bold text-slate-800">Sak Phonska</th>
-                    <th class="bg-slate-50 px-2 py-3 text-center font-bold text-slate-800">Sak Org</th>
-                    <th class="bg-slate-50 px-3 py-3 text-right">Uang (Rp)</th>
-                    <th class="bg-slate-50 px-3 py-3 text-left">Keterangan</th>
-                    <th class="bg-slate-50 px-3 py-3 text-center">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody id="alokasi-tbody"></tbody>
-              </table>
+              <!-- 1. TAMPILAN KARTU MODERN (SESUAI CONTOH MOBILE USER DI HP) -->
+              <div id="alokasi-card-view">
+                <div id="alokasi-cards-list" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3.5">
+                  <!-- Kartu petani di-generate dinamis oleh renderAlokasiTable() -->
+                </div>
+              </div>
+
+              <!-- 2. TAMPILAN TABEL SPREADSHEET (DESKTOP) -->
+              <div id="alokasi-table-scroll" class="hidden relative overflow-x-auto max-h-[640px] rounded-xl border border-slate-200">
+                <table class="w-full min-w-[1430px] table-fixed border-separate border-spacing-0 text-left text-xs">
+                  <colgroup>
+                    <col style="width:46px">
+                    <col style="width:175px">
+                    <col style="width:165px">
+                    <col style="width:80px">
+                    <col style="width:80px">
+                    <col style="width:170px">
+                    <col style="width:76px">
+                    <col style="width:82px">
+                    <col style="width:82px">
+                    <col style="width:78px">
+                    <col style="width:88px">
+                    <col style="width:88px">
+                    <col style="width:100px">
+                    <col style="width:140px">
+                    <col style="width:90px">
+                  </colgroup>
+                  <thead class="sticky top-0 z-20 bg-slate-50 text-slate-700">
+                    <tr class="divide-x divide-slate-200 border-b border-slate-200 text-slate-700 text-xs font-bold uppercase">
+                      <th class="bg-slate-50 px-3 py-3 text-center">No</th>
+                      <th class="bg-slate-50 px-3 py-3 text-left">NIK</th>
+                      <th class="bg-slate-50 px-3 py-3 text-left">Nama Petani</th>
+                      <th class="bg-slate-50 px-2.5 py-3 text-center">Lahan Rev</th>
+                      <th class="bg-slate-50 px-2.5 py-3 text-center">Lahan Asli</th>
+                      <th class="bg-slate-50 px-3 py-3 text-left">Status</th>
+                      <th class="bg-slate-50 px-2 py-3 text-right">Urea</th>
+                      <th class="bg-slate-50 px-2 py-3 text-right">Phonska</th>
+                      <th class="bg-slate-50 px-2 py-3 text-right">Organik</th>
+                      <th class="bg-slate-50 px-2 py-3 text-center font-bold text-slate-800">Sak Urea</th>
+                      <th class="bg-slate-50 px-2 py-3 text-center font-bold text-slate-800">Sak Phonska</th>
+                      <th class="bg-slate-50 px-2 py-3 text-center font-bold text-slate-800">Sak Org</th>
+                      <th class="bg-slate-50 px-3 py-3 text-right">Uang (Rp)</th>
+                      <th class="bg-slate-50 px-3 py-3 text-left">Keterangan</th>
+                      <th class="bg-slate-50 px-3 py-3 text-center">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="alokasi-tbody"></tbody>
+                </table>
+              </div>
             </div>
           </div>
 
@@ -1295,6 +1319,170 @@
   </div>
 
   <div id="alokasi-toast" class="hidden" role="status" aria-live="polite"></div>
+
+  <!-- Modal Detail Petani (Alokasi & Penebusan Modern) -->
+  <div id="alokasi-detail-modal" class="hidden fixed inset-0 z-[115] flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto" onclick="if(event.target===this)closeAlokasiDetailModal()">
+    <section role="dialog" aria-modal="true" class="w-full max-w-lg my-8 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl animate-[fadeIn_.2s_ease-out]">
+      <div class="flex items-center justify-between border-b border-slate-100 bg-gradient-to-r from-emerald-950 via-emerald-900 to-teal-950 text-white px-5 py-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-emerald-300">
+            <i class="fa-solid fa-wheat-awn text-lg"></i>
+          </div>
+          <div>
+            <h3 id="det-petani-nama" class="font-black text-sm uppercase tracking-tight">-</h3>
+            <p id="det-petani-nik" class="text-[11px] text-emerald-200/80 font-mono">-</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeAlokasiDetailModal()" class="text-white/70 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="p-5 space-y-4">
+        <!-- Status Penebusan & Tagihan -->
+        <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
+          <div>
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">STATUS PENEBUSAN</span>
+            <div id="det-status-badge" class="mt-1 flex flex-wrap gap-1">
+              -
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">TAGIHAN / UANG</span>
+            <span id="det-uang" class="text-sm font-black text-emerald-800 font-mono">-</span>
+          </div>
+        </div>
+
+        <!-- Rincian Lahan -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">LUAS LAHAN ASLI</span>
+            <span id="det-lahan-asli" class="text-sm font-black text-slate-900 font-mono">-</span>
+          </div>
+          <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">LUAS LAHAN REVISI</span>
+            <span id="det-lahan-rev" class="text-sm font-black text-slate-900 font-mono">-</span>
+          </div>
+        </div>
+
+        <!-- Jatah Resmi Pupuk Bersubsidi -->
+        <div class="rounded-2xl border border-slate-200/80 overflow-hidden">
+          <div class="bg-slate-100/80 px-3.5 py-2 border-b border-slate-200 text-[11px] font-bold text-slate-700 uppercase">
+            Jatah Pupuk Bersubsidi Resmi (Kg &amp; Sak)
+          </div>
+          <div class="p-3 grid grid-cols-3 gap-2.5 text-center">
+            <div class="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-100">
+              <span class="text-[10px] font-bold text-slate-500 uppercase block">Urea (N)</span>
+              <div id="det-urea-kg" class="text-sm font-black text-emerald-900 font-mono">- Kg</div>
+              <div id="det-urea-sak" class="text-[10px] text-slate-500 font-medium">- Sak</div>
+            </div>
+            <div class="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-100">
+              <span class="text-[10px] font-bold text-slate-500 uppercase block">NPK Phonska</span>
+              <div id="det-npk-kg" class="text-sm font-black text-emerald-900 font-mono">- Kg</div>
+              <div id="det-npk-sak" class="text-[10px] text-slate-500 font-medium">- Sak</div>
+            </div>
+            <div class="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-100">
+              <span class="text-[10px] font-bold text-slate-500 uppercase block">Organik</span>
+              <div id="det-organik-kg" class="text-sm font-black text-emerald-900 font-mono">- Kg</div>
+              <div id="det-organik-sak" class="text-[10px] text-slate-500 font-medium">- Sak</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Catatan Kios -->
+        <div id="det-ket-container" class="hidden p-3 rounded-2xl bg-amber-50/80 border border-amber-200/80 text-xs">
+          <span class="font-bold text-amber-900 uppercase block text-[10px] mb-0.5">Catatan Khusus Kios:</span>
+          <p id="det-ket" class="text-amber-800 italic">-</p>
+        </div>
+
+        <!-- Action Footer -->
+        <div class="pt-2 flex flex-col sm:flex-row gap-2">
+          <a id="det-btn-cetak" href="#" target="_blank" 
+             class="flex-1 py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-sm">
+            <i class="fa-solid fa-print"></i>
+            <span>Cetak Bukti Resmi (A4)</span>
+          </a>
+          <button id="det-btn-edit" type="button" 
+                  class="py-2.5 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs transition flex items-center justify-center gap-2 shadow-sm">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span>Edit Data</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Modal Edit Data Petani (Quick Mobile Edit) -->
+  <div id="alokasi-edit-modal" class="hidden fixed inset-0 z-[120] flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4 overflow-y-auto" onclick="if(event.target===this)closeAlokasiEditModal()">
+    <section role="dialog" aria-modal="true" class="w-full max-w-lg my-8 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl animate-[fadeIn_.2s_ease-out]">
+      <div class="flex items-center justify-between border-b border-slate-100 bg-slate-900 text-white px-5 py-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-amber-400">
+            <i class="fa-solid fa-pen-to-square text-base"></i>
+          </div>
+          <div>
+            <h3 id="edit-petani-nama" class="font-bold text-sm uppercase">-</h3>
+            <p class="text-xs text-slate-400">Ubah status, luas revisi, atau alokasi sak pupuk</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeAlokasiEditModal()" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <form class="p-5 space-y-3.5" onsubmit="event.preventDefault();saveAlokasiFromModal()">
+        <input type="hidden" id="edit-row-index">
+
+        <div>
+          <label class="mb-1 block text-xs font-bold text-slate-700 uppercase">Status Penebusan / Kios</label>
+          <div id="edit-status-container" class="space-y-1.5 p-3 rounded-xl border border-slate-200 bg-slate-50/50 max-h-40 overflow-y-auto">
+            <!-- Dynamic checkboxes -->
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="mb-1 block text-xs font-bold text-slate-700 uppercase">Luas Lahan Revisi (Ha)</label>
+            <input id="edit-lahan-rev" type="text" class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs outline-none focus:border-emerald-500 font-mono" placeholder="0,00">
+          </div>
+          <div>
+            <label class="mb-1 block text-xs font-bold text-slate-700 uppercase">Jumlah Tagihan (Rp)</label>
+            <input id="edit-uang" type="text" class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs outline-none focus:border-emerald-500 font-mono" placeholder="Rp 0">
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-3 space-y-2">
+          <label class="block text-xs font-bold text-slate-700 uppercase">Alokasi Fisik (Sak)</label>
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <span class="text-[10px] text-slate-500 font-semibold">Sak Urea</span>
+              <input id="edit-sak-urea" type="number" min="0" step="1" class="w-full rounded-lg border border-slate-200 bg-white py-1.5 px-2 text-xs text-center outline-none focus:border-emerald-500 font-mono">
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-500 font-semibold">Sak Phonska</span>
+              <input id="edit-sak-npk" type="number" min="0" step="1" class="w-full rounded-lg border border-slate-200 bg-white py-1.5 px-2 text-xs text-center outline-none focus:border-emerald-500 font-mono">
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-500 font-semibold">Sak Organik</span>
+              <input id="edit-sak-organik" type="number" min="0" step="1" class="w-full rounded-lg border border-slate-200 bg-white py-1.5 px-2 text-xs text-center outline-none focus:border-emerald-500 font-mono">
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="mb-1 block text-xs font-bold text-slate-700 uppercase">Catatan / Keterangan</label>
+          <input id="edit-ket" type="text" class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs outline-none focus:border-emerald-500" placeholder="Catatan tambahan">
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+          <button type="button" onclick="closeAlokasiEditModal()" class="rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50">Batal</button>
+          <button id="btn-save-modal" type="submit" class="rounded-xl bg-emerald-700 px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-emerald-800 transition">
+            <i class="fa-solid fa-floppy-disk mr-1.5"></i> Simpan Perubahan
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
 
   <!-- Legacy container compatibility for scripts expecting #alokasi-page -->
   <div id="alokasi-page" class="hidden"></div>
@@ -2013,7 +2201,304 @@
       });
 
       document.getElementById('alokasi-empty').classList.toggle('hidden',total>0);
-      document.getElementById('al-page-info').textContent=total?('Menampilkan seluruh '+total+' data petani'):'Tidak ada data';document.getElementById('alokasi-tbody').innerHTML=filtered.map((r,ri)=>{const rowBg=ri%2===0?'bg-white':'bg-slate-50/70';return '<tr class="group '+rowBg+' hover:!bg-emerald-50/70 transition-colors">'+r.values.map((v,i)=>{const width=i===0?'w-[46px] min-w-[46px]':i===1?'w-[175px] min-w-[175px]':i===2?'w-[165px] min-w-[165px]':i===3?'w-[80px] min-w-[80px]':i===4?'w-[80px] min-w-[80px]':i===5?'w-[170px] min-w-[170px]':i>=6&&i<=8?'w-[80px] min-w-[80px]':i>=9&&i<=11?'w-[84px] min-w-[84px]':i===12?'w-[100px] min-w-[100px]':'w-[140px] min-w-[140px]';const locked=i===0||i===1||i===2||i===3||i===6||i===7||i===8;const align=i===0||(i>=9&&i<=11)?'text-center':(i>=6&&i<=8)||i===12?'text-right':'text-left';if(i===5)return '<td class="'+width+' border-b border-r border-slate-200/90 px-2 py-1.5 align-middle bg-inherit">'+renderAlStatusPicker(r.row,v)+'</td>';return '<td class="'+width+' border-b border-r border-slate-200/90 px-2 py-1.5 align-middle bg-inherit"><input data-row="'+r.row+'" data-col="'+i+'" value="'+escAl(v)+'" title="'+escAl(v)+(locked?' · Hanya baca':'')+'" aria-label="'+(['No (hanya baca)','NIK (hanya baca)','Nama Petani (hanya baca)','Lahan Revisi (hanya baca)','Revisi Lahan Asli','Status','Urea (hanya baca)','Phonska (hanya baca)','Organik (hanya baca)','Sak Urea','Sak Phonska','Sak Organik','Uang','Keterangan'][i])+'" class="w-full min-w-0 rounded-md border '+(locked?'border-slate-200/60 bg-slate-100/70 text-slate-600 cursor-not-allowed':'border-slate-200/80 bg-white hover:border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-slate-800 shadow-2xs')+' px-2 py-1 text-[12px] leading-snug outline-none '+align+' '+(i===0?'font-semibold text-slate-500':i===1?'font-mono tracking-tight text-slate-700':i===2?'font-bold text-slate-900':i>=6&&i<=11?'font-semibold text-slate-800':i===12?'font-bold text-emerald-800':'')+'" '+(locked?'readonly tabindex="-1"':'')+'></td>';}).join('')+'<td class="w-[90px] min-w-[90px] border-b border-slate-200/90 px-2 py-1.5 align-middle bg-inherit no-print"><div class="flex flex-nowrap items-center justify-center gap-1.5"><button type="button" title="Edit baris" aria-label="Edit baris" onclick="editAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 shadow-2xs transition"><i class="fa-solid fa-pen-to-square text-[11px]"></i></button><button type="button" title="Simpan perubahan" aria-label="Simpan perubahan" onclick="saveAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-700 text-white shadow-2xs hover:bg-emerald-800 transition"><i class="fa-solid fa-floppy-disk text-[11px]"></i></button>'+(alokasiJenis==='NON_ERDKK'?'<button type="button" title="Hapus data" aria-label="Hapus data" onclick="deleteAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-rose-600 text-white hover:bg-rose-700 shadow-2xs transition"><i class="fa-solid fa-trash text-[11px]"></i></button>':'')+'</div></td></tr>';}).join('');}
+      document.getElementById('al-page-info').textContent=total?('Menampilkan seluruh '+total+' data petani'):'Tidak ada data';
+
+      // 1. Render Table View (Spreadsheet)
+      document.getElementById('alokasi-tbody').innerHTML=filtered.map((r,ri)=>{const rowBg=ri%2===0?'bg-white':'bg-slate-50/70';return '<tr class="group '+rowBg+' hover:!bg-emerald-50/70 transition-colors">'+r.values.map((v,i)=>{const width=i===0?'w-[46px] min-w-[46px]':i===1?'w-[175px] min-w-[175px]':i===2?'w-[165px] min-w-[165px]':i===3?'w-[80px] min-w-[80px]':i===4?'w-[80px] min-w-[80px]':i===5?'w-[170px] min-w-[170px]':i>=6&&i<=8?'w-[80px] min-w-[80px]':i>=9&&i<=11?'w-[84px] min-w-[84px]':i===12?'w-[100px] min-w-[100px]':'w-[140px] min-w-[140px]';const locked=i===0||i===1||i===2||i===3||i===6||i===7||i===8;const align=i===0||(i>=9&&i<=11)?'text-center':(i>=6&&i<=8)||i===12?'text-right':'text-left';if(i===5)return '<td class="'+width+' border-b border-r border-slate-200/90 px-2 py-1.5 align-middle bg-inherit">'+renderAlStatusPicker(r.row,v)+'</td>';return '<td class="'+width+' border-b border-r border-slate-200/90 px-2 py-1.5 align-middle bg-inherit"><input data-row="'+r.row+'" data-col="'+i+'" value="'+escAl(v)+'" title="'+escAl(v)+(locked?' · Hanya baca':'')+'" aria-label="'+(['No (hanya baca)','NIK (hanya baca)','Nama Petani (hanya baca)','Lahan Revisi (hanya baca)','Revisi Lahan Asli','Status','Urea (hanya baca)','Phonska (hanya baca)','Organik (hanya baca)','Sak Urea','Sak Phonska','Sak Organik','Uang','Keterangan'][i])+'" class="w-full min-w-0 rounded-md border '+(locked?'border-slate-200/60 bg-slate-100/70 text-slate-600 cursor-not-allowed':'border-slate-200/80 bg-white hover:border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-slate-800 shadow-2xs')+' px-2 py-1 text-[12px] leading-snug outline-none '+align+' '+(i===0?'font-semibold text-slate-500':i===1?'font-mono tracking-tight text-slate-700':i===2?'font-bold text-slate-900':i>=6&&i<=11?'font-semibold text-slate-800':i===12?'font-bold text-emerald-800':'')+'" '+(locked?'readonly tabindex="-1"':'')+'></td>';}).join('')+'<td class="w-[90px] min-w-[90px] border-b border-slate-200/90 px-2 py-1.5 align-middle bg-inherit no-print"><div class="flex flex-nowrap items-center justify-center gap-1.5"><button type="button" title="Edit baris" aria-label="Edit baris" onclick="editAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 shadow-2xs transition"><i class="fa-solid fa-pen-to-square text-[11px]"></i></button><button type="button" title="Simpan perubahan" aria-label="Simpan perubahan" onclick="saveAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-700 text-white shadow-2xs hover:bg-emerald-800 transition"><i class="fa-solid fa-floppy-disk text-[11px]"></i></button>'+(alokasiJenis==='NON_ERDKK'?'<button type="button" title="Hapus data" aria-label="Hapus data" onclick="deleteAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-rose-600 text-white hover:bg-rose-700 shadow-2xs transition"><i class="fa-solid fa-trash text-[11px]"></i></button>':'')+'</div></td></tr>';}).join('');
+
+      // 2. Render Card View (Modern Mobile Card sesuai contoh user)
+      const cardsListEl = document.getElementById('alokasi-cards-list');
+      if (cardsListEl) {
+        cardsListEl.innerHTML = filtered.map(r => renderAlokasiCardItem(r)).join('');
+      }
+
+      // 3. Terapkan mode tampilan aktif (Kartu vs Tabel)
+      applyAlokasiViewMode();
+    }
+
+    // Mode Tampilan: 'card' (modern mobile card) atau 'table' (spreadsheet)
+    let alokasiViewMode = localStorage.getItem('poktan_alokasi_view_mode') || 'card';
+
+    function setAlokasiViewMode(mode) {
+      alokasiViewMode = mode;
+      localStorage.setItem('poktan_alokasi_view_mode', mode);
+      applyAlokasiViewMode();
+    }
+
+    function applyAlokasiViewMode() {
+      const cardView = document.getElementById('alokasi-card-view');
+      const tableView = document.getElementById('alokasi-table-scroll');
+      const btnCard = document.getElementById('btn-view-card');
+      const btnTable = document.getElementById('btn-view-table');
+
+      if (alokasiViewMode === 'table') {
+        if (cardView) cardView.classList.add('hidden');
+        if (tableView) tableView.classList.remove('hidden');
+        if (btnCard) {
+          btnCard.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-600 hover:text-slate-900';
+        }
+        if (btnTable) {
+          btnTable.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-white text-emerald-800 shadow-2xs';
+        }
+      } else {
+        if (cardView) cardView.classList.remove('hidden');
+        if (tableView) tableView.classList.add('hidden');
+        if (btnCard) {
+          btnCard.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-white text-emerald-800 shadow-2xs';
+        }
+        if (btnTable) {
+          btnTable.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-600 hover:text-slate-900';
+        }
+      }
+    }
+
+    function renderAlokasiCardItem(r) {
+      const v = r.values || [];
+      const no = v[0] || '';
+      const nik = v[1] || '';
+      const nama = v[2] || '-';
+      const lahanRev = v[3] || '';
+      const lahanAsli = v[4] || '';
+      const statusRaw = v[5] || '';
+      const ureaKg = Math.round(parseFloat(String(v[6] || '0').replace(',', '.')) || 0);
+      const npkKg = Math.round(parseFloat(String(v[7] || '0').replace(',', '.')) || 0);
+      const organikKg = Math.round(parseFloat(String(v[8] || '0').replace(',', '.')) || 0);
+      const uang = v[12] || '';
+      const ket = v[13] || '';
+
+      const statuses = alStatusList(statusRaw);
+      const statusChips = statuses.length > 0 
+        ? statuses.map(s => `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase border border-current/20 shadow-2xs ${alStatusColor(s)}">${escAl(s)}</span>`).join(' ')
+        : `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-slate-100 text-slate-600 border border-slate-200">TERDAFTAR</span>`;
+
+      const lahanDisplay = lahanAsli || lahanRev || '0';
+      const isRevisi = lahanRev && lahanAsli && lahanRev !== lahanAsli;
+
+      const maskedNik = (nik && nik.length >= 10) 
+        ? (nik.substring(0, 6) + '********' + nik.substring(nik.length - 2)) 
+        : (nik || '');
+
+      return `
+        <div class="bg-white rounded-3xl border border-slate-200/90 p-4 sm:p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between gap-3 relative overflow-hidden group">
+          
+          <!-- Header Card: Avatar Icon, Nama, Subtitle & Status Badge -->
+          <div class="flex items-start justify-between gap-2.5">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-200/80 flex items-center justify-center text-lg shrink-0 group-hover:scale-105 transition shadow-2xs">
+                <i class="fa-solid fa-wheat-awn"></i>
+              </div>
+              <div class="min-w-0">
+                <h4 class="text-sm font-black text-slate-900 uppercase tracking-tight truncate leading-tight">
+                  ${escAl(nama)}
+                </h4>
+                <p class="text-[11px] text-slate-400 font-medium mt-0.5 truncate flex items-center gap-1">
+                  <i class="fa-solid fa-location-dot text-[10px] text-emerald-600"></i>
+                  <span>Desa Kediren</span>
+                  ${maskedNik ? `<span class="font-mono text-slate-500 ml-1">· ${maskedNik}</span>` : ''}
+                </p>
+              </div>
+            </div>
+            <div class="shrink-0 flex flex-wrap justify-end gap-1 max-w-[45%]">
+              ${statusChips}
+            </div>
+          </div>
+
+          <!-- Body: Key-Value Grid (Sesuai Layout Nomor Meter & Tarif di Contoh User) -->
+          <div class="grid grid-cols-2 gap-3 py-2.5 border-t border-b border-slate-100 text-left">
+            <div>
+              <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">LUAS LAHAN</span>
+              <span class="text-xs sm:text-sm font-black text-slate-900 font-mono">
+                ${lahanDisplay} <span class="text-[11px] font-medium text-slate-500">Ha</span>
+              </span>
+              ${isRevisi ? `<span class="block text-[10px] text-emerald-700 font-semibold mt-0.5">Rev: ${lahanRev} Ha</span>` : ''}
+            </div>
+
+            <div>
+              <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">ALOKASI PUPUK</span>
+              <div class="text-[11px] font-black text-slate-800 flex flex-wrap gap-1 mt-0.5 font-mono">
+                <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200">U:${ureaKg}</span>
+                <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200">P:${npkKg}</span>
+                <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200">O:${organikKg}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Opsional: Info Tagihan / Catatan Kios -->
+          ${(uang || ket) ? `
+            <div class="text-[11px] bg-slate-50 rounded-xl px-3 py-2 border border-slate-100 flex items-center justify-between gap-2">
+              ${uang ? `<div><span class="text-[9px] font-bold text-slate-400 uppercase">Tagihan:</span> <span class="font-black text-emerald-900 font-mono">${escAl(uang)}</span></div>` : '<div></div>'}
+              ${ket ? `<div class="truncate text-[10px] text-slate-500 italic max-w-[65%]">Catatan: ${escAl(ket)}</div>` : ''}
+            </div>
+          ` : ''}
+
+          <!-- Footer Action Buttons (Persis Contoh User: DETAIL + Tombol Ikon) -->
+          <div class="flex items-center gap-2 pt-1">
+            <button type="button" onclick="openAlokasiDetailModal(${r.row})" 
+                    class="flex-1 py-2.5 px-3 rounded-2xl bg-slate-900 hover:bg-slate-800 active:scale-98 text-white font-black text-xs uppercase tracking-wider transition shadow-sm flex items-center justify-center gap-1.5">
+              <span>DETAIL</span>
+              <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            </button>
+
+            <!-- Tombol QR / Cetak Bukti -->
+            <a href="cek-petani.html?nik=${encodeURIComponent(nik || nama)}" target="_blank" title="Cetak Surat Bukti Resmi / Cek NIK" 
+               class="w-10 h-10 rounded-2xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 flex items-center justify-center text-sm transition shadow-2xs shrink-0">
+              <i class="fa-solid fa-qrcode"></i>
+            </a>
+
+            <!-- Tombol Edit Modal -->
+            <button type="button" onclick="openAlokasiEditModal(${r.row})" title="Edit Data Petani" 
+                    class="w-10 h-10 rounded-2xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 flex items-center justify-center text-sm transition shadow-2xs shrink-0">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+
+            <!-- Tombol Aksi Hapus / Simpan Cepat -->
+            ${alokasiJenis === 'NON_ERDKK' ? `
+              <button type="button" onclick="deleteAlokasiRow(${r.row})" title="Hapus Petani Ini" 
+                      class="w-10 h-10 rounded-2xl border border-rose-200 hover:bg-rose-50 text-rose-600 flex items-center justify-center text-sm transition shadow-2xs shrink-0">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            ` : `
+              <button type="button" onclick="openAlokasiDetailModal(${r.row})" title="Pengaturan & Status" 
+                      class="w-10 h-10 rounded-2xl border border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 text-emerald-700 flex items-center justify-center text-sm transition shadow-2xs shrink-0">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+              </button>
+            `}
+          </div>
+
+        </div>
+      `;
+    }
+
+    // Modal Detail Handler
+    function openAlokasiDetailModal(row) {
+      const item = alokasiRows.find(x => x.row === row);
+      if (!item) return;
+      const v = item.values || [];
+
+      document.getElementById('det-petani-nama').textContent = v[2] || '-';
+      document.getElementById('det-petani-nik').textContent = v[1] ? ('NIK: ' + v[1]) : 'NIK Belum Terdaftar';
+
+      const statuses = alStatusList(v[5]);
+      document.getElementById('det-status-badge').innerHTML = statuses.length > 0 
+        ? statuses.map(s => `<span class="px-2.5 py-0.5 rounded-full text-xs font-black uppercase border border-current/20 ${alStatusColor(s)}">${escAl(s)}</span>`).join(' ')
+        : `<span class="px-2.5 py-0.5 rounded-full text-xs font-black uppercase bg-slate-100 text-slate-600">TERDAFTAR</span>`;
+
+      document.getElementById('det-uang').textContent = v[12] || 'Rp 0';
+      document.getElementById('det-lahan-asli').textContent = (v[4] || '0') + ' Ha';
+      document.getElementById('det-lahan-rev').textContent = (v[3] || '-') + (v[3] ? ' Ha' : '');
+
+      const ureaKg = Math.round(parseFloat(String(v[6] || '0').replace(',', '.')) || 0);
+      const npkKg = Math.round(parseFloat(String(v[7] || '0').replace(',', '.')) || 0);
+      const organikKg = Math.round(parseFloat(String(v[8] || '0').replace(',', '.')) || 0);
+
+      document.getElementById('det-urea-kg').textContent = ureaKg + ' Kg';
+      document.getElementById('det-urea-sak').textContent = (v[9] || '0') + ' Sak';
+      document.getElementById('det-npk-kg').textContent = npkKg + ' Kg';
+      document.getElementById('det-npk-sak').textContent = (v[10] || '0') + ' Sak';
+      document.getElementById('det-organik-kg').textContent = organikKg + ' Kg';
+      document.getElementById('det-organik-sak').textContent = (v[11] || '0') + ' Sak';
+
+      const ketContainer = document.getElementById('det-ket-container');
+      const ketEl = document.getElementById('det-ket');
+      if (v[13] && v[13].trim()) {
+        ketEl.textContent = v[13];
+        ketContainer.classList.remove('hidden');
+      } else {
+        ketContainer.classList.add('hidden');
+      }
+
+      document.getElementById('det-btn-cetak').href = 'cek-petani.html?nik=' + encodeURIComponent(v[1] || v[2]);
+      document.getElementById('det-btn-edit').onclick = () => {
+        closeAlokasiDetailModal();
+        openAlokasiEditModal(row);
+      };
+
+      document.getElementById('alokasi-detail-modal').classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+    }
+
+    function closeAlokasiDetailModal() {
+      document.getElementById('alokasi-detail-modal').classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    // Modal Edit Handler
+    function openAlokasiEditModal(row) {
+      const item = alokasiRows.find(x => x.row === row);
+      if (!item) return;
+      const v = item.values || [];
+
+      document.getElementById('edit-row-index').value = row;
+      document.getElementById('edit-petani-nama').textContent = 'Edit Data: ' + (v[2] || '-');
+      document.getElementById('edit-lahan-rev').value = v[3] || '';
+      document.getElementById('edit-uang').value = v[12] || '';
+      document.getElementById('edit-sak-urea').value = v[9] || '0';
+      document.getElementById('edit-sak-npk').value = v[10] || '0';
+      document.getElementById('edit-sak-organik').value = v[11] || '0';
+      document.getElementById('edit-ket').value = v[13] || '';
+
+      const currentStatuses = alStatusList(v[5]);
+      const options = alokasiJenis === 'NON_ERDKK' ? ALOKASI_STATUS_OPTIONS_NONERDKK : ALOKASI_STATUS_OPTIONS_ERDKK;
+      const container = document.getElementById('edit-status-container');
+      container.innerHTML = options.map(opt => `
+        <label class="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-slate-100 cursor-pointer text-xs">
+          <input type="checkbox" name="edit-status-opt" value="${opt}" ${currentStatuses.includes(opt) ? 'checked' : ''} class="accent-emerald-700">
+          <span class="rounded-full px-2 py-0.5 font-bold ${alStatusColor(opt)}">${opt}</span>
+        </label>
+      `).join('');
+
+      document.getElementById('alokasi-edit-modal').classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+    }
+
+    function closeAlokasiEditModal() {
+      document.getElementById('alokasi-edit-modal').classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    async function saveAlokasiFromModal() {
+      const row = parseInt(document.getElementById('edit-row-index').value, 10);
+      if (!row) return;
+
+      const item = alokasiRows.find(x => x.row === row);
+      if (!item) return;
+
+      const checkedStatuses = Array.from(document.querySelectorAll('input[name="edit-status-opt"]:checked')).map(el => el.value);
+      const statusStr = checkedStatuses.join(', ');
+
+      const values = [...item.values];
+      values[3] = document.getElementById('edit-lahan-rev').value.trim();
+      values[5] = statusStr;
+      values[9] = document.getElementById('edit-sak-urea').value.trim();
+      values[10] = document.getElementById('edit-sak-npk').value.trim();
+      values[11] = document.getElementById('edit-sak-organik').value.trim();
+      values[12] = document.getElementById('edit-uang').value.trim();
+      values[13] = document.getElementById('edit-ket').value.trim();
+
+      const btn = document.getElementById('btn-save-modal');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-1.5"></i> Menyimpan...';
+      }
+
+      try {
+        await alokasiApi('saveAlokasi', { row, values });
+        const idx = alokasiRows.findIndex(x => x.row === row);
+        if (idx >= 0) alokasiRows[idx].values = values;
+        const allIdx = alokasiAllRows.findIndex(x => x.row === row);
+        if (allIdx >= 0) alokasiAllRows[allIdx].values = values;
+        closeAlokasiEditModal();
+        renderAlokasiTable();
+        showAlokasiToast('Data berhasil diperbarui ke Google Sheet.');
+      } catch (err) {
+        showAlokasiToast(err.message, 'error');
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-floppy-disk mr-1.5"></i> Simpan Perubahan';
+        }
+      }
+    }
     function editAlokasiRow(row){const first=document.querySelector('[data-row="'+row+'"][data-col="4"]')||document.querySelector('[data-row="'+row+'"][data-col="9"]');if(first){first.focus();first.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});}showAlokasiToast('Mode edit: ubah kolom yang dapat diedit (status, lahan, sak, keterangan), lalu tekan ikon Simpan.');}
     async function saveAlokasiRow(row){const values=Array(14).fill('');document.querySelectorAll('[data-row="'+row+'"][data-col]').forEach(e=>values[+e.dataset.col]=e.value);const btn=document.querySelector('button[onclick="saveAlokasiRow('+row+')"]');if(btn){btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-circle-notch fa-spin mr-1"></i>Menyimpan';}try{await alokasiApi('saveAlokasi',{row,values});const idx=alokasiRows.findIndex(x=>x.row===row);if(idx>=0)alokasiRows[idx].values=values;const allIdx=alokasiAllRows.findIndex(x=>x.row===row);if(allIdx>=0)alokasiAllRows[allIdx].values=values;renderAlokasiTable();showAlokasiToast('Perubahan berhasil disimpan ke Google Sheet.');}catch(e){showAlokasiToast(e.message,'error');if(btn){btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-floppy-disk mr-1"></i>Simpan';}}}
     function confirmAlokasiDelete(nama){return new Promise(resolve=>{let modal=document.getElementById('al-delete-confirm');if(!modal){modal=document.createElement('div');modal.id='al-delete-confirm';modal.className='fixed inset-0 z-[150] hidden items-center justify-center bg-slate-950/50 p-4';modal.innerHTML='<div class="w-full max-w-sm rounded-2xl bg-white p-5 shadow-2xl"><div class="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-rose-100 text-rose-600"><i class="fa-solid fa-trash"></i></div><h3 class="text-base font-bold text-slate-900">Hapus data petani?</h3><p id="al-delete-message" class="mt-2 text-sm leading-relaxed text-slate-600"></p><div class="mt-5 flex justify-end gap-2"><button type="button" id="al-delete-cancel" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600">Batal</button><button type="button" id="al-delete-yes" class="rounded-lg bg-rose-600 px-4 py-2 text-sm font-bold text-white hover:bg-rose-700">Ya, hapus</button></div></div>';document.body.appendChild(modal);}modal.querySelector('#al-delete-message').textContent='Hapus '+nama+' dari daftar Non-e-RDKK? Data pada Google Sheet akan dihapus.';modal.classList.remove('hidden');modal.classList.add('flex');const finish=value=>{modal.classList.add('hidden');modal.classList.remove('flex');modal.querySelector('#al-delete-cancel').onclick=null;modal.querySelector('#al-delete-yes').onclick=null;resolve(value);};modal.querySelector('#al-delete-cancel').onclick=()=>finish(false);modal.querySelector('#al-delete-yes').onclick=()=>finish(true);});}
