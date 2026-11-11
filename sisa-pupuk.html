@@ -523,10 +523,9 @@
       }
     }
 
-    // Auto load saat halaman dibuka dan auto-refresh setiap 60 detik
+    // Muat data saat halaman dibuka
     window.addEventListener('DOMContentLoaded', () => {
       fetchSheetData();
-      setInterval(fetchSheetData, 60000);
     });
   </script>
 

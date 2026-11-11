@@ -302,7 +302,7 @@ function getDashboardData() {
     }
   });
 
-  const listKloter = kloterRange.map(row => {
+  const listKloter = kloterRange.map((row, idx) => {
     const namaKloter = String(row[1] || '').trim();
     const key = namaKloter.toUpperCase();
     const dataHitung = hitungKloter[key];
@@ -312,11 +312,40 @@ function getDashboardData() {
     const npk = dataHitung ? dataHitung.npk : (Number(row[6]) || 0);
     const organik = dataHitung ? dataHitung.organik : (Number(row[7]) || 0);
 
+    // Default dari sheet REKAP_KLOTER_CETAK
+    let pemberi = String(row[2] || '').trim();
+    let penerima = String(row[3] || '').trim();
+
+    // Periksa langsung ke tab sheet KLOTER spesifik agar dinamis saat nama diubah di spreadsheet
+    try {
+      const sheetKloter = ss.getSheetByName(namaKloter.toUpperCase()) || ss.getSheetByName('KLOTER ' + (idx + 1));
+      if (sheetKloter) {
+        const headerVals = sheetKloter.getRange("A1:C12").getValues();
+        let foundPemberi = '';
+        let foundPenerima = '';
+        for (let r = 0; r < headerVals.length; r++) {
+          const c0 = String(headerVals[r][0] || '').toUpperCase();
+          let c2 = String(headerVals[r][2] || headerVals[r][1] || '').replace(/^:\s*/, '').trim();
+          if (c0.includes('NAMA')) {
+            if (!foundPemberi) foundPemberi = c2;
+            else if (!foundPenerima) foundPenerima = c2;
+          }
+        }
+        if (foundPemberi) pemberi = foundPemberi;
+        if (foundPenerima) penerima = foundPenerima;
+      }
+    } catch (e) {
+      // Fallback ke nilai baris rekap
+    }
+
+    if (!penerima) penerima = 'SUPRIYANTO';
+    if (!pemberi) pemberi = '-';
+
     return {
       no: row[0],
       kloter: namaKloter,
-      pemberiKuasa: String(row[2] || '-'),
-      penerimaKuasa: String(row[3] || 'SUPRIYANTO'),
+      pemberiKuasa: pemberi,
+      penerimaKuasa: penerima,
       jumlahPetani: jumlahPetani,
       urea: urea,
       npk: npk,

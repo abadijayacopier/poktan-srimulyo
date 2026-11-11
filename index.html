@@ -1765,6 +1765,7 @@
     function refreshCurrentPage(isSilent=false){ 
       const refreshIcon = document.getElementById('refresh-icon');
       if (refreshIcon) refreshIcon.classList.add('fa-spin');
+      if (typeof syncLiveKloterKuasa === 'function') syncLiveKloterKuasa();
       if(currentActiveTab === "alokasi") return loadAlokasi(); 
       return loadData(isSilent); 
     }
@@ -2271,16 +2272,50 @@
       const ureaKg = Math.round(parseFloat(String(v[6] || '0').replace(',', '.')) || 0);
       const npkKg = Math.round(parseFloat(String(v[7] || '0').replace(',', '.')) || 0);
       const organikKg = Math.round(parseFloat(String(v[8] || '0').replace(',', '.')) || 0);
+      const uSakVal = parseSak(v[9]);
+      const pSakVal = parseSak(v[10]);
+      const oSakVal = parseSak(v[11]);
       const uang = v[12] || '';
       const ket = v[13] || '';
+
+      const isNonErdkk = alokasiJenis === 'NON_ERDKK';
 
       const statuses = alStatusList(statusRaw);
       const statusChips = statuses.length > 0 
         ? statuses.map(s => `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase border border-current/20 shadow-2xs ${alStatusColor(s)}">${escAl(s)}</span>`).join(' ')
         : `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-slate-100 text-slate-600 border border-slate-200">TERDAFTAR</span>`;
 
-      const lahanDisplay = lahanRev || lahanAsli || '0';
-      const isRevisi = lahanAsli && lahanAsli !== '0' && lahanAsli !== lahanRev;
+      let lahanLabel = isNonErdkk ? 'LUAS LAHAN' : 'ALOKASI ERDKK';
+      let lahanDisplay = '0';
+      let subLahan = '';
+
+      if (isNonErdkk) {
+        lahanDisplay = v[4] || v[3] || '0';
+        if (v[3] && v[4]) {
+          subLahan = `<span class="block text-[10px] text-emerald-700 font-semibold mt-0.5 truncate">Blok: ${escAl(v[3])}</span>`;
+        }
+      } else {
+        lahanDisplay = lahanRev || lahanAsli || '0';
+        const isRevisi = lahanAsli && lahanAsli !== '0' && lahanAsli !== lahanRev;
+        if (isRevisi) {
+          subLahan = `<span class="block text-[10px] text-emerald-700 font-semibold mt-0.5">Fisik: ${lahanAsli} Ha</span>`;
+        }
+      }
+
+      // Penentuan tampilan Alokasi Pupuk (Mendukung Sak murni dari Kolom J, K, L sheet)
+      let ureaBadge = '';
+      let npkBadge = '';
+      let organikBadge = '';
+
+      if (isNonErdkk || (ureaKg === 0 && npkKg === 0 && organikKg === 0 && (uSakVal > 0 || pSakVal > 0 || oSakVal > 0))) {
+        ureaBadge = `U:${uSakVal} Sak`;
+        npkBadge = `P:${pSakVal} Sak`;
+        organikBadge = `O:${oSakVal} Sak`;
+      } else {
+        ureaBadge = `U:${ureaKg}`;
+        npkBadge = `P:${npkKg}`;
+        organikBadge = `O:${organikKg}`;
+      }
 
       const maskedNik = (nik && nik.length >= 10) 
         ? (nik.substring(0, 6) + '********' + nik.substring(nik.length - 2)) 
@@ -2314,19 +2349,19 @@
           <!-- Body: Key-Value Grid (Sesuai Layout Nomor Meter & Tarif di Contoh User) -->
           <div class="grid grid-cols-2 gap-3 py-2.5 border-t border-b border-slate-100 text-left">
             <div>
-              <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">ALOKASI ERDKK</span>
+              <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">${lahanLabel}</span>
               <span class="text-xs sm:text-sm font-black text-slate-900 font-mono">
                 ${lahanDisplay} <span class="text-[11px] font-medium text-slate-500">Ha</span>
               </span>
-              ${isRevisi ? `<span class="block text-[10px] text-emerald-700 font-semibold mt-0.5">Fisik: ${lahanAsli} Ha</span>` : ''}
+              ${subLahan}
             </div>
 
             <div>
               <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">ALOKASI PUPUK</span>
               <div class="text-[11px] font-black text-slate-800 flex flex-wrap gap-1 mt-0.5 font-mono">
-                <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200" title="Urea: ${ureaKg} Kg · Sak J: ${v[9] || '0'}">U:${ureaKg}</span>
-                <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200" title="Phonska: ${npkKg} Kg · Sak K: ${v[10] || '0'}">P:${npkKg}</span>
-                <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200" title="Organik: ${organikKg} Kg · Sak L: ${v[11] || '0'}">O:${organikKg}</span>
+                <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200" title="Urea: ${uSakVal} Sak (${uSakVal * 50} Kg) · Kolom J">${ureaBadge}</span>
+                <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200" title="Phonska: ${pSakVal} Sak (${pSakVal * 50} Kg) · Kolom K">${npkBadge}</span>
+                <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200" title="Organik: ${oSakVal} Sak (${oSakVal * 40} Kg) · Kolom L">${organikBadge}</span>
               </div>
             </div>
           </div>
@@ -2382,6 +2417,7 @@
       const item = alokasiRows.find(x => x.row === row);
       if (!item) return;
       const v = item.values || [];
+      const isNonErdkk = alokasiJenis === 'NON_ERDKK';
 
       document.getElementById('det-petani-nama').textContent = v[2] || '-';
       document.getElementById('det-petani-nik').textContent = v[1] ? ('NIK: ' + v[1]) : 'NIK Belum Terdaftar';
@@ -2392,13 +2428,30 @@
         : `<span class="px-2.5 py-0.5 rounded-full text-xs font-black uppercase bg-slate-100 text-slate-600">TERDAFTAR</span>`;
 
       document.getElementById('det-uang').textContent = v[12] || 'Rp 0';
-      const lahanAsliText = (v[4] && String(v[4]).trim() && String(v[4]).trim() !== '0') ? (String(v[4]).trim() + ' Ha') : '-';
-      document.getElementById('det-lahan-asli').textContent = lahanAsliText;
-      document.getElementById('det-lahan-rev').textContent = (v[3] || '-') + (v[3] ? ' Ha' : '');
 
-      const ureaKg = Math.round(parseFloat(String(v[6] || '0').replace(',', '.')) || 0);
-      const npkKg = Math.round(parseFloat(String(v[7] || '0').replace(',', '.')) || 0);
-      const organikKg = Math.round(parseFloat(String(v[8] || '0').replace(',', '.')) || 0);
+      if (isNonErdkk) {
+        document.getElementById('det-lahan-asli').textContent = (v[4] && String(v[4]).trim() && String(v[4]).trim() !== '0') ? (String(v[4]).trim() + ' Ha') : '-';
+        document.getElementById('det-lahan-rev').textContent = v[3] ? ('Blok: ' + v[3]) : '-';
+      } else {
+        const lahanAsliText = (v[4] && String(v[4]).trim() && String(v[4]).trim() !== '0') ? (String(v[4]).trim() + ' Ha') : '-';
+        document.getElementById('det-lahan-asli').textContent = lahanAsliText;
+        document.getElementById('det-lahan-rev').textContent = (v[3] || '-') + (v[3] ? ' Ha' : '');
+      }
+
+      const uSakVal = parseSak(v[9]);
+      const pSakVal = parseSak(v[10]);
+      const oSakVal = parseSak(v[11]);
+
+      let ureaKg = Math.round(parseFloat(String(v[6] || '0').replace(',', '.')) || 0);
+      let npkKg = Math.round(parseFloat(String(v[7] || '0').replace(',', '.')) || 0);
+      let organikKg = Math.round(parseFloat(String(v[8] || '0').replace(',', '.')) || 0);
+
+      // Jika data kg bernilai 0 tapi sak terisi (seperti pada Non-eRDKK), hitung kg ekuivalen
+      if (isNonErdkk || (ureaKg === 0 && npkKg === 0 && organikKg === 0)) {
+        if (ureaKg === 0 && uSakVal > 0) ureaKg = uSakVal * 50;
+        if (npkKg === 0 && pSakVal > 0) npkKg = pSakVal * 50;
+        if (organikKg === 0 && oSakVal > 0) organikKg = oSakVal * 40;
+      }
 
       document.getElementById('det-urea-kg').textContent = ureaKg + ' Kg';
       document.getElementById('det-urea-sak').textContent = formatSakSheet(v[9]);
@@ -2818,28 +2871,109 @@
       renderChart(data.dropGudang);
 
       // Kloter 1 - 10 (Menampilkan seluruh 10 kloter termasuk kloter 9 & 10)
+      renderTableKloter(data.kloter);
+      syncLiveKloterKuasa();
+
+      filterPetani();
+    }
+
+    function renderTableKloter(kloterList) {
       const tbodyKloter = document.getElementById('table-kloter-body');
-      tbodyKloter.innerHTML = data.kloter.map(k => {
+      if (!tbodyKloter || !kloterList) return;
+      tbodyKloter.innerHTML = kloterList.map(k => {
         const hasPetani = k.jumlahPetani > 0;
         const statusBadge = hasPetani 
           ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800"><i class="fa-solid fa-check text-[9px] mr-1"></i>' + k.jumlahPetani + ' Petani</span>'
           : '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-500">Belum Ada Anggota</span>';
+        const pemberiDisplay = k.pemberiKuasa && k.pemberiKuasa !== '-' ? k.pemberiKuasa : '<span class="text-slate-400 font-normal italic">—</span>';
+        const penerimaDisplay = k.penerimaKuasa && k.penerimaKuasa !== '-' ? k.penerimaKuasa : '<span class="text-slate-400 font-normal italic">—</span>';
         return `
         <tr class="hover:bg-slate-50/80 transition-colors">
           <td class="py-3 px-3.5 font-bold text-slate-900 flex items-center gap-2">
             <span class="w-6 h-6 rounded-lg ${hasPetani ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'} flex items-center justify-center text-[11px] font-black shrink-0">${k.no}</span>
             <span>${k.kloter}</span>
           </td>
-          <td class="py-3 px-3.5 font-semibold text-slate-800">${k.pemberiKuasa !== '-' ? k.pemberiKuasa : '<span class="text-slate-400 font-normal italic">—</span>'}</td>
-          <td class="py-3 px-3.5 text-slate-500">${k.penerimaKuasa !== '-' ? k.penerimaKuasa : '<span class="text-slate-400 font-normal italic">—</span>'}</td>
+          <td class="py-3 px-3.5 font-semibold text-slate-800">${pemberiDisplay}</td>
+          <td class="py-3 px-3.5 text-slate-500">${penerimaDisplay}</td>
           <td class="py-3 px-3.5 text-center">${statusBadge}</td>
           <td class="py-3 px-3.5 text-right font-mono font-semibold ${k.urea > 0 ? 'text-slate-800' : 'text-slate-400'}">${formatNumber(k.urea)} Kg</td>
           <td class="py-3 px-3.5 text-right font-mono font-semibold ${k.npk > 0 ? 'text-slate-800' : 'text-slate-400'}">${formatNumber(k.npk)} Kg</td>
           <td class="py-3 px-3.5 text-right font-mono font-semibold ${k.organik > 0 ? 'text-slate-800' : 'text-slate-400'}">${formatNumber(k.organik)} Kg</td>
         </tr>
       `}).join('');
+    }
 
-      filterPetani();
+    let isSyncingKloter = false;
+    async function syncLiveKloterKuasa() {
+      if (isSyncingKloter) return;
+      isSyncingKloter = true;
+      try {
+        const SHEET_ID = '1c7R1klPcFSZ7W1PLaZyayZxBUOrVyLh-Lwc24Cf6CEY';
+        // 1. Ambil dari sheet REKAP_KLOTER_CETAK range C14:E23 (Pemberi & Penerima Kuasa)
+        const rekapUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=REKAP_KLOTER_CETAK&range=C14:E23&headers=0&_=${Date.now()}`;
+        const rekapPromise = fetch(rekapUrl)
+          .then(r => r.text())
+          .then(txt => {
+            const start = txt.indexOf('{'), end = txt.lastIndexOf('}');
+            return JSON.parse(txt.substring(start, end + 1));
+          })
+          .catch(() => null);
+
+        // 2. Ambil dari sheet KLOTER 1 - 10 secara paralel untuk mendeteksi perubahan langsung di tiap tab
+        const kloterPromises = [];
+        for (let i = 1; i <= 10; i++) {
+          const kUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent('KLOTER ' + i)}&range=A1:C12&headers=0&_=${Date.now()}`;
+          kloterPromises.push(
+            fetch(kUrl)
+              .then(r => r.text())
+              .then(txt => {
+                const start = txt.indexOf('{'), end = txt.lastIndexOf('}');
+                const json = JSON.parse(txt.substring(start, end + 1));
+                const rows = json.table ? json.table.rows : [];
+                let p = '', pen = '';
+                for (let r = 0; r < Math.min(12, rows.length); r++) {
+                  const c0 = (rows[r].c && rows[r].c[0] ? (rows[r].c[0].v || '') : '').toString().toUpperCase();
+                  let c2 = (rows[r].c && rows[r].c[2] ? (rows[r].c[2].v || '') : '') || (rows[r].c && rows[r].c[1] ? (rows[r].c[1].v || '') : '');
+                  c2 = String(c2).replace(/^:\s*/, '').trim();
+                  if (c0.includes('NAMA')) {
+                    if (!p) p = c2;
+                    else if (!pen) pen = c2;
+                  }
+                }
+                return { kloterNum: i, pemberi: p, penerima: pen };
+              })
+              .catch(() => null)
+          );
+        }
+
+        const [rekapJson, ...kloterResults] = await Promise.all([rekapPromise, ...kloterPromises]);
+        const rekapRows = rekapJson && rekapJson.table ? rekapJson.table.rows : [];
+
+        if (globalData && globalData.kloter) {
+          globalData.kloter.forEach((k, idx) => {
+            const kRes = kloterResults[idx];
+            const rRow = rekapRows[idx];
+            const rPemberi = rRow && rRow.c && rRow.c[1] ? String(rRow.c[1].v || '').trim() : '';
+            const rPenerima = rRow && rRow.c && rRow.c[2] ? String(rRow.c[2].v || '').trim() : '';
+
+            // Prioritaskan nama spesifik dari tab sheet kloter masing-masing, lalu dari REKAP_KLOTER_CETAK
+            let finalPemberi = kRes && kRes.pemberi ? kRes.pemberi : '';
+            if (!finalPemberi && rPemberi && rPemberi !== '-') finalPemberi = rPemberi;
+
+            let finalPenerima = kRes && kRes.penerima ? kRes.penerima : '';
+            if (!finalPenerima && rPenerima && rPenerima !== '-') finalPenerima = rPenerima;
+
+            if (finalPemberi) k.pemberiKuasa = finalPemberi;
+            if (finalPenerima) k.penerimaKuasa = finalPenerima;
+          });
+
+          renderTableKloter(globalData.kloter);
+        }
+      } catch (err) {
+        console.warn('Sync live kloter kuasa error:', err);
+      } finally {
+        isSyncingKloter = false;
+      }
     }
 
     function renderChart(dropData) {
@@ -3135,13 +3269,6 @@
 
     window.onload = function() {
       initializeAuth();
-
-      // Sinkronisasi lebih ringan: 60 detik dan hanya ketika tab sedang aktif.
-      setInterval(function() {
-        if (authSession && authSession.token && document.visibilityState === 'visible' && !isFetching) {
-          refreshCurrentPage(true);
-        }
-      }, 60000);
     };
   
 
@@ -3190,6 +3317,11 @@
       // If switching to dropgudang, ensure Chart renders properly
       if (tab === 'dropgudang' && globalData && globalData.dropGudang) {
         setTimeout(() => renderChart(globalData.dropGudang), 50);
+      }
+
+      // If switching to kloter, pastikan data kuasa terbaru tersinkronisasi langsung dari spreadsheet
+      if (tab === 'kloter') {
+        if (typeof syncLiveKloterKuasa === 'function') syncLiveKloterKuasa();
       }
 
       // If switching to alokasi, ensure partition & data loaded
