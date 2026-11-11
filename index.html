@@ -822,10 +822,11 @@
                 <span class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-xs"><i class="fa-solid fa-boxes-stacked"></i></span>
               </div>
               <div>
-                <div class="text-xs font-black text-slate-900 tracking-tight flex flex-wrap items-center gap-1">
+                <div class="text-xs font-black text-slate-900 tracking-tight flex items-center gap-1 whitespace-nowrap">
                   <span class="bg-emerald-50 text-emerald-900 px-1 py-0.5 rounded border border-emerald-100 font-mono text-[11px]">U:<b id="sisa-pupuk-urea">—</b></span>
                   <span class="bg-emerald-50 text-emerald-900 px-1 py-0.5 rounded border border-emerald-100 font-mono text-[11px]">P:<b id="sisa-pupuk-phonska">—</b></span>
                   <span class="bg-emerald-50 text-emerald-900 px-1 py-0.5 rounded border border-emerald-100 font-mono text-[11px]">O:<b id="sisa-pupuk-organik">—</b></span>
+                  <span class="text-[10px] font-bold text-slate-500 font-sans ml-0.5">Sak</span>
                 </div>
                 <div id="kpi-sub-alokasi-7" class="text-[10px] text-emerald-700 font-semibold truncate mt-1">Sisa Stok Fisik Gudang</div>
               </div>
@@ -2178,16 +2179,17 @@
       if (alokasiJenis === 'NON_ERDKK') {
         if (titleKpi7) titleKpi7.textContent = 'Total Pupuk Non-eRDKK';
         if (subKpi7) subKpi7.textContent = 'U: '+nonUreaSak+' · P: '+nonPhonskaSak+' · O: '+nonOrganikSak+' Sak';
-        document.getElementById('sisa-pupuk-urea').textContent = nonUreaSak + ' Sak';
-        document.getElementById('sisa-pupuk-phonska').textContent = nonPhonskaSak + ' Sak';
-        document.getElementById('sisa-pupuk-organik').textContent = nonOrganikSak + ' Sak';
+        document.getElementById('sisa-pupuk-urea').textContent = nonUreaSak;
+        document.getElementById('sisa-pupuk-phonska').textContent = nonPhonskaSak;
+        document.getElementById('sisa-pupuk-organik').textContent = nonOrganikSak;
       } else {
         if (titleKpi7) titleKpi7.textContent = 'Sisa Jika Ambil Semua';
         if (subKpi7) subKpi7.textContent = 'Sisa Stok Fisik Gudang';
         const sisaRow=alokasiAllRows.find(r=>(r.values||[]).some(v=>String(v??'').toUpperCase().includes('SISA P'))) || alokasiAllRows.find(r=>r.row===197) || alokasiAllRows.find(r=>(r.values?.[9]&&String(r.values[9]).includes('29 SAK')));
-        document.getElementById('sisa-pupuk-urea').textContent=sisaRow?fmtSisa(sisaRow.values[9]):'29 Sak';
-        document.getElementById('sisa-pupuk-phonska').textContent=sisaRow?fmtSisa(sisaRow.values[10]):'28 Sak';
-        document.getElementById('sisa-pupuk-organik').textContent=sisaRow?fmtSisa(sisaRow.values[11]):'24 Sak';
+        const cleanSak = v => String(v || '').replace(/[^0-9.-]/g, '') || '0';
+        document.getElementById('sisa-pupuk-urea').textContent = sisaRow ? cleanSak(sisaRow.values[9]) : '29';
+        document.getElementById('sisa-pupuk-phonska').textContent = sisaRow ? cleanSak(sisaRow.values[10]) : '28';
+        document.getElementById('sisa-pupuk-organik').textContent = sisaRow ? cleanSak(sisaRow.values[11]) : '24';
       }
 
       // Ring Active State pada KPI Card
@@ -2308,9 +2310,9 @@
       let organikBadge = '';
 
       if (isNonErdkk || (ureaKg === 0 && npkKg === 0 && organikKg === 0 && (uSakVal > 0 || pSakVal > 0 || oSakVal > 0))) {
-        ureaBadge = `U:${uSakVal} Sak`;
-        npkBadge = `P:${pSakVal} Sak`;
-        organikBadge = `O:${oSakVal} Sak`;
+        ureaBadge = `U:${uSakVal}`;
+        npkBadge = `P:${pSakVal}`;
+        organikBadge = `O:${oSakVal}`;
       } else {
         ureaBadge = `U:${ureaKg}`;
         npkBadge = `P:${npkKg}`;
@@ -2357,11 +2359,12 @@
             </div>
 
             <div>
-              <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">ALOKASI PUPUK</span>
-              <div class="text-[11px] font-black text-slate-800 flex flex-wrap gap-1 mt-0.5 font-mono">
+              <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">ALOKASI PUPUK ${isNonErdkk ? '(SAK)' : ''}</span>
+              <div class="text-[11px] font-black text-slate-800 flex items-center gap-1 mt-0.5 font-mono whitespace-nowrap">
                 <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200" title="Urea: ${uSakVal} Sak (${uSakVal * 50} Kg) · Kolom J">${ureaBadge}</span>
                 <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200" title="Phonska: ${pSakVal} Sak (${pSakVal * 50} Kg) · Kolom K">${npkBadge}</span>
                 <span class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded border border-emerald-200" title="Organik: ${oSakVal} Sak (${oSakVal * 40} Kg) · Kolom L">${organikBadge}</span>
+                ${isNonErdkk ? '<span class="text-[10px] font-bold text-emerald-700 font-sans ml-0.5">Sak</span>' : ''}
               </div>
             </div>
           </div>
