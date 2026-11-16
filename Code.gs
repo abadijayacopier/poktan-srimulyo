@@ -321,14 +321,16 @@ function getDashboardData() {
       const sheetKloter = ss.getSheetByName(namaKloter.toUpperCase()) || ss.getSheetByName('KLOTER ' + (idx + 1));
       if (sheetKloter) {
         const headerVals = sheetKloter.getRange("A1:C12").getValues();
+        let namaCount = 0;
         let foundPemberi = '';
         let foundPenerima = '';
         for (let r = 0; r < headerVals.length; r++) {
           const c0 = String(headerVals[r][0] || '').toUpperCase();
           let c2 = String(headerVals[r][2] || headerVals[r][1] || '').replace(/^:\s*/, '').trim();
           if (c0.includes('NAMA')) {
-            if (!foundPemberi) foundPemberi = c2;
-            else if (!foundPenerima) foundPenerima = c2;
+            namaCount++;
+            if (namaCount === 1) foundPemberi = c2;
+            else if (namaCount === 2) foundPenerima = c2;
           }
         }
         if (foundPemberi) pemberi = foundPemberi;
@@ -338,6 +340,7 @@ function getDashboardData() {
       // Fallback ke nilai baris rekap
     }
 
+    if (jumlahPetani === 0) pemberi = '-';
     if (!penerima) penerima = 'SUPRIYANTO';
     if (!pemberi) pemberi = '-';
 

@@ -1004,12 +1004,66 @@
           </div>
         </div>
 
+        <!-- Ringkasan Statistik Total Alokasi Pupuk Kloter (Urea, NPK, Organik) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- 1. Total Petani Kloter -->
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl shrink-0">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Petani Masuk Kloter</div>
+              <div id="kloter-total-petani" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight whitespace-nowrap">0 Petani</div>
+              <div id="kloter-sub-petani" class="text-xs text-slate-500 mt-0.5 whitespace-nowrap">10 Rombongan Kloter</div>
+            </div>
+          </div>
+
+          <!-- 2. Total Urea Kloter -->
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center text-xl shrink-0">
+              <i class="fa-solid fa-wheat-awn"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-teal-700">Total Pupuk Urea</div>
+              <div id="kloter-total-urea" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight whitespace-nowrap">0 Kg</div>
+              <div class="text-xs text-slate-500 mt-0.5 whitespace-nowrap">Ekuivalen <span id="kloter-total-urea-sak" class="font-bold text-teal-800">0 Sak</span> (50kg)</div>
+            </div>
+          </div>
+
+          <!-- 3. Total NPK Phonska Kloter -->
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-xl shrink-0">
+              <i class="fa-solid fa-cubes-stacked"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-blue-700">Total Pupuk NPK</div>
+              <div id="kloter-total-npk" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight whitespace-nowrap">0 Kg</div>
+              <div class="text-xs text-slate-500 mt-0.5 whitespace-nowrap">Ekuivalen <span id="kloter-total-npk-sak" class="font-bold text-blue-800">0 Sak</span> (50kg)</div>
+            </div>
+          </div>
+
+          <!-- 4. Total Pupuk Organik Kloter -->
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center text-xl shrink-0">
+              <i class="fa-solid fa-leaf"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="text-[11px] font-bold uppercase tracking-wider text-amber-700">Total Pupuk Organik</div>
+              <div id="kloter-total-organik" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight whitespace-nowrap">0 Kg</div>
+              <div class="text-xs text-slate-500 mt-0.5 whitespace-nowrap">Ekuivalen <span id="kloter-total-organik-sak" class="font-bold text-amber-800">0 Sak</span> (40kg)</div>
+            </div>
+          </div>
+        </div>
+
         <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden p-5 sm:p-6 space-y-4">
-          <div class="flex items-center justify-between">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
               <i class="fa-solid fa-list-check text-emerald-600"></i> Tabel Rekapitulasi Rombongan Kloter 1 – 10
             </h3>
-            <span class="text-xs text-slate-400">Total 10 Kloter Surat Kuasa</span>
+            <div class="flex items-center gap-2 text-xs text-slate-500">
+              <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-bold">10 Kloter</span>
+              <span>· Total Akumulasi: <strong id="kloter-total-all-kg" class="text-slate-900 font-bold">0 Kg</strong> (<strong id="kloter-total-all-sak" class="text-emerald-700 font-bold">0 Sak</strong>)</span>
+            </div>
           </div>
 
           <div class="overflow-x-auto rounded-xl border border-slate-200">
@@ -1026,6 +1080,30 @@
                 </tr>
               </thead>
               <tbody id="table-kloter-body" class="divide-y divide-slate-100 text-xs"></tbody>
+              <tfoot id="table-kloter-foot" class="border-t-2 border-slate-300 bg-slate-50/95 text-xs">
+                <tr class="font-bold text-slate-900">
+                  <td colspan="3" class="py-3.5 px-3.5 font-black uppercase text-slate-800 tracking-wide">
+                    <div class="flex items-center gap-2">
+                      <span class="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-[10px] shrink-0">
+                        <i class="fa-solid fa-calculator"></i>
+                      </span>
+                      <span>TOTAL KESELURUHAN (KLOTER 1 – 10)</span>
+                    </div>
+                  </td>
+                  <td id="foot-kloter-petani" class="py-3.5 px-3.5 text-center font-black text-emerald-800 bg-emerald-50/60 border-x border-slate-200">
+                    0 Petani
+                  </td>
+                  <td id="foot-kloter-urea" class="py-3.5 px-3.5 text-right font-mono font-black text-teal-950 bg-teal-50/30">
+                    0 Kg
+                  </td>
+                  <td id="foot-kloter-npk" class="py-3.5 px-3.5 text-right font-mono font-black text-blue-950 bg-blue-50/30">
+                    0 Kg
+                  </td>
+                  <td id="foot-kloter-organik" class="py-3.5 px-3.5 text-right font-mono font-black text-amber-950 bg-amber-50/30">
+                    0 Kg
+                  </td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </div>
@@ -2883,12 +2961,30 @@
     function renderTableKloter(kloterList) {
       const tbodyKloter = document.getElementById('table-kloter-body');
       if (!tbodyKloter || !kloterList) return;
+
+      let totalPetani = 0;
+      let totalUrea = 0;
+      let totalNpk = 0;
+      let totalOrganik = 0;
+      let kloterAktif = 0;
+
       tbodyKloter.innerHTML = kloterList.map(k => {
-        const hasPetani = k.jumlahPetani > 0;
+        const petaniCount = Number(k.jumlahPetani) || 0;
+        const hasPetani = petaniCount > 0;
+        const u = Number(k.urea) || 0;
+        const n = Number(k.npk) || 0;
+        const o = Number(k.organik) || 0;
+
+        totalPetani += petaniCount;
+        totalUrea += u;
+        totalNpk += n;
+        totalOrganik += o;
+        if (hasPetani) kloterAktif++;
+
         const statusBadge = hasPetani 
-          ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800"><i class="fa-solid fa-check text-[9px] mr-1"></i>' + k.jumlahPetani + ' Petani</span>'
+          ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800"><i class="fa-solid fa-check text-[9px] mr-1"></i>' + petaniCount + ' Petani</span>'
           : '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-500">Belum Ada Anggota</span>';
-        const pemberiDisplay = k.pemberiKuasa && k.pemberiKuasa !== '-' ? k.pemberiKuasa : '<span class="text-slate-400 font-normal italic">—</span>';
+        const pemberiDisplay = k.pemberiKuasa && k.pemberiKuasa !== '-' && hasPetani ? k.pemberiKuasa : '<span class="text-slate-400 font-normal italic">—</span>';
         const penerimaDisplay = k.penerimaKuasa && k.penerimaKuasa !== '-' ? k.penerimaKuasa : '<span class="text-slate-400 font-normal italic">—</span>';
         return `
         <tr class="hover:bg-slate-50/80 transition-colors">
@@ -2899,11 +2995,57 @@
           <td class="py-3 px-3.5 font-semibold text-slate-800">${pemberiDisplay}</td>
           <td class="py-3 px-3.5 text-slate-500">${penerimaDisplay}</td>
           <td class="py-3 px-3.5 text-center">${statusBadge}</td>
-          <td class="py-3 px-3.5 text-right font-mono font-semibold ${k.urea > 0 ? 'text-slate-800' : 'text-slate-400'}">${formatNumber(k.urea)} Kg</td>
-          <td class="py-3 px-3.5 text-right font-mono font-semibold ${k.npk > 0 ? 'text-slate-800' : 'text-slate-400'}">${formatNumber(k.npk)} Kg</td>
-          <td class="py-3 px-3.5 text-right font-mono font-semibold ${k.organik > 0 ? 'text-slate-800' : 'text-slate-400'}">${formatNumber(k.organik)} Kg</td>
+          <td class="py-3 px-3.5 text-right font-mono font-semibold ${u > 0 ? 'text-slate-800' : 'text-slate-400'}">${formatNumber(u)} Kg</td>
+          <td class="py-3 px-3.5 text-right font-mono font-semibold ${n > 0 ? 'text-slate-800' : 'text-slate-400'}">${formatNumber(n)} Kg</td>
+          <td class="py-3 px-3.5 text-right font-mono font-semibold ${o > 0 ? 'text-slate-800' : 'text-slate-400'}">${formatNumber(o)} Kg</td>
         </tr>
       `}).join('');
+
+      // Hitung ekuivalen sak: Urea (50kg), NPK (50kg), Organik (40kg)
+      const sakUrea = Math.round(totalUrea / 50);
+      const sakNpk = Math.round(totalNpk / 50);
+      const sakOrganik = Math.round(totalOrganik / 40);
+      const totalAllKg = totalUrea + totalNpk + totalOrganik;
+      const totalAllSak = sakUrea + sakNpk + sakOrganik;
+
+      // Update Card KPI Rekap Kloter
+      const elPetani = document.getElementById('kloter-total-petani');
+      if (elPetani) elPetani.innerText = formatNumber(totalPetani) + ' Petani';
+      const elSubPetani = document.getElementById('kloter-sub-petani');
+      if (elSubPetani) elSubPetani.innerText = `${kloterAktif} Kloter Terisi · ${kloterList.length - kloterAktif} Belum Terisi`;
+
+      const elUrea = document.getElementById('kloter-total-urea');
+      if (elUrea) elUrea.innerText = formatNumber(totalUrea) + ' Kg';
+      const elUreaSak = document.getElementById('kloter-total-urea-sak');
+      if (elUreaSak) elUreaSak.innerText = formatNumber(sakUrea) + ' Sak';
+
+      const elNpk = document.getElementById('kloter-total-npk');
+      if (elNpk) elNpk.innerText = formatNumber(totalNpk) + ' Kg';
+      const elNpkSak = document.getElementById('kloter-total-npk-sak');
+      if (elNpkSak) elNpkSak.innerText = formatNumber(sakNpk) + ' Sak';
+
+      const elOrg = document.getElementById('kloter-total-organik');
+      if (elOrg) elOrg.innerText = formatNumber(totalOrganik) + ' Kg';
+      const elOrgSak = document.getElementById('kloter-total-organik-sak');
+      if (elOrgSak) elOrgSak.innerText = formatNumber(sakOrganik) + ' Sak';
+
+      const elAllKg = document.getElementById('kloter-total-all-kg');
+      if (elAllKg) elAllKg.innerText = formatNumber(totalAllKg) + ' Kg';
+      const elAllSak = document.getElementById('kloter-total-all-sak');
+      if (elAllSak) elAllSak.innerText = formatNumber(totalAllSak) + ' Sak';
+
+      // Update Table Footer
+      const footPetani = document.getElementById('foot-kloter-petani');
+      if (footPetani) footPetani.innerHTML = `<span class="px-2.5 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800">${formatNumber(totalPetani)} Petani</span>`;
+
+      const footUrea = document.getElementById('foot-kloter-urea');
+      if (footUrea) footUrea.innerHTML = `${formatNumber(totalUrea)} Kg<div class="text-[10px] font-semibold text-teal-700">~${formatNumber(sakUrea)} Sak</div>`;
+
+      const footNpk = document.getElementById('foot-kloter-npk');
+      if (footNpk) footNpk.innerHTML = `${formatNumber(totalNpk)} Kg<div class="text-[10px] font-semibold text-blue-700">~${formatNumber(sakNpk)} Sak</div>`;
+
+      const footOrg = document.getElementById('foot-kloter-organik');
+      if (footOrg) footOrg.innerHTML = `${formatNumber(totalOrganik)} Kg<div class="text-[10px] font-semibold text-amber-700">~${formatNumber(sakOrganik)} Sak</div>`;
     }
 
     let isSyncingKloter = false;
@@ -2933,14 +3075,16 @@
                 const start = txt.indexOf('{'), end = txt.lastIndexOf('}');
                 const json = JSON.parse(txt.substring(start, end + 1));
                 const rows = json.table ? json.table.rows : [];
+                let namaCount = 0;
                 let p = '', pen = '';
                 for (let r = 0; r < Math.min(12, rows.length); r++) {
                   const c0 = (rows[r].c && rows[r].c[0] ? (rows[r].c[0].v || '') : '').toString().toUpperCase();
                   let c2 = (rows[r].c && rows[r].c[2] ? (rows[r].c[2].v || '') : '') || (rows[r].c && rows[r].c[1] ? (rows[r].c[1].v || '') : '');
                   c2 = String(c2).replace(/^:\s*/, '').trim();
                   if (c0.includes('NAMA')) {
-                    if (!p) p = c2;
-                    else if (!pen) pen = c2;
+                    namaCount++;
+                    if (namaCount === 1) p = c2;
+                    else if (namaCount === 2) pen = c2;
                   }
                 }
                 return { kloterNum: i, pemberi: p, penerima: pen };
@@ -2958,6 +3102,7 @@
             const rRow = rekapRows[idx];
             const rPemberi = rRow && rRow.c && rRow.c[1] ? String(rRow.c[1].v || '').trim() : '';
             const rPenerima = rRow && rRow.c && rRow.c[2] ? String(rRow.c[2].v || '').trim() : '';
+            const hasPetani = (Number(k.jumlahPetani) || 0) > 0;
 
             // Prioritaskan nama spesifik dari tab sheet kloter masing-masing, lalu dari REKAP_KLOTER_CETAK
             let finalPemberi = kRes && kRes.pemberi ? kRes.pemberi : '';
@@ -2966,13 +3111,23 @@
             let finalPenerima = kRes && kRes.penerima ? kRes.penerima : '';
             if (!finalPenerima && rPenerima && rPenerima !== '-') finalPenerima = rPenerima;
 
-            if (finalPemberi) k.pemberiKuasa = finalPemberi;
-            if (finalPenerima) k.penerimaKuasa = finalPenerima;
+            // Jika belum ada anggota di kloter tersebut, jangan munculkan nama pemberi kuasa
+            if (!hasPetani) {
+              finalPemberi = '-';
+            }
+
+            k.pemberiKuasa = finalPemberi || '-';
+            k.penerimaKuasa = finalPenerima || 'SUPRIYANTO';
           });
 
           renderTableKloter(globalData.kloter);
         }
       } catch (err) {
+        console.warn('Sync live kloter kuasa error:', err);
+      } finally {
+        isSyncingKloter = false;
+      }
+    }
         console.warn('Sync live kloter kuasa error:', err);
       } finally {
         isSyncingKloter = false;
