@@ -200,11 +200,12 @@ function savePasswordHash_(props, key, password) {
 
 function loginUser_(username, password) {
   const user = String(username || '').trim().toLowerCase();
+  const normalizedUser = user === 'supriyanto' ? 'admin' : user;
   const pass = String(password || '');
   const config = {
     admin: { key: 'ADMIN', role: 'admin' },
     giarno: { key: 'GIARNO', role: 'readonly' }
-  }[user];
+  }[normalizedUser];
   if (!config || !pass) return { sukses: false, pesan: 'Username atau password salah.' };
 
   const cache = CacheService.getScriptCache();
