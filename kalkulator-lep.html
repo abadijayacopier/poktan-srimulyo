@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#022c22">
+  <meta name="description" content="Kalkulator Waktu Pemakaian Pompa Air / Sibel dan Cetak Nota Lep Sawah Resmi A4 & A5 - Poktan Sri Mulyo Desa Kediren">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="/icons/poktan.svg">
+  <title>Kalkulator &amp; Nota Lep Sawah - POKTAN SRI MULYO</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS & FontAwesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            tani: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+              950: '#022c22'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: #f1f5f9;
+      color: #0f172a;
+      -webkit-font-smoothing: antialiased;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    /* Styling Preview Nota */
+    .nota-sheet {
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease;
+    }
+
+    .nota-a4 {
+      width: 100%;
+      max-width: 800px;
+      min-height: 520px;
+    }
+
+    .nota-a5 {
+      width: 100%;
+      max-width: 650px;
+      min-height: 440px;
+    }
+
+    /* Print CSS Presisi Tinggi untuk A4 dan A5 */
+    @media print {
+      @page {
+        margin: 8mm 10mm;
+      }
+      body.mode-print-a4 @page {
+        size: A4 portrait;
+        margin: 10mm 12mm;
+      }
+      body.mode-print-a5 @page {
+        size: A5 portrait;
+        margin: 6mm 8mm;
+      }
+
+      html, body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      /* Sembunyikan semua UI Web */
+      header, footer, nav, #app-navbar, #calculator-form-container, #riwayat-container, 
+      #action-bar, .no-print, .tab-nav-mobile {
+        display: none !important;
+      }
+
+      /* Tampilkan hanya wadah nota cetak */
+      #preview-container {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .nota-sheet {
+        box-shadow: none !important;
+        border: 1.5px solid #000000 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 15px !important;
+        page-break-inside: avoid !important;
+      }
+
+      .nota-a5 {
+        font-size: 9.5pt !important;
+        padding: 10px 14px !important;
+      }
+
+      .nota-a4 {
+        font-size: 11pt !important;
+        padding: 20px 24px !important;
+      }
+
+      .print-border-black {
+        border-color: #000000 !important;
+      }
+
+      .print-text-black {
+        color: #000000 !important;
+      }
+
+      .badge-print {
+        border: 1px solid #000000 !important;
+        background: transparent !important;
+        color: #000000 !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased bg-slate-100 text-slate-800">
+
+  <!-- Header Navigasi Publik -->
+  <header id="app-navbar" class="bg-gradient-to-r from-emerald-950 via-emerald-900 to-tani-950 text-white shadow-md sticky top-0 z-40 border-b border-emerald-800/80">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="p-2 rounded-xl bg-emerald-800/60 hover:bg-emerald-700/80 text-emerald-200 hover:text-white transition flex items-center justify-center text-sm shadow-inner" title="Kembali ke Beranda Poktan">
+          <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 p-0.5 shadow-md flex items-center justify-center">
+            <img src="/icons/poktan.svg" alt="Logo Poktan" class="w-full h-full object-contain rounded-[10px]" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\'fa-solid fa-droplet text-emerald-950 text-lg\'></i>'">
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs sm:text-sm font-black tracking-tight text-white uppercase">POKTAN SRI MULYO</span>
+              <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                <i class="fa-solid fa-water text-[9px] mr-1"></i> Irigasi &amp; Lep Sawah
+              </span>
+            </div>
+            <p class="text-[10px] sm:text-[11px] text-emerald-200/90 font-medium">Kalkulator Waktu &amp; Cetak Nota Pompa Air / Sibel</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Badge Tanpa Login -->
+        <span class="hidden md:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-800/70 text-emerald-200 border border-emerald-600/40">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Akses Bebas / Publik
+        </span>
+
+        <!-- Tautan Layanan Lain -->
+        <a href="panduan-tani.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-800/60 hover:bg-emerald-700 text-xs font-bold text-emerald-100 transition border border-emerald-700/60">
+          <i class="fa-solid fa-wheat-awn text-emerald-400"></i> Panduan
+        </a>
+        <a href="cek-petani.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-xs font-bold text-amber-200 transition border border-amber-400/30">
+          <i class="fa-solid fa-id-card text-amber-400"></i> Cek NIK
+        </a>
+        <button type="button" onclick="resetForm()" class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-white transition flex items-center gap-1.5" title="Mulai transaksi baru">
+          <i class="fa-solid fa-rotate-right text-xs"></i> <span class="hidden sm:inline">Baru</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Tab Switcher: Form vs Nota Preview -->
+  <div class="lg:hidden bg-white border-b border-slate-200 sticky top-[57px] z-30 shadow-xs tab-nav-mobile">
+    <div class="grid grid-cols-2 p-1.5 gap-1.5 max-w-md mx-auto">
+      <button type="button" id="tab-btn-form" onclick="switchMobileTab('form')" class="py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 bg-emerald-700 text-white shadow-xs transition">
+        <i class="fa-solid fa-calculator"></i> Form &amp; Hitung
+      </button>
+      <button type="button" id="tab-btn-preview" onclick="switchMobileTab('preview')" class="py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-100 transition">
+        <i class="fa-solid fa-receipt"></i> Pratinjau Nota
+        <span id="mobile-badge-total" class="px-1.5 py-0.2 rounded-md bg-emerald-100 text-emerald-800 text-[10px] font-black">Rp 0</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Kontainer Utama -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-5 lg:p-6 space-y-6">
+
+    <!-- Hero Card Ringkas & Tips -->
+    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="flex items-start gap-3.5">
+        <div class="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center text-xl shrink-0">
+          <i class="fa-solid fa-faucet-drip"></i>
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
+            Kalkulator &amp; Pembuat Nota Lep Sawah
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">A4 / A5</span>
+          </h1>
+          <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
+            Hitung otomatis durasi jam/menit, tarif fleksibel sewa sumur bor/sibel, dan cetak bukti transaksi resmi atau kirim ke WhatsApp petani.
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 self-start md:self-center shrink-0">
+        <button type="button" onclick="scrollToRiwayat()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-2">
+          <i class="fa-solid fa-clock-rotate-left text-slate-500"></i> Riwayat Simpan
+        </button>
+        <button type="button" onclick="muatContohData()" class="px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-wand-magic-sparkles text-emerald-600"></i> Contoh Data
+        </button>
+      </div>
+    </div>
+
+    <!-- Grid Dua Kolom: Form Input (Kiri) & Live Preview Nota (Kanan) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+      <!-- ==================== KOLOM KIRI: FORM PERHITUNGAN ==================== -->
+      <div id="calculator-form-container" class="lg:col-span-6 space-y-4">
+        
+        <!-- Kartu 1: Data Identitas Transaksi -->
+        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <h2 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs">
+                <i class="fa-solid fa-user-tag"></i>
+              </span>
+              1. Identitas Lep Sawah
+            </h2>
+            <span class="text-[11px] text-slate-400 font-medium">Desa Kediren</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <!-- Nama Pemilik Sumur -->
+            <div>
+              <label for="input-pemilik" class="block text-[11px] font-bold text-slate-700 mb-1">
+                Nama Pemilik Sumur / Diesel <span class="text-rose-500">*</span>
+              </label>
+              <div class="relative">
+                <input type="text" id="input-pemilik" list="list-pemilik" placeholder="Contoh: Bpk. Mulyono / Sibel Poktan"
+                       class="w-full px-3 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 font-medium transition"
+                       oninput="updateKalkulasi()">
+                <datalist id="list-pemilik">
+                  <option value="Bpk. Mulyono (Sumur Kidul)">
+                  <option value="Bpk. Supriyanto (Sibel Lor)">
+                  <option value="Bpk. Sukat (Diesel Blok Wetan)">
+                  <option value="Bpk. Warsiat (Sibel Tengah)">
+                  <option value="Sumur Kelompok Poktan Sri Mulyo">
+                </datalist>
+              </div>
+            </div>
+
+            <!-- Nama Petani -->
+            <div>
+              <label for="input-petani" class="block text-[11px] font-bold text-slate-700 mb-1">
+                Nama Petani Pemakai <span class="text-rose-500">*</span>
+              </label>
+              <input type="text" id="input-petani" placeholder="Contoh: Bpk. Sugeng / Suyatno"
+                     class="w-full px-3 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 font-medium transition"
+                     oninput="updateKalkulasi()">
+            </div>
+
+            <!-- Tanggal Lep -->
+            <div>
+              <label for="input-tanggal" class="block text-[11px] font-bold text-slate-700 mb-1">
+                Tanggal Lep Sawah <span class="text-rose-500">*</span>
+              </label>
+              <input type="date" id="input-tanggal"
+                     class="w-full px-3 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 font-mono font-medium transition"
+                     oninput="updateKalkulasi()">
+            </div>
+
+            <!-- No. WA Petani (Opsional) -->
+            <div>
+              <label for="input-wa" class="block text-[11px] font-bold text-slate-700 mb-1">
+                No. WhatsApp Petani <span class="text-slate-400 font-normal">(opsional)</span>
+              </label>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-mono">+62</span>
+                <input type="tel" id="input-wa" placeholder="8123456789"
+                       class="w-full pl-11 pr-3 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 font-mono font-medium transition"
+                       oninput="updateKalkulasi()">
+              </div>
+            </div>
+
+            <!-- Keterangan Lahan & Blok -->
+            <div class="sm:col-span-2">
+              <label for="input-keterangan" class="block text-[11px] font-bold text-slate-700 mb-1">
+                Keterangan / Blok Lahan &amp; Tanaman
+              </label>
+              <input type="text" id="input-keterangan" placeholder="Contoh: Blok Sawah Kulon No. 4, Pengairan Padi MT-3"
+                     class="w-full px-3 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 font-medium transition"
+                     oninput="updateKalkulasi()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Kartu 2: Perhitungan Waktu Pemakaian -->
+        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <h2 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs">
+                <i class="fa-solid fa-stopwatch"></i>
+              </span>
+              2. Waktu &amp; Durasi Pemakaian
+            </h2>
+
+            <!-- Switch Mode Waktu: Jam Mulai-Selesai vs Input Jam Langsung -->
+            <div class="flex items-center bg-slate-100 p-0.5 rounded-lg text-[10px] font-bold">
+              <button type="button" id="btn-mode-jam" onclick="setWaktuMode('range')" class="px-2.5 py-1 rounded-md bg-white text-emerald-800 shadow-2xs">
+                Mulai - Selesai
+              </button>
+              <button type="button" id="btn-mode-durasi" onclick="setWaktuMode('manual')" class="px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-800">
+                Durasi Bebas
+              </button>
+            </div>
+          </div>
+
+          <!-- Bagian Mode Range (Jam Mulai s/d Jam Selesai) -->
+          <div id="section-mode-range" class="space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <!-- Jam Mulai -->
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label for="input-jam-mulai" class="text-[11px] font-bold text-slate-700">Jam Mulai</label>
+                  <button type="button" onclick="setJamSekarang('mulai')" class="text-[10px] font-bold text-emerald-700 hover:underline">
+                    <i class="fa-solid fa-clock"></i> Set Sekarang
+                  </button>
+                </div>
+                <input type="time" id="input-jam-mulai" value="07:00"
+                       class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 font-mono font-bold text-slate-800 transition"
+                       oninput="updateKalkulasi()">
+              </div>
+
+              <!-- Jam Selesai -->
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label for="input-jam-selesai" class="text-[11px] font-bold text-slate-700">Jam Selesai</label>
+                  <button type="button" onclick="setJamSekarang('selesai')" class="text-[10px] font-bold text-emerald-700 hover:underline">
+                    <i class="fa-solid fa-clock"></i> Set Sekarang
+                  </button>
+                </div>
+                <input type="time" id="input-jam-selesai" value="11:30"
+                       class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 font-mono font-bold text-slate-800 transition"
+                       oninput="updateKalkulasi()">
+              </div>
+            </div>
+          </div>
+
+          <!-- Bagian Mode Manual Durasi Bebas (Hidden by default) -->
+          <div id="section-mode-manual" class="space-y-3 hidden">
+            <div class="grid grid-cols-2 gap-3.5">
+              <div>
+                <label for="input-manual-jam" class="block text-[11px] font-bold text-slate-700 mb-1">Jumlah Jam</label>
+                <input type="number" id="input-manual-jam" min="0" max="72" value="4"
+                       class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono font-bold"
+                       oninput="updateKalkulasi()">
+              </div>
+              <div>
+                <label for="input-manual-menit" class="block text-[11px] font-bold text-slate-700 mb-1">Jumlah Menit</label>
+                <input type="number" id="input-manual-menit" min="0" max="59" step="5" value="30"
+                       class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono font-bold"
+                       oninput="updateKalkulasi()">
+              </div>
+            </div>
+          </div>
+
+          <!-- Box Highlight Durasi Terhitung -->
+          <div class="p-3.5 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-700 text-white flex items-center justify-center text-lg shadow-sm">
+                <i class="fa-solid fa-hourglass-half"></i>
+              </div>
+              <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-emerald-800">Total Durasi Pemakaian</div>
+                <div id="display-durasi-teks" class="text-base sm:text-lg font-black text-emerald-950 font-mono">
+                  4 Jam 30 Menit
+                </div>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] font-bold text-emerald-700 block">Desimal Jam:</span>
+              <span id="display-durasi-desimal" class="text-sm sm:text-base font-extrabold text-emerald-900 font-mono">
+                4,50 Jam
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kartu 3: Harga Tarif Per Jam & Pembayaran -->
+        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <h2 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs">
+                <i class="fa-solid fa-coins"></i>
+              </span>
+              3. Tarif Per Jam &amp; Tagihan
+            </h2>
+            <span class="text-[11px] text-emerald-700 font-bold">Isi Manual Bebas</span>
+          </div>
+
+          <!-- Input Tarif Per Jam -->
+          <div>
+            <label for="input-tarif" class="block text-[11px] font-bold text-slate-700 mb-1">
+              Tarif Sewa Pompa Per Jam (Rp) <span class="text-rose-500">*</span>
+            </label>
+            <div class="relative">
+              <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">Rp</span>
+              <input type="text" id="input-tarif" value="25.000"
+                     class="w-full pl-11 pr-4 py-2.5 text-sm sm:text-base rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono font-bold text-slate-900 transition"
+                     oninput="formatInputRupiah(this); updateKalkulasi()">
+            </div>
+          </div>
+
+          <!-- Chips Preset Tarif Cepat -->
+          <div>
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Pilihan Cepat Tarif / Jam:</div>
+            <div class="flex flex-wrap gap-1.5">
+              <button type="button" onclick="setPresetTarif(15000)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-100 hover:text-emerald-900 text-xs font-bold text-slate-700 transition font-mono">15.000</button>
+              <button type="button" onclick="setPresetTarif(20000)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-100 hover:text-emerald-900 text-xs font-bold text-slate-700 transition font-mono">20.000</button>
+              <button type="button" onclick="setPresetTarif(25000)" class="px-2.5 py-1 rounded-lg bg-emerald-700 text-white text-xs font-bold transition font-mono">25.000</button>
+              <button type="button" onclick="setPresetTarif(30000)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-100 hover:text-emerald-900 text-xs font-bold text-slate-700 transition font-mono">30.000</button>
+              <button type="button" onclick="setPresetTarif(35000)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-100 hover:text-emerald-900 text-xs font-bold text-slate-700 transition font-mono">35.000</button>
+              <button type="button" onclick="setPresetTarif(40000)" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-100 hover:text-emerald-900 text-xs font-bold text-slate-700 transition font-mono">40.000</button>
+            </div>
+          </div>
+
+          <!-- Tambahan Biaya BBM / Selang & Diskon (Akordeon Ringkas) -->
+          <div class="pt-2 border-t border-slate-100">
+            <details class="group">
+              <summary class="flex items-center justify-between cursor-pointer text-xs font-bold text-slate-600 hover:text-emerald-700 transition">
+                <span><i class="fa-solid fa-sliders text-emerald-600 mr-1.5"></i> Biaya Lain &amp; Diskon (Opsional)</span>
+                <i class="fa-solid fa-chevron-down text-[10px] group-open:rotate-180 transition"></i>
+              </summary>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 pt-2">
+                <div>
+                  <label for="input-tambahan" class="block text-[10px] font-bold text-slate-600 mb-1">Biaya Tambahan (BBM/Selang)</label>
+                  <input type="text" id="input-tambahan" value="0" placeholder="0"
+                         class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 font-mono font-bold"
+                         oninput="formatInputRupiah(this); updateKalkulasi()">
+                </div>
+                <div>
+                  <label for="input-diskon" class="block text-[10px] font-bold text-slate-600 mb-1">Potongan / Diskon (Rp)</label>
+                  <input type="text" id="input-diskon" value="0" placeholder="0"
+                         class="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200 font-mono font-bold"
+                         oninput="formatInputRupiah(this); updateKalkulasi()">
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <!-- Status Pembayaran -->
+          <div class="pt-2 border-t border-slate-100">
+            <label class="block text-[11px] font-bold text-slate-700 mb-1.5">Status Pembayaran</label>
+            <div class="grid grid-cols-3 gap-2">
+              <label class="flex items-center justify-center gap-1.5 p-2 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50 text-xs font-bold transition has-[:checked]:bg-emerald-50 has-[:checked]:border-emerald-600 has-[:checked]:text-emerald-900">
+                <input type="radio" name="status_bayar" value="LUNAS" checked class="accent-emerald-600" onchange="updateKalkulasi()">
+                <span>Lunas</span>
+              </label>
+              <label class="flex items-center justify-center gap-1.5 p-2 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50 text-xs font-bold transition has-[:checked]:bg-rose-50 has-[:checked]:border-rose-600 has-[:checked]:text-rose-900">
+                <input type="radio" name="status_bayar" value="BELUM LUNAS" class="accent-rose-600" onchange="updateKalkulasi()">
+                <span>Belum Lunas</span>
+              </label>
+              <label class="flex items-center justify-center gap-1.5 p-2 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50 text-xs font-bold transition has-[:checked]:bg-amber-50 has-[:checked]:border-amber-600 has-[:checked]:text-amber-900">
+                <input type="radio" name="status_bayar" value="DP" class="accent-amber-600" onchange="updateKalkulasi()">
+                <span>DP / Titip</span>
+              </label>
+            </div>
+
+            <!-- Field Input DP jika dipilih -->
+            <div id="section-dp" class="mt-2.5 hidden">
+              <label for="input-nominal-dp" class="block text-[10px] font-bold text-amber-800 mb-1">Nominal Titip / DP (Rp):</label>
+              <input type="text" id="input-nominal-dp" value="0" placeholder="0"
+                     class="w-full px-3 py-1.5 text-xs rounded-lg border border-amber-300 bg-amber-50/50 font-mono font-bold text-slate-800"
+                     oninput="formatInputRupiah(this); updateKalkulasi()">
+            </div>
+          </div>
+
+          <!-- Total Tagihan Banner -->
+          <div class="p-4 rounded-2xl bg-gradient-to-r from-emerald-950 via-emerald-900 to-tani-950 text-white shadow-md space-y-1.5">
+            <div class="flex items-center justify-between text-xs text-emerald-200 font-semibold">
+              <span>TOTAL TAGIHAN BIAYA:</span>
+              <span id="badge-status-ringkasan" class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/30 text-emerald-300 border border-emerald-400/30">
+                LUNAS
+              </span>
+            </div>
+            <div id="display-total-rupiah" class="text-2xl sm:text-3xl font-black font-mono tracking-tight text-white">
+              Rp 112.500
+            </div>
+            <div id="display-terbilang" class="text-xs text-emerald-200 italic pt-1 border-t border-emerald-800/80 leading-relaxed">
+              "Seratus Dua Belas Ribu Lima Ratus Rupiah"
+            </div>
+            <div id="display-sisa-dp-row" class="text-xs text-amber-300 pt-1 hidden font-bold">
+              Sisa yang harus dibayar: <span id="display-sisa-dp-val">Rp 0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tombol Aksi Utama -->
+        <div id="action-bar" class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-xs space-y-2.5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <button type="button" onclick="cetakNota()" class="w-full py-3 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 active:scale-[0.99] text-white font-extrabold text-xs sm:text-sm shadow-md shadow-emerald-700/20 transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-print text-base"></i> Cetak Nota Resmi
+            </button>
+            <button type="button" onclick="kirimWhatsApp()" class="w-full py-3 px-4 rounded-xl bg-teal-700 hover:bg-teal-800 active:scale-[0.99] text-white font-extrabold text-xs sm:text-sm shadow-md shadow-teal-700/20 transition flex items-center justify-center gap-2">
+              <i class="fa-brands fa-whatsapp text-base"></i> Kirim ke WhatsApp
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button type="button" onclick="simpanKeRiwayat(true)" class="py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-floppy-disk text-slate-500"></i> Simpan Catatan
+            </button>
+            <button type="button" onclick="resetForm()" class="py-2 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs transition flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-trash-arrow-up text-rose-500"></i> Kosongkan Form
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ==================== KOLOM KANAN: LIVE PREVIEW & CETAK NOTA ==================== -->
+      <div id="preview-container" class="lg:col-span-6 space-y-4">
+
+        <!-- Bar Kontrol Ukuran Kertas & Mode Cetak -->
+        <div class="bg-white rounded-2xl p-3 border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-2 no-print">
+          <div class="flex items-center gap-1.5">
+            <span class="text-xs font-bold text-slate-600">Pilihan Kertas:</span>
+            <div class="inline-flex bg-slate-100 p-0.5 rounded-xl text-xs font-bold">
+              <button type="button" id="btn-size-a5" onclick="setUkuranKertas('a5')" class="px-3 py-1.5 rounded-lg bg-emerald-700 text-white shadow-2xs transition flex items-center gap-1.5">
+                <i class="fa-solid fa-file-lines"></i> Nota A5 <span class="text-[10px] opacity-80">(Hemat)</span>
+              </button>
+              <button type="button" id="btn-size-a4" onclick="setUkuranKertas('a4')" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-file"></i> Nota A4 <span class="text-[10px] opacity-70">(Besar)</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="cetakNota()" class="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold transition flex items-center gap-1.5">
+              <i class="fa-solid fa-print"></i> Cetak / PDF
+            </button>
+          </div>
+        </div>
+
+        <!-- LEMBAR NOTA FISIK (SESUAI UKURAN A4 / A5) -->
+        <div id="lembar-nota" class="nota-sheet nota-a5 mx-auto rounded-xl p-5 sm:p-6 border border-slate-300">
+          
+          <!-- KOP NOTA RESMI -->
+          <div class="flex items-center justify-between border-b-2 border-slate-900 pb-3 mb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl bg-emerald-800 text-white flex items-center justify-center p-1.5 shrink-0 print-border-black">
+                <img src="/icons/poktan.svg" alt="Logo" class="w-full h-full object-contain" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\'fa-solid fa-droplet text-xl\'></i>'">
+              </div>
+              <div>
+                <h3 class="text-base sm:text-lg font-black tracking-tight text-slate-900 uppercase leading-none print-text-black">
+                  POKTAN SRI MULYO
+                </h3>
+                <div class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mt-0.5 print-text-black">
+                  Unit Irigasi &amp; Layanan Pompa Air Sawah
+                </div>
+                <div class="text-[10px] text-slate-500 font-medium leading-tight mt-0.5 print-text-black">
+                  Desa Kediren, Kec. Lembeyan, Kab. Magetan, Jawa Timur
+                </div>
+              </div>
+            </div>
+
+            <div class="text-right">
+              <div class="inline-block px-2 py-0.5 rounded border border-slate-900 text-[10px] font-black uppercase font-mono tracking-wider badge-print" id="nota-preview-kertas-badge">
+                UKURAN A5
+              </div>
+              <div class="text-[10px] font-mono text-slate-500 mt-1 print-text-black">
+                No: <span id="nota-no-transaksi" class="font-bold text-slate-900 font-mono">LEP-202611-001</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- JUDUL NOTA -->
+          <div class="text-center my-2.5">
+            <h4 class="text-sm sm:text-base font-black uppercase tracking-wider text-slate-900 underline decoration-slate-900 decoration-1 underline-offset-4 print-text-black">
+              BUKTI PEMAKAIAN AIR IRIGASI SAWAH (LEP)
+            </h4>
+          </div>
+
+          <!-- TABEL INFORMASI PIHAK -->
+          <div class="grid grid-cols-2 gap-3 text-xs mb-3.5 bg-slate-50 p-2.5 rounded-lg border border-slate-200 print:bg-white print-border-black">
+            <div class="space-y-1">
+              <div class="flex">
+                <span class="w-28 text-slate-500 font-medium print-text-black">Pemilik Sumur</span>
+                <span class="font-bold text-slate-900 print-text-black">: <span id="nota-pemilik-val">Bpk. Mulyono</span></span>
+              </div>
+              <div class="flex">
+                <span class="w-28 text-slate-500 font-medium print-text-black">Petani Pemakai</span>
+                <span class="font-bold text-slate-900 print-text-black">: <span id="nota-petani-val">Bpk. Sugeng</span></span>
+              </div>
+              <div class="flex">
+                <span class="w-28 text-slate-500 font-medium print-text-black">No. WhatsApp</span>
+                <span class="font-mono text-slate-700 print-text-black">: <span id="nota-wa-val">-</span></span>
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <div class="flex">
+                <span class="w-28 text-slate-500 font-medium print-text-black">Tanggal Lep</span>
+                <span class="font-bold text-slate-900 print-text-black">: <span id="nota-tanggal-val">19 November 2026</span></span>
+              </div>
+              <div class="flex">
+                <span class="w-28 text-slate-500 font-medium print-text-black">Lokasi Lahan</span>
+                <span class="text-slate-800 print-text-black">: <span id="nota-keterangan-val">Blok Kidul, Padi MT-3</span></span>
+              </div>
+              <div class="flex">
+                <span class="w-28 text-slate-500 font-medium print-text-black">Status Bayar</span>
+                <span class="font-bold print-text-black">: <span id="nota-status-badge" class="px-1.5 py-0.2 rounded text-[10px] bg-emerald-100 text-emerald-800 font-black border border-emerald-300 uppercase badge-print">LUNAS</span></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- TABEL RINCIAN PEMAKAIAN & BIAYA -->
+          <div class="overflow-x-auto mb-3.5">
+            <table class="w-full text-xs text-left border-collapse border border-slate-300 print-border-black">
+              <thead>
+                <tr class="bg-slate-100 text-slate-900 font-extrabold print:bg-slate-200 print-border-black">
+                  <th class="border border-slate-300 p-2 text-center w-10 print-border-black">No</th>
+                  <th class="border border-slate-300 p-2 print-border-black">Uraian Pemakaian Pompa Air</th>
+                  <th class="border border-slate-300 p-2 text-center print-border-black">Waktu / Durasi</th>
+                  <th class="border border-slate-300 p-2 text-right print-border-black">Tarif / Jam</th>
+                  <th class="border border-slate-300 p-2 text-right print-border-black">Jumlah (Rp)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="border border-slate-300 p-2 text-center font-mono print-border-black">1</td>
+                  <td class="border border-slate-300 p-2 print-border-black">
+                    <div class="font-bold text-slate-900 print-text-black">Sewa Jam Operasional Pompa Air / Sibel</div>
+                    <div class="text-[10px] text-slate-500 print-text-black" id="nota-jam-range-val">Pukul 07:00 s/d 11:30 WIB</div>
+                  </td>
+                  <td class="border border-slate-300 p-2 text-center font-mono font-bold print-border-black">
+                    <span id="nota-durasi-jam-menit">4 Jam 30 Menit</span>
+                    <div class="text-[10px] text-slate-500 font-normal print-text-black">(<span id="nota-durasi-desimal-val">4.50</span> Jam)</div>
+                  </td>
+                  <td class="border border-slate-300 p-2 text-right font-mono print-border-black" id="nota-tarif-val">
+                    Rp 25.000
+                  </td>
+                  <td class="border border-slate-300 p-2 text-right font-mono font-bold print-border-black" id="nota-subtotal-val">
+                    Rp 112.500
+                  </td>
+                </tr>
+
+                <!-- Baris Biaya Tambahan (Conditional) -->
+                <tr id="nota-row-tambahan" class="hidden">
+                  <td class="border border-slate-300 p-2 text-center font-mono print-border-black">2</td>
+                  <td class="border border-slate-300 p-2 print-border-black" colspan="3">Biaya Tambahan (BBM Solar / Pasang Selang)</td>
+                  <td class="border border-slate-300 p-2 text-right font-mono font-bold print-border-black" id="nota-tambahan-val">Rp 0</td>
+                </tr>
+
+                <!-- Baris Diskon (Conditional) -->
+                <tr id="nota-row-diskon" class="hidden">
+                  <td class="border border-slate-300 p-2 text-center font-mono print-border-black">3</td>
+                  <td class="border border-slate-300 p-2 print-border-black" colspan="3">Potongan / Diskon Khusus</td>
+                  <td class="border border-slate-300 p-2 text-right font-mono font-bold text-rose-600 print-text-black" id="nota-diskon-val">- Rp 0</td>
+                </tr>
+
+                <!-- TOTAL AKHIR -->
+                <tr class="bg-slate-50 font-black text-slate-900 text-xs sm:text-sm print:bg-white print-border-black">
+                  <td colspan="4" class="border border-slate-300 p-2.5 text-right uppercase tracking-wider print-border-black">
+                    TOTAL BIAYA PEMAKAIAN:
+                  </td>
+                  <td class="border border-slate-300 p-2.5 text-right font-mono text-emerald-900 font-extrabold print-text-black print-border-black" id="nota-total-val">
+                    Rp 112.500
+                  </td>
+                </tr>
+
+                <!-- Rincian DP jika ada -->
+                <tr id="nota-row-dp" class="hidden font-mono text-xs bg-amber-50/50 print:bg-white print-border-black">
+                  <td colspan="4" class="border border-slate-300 p-1.5 text-right font-bold text-amber-900 print-text-black">
+                    Dibayar / DP:
+                  </td>
+                  <td class="border border-slate-300 p-1.5 text-right font-bold text-amber-900 print-text-black" id="nota-dp-val">
+                    Rp 0
+                  </td>
+                </tr>
+                <tr id="nota-row-sisa" class="hidden font-mono text-xs bg-rose-50/50 print:bg-white print-border-black">
+                  <td colspan="4" class="border border-slate-300 p-1.5 text-right font-bold text-rose-900 print-text-black">
+                    SISA TAGIHAN:
+                  </td>
+                  <td class="border border-slate-300 p-1.5 text-right font-black text-rose-900 print-text-black" id="nota-sisa-val">
+                    Rp 0
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- BOX TERBILANG -->
+          <div class="mb-4 p-2 bg-slate-50 rounded border border-slate-200 text-xs italic print:bg-white print-border-black">
+            <span class="font-bold not-italic text-slate-700 print-text-black">Terbilang: </span>
+            <span id="nota-terbilang-val" class="font-semibold text-slate-900 print-text-black">"Seratus Dua Belas Ribu Lima Ratus Rupiah"</span>
+          </div>
+
+          <!-- KOLOM TANDA TANGAN -->
+          <div class="grid grid-cols-2 gap-4 text-center text-xs mt-6 pt-2">
+            <div>
+              <div class="text-slate-600 print-text-black">Petani Pemakai / Penyewa,</div>
+              <div class="h-16 sm:h-20 flex items-end justify-center">
+                <div class="w-36 border-b border-slate-900 pb-1 font-bold text-slate-900 print-text-black" id="nota-ttd-petani">
+                  ( Bpk. Sugeng )
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="text-slate-600 print-text-black">
+                Kediren, <span id="nota-ttd-tanggal">19 November 2026</span><br>
+                Pemilik Sumur / Pengelola,
+              </div>
+              <div class="h-12 sm:h-16 flex items-end justify-center">
+                <div class="w-36 border-b border-slate-900 pb-1 font-bold text-slate-900 print-text-black" id="nota-ttd-pemilik">
+                  ( Bpk. Mulyono )
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CATATAN KAKI RESMI NOTA -->
+          <div class="mt-6 pt-2 border-t border-dashed border-slate-300 text-[10px] text-slate-400 flex items-center justify-between print-text-black">
+            <span>* Bukti sah pemakaian fasilitas irigasi Poktan Sri Mulyo</span>
+            <span class="font-mono">Dicetak: <span id="nota-print-time">19/11/2026 22:30</span></span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==================== BAGIAN BAWAH: RIWAYAT CATATAN TRANSAKSI ==================== -->
+    <div id="riwayat-container" class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+        <div>
+          <h2 class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+            </span>
+            Riwayat Catatan Transaksi Lep Sawah
+          </h2>
+          <p class="text-xs text-slate-500 mt-0.5">Tersimpan otomatis di perangkat Anda (offline &amp; aman)</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="eksporRiwayatCSV()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-file-excel text-emerald-600"></i> Ekspor CSV
+          </button>
+          <button type="button" onclick="hapusSemuaRiwayat()" class="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-trash-can"></i> Hapus Riwayat
+          </button>
+        </div>
+      </div>
+
+      <!-- Ringkasan Statistik Riwayat -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+          <div class="text-[10px] font-bold uppercase text-slate-500">Total Transaksi</div>
+          <div id="stat-total-transaksi" class="text-lg sm:text-xl font-black font-mono text-slate-800">0</div>
+        </div>
+        <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
+          <div class="text-[10px] font-bold uppercase text-emerald-700">Total Jam Lep</div>
+          <div id="stat-total-jam" class="text-lg sm:text-xl font-black font-mono text-emerald-900">0 Jam</div>
+        </div>
+        <div class="p-3 rounded-xl bg-blue-50 border border-blue-200">
+          <div class="text-[10px] font-bold uppercase text-blue-700">Total Tagihan</div>
+          <div id="stat-total-rupiah" class="text-lg sm:text-xl font-black font-mono text-blue-900">Rp 0</div>
+        </div>
+        <div class="p-3 rounded-xl bg-amber-50 border border-amber-200">
+          <div class="text-[10px] font-bold uppercase text-amber-700">Belum Lunas</div>
+          <div id="stat-belum-lunas" class="text-lg sm:text-xl font-black font-mono text-amber-900">0 Transaksi</div>
+        </div>
+      </div>
+
+      <!-- Tabel Riwayat Transaksi -->
+      <div class="overflow-x-auto rounded-xl border border-slate-200">
+        <table class="w-full text-xs text-left border-collapse">
+          <thead class="bg-slate-50 text-slate-700 font-extrabold border-b border-slate-200">
+            <tr>
+              <th class="p-3 text-center">No</th>
+              <th class="p-3">Tanggal</th>
+              <th class="p-3">Pemilik Sumur</th>
+              <th class="p-3">Petani Pemakai</th>
+              <th class="p-3 text-center">Durasi</th>
+              <th class="p-3 text-right">Tarif/Jam</th>
+              <th class="p-3 text-right">Total Biaya</th>
+              <th class="p-3 text-center">Status</th>
+              <th class="p-3 text-center">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tabel-riwayat-body" class="divide-y divide-slate-200">
+            <tr>
+              <td colspan="9" class="p-6 text-center text-slate-400 italic">
+                Belum ada riwayat transaksi tersimpan. Isi form di atas dan klik "Simpan Catatan" atau "Cetak Nota".
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer Publik -->
+  <footer class="bg-white border-t border-slate-200 py-4 mt-8 text-center text-xs text-slate-500 space-y-1">
+    <div class="font-bold text-slate-700">POKTAN SRI MULYO &middot; Desa Kediren, Kec. Lembeyan, Kab. Magetan</div>
+    <div class="text-[11px] text-slate-400">Aplikasi Layanan Mandiri Petani &amp; Unit Pompanisasi Air Pertanian &copy; 2026</div>
+  </footer>
+
+  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+  <script>
+    // State Global
+    let waktuMode = 'range'; // 'range' atau 'manual'
+    let ukuranKertas = 'a5'; // 'a5' atau 'a4'
+    let currentCalc = {};
+
+    // Inisialisasi awal saat halaman dibuka
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set tanggal default hari ini
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('input-tanggal').value = today;
+
+      // Muat riwayat tersimpan
+      renderRiwayatTable();
+
+      // Jalankan kalkulasi perdana
+      updateKalkulasi();
+    });
+
+    // Switch Mode Waktu (Mulai-Selesai vs Durasi Manual)
+    function setWaktuMode(mode) {
+      waktuMode = mode;
+      const btnRange = document.getElementById('btn-mode-jam');
+      const btnManual = document.getElementById('btn-mode-durasi');
+      const secRange = document.getElementById('section-mode-range');
+      const secManual = document.getElementById('section-mode-manual');
+
+      if (mode === 'range') {
+        btnRange.className = 'px-2.5 py-1 rounded-md bg-white text-emerald-800 shadow-2xs font-bold';
+        btnManual.className = 'px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-800 font-bold';
+        secRange.classList.remove('hidden');
+        secManual.classList.add('hidden');
+      } else {
+        btnManual.className = 'px-2.5 py-1 rounded-md bg-white text-emerald-800 shadow-2xs font-bold';
+        btnRange.className = 'px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-800 font-bold';
+        secRange.classList.add('hidden');
+        secManual.classList.remove('hidden');
+      }
+      updateKalkulasi();
+    }
+
+    // Set Jam Cepat
+    function setJamSekarang(target) {
+      const now = new Date();
+      const jam = String(now.getHours()).padStart(2, '0');
+      const menit = String(now.getMinutes()).padStart(2, '0');
+      const timeVal = `${jam}:${menit}`;
+
+      if (target === 'mulai') {
+        document.getElementById('input-jam-mulai').value = timeVal;
+      } else {
+        document.getElementById('input-jam-selesai').value = timeVal;
+      }
+      updateKalkulasi();
+    }
+
+    // Preset Tarif Cepat
+    function setPresetTarif(nominal) {
+      document.getElementById('input-tarif').value = formatRibuan(nominal);
+      updateKalkulasi();
+    }
+
+    // Switcher Ukuran Kertas A4 vs A5
+    function setUkuranKertas(size) {
+      ukuranKertas = size;
+      const lembar = document.getElementById('lembar-nota');
+      const btnA4 = document.getElementById('btn-size-a4');
+      const btnA5 = document.getElementById('btn-size-a5');
+      const badgeKertas = document.getElementById('nota-preview-kertas-badge');
+
+      if (size === 'a4') {
+        document.body.classList.remove('mode-print-a5');
+        document.body.classList.add('mode-print-a4');
+        lembar.classList.remove('nota-a5');
+        lembar.classList.add('nota-a4');
+        btnA4.className = 'px-3 py-1.5 rounded-lg bg-emerald-700 text-white shadow-2xs transition flex items-center gap-1.5 font-bold';
+        btnA5.className = 'px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5 font-bold';
+        badgeKertas.textContent = 'UKURAN A4';
+      } else {
+        document.body.classList.remove('mode-print-a4');
+        document.body.classList.add('mode-print-a5');
+        lembar.classList.remove('nota-a4');
+        lembar.classList.add('nota-a5');
+        btnA5.className = 'px-3 py-1.5 rounded-lg bg-emerald-700 text-white shadow-2xs transition flex items-center gap-1.5 font-bold';
+        btnA4.className = 'px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5 font-bold';
+        badgeKertas.textContent = 'UKURAN A5';
+      }
+    }
+
+    // Tab Switcher Mobile
+    function switchMobileTab(tab) {
+      const formContainer = document.getElementById('calculator-form-container');
+      const previewContainer = document.getElementById('preview-container');
+      const btnForm = document.getElementById('tab-btn-form');
+      const btnPreview = document.getElementById('tab-btn-preview');
+
+      if (tab === 'form') {
+        formContainer.classList.remove('hidden');
+        previewContainer.classList.add('hidden');
+        btnForm.className = 'py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 bg-emerald-700 text-white shadow-xs transition';
+        btnPreview.className = 'py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-100 transition';
+      } else {
+        formContainer.classList.add('hidden');
+        previewContainer.classList.remove('hidden');
+        btnPreview.className = 'py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 bg-emerald-700 text-white shadow-xs transition';
+        btnForm.className = 'py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 text-slate-600 hover:bg-slate-100 transition';
+      }
+    }
+
+    // Fungsi Utama Kalkulasi & Pembaruan Live Preview
+    function updateKalkulasi() {
+      // 1. Ambil data identitas
+      const pemilik = document.getElementById('input-pemilik').value.trim() || 'Bpk. Mulyono';
+      const petani = document.getElementById('input-petani').value.trim() || 'Bpk. Sugeng';
+      const tanggal = document.getElementById('input-tanggal').value;
+      const wa = document.getElementById('input-wa').value.trim();
+      const keterangan = document.getElementById('input-keterangan').value.trim() || 'Irigasi Lahan Sawah';
+
+      // 2. Hitung Waktu & Durasi
+      let durasiMenit = 0;
+      let jamMulaiText = '';
+      let jamSelesaiText = '';
+
+      if (waktuMode === 'range') {
+        const jamMulai = document.getElementById('input-jam-mulai').value || '07:00';
+        const jamSelesai = document.getElementById('input-jam-selesai').value || '11:30';
+        jamMulaiText = jamMulai;
+        jamSelesaiText = jamSelesai;
+
+        const [h1, m1] = jamMulai.split(':').map(Number);
+        const [h2, m2] = jamSelesai.split(':').map(Number);
+        const totalM1 = h1 * 60 + m1;
+        const totalM2 = h2 * 60 + m2;
+
+        if (totalM2 >= totalM1) {
+          durasiMenit = totalM2 - totalM1;
+        } else {
+          // Melewati tengah malam (misal 22:00 -> 04:00)
+          durasiMenit = (24 * 60 - totalM1) + totalM2;
+        }
+      } else {
+        const j = Number(document.getElementById('input-manual-jam').value) || 0;
+        const m = Number(document.getElementById('input-manual-menit').value) || 0;
+        durasiMenit = j * 60 + m;
+        jamMulaiText = '-';
+        jamSelesaiText = '-';
+      }
+
+      const durasiJam = Math.floor(durasiMenit / 60);
+      const sisaMenit = durasiMenit % 60;
+      const durasiDesimal = durasiMenit / 60;
+
+      // 3. Hitung Biaya
+      const tarifPerJam = parseAngka(document.getElementById('input-tarif').value) || 0;
+      const biayaTambahan = parseAngka(document.getElementById('input-tambahan').value) || 0;
+      const diskon = parseAngka(document.getElementById('input-diskon').value) || 0;
+
+      const subtotalPokok = Math.round(durasiDesimal * tarifPerJam);
+      const totalTagihan = Math.max(0, subtotalPokok + biayaTambahan - diskon);
+
+      // Status Pembayaran & DP
+      const statusRadio = document.querySelector('input[name="status_bayar"]:checked');
+      const statusBayar = statusRadio ? statusRadio.value : 'LUNAS';
+
+      const secDP = document.getElementById('section-dp');
+      let nominalDP = 0;
+      let sisaTagihan = 0;
+
+      if (statusBayar === 'DP') {
+        secDP.classList.remove('hidden');
+        nominalDP = parseAngka(document.getElementById('input-nominal-dp').value) || 0;
+        sisaTagihan = Math.max(0, totalTagihan - nominalDP);
+        document.getElementById('display-sisa-dp-row').classList.remove('hidden');
+        document.getElementById('display-sisa-dp-val').textContent = formatRupiah(sisaTagihan);
+      } else {
+        secDP.classList.add('hidden');
+        document.getElementById('display-sisa-dp-row').classList.add('hidden');
+      }
+
+      // 4. Update Tampilan Form Kiri
+      const durasiTeks = `${durasiJam} Jam ${sisaMenit} Menit`;
+      document.getElementById('display-durasi-teks').textContent = durasiTeks;
+      document.getElementById('display-durasi-desimal').textContent = `${durasiDesimal.toFixed(2).replace('.', ',')} Jam`;
+
+      document.getElementById('display-total-rupiah').textContent = formatRupiah(totalTagihan);
+      const kalimatTerbilang = terbilang(totalTagihan);
+      document.getElementById('display-terbilang').textContent = `"${kalimatTerbilang}"`;
+
+      // Badge status di form
+      const badgeForm = document.getElementById('badge-status-ringkasan');
+      badgeForm.textContent = statusBayar;
+      if (statusBayar === 'LUNAS') {
+        badgeForm.className = 'px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/30 text-emerald-300 border border-emerald-400/30';
+      } else if (statusBayar === 'BELUM LUNAS') {
+        badgeForm.className = 'px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500/30 text-rose-300 border border-rose-400/30';
+      } else {
+        badgeForm.className = 'px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/30 text-amber-300 border border-amber-400/30';
+      }
+
+      // Badge Mobile
+      const mobBadge = document.getElementById('mobile-badge-total');
+      if (mobBadge) mobBadge.textContent = formatRupiah(totalTagihan);
+
+      // 5. Update Lembar Nota Kanan (Live Preview)
+      document.getElementById('nota-pemilik-val').textContent = pemilik;
+      document.getElementById('nota-petani-val').textContent = petani;
+      document.getElementById('nota-wa-val').textContent = wa ? `+62 ${wa}` : '-';
+      document.getElementById('nota-keterangan-val').textContent = keterangan;
+      document.getElementById('nota-tanggal-val').textContent = formatTanggalIndo(tanggal);
+
+      // Badge status nota
+      const notaStatusBadge = document.getElementById('nota-status-badge');
+      notaStatusBadge.textContent = statusBayar;
+      if (statusBayar === 'LUNAS') {
+        notaStatusBadge.className = 'px-1.5 py-0.2 rounded text-[10px] bg-emerald-100 text-emerald-800 font-black border border-emerald-300 uppercase badge-print';
+      } else if (statusBayar === 'BELUM LUNAS') {
+        notaStatusBadge.className = 'px-1.5 py-0.2 rounded text-[10px] bg-rose-100 text-rose-800 font-black border border-rose-300 uppercase badge-print';
+      } else {
+        notaStatusBadge.className = 'px-1.5 py-0.2 rounded text-[10px] bg-amber-100 text-amber-800 font-black border border-amber-300 uppercase badge-print';
+      }
+
+      // Detail tabel nota
+      if (waktuMode === 'range') {
+        document.getElementById('nota-jam-range-val').textContent = `Pukul ${jamMulaiText} s/d ${jamSelesaiText} WIB`;
+      } else {
+        document.getElementById('nota-jam-range-val').textContent = `Durasi Khusus Lep Sawah`;
+      }
+      document.getElementById('nota-durasi-jam-menit').textContent = durasiTeks;
+      document.getElementById('nota-durasi-desimal-val').textContent = durasiDesimal.toFixed(2);
+      document.getElementById('nota-tarif-val').textContent = formatRupiah(tarifPerJam);
+      document.getElementById('nota-subtotal-val').textContent = formatRupiah(subtotalPokok);
+
+      // Biaya Tambahan row
+      const rowTambahan = document.getElementById('nota-row-tambahan');
+      if (biayaTambahan > 0) {
+        rowTambahan.classList.remove('hidden');
+        document.getElementById('nota-tambahan-val').textContent = formatRupiah(biayaTambahan);
+      } else {
+        rowTambahan.classList.add('hidden');
+      }
+
+      // Diskon row
+      const rowDiskon = document.getElementById('nota-row-diskon');
+      if (diskon > 0) {
+        rowDiskon.classList.remove('hidden');
+        document.getElementById('nota-diskon-val').textContent = `- ${formatRupiah(diskon)}`;
+      } else {
+        rowDiskon.classList.add('hidden');
+      }
+
+      // Total row
+      document.getElementById('nota-total-val').textContent = formatRupiah(totalTagihan);
+
+      // DP & Sisa row
+      const rowDP = document.getElementById('nota-row-dp');
+      const rowSisa = document.getElementById('nota-row-sisa');
+      if (statusBayar === 'DP') {
+        rowDP.classList.remove('hidden');
+        rowSisa.classList.remove('hidden');
+        document.getElementById('nota-dp-val').textContent = formatRupiah(nominalDP);
+        document.getElementById('nota-sisa-val').textContent = formatRupiah(sisaTagihan);
+      } else {
+        rowDP.classList.add('hidden');
+        rowSisa.classList.add('hidden');
+      }
+
+      // Terbilang nota
+      document.getElementById('nota-terbilang-val').textContent = `"${kalimatTerbilang}"`;
+
+      // Tanda Tangan
+      document.getElementById('nota-ttd-petani').textContent = `( ${petani} )`;
+      document.getElementById('nota-ttd-pemilik').textContent = `( ${pemilik} )`;
+      document.getElementById('nota-ttd-tanggal').textContent = formatTanggalIndo(tanggal);
+
+      // No Transaksi Dinamis jika belum dibuat
+      if (!currentCalc.noTransaksi) {
+        const dStr = (tanggal || today).replace(/-/g, '');
+        const rnd = Math.floor(100 + Math.random() * 900);
+        document.getElementById('nota-no-transaksi').textContent = `LEP-${dStr}-${rnd}`;
+      }
+
+      // Simpan di currentCalc
+      currentCalc = {
+        noTransaksi: document.getElementById('nota-no-transaksi').textContent,
+        pemilik,
+        petani,
+        tanggal,
+        wa,
+        keterangan,
+        waktuMode,
+        jamMulai: jamMulaiText,
+        jamSelesai: jamSelesaiText,
+        durasiJam,
+        sisaMenit,
+        durasiDesimal,
+        tarifPerJam,
+        biayaTambahan,
+        diskon,
+        subtotalPokok,
+        totalTagihan,
+        statusBayar,
+        nominalDP,
+        sisaTagihan,
+        terbilang: kalimatTerbilang,
+        timestamp: new Date().toISOString()
+      };
+    }
+
+    // Fungsi Cetak Nota
+    function cetakNota() {
+      updateKalkulasi();
+
+      // Update waktu cetak real-time
+      const now = new Date();
+      const printTime = now.toLocaleDateString('id-ID') + ' ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('nota-print-time').textContent = printTime;
+
+      // Otomatis simpan ke riwayat lokal
+      simpanKeRiwayat(false);
+
+      // Trigger window.print
+      window.print();
+    }
+
+    // Fungsi Kirim ke WhatsApp
+    function kirimWhatsApp() {
+      updateKalkulasi();
+
+      const c = currentCalc;
+      let pesan = `*NOTA PEMAKAIAN AIR IRIGASI SAWAH (LEP)*\n`;
+      pesan += `*POKTAN SRI MULYO - DESA KEDIREN*\n`;
+      pesan += `------------------------------------\n`;
+      pesan += `No. Nota    : ${c.noTransaksi}\n`;
+      pesan += `Tanggal     : ${formatTanggalIndo(c.tanggal)}\n`;
+      pesan += `Pemilik     : ${c.pemilik}\n`;
+      pesan += `Petani      : ${c.petani}\n`;
+      pesan += `Lokasi      : ${c.keterangan}\n`;
+      pesan += `------------------------------------\n`;
+      if (c.waktuMode === 'range') {
+        pesan += `Jam Operasional : ${c.jamMulai} - ${c.jamSelesai} WIB\n`;
+      }
+      pesan += `Total Durasi    : ${c.durasiJam} Jam ${c.sisaMenit} Menit (${c.durasiDesimal.toFixed(2)} Jam)\n`;
+      pesan += `Tarif Sewa/Jam  : ${formatRupiah(c.tarifPerJam)}\n`;
+      if (c.biayaTambahan > 0) {
+        pesan += `Biaya Tambahan  : ${formatRupiah(c.biayaTambahan)}\n`;
+      }
+      if (c.diskon > 0) {
+        pesan += `Potongan/Diskon : - ${formatRupiah(c.diskon)}\n`;
+      }
+      pesan += `*TOTAL BIAYA*   : *${formatRupiah(c.totalTagihan)}*\n`;
+      pesan += `_(${c.terbilang})_\n`;
+      pesan += `Status Bayar    : *${c.statusBayar}*\n`;
+      if (c.statusBayar === 'DP') {
+        pesan += `DP Masuk        : ${formatRupiah(c.nominalDP)}\n`;
+        pesan += `Sisa Tagihan    : *${formatRupiah(c.sisaTagihan)}*\n`;
+      }
+      pesan += `------------------------------------\n`;
+      pesan += `Matur nuwun, mugi berkah & panen melimpah! 🌱💧`;
+
+      let targetUrl = '';
+      if (c.wa) {
+        let cleanWA = c.wa.replace(/\D/g, '');
+        if (cleanWA.startsWith('0')) cleanWA = '62' + cleanWA.substring(1);
+        if (!cleanWA.startsWith('62')) cleanWA = '62' + cleanWA;
+        targetUrl = `https://wa.me/${cleanWA}?text=${encodeURIComponent(pesan)}`;
+      } else {
+        targetUrl = `https://wa.me/?text=${encodeURIComponent(pesan)}`;
+      }
+
+      window.open(targetUrl, '_blank');
+    }
+
+    // Simpan ke Riwayat (localStorage)
+    function simpanKeRiwayat(tampilkanAlert = true) {
+      updateKalkulasi();
+      const list = getRiwayatList();
+
+      // Hindari duplikat transaksi dengan noTransaksi yang sama
+      const idx = list.findIndex(item => item.noTransaksi === currentCalc.noTransaksi);
+      if (idx >= 0) {
+        list[idx] = currentCalc;
+      } else {
+        list.unshift(currentCalc);
+      }
+
+      // Simpan maksimal 100 riwayat
+      if (list.length > 100) list.pop();
+
+      localStorage.setItem('riwayat_lep_sawah_srimulyo', JSON.stringify(list));
+      renderRiwayatTable();
+
+      if (tampilkanAlert) {
+        alert('Data transaksi lep sawah berhasil disimpan ke riwayat!');
+      }
+    }
+
+    // Ambil Riwayat dari LocalStorage
+    function getRiwayatList() {
+      try {
+        const raw = localStorage.getItem('riwayat_lep_sawah_srimulyo');
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    // Render Tabel Riwayat & Statistik
+    function renderRiwayatTable() {
+      const list = getRiwayatList();
+      const tbody = document.getElementById('tabel-riwayat-body');
+      
+      let totalJam = 0;
+      let totalRupiah = 0;
+      let belumLunas = 0;
+
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="9" class="p-6 text-center text-slate-400 italic">
+              Belum ada riwayat transaksi tersimpan. Isi form di atas dan klik "Simpan Catatan" atau "Cetak Nota".
+            </td>
+          </tr>
+        `;
+        document.getElementById('stat-total-transaksi').textContent = '0';
+        document.getElementById('stat-total-jam').textContent = '0 Jam';
+        document.getElementById('stat-total-rupiah').textContent = 'Rp 0';
+        document.getElementById('stat-belum-lunas').textContent = '0 Transaksi';
+        return;
+      }
+
+      let html = '';
+      list.forEach((item, index) => {
+        totalJam += Number(item.durasiDesimal) || 0;
+        totalRupiah += Number(item.totalTagihan) || 0;
+        if (item.statusBayar !== 'LUNAS') belumLunas++;
+
+        const badgeClass = item.statusBayar === 'LUNAS' 
+          ? 'bg-emerald-100 text-emerald-800' 
+          : (item.statusBayar === 'BELUM LUNAS' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800');
+
+        html += `
+          <tr class="hover:bg-slate-50 transition">
+            <td class="p-3 text-center font-mono font-bold text-slate-500">${index + 1}</td>
+            <td class="p-3 font-medium text-slate-800 whitespace-nowrap">${item.tanggal || '-'}</td>
+            <td class="p-3 font-bold text-slate-900">${escapeHtml(item.pemilik || '-')}</td>
+            <td class="p-3 font-semibold text-slate-800">${escapeHtml(item.petani || '-')}</td>
+            <td class="p-3 text-center font-mono font-bold text-emerald-800 whitespace-nowrap">${item.durasiJam}j ${item.sisaMenit}m</td>
+            <td class="p-3 text-right font-mono">${formatRupiah(item.tarifPerJam)}</td>
+            <td class="p-3 text-right font-mono font-black text-slate-900">${formatRupiah(item.totalTagihan)}</td>
+            <td class="p-3 text-center">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase ${badgeClass}">
+                ${item.statusBayar}
+              </span>
+            </td>
+            <td class="p-3 text-center whitespace-nowrap">
+              <button type="button" onclick="muatTransaksi('${item.noTransaksi}')" class="p-1.5 text-emerald-700 hover:bg-emerald-50 rounded-lg transition" title="Muat ke form">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+              <button type="button" onclick="hapusSatuRiwayat('${item.noTransaksi}')" class="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg transition" title="Hapus catatan ini">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+
+      // Update Statistik
+      document.getElementById('stat-total-transaksi').textContent = list.length;
+      document.getElementById('stat-total-jam').textContent = `${totalJam.toFixed(1)} Jam`;
+      document.getElementById('stat-total-rupiah').textContent = formatRupiah(totalRupiah);
+      document.getElementById('stat-belum-lunas').textContent = `${belumLunas} Transaksi`;
+    }
+
+    // Muat data dari riwayat ke form
+    function muatTransaksi(noTrans) {
+      const list = getRiwayatList();
+      const item = list.find(t => t.noTransaksi === noTrans);
+      if (!item) return;
+
+      document.getElementById('input-pemilik').value = item.pemilik;
+      document.getElementById('input-petani').value = item.petani;
+      document.getElementById('input-tanggal').value = item.tanggal;
+      document.getElementById('input-wa').value = item.wa || '';
+      document.getElementById('input-keterangan').value = item.keterangan || '';
+      document.getElementById('input-tarif').value = formatRibuan(item.tarifPerJam);
+      document.getElementById('input-tambahan').value = formatRibuan(item.biayaTambahan || 0);
+      document.getElementById('input-diskon').value = formatRibuan(item.diskon || 0);
+
+      // Status radio
+      const radio = document.querySelector(`input[name="status_bayar"][value="${item.statusBayar}"]`);
+      if (radio) radio.checked = true;
+
+      if (item.statusBayar === 'DP') {
+        document.getElementById('input-nominal-dp').value = formatRibuan(item.nominalDP || 0);
+      }
+
+      if (item.waktuMode === 'range') {
+        setWaktuMode('range');
+        document.getElementById('input-jam-mulai').value = item.jamMulai || '07:00';
+        document.getElementById('input-jam-selesai').value = item.jamSelesai || '11:30';
+      } else {
+        setWaktuMode('manual');
+        document.getElementById('input-manual-jam').value = item.durasiJam || 0;
+        document.getElementById('input-manual-menit').value = item.sisaMenit || 0;
+      }
+
+      document.getElementById('nota-no-transaksi').textContent = item.noTransaksi;
+      updateKalkulasi();
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Hapus satu riwayat
+    function hapusSatuRiwayat(noTrans) {
+      if (!confirm('Yakin ingin menghapus catatan transaksi ini?')) return;
+      let list = getRiwayatList();
+      list = list.filter(item => item.noTransaksi !== noTrans);
+      localStorage.setItem('riwayat_lep_sawah_srimulyo', JSON.stringify(list));
+      renderRiwayatTable();
+    }
+
+    // Hapus semua riwayat
+    function hapusSemuaRiwayat() {
+      const list = getRiwayatList();
+      if (!list || list.length === 0) return alert('Riwayat transaksi masih kosong.');
+      if (!confirm('Apakah Anda yakin ingin menghapus SEMUA catatan riwayat transaksi lep sawah?')) return;
+      localStorage.removeItem('riwayat_lep_sawah_srimulyo');
+      renderRiwayatTable();
+    }
+
+    // Ekspor Riwayat ke format CSV
+    function eksporRiwayatCSV() {
+      const list = getRiwayatList();
+      if (!list || list.length === 0) return alert('Tidak ada data riwayat untuk diekspor.');
+
+      let csv = "No,No Transaksi,Tanggal,Pemilik Sumur,Petani,WA,Lokasi,Durasi Jam,Tarif Per Jam,Total Biaya,Status Bayar\n";
+      list.forEach((item, idx) => {
+        const row = [
+          idx + 1,
+          `"${item.noTransaksi}"`,
+          `"${item.tanggal}"`,
+          `"${item.pemilik}"`,
+          `"${item.petani}"`,
+          `"${item.wa || ''}"`,
+          `"${(item.keterangan || '').replace(/"/g, '""')}"`,
+          item.durasiDesimal,
+          item.tarifPerJam,
+          item.totalTagihan,
+          `"${item.statusBayar}"`
+        ];
+        csv += row.join(",") + "\n";
+      });
+
+      const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `Riwayat_Lep_Sawah_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Muat contoh data untuk pengujian cepat
+    function muatContohData() {
+      document.getElementById('input-pemilik').value = 'Bpk. Supriyanto (Sibel Lor)';
+      document.getElementById('input-petani').value = 'Bpk. Sukadi (Blok Kidul)';
+      document.getElementById('input-wa').value = '81234567890';
+      document.getElementById('input-keterangan').value = 'Sawah Kidul Deso No. 08 - Irigasi Padi Ciherang';
+      document.getElementById('input-jam-mulai').value = '06:30';
+      document.getElementById('input-jam-selesai').value = '11:45';
+      document.getElementById('input-tarif').value = '25.000';
+      document.getElementById('input-tambahan').value = '10.000';
+      document.getElementById('input-diskon').value = '0';
+      
+      const radLunas = document.querySelector('input[name="status_bayar"][value="LUNAS"]');
+      if (radLunas) radLunas.checked = true;
+
+      setWaktuMode('range');
+      currentCalc.noTransaksi = null;
+      updateKalkulasi();
+    }
+
+    // Reset Form
+    function resetForm() {
+      document.getElementById('input-pemilik').value = '';
+      document.getElementById('input-petani').value = '';
+      document.getElementById('input-wa').value = '';
+      document.getElementById('input-keterangan').value = '';
+      document.getElementById('input-jam-mulai').value = '07:00';
+      document.getElementById('input-jam-selesai').value = '11:00';
+      document.getElementById('input-tarif').value = '25.000';
+      document.getElementById('input-tambahan').value = '0';
+      document.getElementById('input-diskon').value = '0';
+      document.getElementById('input-nominal-dp').value = '0';
+      
+      const radLunas = document.querySelector('input[name="status_bayar"][value="LUNAS"]');
+      if (radLunas) radLunas.checked = true;
+
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('input-tanggal').value = today;
+
+      setWaktuMode('range');
+      currentCalc.noTransaksi = null;
+      updateKalkulasi();
+    }
+
+    // Scroll ke riwayat
+    function scrollToRiwayat() {
+      document.getElementById('riwayat-container').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Helper Formatter
+    function formatRibuan(val) {
+      if (!val && val !== 0) return '0';
+      return new Intl.NumberFormat('id-ID').format(val);
+    }
+
+    function formatRupiah(val) {
+      if (!val && val !== 0) return 'Rp 0';
+      return 'Rp ' + new Intl.NumberFormat('id-ID').format(val);
+    }
+
+    function parseAngka(str) {
+      if (!str) return 0;
+      const clean = String(str).replace(/[^\d]/g, '');
+      return Number(clean) || 0;
+    }
+
+    function formatInputRupiah(elem) {
+      const val = parseAngka(elem.value);
+      elem.value = formatRibuan(val);
+    }
+
+    function formatTanggalIndo(dateStr) {
+      if (!dateStr) return '-';
+      try {
+        const parts = dateStr.split('-');
+        if (parts.length !== 3) return dateStr;
+        const d = new Date(parts[0], parts[1] - 1, parts[2]);
+        const bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        return `${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()}`;
+      } catch (e) {
+        return dateStr;
+      }
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Fungsi Terbilang Rupiah Bahasa Indonesia
+    function terbilang(angka) {
+      angka = Math.floor(Math.abs(Number(angka) || 0));
+      if (angka === 0) return "Nol Rupiah";
+
+      const satuan = ["", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"];
+
+      function konversi(n) {
+        if (n < 12) return satuan[n];
+        if (n < 20) return konversi(n - 10) + " Belas";
+        if (n < 100) return konversi(Math.floor(n / 10)) + " Puluh" + (n % 10 ? " " + konversi(n % 10) : "");
+        if (n < 200) return "Seratus" + (n - 100 ? " " + konversi(n - 100) : "");
+        if (n < 1000) return konversi(Math.floor(n / 100)) + " Ratus" + (n % 100 ? " " + konversi(n % 100) : "");
+        if (n < 2000) return "Seribu" + (n - 1000 ? " " + konversi(n - 1000) : "");
+        if (n < 1000000) return konversi(Math.floor(n / 1000)) + " Ribu" + (n % 1000 ? " " + konversi(n % 1000) : "");
+        if (n < 1000000000) return konversi(Math.floor(n / 1000000)) + " Juta" + (n % 1000000 ? " " + konversi(n % 1000000) : "");
+        if (n < 1000000000000) return konversi(Math.floor(n / 1000000000)) + " Miliar" + (n % 1000000000 ? " " + konversi(n % 1000000000) : "");
+        return konversi(Math.floor(n / 1000000000000)) + " Triliun" + (n % 1000000000000 ? " " + konversi(n % 1000000000000) : "");
+      }
+
+      return konversi(angka).trim() + " Rupiah";
+    }
+  </script>
+</body>
+</html>
