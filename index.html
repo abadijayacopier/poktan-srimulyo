@@ -3122,6 +3122,9 @@
 
     function renderDashboard(data) {
       globalData = data;
+      try {
+        localStorage.setItem('poktan_dashboard_cache', JSON.stringify({ ts: Date.now(), data: data }));
+      } catch (e) {}
       document.getElementById('loading').classList.add('hidden');
       document.getElementById('content').classList.remove('hidden');
 

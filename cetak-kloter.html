@@ -321,6 +321,43 @@
         }
       }
 
+      // Sinkronisasi instan dengan data terbaru dari Dashboard (bypass jeda cache 2-5 menit Google GViz)
+      try {
+        const rawCache = localStorage.getItem('poktan_dashboard_cache');
+        if (rawCache) {
+          const parsed = JSON.parse(rawCache);
+          if (parsed && parsed.data && Array.isArray(parsed.data.petani) && (Date.now() - (parsed.ts || 0) < 15 * 60 * 1000)) {
+            const targetKloterName = ('KLOTER ' + kloterNum).toUpperCase();
+            const existingNiks = new Set(petani.map(p => String(p.nik || '').replace(/^'/, '').trim()));
+            let addedFromLive = false;
+            parsed.data.petani.forEach(p => {
+              const pStatus = String(p.status || '').replace(/\s+/g, ' ').trim().toUpperCase();
+              const pNik = String(p.nik || '').replace(/^'/, '').trim();
+              if (pStatus === targetKloterName && pNik && !existingNiks.has(pNik) && petani.length < 20) {
+                existingNiks.add(pNik);
+                petani.push({
+                  no: String(petani.length + 1),
+                  nama: String(p.nama || '').trim(),
+                  nik: pNik,
+                  komoditas: 'PADI',
+                  urea: String(p.urea || 0),
+                  npk: String(p.npk || 0),
+                  organik: String(p.organik || 0),
+                  ttd1: '',
+                  ttd2: ''
+                });
+                addedFromLive = true;
+              }
+            });
+            if (addedFromLive && petani.length) {
+              total.urea = petani.reduce((a, b) => a + (parseFloat(String(b.urea).replace(/\./g, '').replace(/[^\d-]/g, '')) || 0), 0).toLocaleString('id-ID');
+              total.npk = petani.reduce((a, b) => a + (parseFloat(String(b.npk).replace(/\./g, '').replace(/[^\d-]/g, '')) || 0), 0).toLocaleString('id-ID');
+              total.organik = petani.reduce((a, b) => a + (parseFloat(String(b.organik).replace(/\./g, '').replace(/[^\d-]/g, '')) || 0), 0).toLocaleString('id-ID');
+            }
+          }
+        }
+      } catch (e) {}
+
       // Jika baris total kosong di sheet, hitung akumulasi
       if (!total.urea && petani.length) {
         total.urea = petani.reduce((a, b) => a + (parseFloat(b.urea.replace(/[^\d.-]/g, '')) || 0), 0).toLocaleString('id-ID');

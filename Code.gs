@@ -435,7 +435,7 @@ function getDashboardData() {
   };
 }
 
-const KLOTER_API_VERSION = 2;
+const KLOTER_API_VERSION = 3;
 
 /**
  * Mencari tab sheet kloter dengan normalisasi nama ("Kloter 8", "KLOTER  8 " -> "KLOTER 8")
@@ -457,10 +457,11 @@ function cariSheetKloter_(ss, namaKloter) {
 }
 
 /**
- * Mendeteksi letak tabel anggota di sheet kloter:
- * header = baris dengan kolom A "No" dan kolom C "NIK";
- * lewati sub-header pupuk (baris berikutnya jika kolom E berisi "Urea");
- * data dimulai dari baris pertama setelah header s/d sebelum baris "Total" (maks 20).
+ * Mendeteksi letak tabel anggota di sheet kloter (standar KLOTER 1-10: baris 23-42 / C23:C42).
+ * Di sheet KLOTER 1-10, header tabel menggunakan 2 baris yang di-merge vertikal:
+ * - Baris 21: No | Nama Petani | NIK | Komoditas | Jumlah Penebusan (Kg) | ... | Tanda Tangan
+ * - Baris 22: (merged) | (merged) | (merged) | (merged) | Urea | NPK | NPK Formula Khusus | ZA | Organik
+ * Sehingga baris data anggota dimulai di Baris 23 (bukan 22) sampai sebelum baris "Total" (Baris 42).
  */
 function deteksiTabelKloter_(sheet) {
   const maxScan = Math.min(Math.max(sheet.getLastRow(), 60), 120);
@@ -468,23 +469,39 @@ function deteksiTabelKloter_(sheet) {
   let headerRow = -1;
   for (let r = 0; r < vals.length; r++) {
     const a = String(vals[r][0] || '').trim().toLowerCase();
+    const b = String(vals[r][1] || '').trim().toLowerCase();
     const c = String(vals[r][2] || '').trim().toLowerCase();
-    if (a === 'no' && c.indexOf('nik') !== -1) { headerRow = r + 1; break; }
-  }
-  if (headerRow === -1) {
-    throw new Error("Header tabel (No | Nama Petani | NIK) tidak ditemukan di sheet " + sheet.getName() + ".");
-  }
-  let startRow = headerRow + 1;
-  // Jika baris tepat di bawah header adalah sub-header jenis pupuk (Urea / NPK) dan kolom D belum berisi komoditas
-  if (startRow - 1 < vals.length) {
-    const subA = String(vals[startRow - 1][0] || '').trim();
-    const subC = String(vals[startRow - 1][2] || '').trim();
-    const subD = String(vals[startRow - 1][3] || '').trim();
-    const subE = String(vals[startRow - 1][4] || '').trim().toLowerCase();
-    if ((!subA && !subC && !subD) || subE === 'urea') {
-      startRow++;
+    if ((a === 'no' || b.indexOf('nama') !== -1) && c.indexOf('nik') !== -1) {
+      headerRow = r + 1;
+      break;
     }
   }
+  if (headerRow === -1) {
+    return { startRow: 23, jumlahSlot: 20 };
+  }
+
+  let startRow = headerRow + 1;
+  // Lewati baris sub-header (baris ke-2 header yang berisi "Urea"/"NPK" atau sel C yang masih ter-merge dengan header)
+  while (startRow <= vals.length) {
+    const row = vals[startRow - 1] || [];
+    const c = String(row[2] || '').trim().toLowerCase();
+    const d = String(row[3] || '').trim().toLowerCase();
+    const e = String(row[4] || '').trim().toLowerCase();
+    const f = String(row[5] || '').trim().toLowerCase();
+
+    const isSubHeader = (e.indexOf('urea') !== -1 || f.indexOf('npk') !== -1 || c.indexOf('nik') !== -1 || d.indexOf('komoditas') !== -1);
+    let isMergedHeader = false;
+    try {
+      isMergedHeader = sheet.getRange(startRow, 3).isPartOfMerge();
+    } catch (err) {}
+
+    if (isSubHeader || isMergedHeader) {
+      startRow++;
+    } else {
+      break;
+    }
+  }
+
   let jumlahSlot = 0;
   for (let r = startRow - 1; r < vals.length && jumlahSlot < 20; r++) {
     const a = String(vals[r][0] || '').trim().toLowerCase();
@@ -492,7 +509,7 @@ function deteksiTabelKloter_(sheet) {
     if (a === 'total' || b === 'total') break;
     jumlahSlot++;
   }
-  if (jumlahSlot === 0) throw new Error("Tidak ada slot anggota di sheet " + sheet.getName() + ".");
+  if (jumlahSlot === 0) return { startRow: 23, jumlahSlot: 20 };
   return { startRow: startRow, jumlahSlot: jumlahSlot };
 }
 
@@ -537,7 +554,7 @@ function tambahPetaniKeKloter(nik, kloterTujuan) {
     let foundPetani = null;
 
     petaniRange.forEach((row, idx) => {
-      const rowNik = String(row[1] || '').trim();
+      const rowNik = String(row[1] || '').replace(/^'/, '').trim();
       const rowNama = String(row[2] || '').trim();
       const rowStatus = String(row[3] || '').trim();
 
@@ -553,12 +570,9 @@ function tambahPetaniKeKloter(nik, kloterTujuan) {
       throw new Error("DITOLAK! Petani " + foundPetani.nama + " sudah terdaftar di " + foundPetani.status);
     }
 
-    // Deteksi otomatis letak tabel anggota di sheet Kloter
-    // (baris header "No | Nama Petani | NIK" s/d sebelum baris "Total", maksimal 20 slot).
-    // BUG LAMA: rentang di-hardcode C23:C42, padahal tabel di sheet berada di baris 18-37
-    // sehingga slot 1-5 tidak terbaca dan baris Total/teks penutup ikut dianggap slot.
+    // Deteksi letak tabel anggota di sheet Kloter (C23:C42) setelah melewati 2 baris header (baris 21-22)
     const tabel = deteksiTabelKloter_(sheetKloter);
-    const slotValues = sheetKloter.getRange(tabel.startRow, 3, tabel.jumlahSlot, 1).getValues();
+    const slotValues = sheetKloter.getRange(tabel.startRow, 3, tabel.jumlahSlot, 1).getDisplayValues();
     let slotKosongIndex = -1;
     let jumlahTerisi = 0;
 
@@ -578,11 +592,17 @@ function tambahPetaniKeKloter(nik, kloterTujuan) {
       throw new Error("DITOLAK! " + targetKloter + " sudah penuh (maksimal 20 petani).");
     }
 
-    // Tulis NIK (sebagai teks agar 16 digit tidak berubah) ke baris kosong pertama
+    // Tulis NIK dengan awalan apostrophe (') agar tersimpan sebagai teks 16 digit & cocok dengan rumus VLOOKUP
     const targetRowKloter = tabel.startRow + slotKosongIndex;
     const cellNik = sheetKloter.getRange(targetRowKloter, 3);
-    cellNik.setNumberFormat('@');
-    cellNik.setValue(targetNik);
+    cellNik.setValue("'" + targetNik);
+    SpreadsheetApp.flush();
+
+    // VERIFIKASI: pastikan NIK benar-benar tersimpan di sheet sebelum mengubah status rekap
+    const nikTersimpan = String(cellNik.getDisplayValue() || cellNik.getValue() || '').replace(/^'/, '').trim();
+    if (nikTersimpan !== targetNik) {
+      throw new Error("GAGAL VERIFIKASI: NIK tidak tersimpan di " + sheetKloter.getName() + " baris " + targetRowKloter + ". Periksa proteksi sheet.");
+    }
 
     // Jika di REKAP_KLOTER_CETAK kolom status bukan formula (misal data statis), perbarui juga nilainya
     if (foundRowIndex > 0) {
@@ -590,15 +610,9 @@ function tambahPetaniKeKloter(nik, kloterTujuan) {
       const cellPenerima = sheetRekap.getRange(foundRowIndex, 6);
       if (!cellStatus.getFormula()) cellStatus.setValue(targetKloter);
       if (!cellPenerima.getFormula()) cellPenerima.setValue(penerimaKuasaDefault);
+      SpreadsheetApp.flush();
     }
 
-    SpreadsheetApp.flush();
-
-    // VERIFIKASI: pastikan NIK benar-benar tersimpan di sheet sebelum melaporkan "berhasil"
-    const nikTersimpan = String(sheetKloter.getRange(targetRowKloter, 3).getDisplayValue() || '').replace(/^'/, '').trim();
-    if (nikTersimpan !== targetNik) {
-      throw new Error("GAGAL VERIFIKASI: NIK tidak tersimpan di " + sheetKloter.getName() + " baris " + targetRowKloter + ". Periksa proteksi sheet.");
-    }
     const statusRekap = foundRowIndex > 0 ? String(sheetRekap.getRange(foundRowIndex, 5).getDisplayValue() || '').trim() : '';
 
     logToSheet_('Tambah Kloter', 'Menambahkan ' + foundPetani.nama + ' ke ' + targetKloter + ' (Urutan ke-' + (slotKosongIndex + 1) + ', ' + sheetKloter.getName() + '!C' + targetRowKloter + ')', '-', 'Sistem', 'Dashboard', 'Sukses', 'admin', 'admin');
@@ -608,6 +622,7 @@ function tambahPetaniKeKloter(nik, kloterTujuan) {
       versi: KLOTER_API_VERSION,
       sheet: sheetKloter.getName(),
       baris: targetRowKloter,
+      urutan: slotKosongIndex + 1,
       statusRekap: statusRekap,
       pesan: "Berhasil menambahkan " + foundPetani.nama + " ke " + targetKloter + " (Urutan ke-" + (slotKosongIndex + 1) + ", baris " + targetRowKloter + ")!",
       dataTerbaru: getDashboardData()
