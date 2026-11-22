@@ -458,11 +458,13 @@ function cariSheetKloter_(ss, namaKloter) {
 
 /**
  * Mendeteksi letak tabel anggota di sheet kloter:
- * header = baris dengan kolom A "No" dan kolom C "NIK"; data sampai sebelum baris "Total" (maks 20).
+ * header = baris dengan kolom A "No" dan kolom C "NIK";
+ * lewati sub-header pupuk (baris berikutnya jika kolom E berisi "Urea");
+ * data dimulai dari baris pertama setelah header s/d sebelum baris "Total" (maks 20).
  */
 function deteksiTabelKloter_(sheet) {
   const maxScan = Math.min(Math.max(sheet.getLastRow(), 60), 120);
-  const vals = sheet.getRange(1, 1, maxScan, 3).getDisplayValues();
+  const vals = sheet.getRange(1, 1, maxScan, 6).getDisplayValues();
   let headerRow = -1;
   for (let r = 0; r < vals.length; r++) {
     const a = String(vals[r][0] || '').trim().toLowerCase();
@@ -472,7 +474,17 @@ function deteksiTabelKloter_(sheet) {
   if (headerRow === -1) {
     throw new Error("Header tabel (No | Nama Petani | NIK) tidak ditemukan di sheet " + sheet.getName() + ".");
   }
-  const startRow = headerRow + 1;
+  let startRow = headerRow + 1;
+  // Jika baris tepat di bawah header adalah sub-header jenis pupuk (Urea / NPK) dan kolom D belum berisi komoditas
+  if (startRow - 1 < vals.length) {
+    const subA = String(vals[startRow - 1][0] || '').trim();
+    const subC = String(vals[startRow - 1][2] || '').trim();
+    const subD = String(vals[startRow - 1][3] || '').trim();
+    const subE = String(vals[startRow - 1][4] || '').trim().toLowerCase();
+    if ((!subA && !subC && !subD) || subE === 'urea') {
+      startRow++;
+    }
+  }
   let jumlahSlot = 0;
   for (let r = startRow - 1; r < vals.length && jumlahSlot < 20; r++) {
     const a = String(vals[r][0] || '').trim().toLowerCase();
