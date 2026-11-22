@@ -435,6 +435,55 @@ function getDashboardData() {
   };
 }
 
+const KLOTER_API_VERSION = 2;
+
+/**
+ * Mencari tab sheet kloter dengan normalisasi nama ("Kloter 8", "KLOTER  8 " -> "KLOTER 8")
+ */
+function cariSheetKloter_(ss, namaKloter) {
+  const norm = s => String(s || '').replace(/\s+/g, ' ').trim().toUpperCase();
+  const target = norm(namaKloter);
+  const sheets = ss.getSheets();
+  for (let i = 0; i < sheets.length; i++) {
+    if (norm(sheets[i].getName()) === target) return sheets[i];
+  }
+  const angka = (target.match(/\d+/) || [''])[0];
+  if (angka) {
+    for (let i = 0; i < sheets.length; i++) {
+      if (norm(sheets[i].getName()) === 'KLOTER ' + angka) return sheets[i];
+    }
+  }
+  return null;
+}
+
+/**
+ * Mendeteksi letak tabel anggota di sheet kloter:
+ * header = baris dengan kolom A "No" dan kolom C "NIK"; data sampai sebelum baris "Total" (maks 20).
+ */
+function deteksiTabelKloter_(sheet) {
+  const maxScan = Math.min(Math.max(sheet.getLastRow(), 60), 120);
+  const vals = sheet.getRange(1, 1, maxScan, 3).getDisplayValues();
+  let headerRow = -1;
+  for (let r = 0; r < vals.length; r++) {
+    const a = String(vals[r][0] || '').trim().toLowerCase();
+    const c = String(vals[r][2] || '').trim().toLowerCase();
+    if (a === 'no' && c.indexOf('nik') !== -1) { headerRow = r + 1; break; }
+  }
+  if (headerRow === -1) {
+    throw new Error("Header tabel (No | Nama Petani | NIK) tidak ditemukan di sheet " + sheet.getName() + ".");
+  }
+  const startRow = headerRow + 1;
+  let jumlahSlot = 0;
+  for (let r = startRow - 1; r < vals.length && jumlahSlot < 20; r++) {
+    const a = String(vals[r][0] || '').trim().toLowerCase();
+    const b = String(vals[r][1] || '').trim().toLowerCase();
+    if (a === 'total' || b === 'total') break;
+    jumlahSlot++;
+  }
+  if (jumlahSlot === 0) throw new Error("Tidak ada slot anggota di sheet " + sheet.getName() + ".");
+  return { startRow: startRow, jumlahSlot: jumlahSlot };
+}
+
 /**
  * Menambahkan petani ke Kloter tertentu
  */
@@ -452,9 +501,8 @@ function tambahPetaniKeKloter(nik, kloterTujuan) {
 
     if (!targetNik || !targetKloter) throw new Error("NIK dan Kloter tujuan wajib diisi.");
 
-    // Format target kloter, misal "Kloter 8" -> nama sheet "KLOTER 8"
-    const namaSheetKloter = targetKloter.toUpperCase();
-    const sheetKloter = ss.getSheetByName(namaSheetKloter) || ss.getSheetByName(targetKloter);
+    // Cari tab sheet Kloter secara presisi (normalisasi spasi & huruf besar), misal "Kloter 8" -> "KLOTER 8"
+    const sheetKloter = cariSheetKloter_(ss, targetKloter);
     if (!sheetKloter) {
       throw new Error("Sheet tab untuk '" + targetKloter + "' tidak ditemukan di spreadsheet.");
     }
@@ -493,20 +541,24 @@ function tambahPetaniKeKloter(nik, kloterTujuan) {
       throw new Error("DITOLAK! Petani " + foundPetani.nama + " sudah terdaftar di " + foundPetani.status);
     }
 
-    // Periksa slot anggota di sheet Kloter tujuan (C23:C42, maksimal 20 orang)
-    const slotValues = sheetKloter.getRange("C23:C42").getValues();
+    // Deteksi otomatis letak tabel anggota di sheet Kloter
+    // (baris header "No | Nama Petani | NIK" s/d sebelum baris "Total", maksimal 20 slot).
+    // BUG LAMA: rentang di-hardcode C23:C42, padahal tabel di sheet berada di baris 18-37
+    // sehingga slot 1-5 tidak terbaca dan baris Total/teks penutup ikut dianggap slot.
+    const tabel = deteksiTabelKloter_(sheetKloter);
+    const slotValues = sheetKloter.getRange(tabel.startRow, 3, tabel.jumlahSlot, 1).getValues();
     let slotKosongIndex = -1;
     let jumlahTerisi = 0;
 
     for (let i = 0; i < slotValues.length; i++) {
-      const val = String(slotValues[i][0] || '').trim();
+      const val = String(slotValues[i][0] || '').replace(/^'/, '').trim();
       if (val === targetNik) {
         throw new Error("Petani " + foundPetani.nama + " sudah terdaftar di " + targetKloter + ".");
       }
       if (val !== '') {
         jumlahTerisi++;
       } else if (slotKosongIndex === -1) {
-        slotKosongIndex = i; // indeks 0-19 relatif terhadap C23
+        slotKosongIndex = i;
       }
     }
 
@@ -514,9 +566,11 @@ function tambahPetaniKeKloter(nik, kloterTujuan) {
       throw new Error("DITOLAK! " + targetKloter + " sudah penuh (maksimal 20 petani).");
     }
 
-    // Tulis NIK ke baris kosong yang ditemukan di sheet Kloter tujuan
-    const targetRowKloter = 23 + slotKosongIndex;
-    sheetKloter.getRange(targetRowKloter, 3).setValue("'" + targetNik);
+    // Tulis NIK (sebagai teks agar 16 digit tidak berubah) ke baris kosong pertama
+    const targetRowKloter = tabel.startRow + slotKosongIndex;
+    const cellNik = sheetKloter.getRange(targetRowKloter, 3);
+    cellNik.setNumberFormat('@');
+    cellNik.setValue(targetNik);
 
     // Jika di REKAP_KLOTER_CETAK kolom status bukan formula (misal data statis), perbarui juga nilainya
     if (foundRowIndex > 0) {
@@ -527,11 +581,23 @@ function tambahPetaniKeKloter(nik, kloterTujuan) {
     }
 
     SpreadsheetApp.flush();
-    logToSheet_('Tambah Kloter', 'Menambahkan ' + foundPetani.nama + ' ke ' + targetKloter + ' (Urutan ke-' + (slotKosongIndex + 1) + ')', '-', 'Sistem', 'Dashboard', 'Sukses', 'admin', 'admin');
+
+    // VERIFIKASI: pastikan NIK benar-benar tersimpan di sheet sebelum melaporkan "berhasil"
+    const nikTersimpan = String(sheetKloter.getRange(targetRowKloter, 3).getDisplayValue() || '').replace(/^'/, '').trim();
+    if (nikTersimpan !== targetNik) {
+      throw new Error("GAGAL VERIFIKASI: NIK tidak tersimpan di " + sheetKloter.getName() + " baris " + targetRowKloter + ". Periksa proteksi sheet.");
+    }
+    const statusRekap = foundRowIndex > 0 ? String(sheetRekap.getRange(foundRowIndex, 5).getDisplayValue() || '').trim() : '';
+
+    logToSheet_('Tambah Kloter', 'Menambahkan ' + foundPetani.nama + ' ke ' + targetKloter + ' (Urutan ke-' + (slotKosongIndex + 1) + ', ' + sheetKloter.getName() + '!C' + targetRowKloter + ')', '-', 'Sistem', 'Dashboard', 'Sukses', 'admin', 'admin');
 
     return {
       sukses: true,
-      pesan: "Berhasil menambahkan " + foundPetani.nama + " ke " + targetKloter + " (Urutan ke-" + (slotKosongIndex + 1) + ")!",
+      versi: KLOTER_API_VERSION,
+      sheet: sheetKloter.getName(),
+      baris: targetRowKloter,
+      statusRekap: statusRekap,
+      pesan: "Berhasil menambahkan " + foundPetani.nama + " ke " + targetKloter + " (Urutan ke-" + (slotKosongIndex + 1) + ", baris " + targetRowKloter + ")!",
       dataTerbaru: getDashboardData()
     };
   } finally {

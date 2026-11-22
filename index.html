@@ -3835,13 +3835,27 @@
           throw new Error(res.pesan || 'Gagal menyimpan ke Google Sheets.');
         }
 
+        // Verifikasi: pastikan petani benar-benar tercatat di kloter pada data terbaru
+        const nikDitambah = petaniTerpilih.nik;
+        const cekMasuk = (data) => {
+          const p = data && data.petani ? data.petani.find(x => String(x.nik) === String(nikDitambah)) : null;
+          return p && String(p.status || '').toLowerCase().includes('kloter');
+        };
+
         if (res.dataTerbaru) {
           renderDashboard(res.dataTerbaru);
         } else {
           loadData(true);
         }
         tutupModalKloter();
-        alert(res.pesan || 'Berhasil disimpan ke Google Sheets!');
+
+        if (!res.versi) {
+          alert('⚠️ PERINGATAN: Server Google Apps Script masih versi LAMA.\n\nRespon "berhasil" tidak terverifikasi dan data mungkin TIDAK masuk ke sheet Kloter.\nSilakan salin ulang Code.gs ke Apps Script lalu Deploy > Kelola deployment > Edit > Versi baru.');
+        } else if (res.dataTerbaru && !cekMasuk(res.dataTerbaru)) {
+          alert((res.pesan || 'NIK tersimpan.') + '\n\nCatatan: NIK sudah tertulis di ' + res.sheet + ' baris ' + res.baris + ', namun status di REKAP_KLOTER_CETAK belum berubah. Periksa rumus kolom Status di sheet rekap.');
+        } else {
+          alert(res.pesan || 'Berhasil disimpan ke Google Sheets!');
+        }
       } catch (err) {
         // Fallback simulasi jika di lingkungan pratinjau lokal
         btnSimpan.disabled = false;
