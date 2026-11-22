@@ -22,6 +22,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
     :root {
@@ -3073,7 +3074,7 @@
             isFetching = false;
             if (refreshIcon) refreshIcon.classList.remove('fa-spin');
             if (!isSilent) {
-              alert('Gagal mengambil data: ' + err.message);
+              showSwalAlert({ icon: 'error', title: 'Gagal Mengambil Data', text: err.message || 'Terjadi kesalahan jaringan.' });
             }
           })
           .getDashboardData();
@@ -3115,7 +3116,7 @@
         if (String(err.message || '').toLowerCase().includes('sesi') || String(err.message || '').toLowerCase().includes('login')) {
           forceLogout('Sesi berakhir. Silakan masuk kembali.');
         } else if (!isSilent) {
-          alert('Gagal mengambil data. Periksa koneksi dan deployment backend Apps Script.');
+          showSwalAlert({ icon: 'error', title: 'Gagal Memuat Data', text: 'Periksa koneksi internet dan deployment backend Apps Script.' });
         }
       }
     }
@@ -3684,10 +3685,99 @@
     }
 
     // =====================================================
+    // HELPER SWEETALERT2 MODERN MODAL
+    // =====================================================
+    function showSwalAlert(opts) {
+      const icon = opts.icon || 'info';
+      const title = opts.title || 'Informasi';
+      const text = opts.text || '';
+      const html = opts.html || '';
+      const confirmText = opts.confirmButtonText || 'OK, Mengerti';
+      if (typeof Swal !== 'undefined' && Swal.fire) {
+        return Swal.fire({
+          icon: icon,
+          title: title,
+          text: html ? undefined : text,
+          html: html || undefined,
+          confirmButtonText: confirmText,
+          confirmButtonColor: icon === 'error' ? '#e11d48' : (icon === 'warning' ? '#d97706' : '#047857'),
+          customClass: {
+            popup: 'rounded-2xl shadow-2xl border border-slate-100',
+            title: 'text-lg font-extrabold text-slate-900',
+            confirmButton: 'rounded-xl px-5 py-2.5 text-xs font-bold shadow-sm'
+          }
+        });
+      } else {
+        alert((title ? title + '\n\n' : '') + (text || html.replace(/<[^>]+>/g, ' ')));
+      }
+    }
+
+    function showKloterSuccessAlert(petani, kloterTujuan, res) {
+      const nama = petani && petani.nama ? petani.nama : 'Petani';
+      const nik = petani && petani.nik ? petani.nik : '-';
+      const urea = petani && petani.urea !== undefined ? petani.urea : 0;
+      const npk = petani && petani.npk !== undefined ? petani.npk : 0;
+      const organik = petani && petani.organik !== undefined ? petani.organik : 0;
+      const pesanServer = (res && res.pesan) ? res.pesan : `Berhasil menambahkan ${nama} ke ${kloterTujuan}!`;
+      const infoBaris = (res && res.baris) ? `Baris Sheet #${res.baris}` : 'Tersimpan di Google Sheets';
+
+      const detailHtml = `
+        <div class="text-left mt-2 space-y-2.5 text-xs">
+          <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-950">
+            <div class="font-bold text-emerald-800 text-[13px] mb-1 flex items-center gap-1.5">
+              <i class="fa-solid fa-user-check text-emerald-600"></i> ${nama}
+            </div>
+            <div class="text-slate-600 font-mono text-[11px]">NIK: <b class="text-slate-800">${nik}</b></div>
+            <div class="mt-1.5 flex flex-wrap items-center gap-1.5">
+              <span class="px-2 py-0.5 rounded-md bg-emerald-700 text-white font-bold text-[10px] uppercase">${kloterTujuan}</span>
+              <span class="px-2 py-0.5 rounded-md bg-white border border-emerald-200 text-emerald-800 font-mono font-semibold text-[10px]">${infoBaris}</span>
+            </div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-[11px] font-mono text-slate-700">
+            <span>Urea: <b class="text-slate-900">${urea} Kg</b></span>
+            <span>&bull;</span>
+            <span>NPK: <b class="text-slate-900">${npk} Kg</b></span>
+            <span>&bull;</span>
+            <span>Organik: <b class="text-slate-900">${organik} Kg</b></span>
+          </div>
+          <div class="text-[11px] text-slate-500 text-center pt-0.5">${pesanServer}</div>
+        </div>
+      `;
+
+      if (typeof Swal !== 'undefined' && Swal.fire) {
+        return Swal.fire({
+          icon: 'success',
+          title: `Berhasil Masuk ${kloterTujuan}!`,
+          html: detailHtml,
+          showCancelButton: true,
+          confirmButtonText: '<i class="fa-solid fa-check mr-1"></i> Selesai',
+          cancelButtonText: '<i class="fa-solid fa-plus mr-1"></i> Tambah Lagi',
+          confirmButtonColor: '#047857',
+          cancelButtonColor: '#0f172a',
+          reverseButtons: true,
+          customClass: {
+            popup: 'rounded-2xl shadow-2xl border border-slate-100',
+            title: 'text-lg font-extrabold text-slate-900'
+          }
+        }).then((result) => {
+          if (result.dismiss === Swal.DismissReason.cancel) {
+            bukaModalKloter();
+            document.getElementById('inputKloterTujuan').value = kloterTujuan;
+          }
+        });
+      } else {
+        alert(pesanServer);
+      }
+    }
+
+    // =====================================================
     // FITUR INPUT KLOTER & VALIDASI ANTI-NIK GANDA
     // =====================================================
     function bukaModalKloter() {
-      if (!authSession || authSession.role !== 'admin') { alert('Akses ditolak. Fitur ini khusus administrator.'); return; }
+      if (!authSession || authSession.role !== 'admin') {
+        showSwalAlert({ icon: 'warning', title: 'Akses Ditolak', text: 'Fitur tambah anggota kloter khusus untuk Administrator.' });
+        return;
+      }
       document.getElementById('modalKloter').classList.remove('hidden');
       document.getElementById('inputCariPetani').value = '';
       document.getElementById('infoValidasi').classList.add('hidden');
@@ -3786,6 +3876,7 @@
 
       // Mode 1: Jika dijalankan dari dalam Google Apps Script
       if (typeof google !== 'undefined' && google.script && google.script.run) {
+        const snapshotPetani = Object.assign({}, petaniTerpilih);
         google.script.run
           .withSuccessHandler(res => {
             btnSimpan.innerHTML = '<i class="fa-solid fa-check"></i> Tambahkan ke Kloter';
@@ -3795,7 +3886,7 @@
               loadData(true);
             }
             tutupModalKloter();
-            alert(res.pesan || 'Berhasil disimpan!');
+            showKloterSuccessAlert(snapshotPetani, kloterTujuan, res);
           })
           .withFailureHandler(err => {
             btnSimpan.disabled = false;
@@ -3839,7 +3930,8 @@
         }
 
         // Verifikasi: pastikan petani benar-benar tercatat di kloter pada data terbaru
-        const nikDitambah = petaniTerpilih.nik;
+        const snapshotPetani = Object.assign({}, petaniTerpilih);
+        const nikDitambah = snapshotPetani.nik;
         const cekMasuk = (data) => {
           const p = data && data.petani ? data.petani.find(x => String(x.nik) === String(nikDitambah)) : null;
           return p && String(p.status || '').toLowerCase().includes('kloter');
@@ -3853,11 +3945,19 @@
         tutupModalKloter();
 
         if (!res.versi) {
-          alert('⚠️ PERINGATAN: Server Google Apps Script masih versi LAMA.\n\nRespon "berhasil" tidak terverifikasi dan data mungkin TIDAK masuk ke sheet Kloter.\nSilakan salin ulang Code.gs ke Apps Script lalu Deploy > Kelola deployment > Edit > Versi baru.');
+          showSwalAlert({
+            icon: 'warning',
+            title: 'Server Apps Script Versi Lama',
+            text: 'Respon berhasil belum terverifikasi. Silakan salin ulang Code.gs ke Apps Script lalu Deploy > Kelola deployment > Edit > Versi baru.'
+          });
         } else if (res.dataTerbaru && !cekMasuk(res.dataTerbaru)) {
-          alert((res.pesan || 'NIK tersimpan.') + '\n\nCatatan: NIK sudah tertulis di ' + res.sheet + ' baris ' + res.baris + ', namun status di REKAP_KLOTER_CETAK belum berubah. Periksa rumus kolom Status di sheet rekap.');
+          showSwalAlert({
+            icon: 'info',
+            title: 'NIK Tersimpan di Sheet Kloter',
+            text: (res.pesan || 'NIK tersimpan.') + ' Namun status di REKAP_KLOTER_CETAK belum berubah. Periksa rumus kolom Status di sheet rekap.'
+          });
         } else {
-          alert(res.pesan || 'Berhasil disimpan ke Google Sheets!');
+          showKloterSuccessAlert(snapshotPetani, kloterTujuan, res);
         }
       } catch (err) {
         // Fallback simulasi jika di lingkungan pratinjau lokal
@@ -3928,7 +4028,7 @@
       // If switching to alokasi, ensure partition & data loaded
       if (tab === 'alokasi') {
         if (!authSession || authSession.role !== 'admin') {
-          alert('Halaman Alokasi khusus untuk Administrator.');
+          showSwalAlert({ icon: 'warning', title: 'Akses Ditolak', text: 'Halaman Alokasi khusus untuk Administrator.' });
           setActiveTab('overview');
           return;
         }
