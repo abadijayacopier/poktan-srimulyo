@@ -1648,11 +1648,11 @@
         <!-- Rincian Lahan -->
         <div class="grid grid-cols-2 gap-3">
           <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">LUAS LAHAN ASLI</span>
+            <span id="det-lahan-e-label" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">LUAS ALOKASI ERDKK (KOLOM E)</span>
             <span id="det-lahan-asli" class="text-sm font-black text-slate-900 font-mono">-</span>
           </div>
           <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">LUAS ALOKASI ERDKK</span>
+            <span id="det-lahan-d-label" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">LAHAN REVISI / BLOK (KOLOM D)</span>
             <span id="det-lahan-rev" class="text-sm font-black text-slate-900 font-mono">-</span>
           </div>
         </div>
@@ -1715,7 +1715,7 @@
           </div>
           <div>
             <h3 id="edit-petani-nama" class="font-bold text-sm uppercase">-</h3>
-            <p class="text-xs text-slate-400">Ubah status, luas revisi, atau alokasi sak pupuk</p>
+            <p class="text-xs text-slate-400">Ubah status, luas alokasi ERDKK (Kolom E), lahan, atau sak pupuk</p>
           </div>
         </div>
         <button type="button" onclick="closeAlokasiEditModal()" class="text-slate-400 hover:text-white p-1">
@@ -1733,15 +1733,29 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="mb-1 block text-xs font-bold text-slate-700 uppercase">Luas Alokasi ERDKK (Ha)</label>
-            <input id="edit-lahan-rev" type="text" class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs outline-none focus:border-emerald-500 font-mono" placeholder="0,00">
+            <label for="edit-luas-erdkk" class="mb-1 block text-xs font-bold text-slate-700 uppercase flex items-center justify-between">
+              <span id="edit-luas-erdkk-title">Luas Alokasi ERDKK (Ha)</span>
+              <span class="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">Kolom E</span>
+            </label>
+            <input id="edit-luas-erdkk" type="text" class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs outline-none focus:border-emerald-500 font-mono" placeholder="Contoh: 0,28">
           </div>
           <div>
-            <label class="mb-1 block text-xs font-bold text-slate-700 uppercase">Jumlah Tagihan (Rp)</label>
-            <input id="edit-uang" type="text" class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs outline-none focus:border-emerald-500 font-mono" placeholder="Rp 0">
+            <label for="edit-lahan-rev" id="edit-lahan-d-label" class="mb-1 block text-xs font-bold text-slate-700 uppercase flex items-center justify-between">
+              <span id="edit-lahan-d-title">Lahan Revisi / Blok</span>
+              <span class="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">Kolom D</span>
+            </label>
+            <input id="edit-lahan-rev" type="text" class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs outline-none focus:border-emerald-500 font-mono" placeholder="Contoh: 0,14">
           </div>
+        </div>
+
+        <div>
+          <label for="edit-uang" class="mb-1 block text-xs font-bold text-slate-700 uppercase flex items-center justify-between">
+            <span>Jumlah Tagihan (Rp)</span>
+            <span class="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">Kolom M</span>
+          </label>
+          <input id="edit-uang" type="text" class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs outline-none focus:border-emerald-500 font-mono" placeholder="Rp 0">
         </div>
 
         <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-3 space-y-2">
@@ -2764,14 +2778,20 @@
 
       document.getElementById('det-uang').textContent = v[12] || 'Rp 0';
 
-      if (isNonErdkk) {
-        document.getElementById('det-lahan-asli').textContent = (v[4] && String(v[4]).trim() && String(v[4]).trim() !== '0') ? (String(v[4]).trim() + ' Ha') : '-';
-        document.getElementById('det-lahan-rev').textContent = v[3] ? ('Blok: ' + v[3]) : '-';
-      } else {
-        const lahanAsliText = (v[4] && String(v[4]).trim() && String(v[4]).trim() !== '0') ? (String(v[4]).trim() + ' Ha') : '-';
-        document.getElementById('det-lahan-asli').textContent = lahanAsliText;
-        document.getElementById('det-lahan-rev').textContent = (v[3] || '-') + (v[3] ? ' Ha' : '');
+      const lblE = document.getElementById('det-lahan-e-label');
+      const lblD = document.getElementById('det-lahan-d-label');
+      if (lblE && lblD) {
+        if (isNonErdkk) {
+          lblE.textContent = 'LUAS LAHAN ASLI (KOLOM E)';
+          lblD.textContent = 'BLOK SAWAH (KOLOM D)';
+        } else {
+          lblE.textContent = 'LUAS ALOKASI ERDKK (KOLOM E)';
+          lblD.textContent = 'LAHAN REVISI (KOLOM D)';
+        }
       }
+
+      document.getElementById('det-lahan-asli').textContent = (v[4] && String(v[4]).trim() && String(v[4]).trim() !== '0') ? (String(v[4]).trim() + ' Ha') : '-';
+      document.getElementById('det-lahan-rev').textContent = isNonErdkk ? (v[3] ? ('Blok: ' + v[3]) : '-') : ((v[3] || '-') + (v[3] ? ' Ha' : ''));
 
       const uSakVal = parseSak(v[9]);
       const pSakVal = parseSak(v[10]);
@@ -2824,10 +2844,28 @@
       const item = alokasiRows.find(x => x.row === row);
       if (!item) return;
       const v = item.values || [];
+      const isNonErdkk = alokasiJenis === 'NON_ERDKK';
 
       document.getElementById('edit-row-index').value = row;
       document.getElementById('edit-petani-nama').textContent = 'Edit Data: ' + (v[2] || '-');
-      document.getElementById('edit-lahan-rev').value = v[3] || '';
+
+      const labelErdkkTitle = document.getElementById('edit-luas-erdkk-title');
+      const inputErdkk = document.getElementById('edit-luas-erdkk');
+      const labelDTitle = document.getElementById('edit-lahan-d-title');
+      const inputLahanD = document.getElementById('edit-lahan-rev');
+
+      if (labelErdkkTitle && inputErdkk) {
+        labelErdkkTitle.textContent = isNonErdkk ? 'Luas Lahan Asli (Ha)' : 'Luas Alokasi ERDKK (Ha)';
+        inputErdkk.placeholder = isNonErdkk ? 'Contoh: 0,14' : 'Contoh: 0,28';
+      }
+      if (labelDTitle && inputLahanD) {
+        labelDTitle.textContent = isNonErdkk ? 'Blok Sawah / Alamat' : 'Lahan Revisi (Ha)';
+        inputLahanD.placeholder = isNonErdkk ? 'Contoh: MBAMBUNG, SETEKEK' : 'Contoh: 0,14';
+      }
+
+      if (inputErdkk) inputErdkk.value = (v[4] !== undefined && v[4] !== null) ? String(v[4]).trim() : '';
+      if (inputLahanD) inputLahanD.value = (v[3] !== undefined && v[3] !== null) ? String(v[3]).trim() : '';
+
       document.getElementById('edit-uang').value = v[12] || '';
       document.getElementById('edit-sak-urea').value = (v[9] !== undefined && v[9] !== null) ? String(v[9]).trim() : '';
       document.getElementById('edit-sak-npk').value = (v[10] !== undefined && v[10] !== null) ? String(v[10]).trim() : '';
@@ -2835,7 +2873,7 @@
       document.getElementById('edit-ket').value = v[13] || '';
 
       const currentStatuses = alStatusList(v[5]);
-      const options = alokasiJenis === 'NON_ERDKK' ? ALOKASI_STATUS_OPTIONS_NONERDKK : ALOKASI_STATUS_OPTIONS_ERDKK;
+      const options = isNonErdkk ? ALOKASI_STATUS_OPTIONS_NONERDKK : ALOKASI_STATUS_OPTIONS_ERDKK;
       const container = document.getElementById('edit-status-container');
       container.innerHTML = options.map(opt => `
         <label class="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-slate-100 cursor-pointer text-xs">
@@ -2853,6 +2891,72 @@
       document.body.classList.remove('overflow-hidden');
     }
 
+    function showAlokasiSuccessAlert(petaniNama, row, values, res) {
+      const nama = petaniNama || (values && values[2]) || 'Petani';
+      const nik = (values && values[1]) ? values[1] : '-';
+      const luasE = (values && values[4] !== undefined && values[4] !== null) ? String(values[4]).trim() : '';
+      const luasD = (values && values[3] !== undefined && values[3] !== null) ? String(values[3]).trim() : '';
+      const status = (values && values[5]) ? values[5] : '-';
+      const sakU = (values && values[9] !== undefined && values[9] !== null && String(values[9]).trim() !== '') ? String(values[9]).trim() : '0';
+      const sakP = (values && values[10] !== undefined && values[10] !== null && String(values[10]).trim() !== '') ? String(values[10]).trim() : '0';
+      const sakO = (values && values[11] !== undefined && values[11] !== null && String(values[11]).trim() !== '') ? String(values[11]).trim() : '0';
+      const uang = (values && values[12]) ? String(values[12]).trim() : '';
+      const pesanServer = (res && res.pesan) ? res.pesan : 'Perubahan data alokasi berhasil disimpan ke Google Sheet!';
+      const infoBaris = row ? `Baris Sheet #${row}` : 'Google Sheets';
+
+      const detailHtml = `
+        <div class="text-left mt-2 space-y-2.5 text-xs">
+          <div class="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950">
+            <div class="font-bold text-emerald-900 text-[13px] mb-1 flex items-center justify-between">
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-user-check text-emerald-600"></i> ${escAl(nama)}</span>
+              <span class="px-2 py-0.5 rounded-md bg-white border border-emerald-200 text-emerald-800 font-mono font-semibold text-[10px]">${infoBaris}</span>
+            </div>
+            <div class="text-slate-600 font-mono text-[11px] mb-2">NIK: <b class="text-slate-800">${escAl(nik)}</b></div>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span class="px-2 py-0.5 rounded-md bg-emerald-700 text-white font-bold text-[10px] uppercase">${escAl(status)}</span>
+              ${luasE ? `<span class="px-2 py-0.5 rounded-md bg-white border border-emerald-300 text-emerald-900 font-mono text-[10px]">Alokasi ERDKK (Kolom E): <b>${escAl(luasE)} Ha</b></span>` : ''}
+              ${luasD ? `<span class="px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-slate-700 font-mono text-[10px]">Lahan/Blok (Kolom D): <b>${escAl(luasD)}</b></span>` : ''}
+            </div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-[11px] font-mono text-slate-700">
+            <span>Urea: <b class="text-slate-900">${sakU} Sak</b></span>
+            <span>&bull;</span>
+            <span>NPK: <b class="text-slate-900">${sakP} Sak</b></span>
+            <span>&bull;</span>
+            <span>Organik: <b class="text-slate-900">${sakO} Sak</b></span>
+            ${uang ? `<span>&bull;</span><span>Uang: <b class="text-emerald-800">${escAl(uang)}</b></span>` : ''}
+          </div>
+          <div class="text-[11px] text-slate-500 text-center pt-0.5">${pesanServer}</div>
+        </div>
+      `;
+
+      if (typeof Swal !== 'undefined' && Swal.fire) {
+        return Swal.fire({
+          icon: 'success',
+          title: 'Alokasi Berhasil Disimpan!',
+          html: detailHtml,
+          showCancelButton: row ? true : false,
+          confirmButtonText: '<i class="fa-solid fa-check mr-1.5"></i> Selesai',
+          cancelButtonText: '<i class="fa-solid fa-pen-to-square mr-1.5"></i> Edit Lagi',
+          confirmButtonColor: '#047857',
+          cancelButtonColor: '#334155',
+          reverseButtons: true,
+          customClass: {
+            popup: 'rounded-2xl shadow-2xl border border-slate-100',
+            title: 'text-lg font-extrabold text-slate-900',
+            confirmButton: 'rounded-xl px-5 py-2.5 text-xs font-bold shadow-sm',
+            cancelButton: 'rounded-xl px-4 py-2.5 text-xs font-bold shadow-sm'
+          }
+        }).then((result) => {
+          if (row && result.dismiss === Swal.DismissReason.cancel) {
+            openAlokasiEditModal(row);
+          }
+        });
+      } else {
+        alert(pesanServer);
+      }
+    }
+
     async function saveAlokasiFromModal() {
       const row = parseInt(document.getElementById('edit-row-index').value, 10);
       if (!row) return;
@@ -2865,6 +2969,8 @@
 
       const values = [...item.values];
       values[3] = document.getElementById('edit-lahan-rev').value.trim();
+      const inputErdkk = document.getElementById('edit-luas-erdkk');
+      if (inputErdkk) values[4] = inputErdkk.value.trim(); // Kolom E sheet ALOKASI PEMBAGIAN
       values[5] = statusStr;
       values[9] = document.getElementById('edit-sak-urea').value.trim();
       values[10] = document.getElementById('edit-sak-npk').value.trim();
@@ -2879,16 +2985,20 @@
       }
 
       try {
-        await alokasiApi('saveAlokasi', { row, values });
+        const res = await alokasiApi('saveAlokasi', { row, values });
         const idx = alokasiRows.findIndex(x => x.row === row);
         if (idx >= 0) alokasiRows[idx].values = values;
         const allIdx = alokasiAllRows.findIndex(x => x.row === row);
         if (allIdx >= 0) alokasiAllRows[allIdx].values = values;
         closeAlokasiEditModal();
         renderAlokasiTable();
-        showAlokasiToast('Data berhasil diperbarui ke Google Sheet.');
+        showAlokasiSuccessAlert(item.values[2], row, values, res);
       } catch (err) {
-        showAlokasiToast(err.message, 'error');
+        showSwalAlert({
+          icon: 'error',
+          title: 'Gagal Menyimpan Alokasi',
+          text: err.message || 'Terjadi kesalahan saat menyimpan ke Google Sheets.'
+        });
       } finally {
         if (btn) {
           btn.disabled = false;
@@ -2896,16 +3006,116 @@
         }
       }
     }
-    function editAlokasiRow(row){const first=document.querySelector('[data-row="'+row+'"][data-col="4"]')||document.querySelector('[data-row="'+row+'"][data-col="9"]');if(first){first.focus();first.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});}showAlokasiToast('Mode edit: ubah kolom yang dapat diedit (status, lahan, sak, keterangan), lalu tekan ikon Simpan.');}
-    async function saveAlokasiRow(row){const values=Array(14).fill('');document.querySelectorAll('[data-row="'+row+'"][data-col]').forEach(e=>values[+e.dataset.col]=e.value);const btn=document.querySelector('button[onclick="saveAlokasiRow('+row+')"]');if(btn){btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-circle-notch fa-spin mr-1"></i>Menyimpan';}try{await alokasiApi('saveAlokasi',{row,values});const idx=alokasiRows.findIndex(x=>x.row===row);if(idx>=0)alokasiRows[idx].values=values;const allIdx=alokasiAllRows.findIndex(x=>x.row===row);if(allIdx>=0)alokasiAllRows[allIdx].values=values;renderAlokasiTable();showAlokasiToast('Perubahan berhasil disimpan ke Google Sheet.');}catch(e){showAlokasiToast(e.message,'error');if(btn){btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-floppy-disk mr-1"></i>Simpan';}}}
-    function confirmAlokasiDelete(nama){return new Promise(resolve=>{let modal=document.getElementById('al-delete-confirm');if(!modal){modal=document.createElement('div');modal.id='al-delete-confirm';modal.className='fixed inset-0 z-[150] hidden items-center justify-center bg-slate-950/50 p-4';modal.innerHTML='<div class="w-full max-w-sm rounded-2xl bg-white p-5 shadow-2xl"><div class="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-rose-100 text-rose-600"><i class="fa-solid fa-trash"></i></div><h3 class="text-base font-bold text-slate-900">Hapus data petani?</h3><p id="al-delete-message" class="mt-2 text-sm leading-relaxed text-slate-600"></p><div class="mt-5 flex justify-end gap-2"><button type="button" id="al-delete-cancel" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600">Batal</button><button type="button" id="al-delete-yes" class="rounded-lg bg-rose-600 px-4 py-2 text-sm font-bold text-white hover:bg-rose-700">Ya, hapus</button></div></div>';document.body.appendChild(modal);}modal.querySelector('#al-delete-message').textContent='Hapus '+nama+' dari daftar Non-e-RDKK? Data pada Google Sheet akan dihapus.';modal.classList.remove('hidden');modal.classList.add('flex');const finish=value=>{modal.classList.add('hidden');modal.classList.remove('flex');modal.querySelector('#al-delete-cancel').onclick=null;modal.querySelector('#al-delete-yes').onclick=null;resolve(value);};modal.querySelector('#al-delete-cancel').onclick=()=>finish(false);modal.querySelector('#al-delete-yes').onclick=()=>finish(true);});}
-    async function deleteAlokasiRow(row){if(alokasiJenis!=='NON_ERDKK'){showAlokasiToast('Hanya data Non-e-RDKK yang dapat dihapus.','error');return;}const item=alokasiRows.find(x=>x.row===row);const nama=item?.values?.[2]||'petani ini';if(!await confirmAlokasiDelete(nama))return;try{await alokasiApi('deleteAlokasi',{row});await loadAlokasi();showAlokasiToast('Data '+nama+' berhasil dihapus dari Google Sheet.');}catch(e){showAlokasiToast(e.message,'error');}}
-    function openAddAlokasiModal(){const modal=document.getElementById('add-alokasi-modal');modal.classList.remove('hidden');document.body.classList.add('overflow-hidden');setTimeout(()=>document.getElementById('al-new-nama').focus(),80);}
-    function closeAddAlokasiModal(reset=false){
+
+    function editAlokasiRow(row) {
+      const first = document.querySelector('[data-row="' + row + '"][data-col="4"]') || document.querySelector('[data-row="' + row + '"][data-col="9"]');
+      if (first) {
+        first.focus();
+        first.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+      showSwalAlert({
+        icon: 'info',
+        title: 'Mode Edit Tabel Aktif',
+        text: 'Ubah data pada kolom yang dapat diedit (Kolom E Luas Alokasi ERDKK, status, sak, uang, atau keterangan), lalu tekan ikon Simpan untuk memperbarui Google Sheet.'
+      });
+    }
+
+    async function saveAlokasiRow(row) {
+      const values = Array(14).fill('');
+      document.querySelectorAll('[data-row="' + row + '"][data-col]').forEach(e => values[+e.dataset.col] = e.value);
+      const btn = document.querySelector('button[onclick="saveAlokasiRow(' + row + ')"]');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-1"></i>Menyimpan';
+      }
+      try {
+        const res = await alokasiApi('saveAlokasi', { row, values });
+        const idx = alokasiRows.findIndex(x => x.row === row);
+        if (idx >= 0) alokasiRows[idx].values = values;
+        const allIdx = alokasiAllRows.findIndex(x => x.row === row);
+        if (allIdx >= 0) alokasiAllRows[allIdx].values = values;
+        renderAlokasiTable();
+        showAlokasiSuccessAlert(values[2], row, values, res);
+      } catch (e) {
+        showSwalAlert({
+          icon: 'error',
+          title: 'Gagal Menyimpan Baris',
+          text: e.message || 'Terjadi kesalahan saat menyimpan baris ke Google Sheet.'
+        });
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-floppy-disk mr-1"></i>Simpan';
+        }
+      }
+    }
+
+    function confirmAlokasiDelete(nama) {
+      return new Promise(resolve => {
+        let modal = document.getElementById('al-delete-confirm');
+        if (!modal) {
+          modal = document.createElement('div');
+          modal.id = 'al-delete-confirm';
+          modal.className = 'fixed inset-0 z-[150] hidden items-center justify-center bg-slate-950/50 p-4';
+          modal.innerHTML = '<div class="w-full max-w-sm rounded-2xl bg-white p-5 shadow-2xl"><div class="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-rose-100 text-rose-600"><i class="fa-solid fa-trash"></i></div><h3 class="text-base font-bold text-slate-900">Hapus data petani?</h3><p id="al-delete-message" class="mt-2 text-sm leading-relaxed text-slate-600"></p><div class="mt-5 flex justify-end gap-2"><button type="button" id="al-delete-cancel" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600">Batal</button><button type="button" id="al-delete-yes" class="rounded-lg bg-rose-600 px-4 py-2 text-sm font-bold text-white hover:bg-rose-700">Ya, hapus</button></div></div>';
+          document.body.appendChild(modal);
+        }
+        modal.querySelector('#al-delete-message').textContent = 'Hapus ' + nama + ' dari daftar Non-e-RDKK? Data pada Google Sheet akan dihapus.';
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        const finish = value => {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+          modal.querySelector('#al-delete-cancel').onclick = null;
+          modal.querySelector('#al-delete-yes').onclick = null;
+          resolve(value);
+        };
+        modal.querySelector('#al-delete-cancel').onclick = () => finish(false);
+        modal.querySelector('#al-delete-yes').onclick = () => finish(true);
+      });
+    }
+
+    async function deleteAlokasiRow(row) {
+      if (alokasiJenis !== 'NON_ERDKK') {
+        showSwalAlert({
+          icon: 'warning',
+          title: 'Tidak Dapat Dihapus',
+          text: 'Hanya data Non-e-RDKK yang dapat dihapus.'
+        });
+        return;
+      }
+      const item = alokasiRows.find(x => x.row === row);
+      const nama = item?.values?.[2] || 'petani ini';
+      if (!await confirmAlokasiDelete(nama)) return;
+      try {
+        await alokasiApi('deleteAlokasi', { row });
+        await loadAlokasi();
+        showSwalAlert({
+          icon: 'success',
+          title: 'Data Dihapus',
+          text: 'Data ' + nama + ' berhasil dihapus dari Google Sheet.'
+        });
+      } catch (e) {
+        showSwalAlert({
+          icon: 'error',
+          title: 'Gagal Menghapus Data',
+          text: e.message || 'Terjadi kesalahan saat menghapus data.'
+        });
+      }
+    }
+
+    function openAddAlokasiModal() {
+      const modal = document.getElementById('add-alokasi-modal');
+      modal.classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+      setTimeout(() => document.getElementById('al-new-nama').focus(), 80);
+    }
+
+    function closeAddAlokasiModal(reset = false) {
       document.getElementById('add-alokasi-modal').classList.add('hidden');
       document.body.classList.remove('overflow-hidden');
-      if(reset){
-        ['al-new-nik','al-new-nama','al-new-blok','al-new-lahan','al-new-status','al-new-sak-urea','al-new-sak-phonska','al-new-sak-organik','al-new-uang','al-new-ket'].forEach(id=>{
+      if (reset) {
+        ['al-new-nik', 'al-new-nama', 'al-new-blok', 'al-new-lahan', 'al-new-status', 'al-new-sak-urea', 'al-new-sak-phonska', 'al-new-sak-organik', 'al-new-uang', 'al-new-ket'].forEach(id => {
           const el = document.getElementById(id);
           if (el) el.value = '';
         });
@@ -2913,11 +3123,30 @@
         if (usulan) usulan.value = 'PENGAJUAN DATA BARU';
       }
     }
-    function showAlokasiToast(message,type='success'){const host=document.getElementById('alokasi-toast');const success=type==='success';host.innerHTML='<div class="flex items-start gap-3"><span class="mt-0.5 text-xl '+(success?'text-emerald-600':'text-rose-600')+'"><i class="fa-solid '+(success?'fa-circle-check':'fa-circle-xmark')+'"></i></span><div><p class="text-sm font-bold '+(success?'text-emerald-900':'text-rose-900')+'">'+(success?'Berhasil':'Belum berhasil')+'</p><p class="mt-0.5 text-xs text-slate-600">'+escAl(message)+'</p></div><button onclick="this.parentElement.parentElement.classList.add(\'hidden\')" class="ml-3 text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button></div>';host.className='fixed right-4 top-24 z-[120] w-[min( calc(100vw - 2rem), 360px)] rounded-xl border '+(success?'border-emerald-200 bg-white':'border-rose-200 bg-white')+' p-4 shadow-xl animate-[fadeIn_.2s_ease-out]';}
-    async function addAlokasi(){
+
+    function showAlokasiToast(message, type = 'success') {
+      if (typeof Swal !== 'undefined' && Swal.fire) {
+        return showSwalAlert({
+          icon: type === 'success' ? 'success' : 'error',
+          title: type === 'success' ? 'Berhasil Disimpan' : 'Pemberitahuan',
+          text: message
+        });
+      }
+      const host = document.getElementById('alokasi-toast');
+      if (!host) return;
+      const success = type === 'success';
+      host.innerHTML = '<div class="flex items-start gap-3"><span class="mt-0.5 text-xl ' + (success ? 'text-emerald-600' : 'text-rose-600') + '"><i class="fa-solid ' + (success ? 'fa-circle-check' : 'fa-circle-xmark') + '"></i></span><div><p class="text-sm font-bold ' + (success ? 'text-emerald-900' : 'text-rose-900') + '">' + (success ? 'Berhasil' : 'Belum berhasil') + '</p><p class="mt-0.5 text-xs text-slate-600">' + escAl(message) + '</p></div><button onclick="this.parentElement.parentElement.classList.add(\'hidden\')" class="ml-3 text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark"></i></button></div>';
+      host.className = 'fixed right-4 top-24 z-[120] w-[min( calc(100vw - 2rem), 360px)] rounded-xl border ' + (success ? 'border-emerald-200 bg-white' : 'border-rose-200 bg-white') + ' p-4 shadow-xl animate-[fadeIn_.2s_ease-out]';
+    }
+
+    async function addAlokasi() {
       const nama = document.getElementById('al-new-nama').value.trim();
-      if(!nama){
-        showAlokasiToast('Nama petani wajib diisi.','error');
+      if (!nama) {
+        showSwalAlert({
+          icon: 'warning',
+          title: 'Nama Petani Wajib Diisi',
+          text: 'Nama petani tidak boleh kosong saat menambahkan alokasi baru.'
+        });
         return;
       }
       const nik = document.getElementById('al-new-nik').value.trim();
@@ -2931,16 +3160,16 @@
       const uang = document.getElementById('al-new-uang').value.trim();
       const ket = document.getElementById('al-new-ket').value.trim();
 
-      const b=document.getElementById('al-add-btn');
-      b.disabled=true;
-      b.innerHTML='<i class="fa-solid fa-circle-notch fa-spin mr-1"></i> Menyimpan...';
+      const b = document.getElementById('al-add-btn');
+      b.disabled = true;
+      b.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-1"></i> Menyimpan...';
 
       // Susunan Kolom ALOKASI PEMBAGIAN:
       // Index 0: No (A)
       // Index 1: NIK (B)
       // Index 2: Nama (C)
       // Index 3: Blok Sawah (D)
-      // Index 4: Revisi Lahan Asli (E)
+      // Index 4: Revisi Lahan Asli / Luas Alokasi (E)
       // Index 5: Status Usulan / Status (F)
       // Index 6: Urea Kg (G)
       // Index 7: Phonska Kg (H)
@@ -2967,19 +3196,23 @@
         ket || statusAmbil // Keterangan
       ];
 
-      try{
-        await alokasiApi('addAlokasi',{
+      try {
+        const res = await alokasiApi('addAlokasi', {
           targetRow: 'AFTER_TRI_WAHYUNI',
           values: values
         });
         closeAddAlokasiModal(true);
         await loadAlokasi();
-        showAlokasiToast('Data '+nama+' berhasil disisipkan tepat di bawah TRI WAHYUNI.','success');
-      }catch(e){
-        showAlokasiToast(e.message||'Gagal menyimpan data.','error');
-      }finally{
-        b.disabled=false;
-        b.innerHTML='<i class="fa-solid fa-floppy-disk mr-1.5"></i> Simpan ke Sheet';
+        showAlokasiSuccessAlert(nama, res.insertedRow, values, res);
+      } catch (e) {
+        showSwalAlert({
+          icon: 'error',
+          title: 'Gagal Menambah Petani',
+          text: e.message || 'Gagal menyimpan data baru ke Google Sheet.'
+        });
+      } finally {
+        b.disabled = false;
+        b.innerHTML = '<i class="fa-solid fa-floppy-disk mr-1.5"></i> Simpan ke Sheet';
       }
     }
         function toggleLoginPassword() {
