@@ -125,7 +125,7 @@
     </div>
 
     <!-- Pilihan Tab Dokumen Laporan Cetak -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3">
       <!-- 1. LAPORAN_CETAK -->
       <button onclick="pilihLaporan('laporan_cetak')" id="tab-laporan_cetak" 
               class="laporan-tab active-tab bg-white p-3.5 sm:p-4 rounded-xl border-2 border-emerald-600 shadow-sm text-left transition group">
@@ -169,6 +169,17 @@
         <div class="text-xs font-bold text-slate-900 leading-tight">Target Sisa Pupuk</div>
         <div class="text-[9.5px] sm:text-[10px] text-slate-500 mt-0.5">Sheet: TARGET_SISA</div>
       </button>
+
+      <!-- 5. FILTER_PENEBUSAN -->
+      <button onclick="pilihLaporan('filter_penebusan')" id="tab-filter_penebusan" 
+              class="laporan-tab bg-white p-3.5 sm:p-4 rounded-xl border-2 border-slate-200 hover:border-slate-300 shadow-sm text-left transition group col-span-2 sm:col-span-1">
+        <div class="flex items-center justify-between mb-1">
+          <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center text-xs sm:text-sm font-bold">5</span>
+          <i class="fa-solid fa-filter-circle-dollar text-teal-600 text-xs sm:text-sm"></i>
+        </div>
+        <div class="text-xs font-bold text-slate-900 leading-tight">Filter Penebusan &amp; Kloter</div>
+        <div class="text-[9.5px] sm:text-[10px] text-slate-500 mt-0.5">Status, Sak &amp; Kloter Petani</div>
+      </button>
     </div>
   </div>
 
@@ -185,6 +196,7 @@
     <div id="doc-rekap_kloter" class="hidden print-page bg-white p-4 sm:p-8 lg:p-12 rounded-2xl border border-slate-200 shadow-md space-y-5 sm:space-y-6"></div>
     <div id="doc-non_erdkk" class="hidden print-page bg-white p-4 sm:p-8 lg:p-12 rounded-2xl border border-slate-200 shadow-md space-y-5 sm:space-y-6"></div>
     <div id="doc-target_sisa" class="hidden print-page bg-white p-4 sm:p-8 lg:p-12 rounded-2xl border border-slate-200 shadow-md space-y-5 sm:space-y-6"></div>
+    <div id="doc-filter_penebusan" class="hidden print-page bg-white p-4 sm:p-8 lg:p-12 rounded-2xl border border-slate-200 shadow-md space-y-5 sm:space-y-6"></div>
   </div>
 
   <script>
@@ -194,7 +206,7 @@
      * dibuka / tombol "Segarkan Data" ditekan.
      * ====================================================================== */
     const SHEET_ID = '1c7R1klPcFSZ7W1PLaZyayZxBUOrVyLh-Lwc24Cf6CEY';
-    const DOCS = ['laporan_cetak', 'rekap_kloter', 'non_erdkk', 'target_sisa'];
+    const DOCS = ['laporan_cetak', 'rekap_kloter', 'non_erdkk', 'target_sisa', 'filter_penebusan'];
     const LOADING_HTML = '<div class="py-24 text-center text-slate-500 text-sm"><i class="fa-solid fa-spinner fa-spin text-2xl text-emerald-600 mb-3 block"></i>Mengambil data terbaru dari Google Sheets...</div>';
 
     function pilihLaporan(id) {
@@ -578,6 +590,381 @@
       ${ttd(tanggal, [TTD_PPL, TTD_KETUA, TTD_BENDAHARA])}`;
     }
 
+    // ---------- DOKUMEN 5: FILTER STATUS PENEBUSAN & KLOTER PETANI ----------
+    let dataFilterPenebusan = [];
+    let tanggalFilterPenebusan = '';
+
+    function parseMoneyVal(v) {
+      if (v == null || v === '') return 0;
+      if (typeof v === 'number') return v;
+      const n = parseInt(String(v).replace(/[^0-9]/g, ''), 10);
+      return isNaN(n) ? 0 : n;
+    }
+
+    function initFilterPenebusanDoc(alokasiRows, kloterRows, tanggal) {
+      tanggalFilterPenebusan = tanggal;
+      const kloterMap = new Map();
+      kloterRows.forEach(r => {
+        const nik = T(r, 2);
+        const nama = T(r, 3).toUpperCase();
+        const kl = T(r, 4);
+        if (nik && nik.length === 16) kloterMap.set(nik, kl);
+        if (nama) kloterMap.set(nama, kl);
+      });
+
+      dataFilterPenebusan = [];
+      let isNon = false;
+      alokasiRows.forEach((r, idx) => {
+        const nama = T(r, 2);
+        if (nama.toUpperCase().includes('TIDAK MASUK ERDKK')) { isNon = true; return; }
+        if (nama.toUpperCase().startsWith('TOTAL')) return;
+        const no = T(r, 0);
+        const nik = T(r, 1);
+        if (!nama) return;
+        if (!isNon && (!no || !/^\d+$/.test(no))) return;
+        if (isNon && !T(r, 5) && !T(r, 4)) return;
+
+        const status = T(r, 5);
+        const ket = T(r, 13);
+        const kloter = kloterMap.get(nik) || kloterMap.get(nama.toUpperCase()) || (isNon ? 'Non-eRDKK (Cadangan)' : 'Mandiri / Belum');
+        const u = num(V(r, 9));
+        const p = num(V(r, 10));
+        const o = num(V(r, 11));
+        const uang = parseMoneyVal(T(r, 12));
+
+        dataFilterPenebusan.push({
+          no: isNon ? (dataFilterPenebusan.length + 1) : parseInt(no, 10),
+          nik, nama, isNon, status, ket, kloter, u, p, o, totSak: u + p + o, uang
+        });
+      });
+
+      return `
+        <!-- Filter Bar Interaktif (No Print) -->
+        <div class="no-print bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h4 class="text-xs sm:text-sm font-black uppercase text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-filter text-emerald-600"></i> Filter &amp; Pencarian Laporan Penebusan
+              </h4>
+              <p class="text-[11px] text-slate-500 mt-0.5">Saring data berdasarkan status penebusan, kelompok kloter, atau cari nama petani</p>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="resetFilterPenebusanLaporan()" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold transition">
+                <i class="fa-solid fa-arrow-rotate-left mr-1"></i> Reset Filter
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <!-- Filter Status -->
+            <div>
+              <label for="lp-status-filter" class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">Status Penebusan &amp; Kios</label>
+              <select id="lp-status-filter" onchange="applyFilterPenebusanLaporan()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white text-slate-800 font-semibold focus:outline-none focus:border-emerald-600">
+                <option value="">Semua Status Penebusan</option>
+                <option value="BELUM AMBIL">Belum Ambil Pupuk</option>
+                <option value="BELUM SETOR KTP">Belum Setor Berkas KTP</option>
+                <option value="SUDAH AMBIL">Sudah Ambil Pupuk</option>
+                <option value="SETOR KTP">Sudah Setor Berkas KTP</option>
+                <option value="SUDAH BAYAR">Sudah Bayar Lunas</option>
+                <option value="FOTO DI KIOS">Foto di Kios</option>
+                <option value="SURAT KUASA">Surat Kuasa Masuk Kloter</option>
+                <option value="BELUM BAYAR">Belum Bayar (Tagihan &gt; 0)</option>
+                <option value="SUDAH MASUK USULAN">Sudah Masuk Usulan</option>
+                <option value="PENGAJUAN DATA BARU">Pengajuan Data Baru</option>
+                <option value="BELUM USULAN">Belum Usulan</option>
+              </select>
+            </div>
+
+            <!-- Filter Kloter -->
+            <div>
+              <label for="lp-kloter-filter" class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">Kelompok Kloter Surat Kuasa</label>
+              <select id="lp-kloter-filter" onchange="applyFilterPenebusanLaporan()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white text-slate-800 font-semibold focus:outline-none focus:border-emerald-600">
+                <option value="">Semua Kloter &amp; Mandiri</option>
+                <option value="HANYA_KLOTER">Hanya Masuk Kloter (1 s/d 10)</option>
+                <option value="Kloter 1">Kloter 1</option>
+                <option value="Kloter 2">Kloter 2</option>
+                <option value="Kloter 3">Kloter 3</option>
+                <option value="Kloter 4">Kloter 4</option>
+                <option value="Kloter 5">Kloter 5</option>
+                <option value="Kloter 6">Kloter 6</option>
+                <option value="Kloter 7">Kloter 7</option>
+                <option value="Kloter 8">Kloter 8</option>
+                <option value="Kloter 9">Kloter 9</option>
+                <option value="Kloter 10">Kloter 10</option>
+                <option value="Mandiri / Belum">Mandiri / Belum Masuk Kloter</option>
+              </select>
+            </div>
+
+            <!-- Filter Kategori -->
+            <div>
+              <label for="lp-kategori-filter" class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">Kategori Petani</label>
+              <select id="lp-kategori-filter" onchange="applyFilterPenebusanLaporan()" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white text-slate-800 font-semibold focus:outline-none focus:border-emerald-600">
+                <option value="ALL">Semua Petani (e-RDKK &amp; Non-eRDKK)</option>
+                <option value="ERDKK">Petani e-RDKK MT3 2026</option>
+                <option value="NON_ERDKK">Petani Non-eRDKK (Cadangan)</option>
+              </select>
+            </div>
+
+            <!-- Pencarian NIK / Nama -->
+            <div>
+              <label for="lp-search-filter" class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">Cari NIK / Nama</label>
+              <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                <input type="text" id="lp-search-filter" oninput="applyFilterPenebusanLaporan()" placeholder="Ketik NIK atau nama..." class="w-full pl-8 pr-3 py-2 rounded-xl border border-slate-200 text-xs bg-white text-slate-800 focus:outline-none focus:border-emerald-600">
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Chips -->
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider shrink-0 mr-1">Filter Cepat:</span>
+            <button type="button" onclick="setLpQuickStatus('')" class="px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-[11px] font-bold shrink-0 transition">Semua</button>
+            <button type="button" onclick="setLpQuickStatus('BELUM AMBIL')" class="px-2.5 py-1 rounded-lg border border-red-200 bg-red-50 hover:bg-red-100 text-red-800 text-[11px] font-bold shrink-0 transition">Belum Ambil</button>
+            <button type="button" onclick="setLpQuickStatus('BELUM SETOR KTP')" class="px-2.5 py-1 rounded-lg border border-orange-200 bg-orange-50 hover:bg-orange-100 text-orange-800 text-[11px] font-bold shrink-0 transition">Belum Setor KTP</button>
+            <button type="button" onclick="setLpQuickStatus('SUDAH AMBIL')" class="px-2.5 py-1 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-800 text-[11px] font-bold shrink-0 transition">Sudah Ambil</button>
+            <button type="button" onclick="setLpQuickStatus('SETOR KTP')" class="px-2.5 py-1 rounded-lg border border-purple-200 bg-purple-50 hover:bg-purple-100 text-purple-800 text-[11px] font-bold shrink-0 transition">Setor KTP</button>
+            <button type="button" onclick="setLpQuickStatus('SUDAH BAYAR')" class="px-2.5 py-1 rounded-lg border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-[11px] font-bold shrink-0 transition">Sudah Bayar</button>
+            <button type="button" onclick="setLpQuickStatus('FOTO DI KIOS')" class="px-2.5 py-1 rounded-lg border border-teal-200 bg-teal-50 hover:bg-teal-100 text-teal-800 text-[11px] font-bold shrink-0 transition">Foto Kios</button>
+            <button type="button" onclick="setLpQuickStatus('SURAT KUASA')" class="px-2.5 py-1 rounded-lg border border-sky-200 bg-sky-50 hover:bg-sky-100 text-sky-800 text-[11px] font-bold shrink-0 transition">Surat Kuasa</button>
+          </div>
+
+          <!-- Live KPI Ringkasan Filter Bar -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-center">
+            <div class="p-2 rounded-xl bg-white border border-slate-200 shadow-2xs">
+              <div class="text-[9.5px] font-bold uppercase text-slate-500">Petani Terpilih</div>
+              <div id="lp-kpi-petani" class="text-sm font-black text-slate-900 mt-0.5">0 Petani</div>
+            </div>
+            <div class="p-2 rounded-xl bg-white border border-slate-200 shadow-2xs">
+              <div class="text-[9.5px] font-bold uppercase text-slate-500">Urea (50kg)</div>
+              <div id="lp-kpi-urea" class="text-sm font-black text-blue-900 mt-0.5 font-mono">0 Sak</div>
+            </div>
+            <div class="p-2 rounded-xl bg-white border border-slate-200 shadow-2xs">
+              <div class="text-[9.5px] font-bold uppercase text-slate-500">Phonska (50kg)</div>
+              <div id="lp-kpi-phonska" class="text-sm font-black text-orange-900 mt-0.5 font-mono">0 Sak</div>
+            </div>
+            <div class="p-2 rounded-xl bg-white border border-slate-200 shadow-2xs">
+              <div class="text-[9.5px] font-bold uppercase text-slate-500">Organik (40kg)</div>
+              <div id="lp-kpi-organik" class="text-sm font-black text-emerald-900 mt-0.5 font-mono">0 Sak</div>
+            </div>
+            <div class="p-2 rounded-xl bg-emerald-50 border border-emerald-300 shadow-2xs">
+              <div class="text-[9.5px] font-bold uppercase text-emerald-800">Total Seluruh Sak</div>
+              <div id="lp-kpi-sak" class="text-sm font-black text-emerald-950 mt-0.5 font-mono">0 Sak</div>
+            </div>
+            <div class="p-2 rounded-xl bg-amber-50 border border-amber-300 shadow-2xs">
+              <div class="text-[9.5px] font-bold uppercase text-amber-800">Total Tagihan (Rp)</div>
+              <div id="lp-kpi-uang" class="text-sm font-black text-amber-950 mt-0.5 font-mono">Rp 0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lembar Cetak Dokumen Resmi -->
+        <div id="lp-print-sheet" class="space-y-4 pt-2">
+          <!-- Kop & Isi Tabel diisi dinamis oleh applyFilterPenebusanLaporan() -->
+        </div>
+      `;
+    }
+
+    function setLpQuickStatus(status) {
+      const el = document.getElementById('lp-status-filter');
+      if (el) {
+        el.value = status;
+        applyFilterPenebusanLaporan();
+      }
+    }
+
+    function resetFilterPenebusanLaporan() {
+      const s = document.getElementById('lp-status-filter');
+      const k = document.getElementById('lp-kloter-filter');
+      const kat = document.getElementById('lp-kategori-filter');
+      const q = document.getElementById('lp-search-filter');
+      if (s) s.value = '';
+      if (k) k.value = '';
+      if (kat) kat.value = 'ALL';
+      if (q) q.value = '';
+      applyFilterPenebusanLaporan();
+    }
+
+    function applyFilterPenebusanLaporan() {
+      const stFilter = (document.getElementById('lp-status-filter')?.value || '').trim();
+      const kloterFilter = (document.getElementById('lp-kloter-filter')?.value || '').trim();
+      const katFilter = (document.getElementById('lp-kategori-filter')?.value || 'ALL').trim();
+      const q = (document.getElementById('lp-search-filter')?.value || '').trim().toLowerCase();
+
+      const filtered = dataFilterPenebusan.filter(f => {
+        // Filter Kategori
+        if (katFilter === 'ERDKK' && f.isNon) return false;
+        if (katFilter === 'NON_ERDKK' && !f.isNon) return false;
+
+        // Filter Search
+        if (q && !f.nama.toLowerCase().includes(q) && !f.nik.toLowerCase().includes(q)) return false;
+
+        // Filter Kloter
+        if (kloterFilter === 'HANYA_KLOTER') {
+          if (!f.kloter.toUpperCase().includes('KLOTER')) return false;
+        } else if (kloterFilter === 'Mandiri / Belum') {
+          if (f.kloter.toUpperCase().includes('KLOTER')) return false;
+        } else if (kloterFilter && !f.kloter.toUpperCase().includes(kloterFilter.toUpperCase())) {
+          return false;
+        }
+
+        // Filter Status
+        if (stFilter) {
+          const s = (f.status + ' ' + f.ket).toUpperCase();
+          if (stFilter === 'BELUM AMBIL') {
+            const isSudah = s.includes('SUDAH AMBIL') || s.includes('SDH AMBIL');
+            if (isSudah) return false;
+            return s.includes('BELUM AMBIL') || true;
+          }
+          if (stFilter === 'SUDAH AMBIL') {
+            return s.includes('SUDAH AMBIL') || s.includes('SDH AMBIL');
+          }
+          if (stFilter === 'BELUM SETOR KTP') {
+            return s.includes('BELUM SETOR KTP');
+          }
+          if (stFilter === 'SETOR KTP') {
+            return s.includes('SETOR KTP') && !s.includes('BELUM SETOR KTP');
+          }
+          if (stFilter === 'SUDAH BAYAR') {
+            return s.includes('SUDAH BAYAR') || (f.uang > 0 && !s.includes('BELUM BAYAR'));
+          }
+          if (stFilter === 'BELUM BAYAR') {
+            return !s.includes('SUDAH BAYAR') && f.uang === 0;
+          }
+          if (stFilter === 'FOTO DI KIOS') {
+            return s.includes('FOTO');
+          }
+          if (stFilter === 'SURAT KUASA') {
+            return s.includes('SURAT KUASA');
+          }
+          if (stFilter === 'SUDAH MASUK USULAN') {
+            return s.includes('SUDAH MASUK USULAN') || s.includes('MASUK USULAN');
+          }
+          if (stFilter === 'PENGAJUAN DATA BARU') {
+            return s.includes('PENGAJUAN DATA BARU') || s.includes('PENGAJUAN');
+          }
+          if (stFilter === 'BELUM USULAN') {
+            return s.includes('BELUM USULAN');
+          }
+          return s.includes(stFilter.toUpperCase());
+        }
+
+        return true;
+      });
+
+      // Hitung akumulasi
+      let totU = 0, totP = 0, totO = 0, totUang = 0;
+      filtered.forEach(f => {
+        totU += f.u;
+        totP += f.p;
+        totO += f.o;
+        totUang += f.uang;
+      });
+
+      // Update KPI Bar
+      const elPetani = document.getElementById('lp-kpi-petani');
+      if (elPetani) elPetani.textContent = filtered.length + ' Petani';
+      const elU = document.getElementById('lp-kpi-urea');
+      if (elU) elU.textContent = totU + ' Sak';
+      const elP = document.getElementById('lp-kpi-phonska');
+      if (elP) elP.textContent = totP + ' Sak';
+      const elO = document.getElementById('lp-kpi-organik');
+      if (elO) elO.textContent = totO + ' Sak';
+      const elSak = document.getElementById('lp-kpi-sak');
+      if (elSak) elSak.textContent = (totU + totP + totO) + ' Sak';
+      const elUang = document.getElementById('lp-kpi-uang');
+      if (elUang) elUang.textContent = rupiah(totUang);
+
+      // Render Dokumen Cetak
+      const sheet = document.getElementById('lp-print-sheet');
+      if (!sheet) return;
+
+      const badgeStatus = (st) => {
+        const s = String(st || '').toUpperCase();
+        if (s.includes('BELUM AMBIL')) return '<span class="inline-block px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-red-100 text-red-800">' + esc(st) + '</span>';
+        if (s.includes('SUDAH AMBIL')) return '<span class="inline-block px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-blue-100 text-blue-800">' + esc(st) + '</span>';
+        if (s.includes('SETOR KTP')) return '<span class="inline-block px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-purple-100 text-purple-800">' + esc(st) + '</span>';
+        if (s.includes('FOTO')) return '<span class="inline-block px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-teal-100 text-teal-800">' + esc(st) + '</span>';
+        if (s.includes('SURAT')) return '<span class="inline-block px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-sky-100 text-sky-800">' + esc(st) + '</span>';
+        return '<span class="inline-block px-1.5 py-0.5 rounded text-[9.5px] font-semibold bg-slate-100 text-slate-700">' + esc(st || '-') + '</span>';
+      };
+
+      const rowsHtml = filtered.map((f, i) => `
+        <tr class="hover:bg-slate-50">
+          <td class="border border-slate-400 p-1 text-center font-mono text-[10px]">${i + 1}</td>
+          <td class="border border-slate-400 p-1 text-center font-mono text-[10px] text-slate-600">${esc(f.nik || '-')}</td>
+          <td class="border border-slate-400 p-1 font-bold text-slate-900">${esc(f.nama)} ${f.isNon ? '<span class="text-[9px] font-normal text-blue-700 italic">(Non-eRDKK)</span>' : ''}</td>
+          <td class="border border-slate-400 p-1 text-center text-[10.5px]">
+            <span class="px-1.5 py-0.5 rounded font-bold ${f.kloter.includes('Kloter') ? 'bg-purple-100 text-purple-800' : 'bg-slate-100 text-slate-600'}">${esc(f.kloter)}</span>
+          </td>
+          <td class="border border-slate-400 p-1 text-[10px]">${badgeStatus(f.status)}</td>
+          <td class="border border-slate-400 p-1 text-right font-mono text-[10.5px]">${f.u}</td>
+          <td class="border border-slate-400 p-1 text-right font-mono text-[10.5px]">${f.p}</td>
+          <td class="border border-slate-400 p-1 text-right font-mono text-[10.5px]">${f.o}</td>
+          <td class="border border-slate-400 p-1 text-right font-mono font-bold text-[10.5px] text-slate-900">${f.totSak}</td>
+          <td class="border border-slate-400 p-1 text-right font-mono font-semibold text-[10.5px] ${f.uang > 0 ? 'text-emerald-800' : 'text-slate-500'}">${f.uang > 0 ? rupiah(f.uang) : '-'}</td>
+          <td class="border border-slate-400 p-1 text-center text-[10px] text-slate-500">${esc(f.ket || '')}</td>
+        </tr>
+      `).join('');
+
+      sheet.innerHTML = `
+        ${kop('LAPORAN FILTER STATUS PENEBUSAN PUPUK BERSUBSIDI &amp; DAFTAR KLOTER PETANI')}
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs border border-slate-300 p-2.5 rounded-lg bg-slate-50/70">
+          <div>
+            <div><b>Filter Status:</b> <span class="uppercase">${esc(stFilter || 'Semua Status Penebusan')}</span></div>
+            <div class="mt-0.5"><b>Filter Kloter:</b> <span>${esc(kloterFilter || 'Semua Kloter &amp; Mandiri')}</span></div>
+          </div>
+          <div class="sm:text-right">
+            <div><b>Kategori Data:</b> <span>${katFilter === 'ERDKK' ? 'Petani e-RDKK MT3 2026' : (katFilter === 'NON_ERDKK' ? 'Petani Non-eRDKK (Cadangan)' : 'Semua Petani (e-RDKK + Non-eRDKK)')}</span></div>
+            <div class="mt-0.5"><b>Tanggal Cetak:</b> <span>${esc(tanggalFilterPenebusan)}</span></div>
+          </div>
+        </div>
+
+        ${kartu([
+          ['Total Petani', filtered.length + ' Petani', 'Sesuai Filter'],
+          ['Sak Urea (50kg)', totU + ' Sak', 'Pupuk Urea Bersubsidi'],
+          ['Sak NPK (50kg)', totP + ' Sak', 'Pupuk NPK Phonska'],
+          ['Sak Organik (40kg)', totO + ' Sak', 'Pupuk Organik Petro'],
+          ['Total Seluruh Sak', (totU + totP + totO) + ' Sak', 'Total Fisik Karung', 'text-emerald-900'],
+          ['Total Tagihan', rupiah(totUang), 'Akumulasi Nilai Rupiah', 'text-emerald-900']
+        ], 'bg-slate-50')}
+
+        <div class="overflow-x-auto -mx-1 sm:mx-0 my-2 rounded-lg">
+          <table class="w-full min-w-[750px] text-xs border border-slate-900">
+            <thead class="bg-slate-100 font-bold">
+              <tr>
+                <th class="${TH} text-center w-8">No</th>
+                <th class="${TH} text-center w-32">NIK</th>
+                <th class="${TH} text-left">Nama Petani</th>
+                <th class="${TH} text-center w-28">Kloter Surat Kuasa</th>
+                <th class="${TH} text-left">Status Penebusan / Kios</th>
+                <th class="${TH} text-right w-14">Urea</th>
+                <th class="${TH} text-right w-14">NPK</th>
+                <th class="${TH} text-right w-14">Org</th>
+                <th class="${TH} text-right w-16">Total Sak</th>
+                <th class="${TH} text-right w-24">Tagihan (Rp)</th>
+                <th class="${TH} text-center w-24">Paraf / Ket</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml || '<tr><td colspan="11" class="p-6 text-center text-slate-400 italic">Tidak ada data petani yang sesuai dengan filter yang dipilih.</td></tr>'}
+              <tr class="bg-slate-100 font-black border-t-2 border-slate-900">
+                <td colspan="5" class="${TD} uppercase text-right">TOTAL TERPILIH (${filtered.length} PETANI):</td>
+                <td class="${TD} text-right font-mono">${totU}</td>
+                <td class="${TD} text-right font-mono">${totP}</td>
+                <td class="${TD} text-right font-mono">${totO}</td>
+                <td class="${TD} text-right font-mono font-bold text-slate-900">${totU + totP + totO}</td>
+                <td class="${TD} text-right font-mono font-bold text-emerald-900">${rupiah(totUang)}</td>
+                <td class="${TD} text-center text-slate-500">-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        ${ttd(tanggalFilterPenebusan, [TTD_KUASA, TTD_BENDAHARA, TTD_KETUA])}
+      `;
+    }
+
     // ---------- Ekspor PDF Dokumen Laporan Terpilih ----------
     async function eksporPdfLaporan() {
       const activeDocId = DOCS.find(id => {
@@ -602,7 +989,8 @@
         'laporan_cetak': 'LAPORAN_PERTANGGUNGJAWABAN_PENYALURAN_PUPUK_POKTAN_SRI_MULYO.pdf',
         'rekap_kloter': 'REKAPITULASI_KLOTER_PENYALURAN_POKTAN_SRI_MULYO.pdf',
         'non_erdkk': 'LAPORAN_PETANI_NON_ERDKK_POKTAN_SRI_MULYO.pdf',
-        'target_sisa': 'LAPORAN_TARGET_SISA_PUPUK_POKTAN_SRI_MULYO.pdf'
+        'target_sisa': 'LAPORAN_TARGET_SISA_PUPUK_POKTAN_SRI_MULYO.pdf',
+        'filter_penebusan': 'LAPORAN_FILTER_PENEBUSAN_KLOTER_POKTAN_SRI_MULYO.pdf'
       }[activeDocId] || 'DOKUMEN_LAPORAN_POKTAN_SRI_MULYO.pdf';
 
       const opt = {
@@ -610,7 +998,7 @@
         filename: judulFile,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true, logging: false },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: activeDocId === 'filter_penebusan' ? 'landscape' : 'portrait' },
         pagebreak: { mode: ['css', 'legacy'] }
       };
 
@@ -639,14 +1027,16 @@
       if (btn) btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-emerald-600"></i> Memperbarui...';
       DOCS.forEach(d => { const el = document.getElementById('doc-' + d); if (el && !el.dataset.loaded) el.innerHTML = LOADING_HTML; });
       try {
-        const [cetak, kloter, non, sisa] = await Promise.all(['LAPORAN_CETAK', 'REKAP_KLOTER_CETAK', 'LAPORAN_NON_ERDKK', 'LAPORAN_TARGET_SISA'].map(muatSheet));
-        const tanggal = cariTanggal(non, kloter, cetak, sisa);
+        const [cetak, kloter, non, sisa, alokasi] = await Promise.all(['LAPORAN_CETAK', 'REKAP_KLOTER_CETAK', 'LAPORAN_NON_ERDKK', 'LAPORAN_TARGET_SISA', 'ALOKASI PEMBAGIAN'].map(muatSheet));
+        const tanggal = cariTanggal(non, kloter, cetak, sisa, alokasi);
         const ne = hitungNonErdkk(non);
         const set = (id, html) => { const el = document.getElementById('doc-' + id); el.innerHTML = html; el.dataset.loaded = '1'; };
         set('laporan_cetak', renderLaporanCetak(cetak, ne, tanggal));
         set('rekap_kloter', renderRekapKloter(kloter, tanggal));
         set('non_erdkk', renderNonErdkk(ne, tanggal));
         set('target_sisa', renderTargetSisa(sisa, tanggal));
+        set('filter_penebusan', initFilterPenebusanDoc(alokasi, kloter, tanggal));
+        applyFilterPenebusanLaporan();
         errBox.classList.add('hidden');
         const jam = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
         if (badge) badge.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600"></i> Sinkron Google Sheets • ' + jam;
