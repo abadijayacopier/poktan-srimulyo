@@ -1648,12 +1648,12 @@
         <!-- Rincian Lahan -->
         <div class="grid grid-cols-2 gap-3">
           <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
-            <span id="det-lahan-e-label" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">LUAS ALOKASI ERDKK (KOLOM E)</span>
-            <span id="det-lahan-asli" class="text-sm font-black text-slate-900 font-mono">-</span>
+            <span id="det-lahan-d-label" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">LUAS ALOKASI ERDKK (KOLOM D)</span>
+            <span id="det-lahan-rev" class="text-sm font-black text-slate-900 font-mono">-</span>
           </div>
           <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
-            <span id="det-lahan-d-label" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">LAHAN REVISI / BLOK (KOLOM D)</span>
-            <span id="det-lahan-rev" class="text-sm font-black text-slate-900 font-mono">-</span>
+            <span id="det-lahan-e-label" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">REVISI LAHAN ASLI (KOLOM E)</span>
+            <span id="det-lahan-asli" class="text-sm font-black text-slate-900 font-mono">-</span>
           </div>
         </div>
 
@@ -1715,7 +1715,7 @@
           </div>
           <div>
             <h3 id="edit-petani-nama" class="font-bold text-sm uppercase">-</h3>
-            <p class="text-xs text-slate-400">Ubah status, luas alokasi ERDKK (Kolom E), lahan, atau sak pupuk</p>
+            <p class="text-xs text-slate-400">Ubah status, luas alokasi ERDKK, revisi lahan asli, atau sak pupuk</p>
           </div>
         </div>
         <button type="button" onclick="closeAlokasiEditModal()" class="text-slate-400 hover:text-white p-1">
@@ -1735,18 +1735,18 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label for="edit-luas-erdkk" class="mb-1 block text-xs font-bold text-slate-700 uppercase flex items-center justify-between">
-              <span id="edit-luas-erdkk-title">Luas Alokasi ERDKK (Ha)</span>
-              <span class="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">Kolom E</span>
-            </label>
-            <input id="edit-luas-erdkk" type="text" class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs outline-none focus:border-emerald-500 font-mono" placeholder="Contoh: 0,28">
-          </div>
-          <div>
             <label for="edit-lahan-rev" id="edit-lahan-d-label" class="mb-1 block text-xs font-bold text-slate-700 uppercase flex items-center justify-between">
-              <span id="edit-lahan-d-title">Lahan Revisi / Blok</span>
-              <span class="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">Kolom D</span>
+              <span id="edit-lahan-d-title">Luas Alokasi ERDKK (Ha)</span>
+              <span class="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">Kolom D</span>
             </label>
             <input id="edit-lahan-rev" type="text" class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs outline-none focus:border-emerald-500 font-mono" placeholder="Contoh: 0,14">
+          </div>
+          <div>
+            <label for="edit-luas-erdkk" class="mb-1 block text-xs font-bold text-slate-700 uppercase flex items-center justify-between">
+              <span id="edit-luas-erdkk-title">Revisi Lahan Asli (Ha)</span>
+              <span class="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">Kolom E</span>
+            </label>
+            <input id="edit-luas-erdkk" type="text" class="w-full rounded-xl border border-slate-200 py-2 px-3 text-xs outline-none focus:border-emerald-500 font-mono" placeholder="Contoh: 0,28">
           </div>
         </div>
 
@@ -2778,20 +2778,20 @@
 
       document.getElementById('det-uang').textContent = v[12] || 'Rp 0';
 
-      const lblE = document.getElementById('det-lahan-e-label');
       const lblD = document.getElementById('det-lahan-d-label');
-      if (lblE && lblD) {
+      const lblE = document.getElementById('det-lahan-e-label');
+      if (lblD && lblE) {
         if (isNonErdkk) {
-          lblE.textContent = 'LUAS LAHAN ASLI (KOLOM E)';
           lblD.textContent = 'BLOK SAWAH (KOLOM D)';
+          lblE.textContent = 'LUAS LAHAN ASLI (KOLOM E)';
         } else {
-          lblE.textContent = 'LUAS ALOKASI ERDKK (KOLOM E)';
-          lblD.textContent = 'LAHAN REVISI (KOLOM D)';
+          lblD.textContent = 'LUAS ALOKASI ERDKK (KOLOM D)';
+          lblE.textContent = 'REVISI LAHAN ASLI (KOLOM E)';
         }
       }
 
-      document.getElementById('det-lahan-asli').textContent = (v[4] && String(v[4]).trim() && String(v[4]).trim() !== '0') ? (String(v[4]).trim() + ' Ha') : '-';
       document.getElementById('det-lahan-rev').textContent = isNonErdkk ? (v[3] ? ('Blok: ' + v[3]) : '-') : ((v[3] || '-') + (v[3] ? ' Ha' : ''));
+      document.getElementById('det-lahan-asli').textContent = (v[4] && String(v[4]).trim() && String(v[4]).trim() !== '0') ? (String(v[4]).trim() + ' Ha') : '-';
 
       const uSakVal = parseSak(v[9]);
       const pSakVal = parseSak(v[10]);
@@ -2849,22 +2849,22 @@
       document.getElementById('edit-row-index').value = row;
       document.getElementById('edit-petani-nama').textContent = 'Edit Data: ' + (v[2] || '-');
 
-      const labelErdkkTitle = document.getElementById('edit-luas-erdkk-title');
-      const inputErdkk = document.getElementById('edit-luas-erdkk');
       const labelDTitle = document.getElementById('edit-lahan-d-title');
       const inputLahanD = document.getElementById('edit-lahan-rev');
+      const labelETitle = document.getElementById('edit-luas-erdkk-title');
+      const inputLahanE = document.getElementById('edit-luas-erdkk');
 
-      if (labelErdkkTitle && inputErdkk) {
-        labelErdkkTitle.textContent = isNonErdkk ? 'Luas Lahan Asli (Ha)' : 'Luas Alokasi ERDKK (Ha)';
-        inputErdkk.placeholder = isNonErdkk ? 'Contoh: 0,14' : 'Contoh: 0,28';
-      }
       if (labelDTitle && inputLahanD) {
-        labelDTitle.textContent = isNonErdkk ? 'Blok Sawah / Alamat' : 'Lahan Revisi (Ha)';
+        labelDTitle.textContent = isNonErdkk ? 'Blok Sawah / Alamat' : 'Luas Alokasi ERDKK (Ha)';
         inputLahanD.placeholder = isNonErdkk ? 'Contoh: MBAMBUNG, SETEKEK' : 'Contoh: 0,14';
       }
+      if (labelETitle && inputLahanE) {
+        labelETitle.textContent = isNonErdkk ? 'Luas Lahan Asli (Ha)' : 'Revisi Lahan Asli (Ha)';
+        inputLahanE.placeholder = isNonErdkk ? 'Contoh: 0,14' : 'Contoh: 0,28';
+      }
 
-      if (inputErdkk) inputErdkk.value = (v[4] !== undefined && v[4] !== null) ? String(v[4]).trim() : '';
       if (inputLahanD) inputLahanD.value = (v[3] !== undefined && v[3] !== null) ? String(v[3]).trim() : '';
+      if (inputLahanE) inputLahanE.value = (v[4] !== undefined && v[4] !== null) ? String(v[4]).trim() : '';
 
       document.getElementById('edit-uang').value = v[12] || '';
       document.getElementById('edit-sak-urea').value = (v[9] !== undefined && v[9] !== null) ? String(v[9]).trim() : '';
@@ -2914,8 +2914,8 @@
             <div class="text-slate-600 font-mono text-[11px] mb-2">NIK: <b class="text-slate-800">${escAl(nik)}</b></div>
             <div class="flex flex-wrap items-center gap-1.5">
               <span class="px-2 py-0.5 rounded-md bg-emerald-700 text-white font-bold text-[10px] uppercase">${escAl(status)}</span>
-              ${luasE ? `<span class="px-2 py-0.5 rounded-md bg-white border border-emerald-300 text-emerald-900 font-mono text-[10px]">Alokasi ERDKK (Kolom E): <b>${escAl(luasE)} Ha</b></span>` : ''}
-              ${luasD ? `<span class="px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-slate-700 font-mono text-[10px]">Lahan/Blok (Kolom D): <b>${escAl(luasD)}</b></span>` : ''}
+              ${luasD ? `<span class="px-2 py-0.5 rounded-md bg-emerald-100/80 border border-emerald-300 text-emerald-900 font-mono text-[10px]">${alokasiJenis === 'NON_ERDKK' ? 'Blok' : 'Luas Alokasi ERDKK (Kolom D)'}: <b>${escAl(luasD)}${alokasiJenis !== 'NON_ERDKK' && !luasD.includes('Ha') && !luasD.includes('ha') ? ' Ha' : ''}</b></span>` : ''}
+              ${luasE ? `<span class="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700 font-mono text-[10px]">${alokasiJenis === 'NON_ERDKK' ? 'Luas Lahan Asli' : 'Revisi Lahan Asli (Kolom E)'}: <b>${escAl(luasE)}${!luasE.includes('Ha') && !luasE.includes('ha') ? ' Ha' : ''}</b></span>` : ''}
             </div>
           </div>
           <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-[11px] font-mono text-slate-700">
@@ -3016,7 +3016,7 @@
       showSwalAlert({
         icon: 'info',
         title: 'Mode Edit Tabel Aktif',
-        text: 'Ubah data pada kolom yang dapat diedit (Kolom E Luas Alokasi ERDKK, status, sak, uang, atau keterangan), lalu tekan ikon Simpan untuk memperbarui Google Sheet.'
+        text: 'Ubah data pada kolom yang dapat diedit (Kolom E Revisi Lahan Asli, status, sak, uang, atau keterangan), lalu tekan ikon Simpan untuk memperbarui Google Sheet.'
       });
     }
 
