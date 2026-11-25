@@ -82,21 +82,21 @@
       </div>
     </header>
 
-    <!-- KPI Grand Total Card: Target Sisa Pupuk Terakhir (Baris 249) -->
+    <!-- KPI Grand Total Card: Target Sisa Pupuk Terakhir -->
     <div class="bg-gradient-to-br from-emerald-900/50 via-slate-800/90 to-teal-950/60 border border-emerald-500/30 rounded-2xl p-6 shadow-2xl relative">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">
-            <i class="fa-solid fa-flag-checkered"></i> Hasil Akhir (Baris 247 - 249)
+            <i class="fa-solid fa-flag-checkered"></i> Hasil Akhir (Live Sync Spreadsheet)
           </div>
           <h2 class="text-xl sm:text-2xl font-extrabold text-white">Target Sisa Pupuk Pengajuan + Pembagian</h2>
           <p class="text-xs text-slate-300 mt-0.5">
-            Formula Sheet: <code class="bg-slate-900/80 px-2 py-0.5 rounded text-emerald-300 font-mono text-xs">= Target Penyisaan (G245) + Sisa Pembagian Petani (G241)</code>
+            Formula Sheet: <code class="bg-slate-900/80 px-2 py-0.5 rounded text-emerald-300 font-mono text-xs">= Target Sisa Non-eRDKK + Sisa Pembagian Fisik Petani</code>
           </p>
         </div>
         <div class="text-left md:text-right">
           <span class="text-xs text-slate-400 uppercase font-semibold">Total Sisa Pupuk Cadangan</span>
-          <div id="total-sisa-sak" class="text-3xl sm:text-4xl font-black text-emerald-400 tracking-tight">71 SAK</div>
+          <div id="total-sisa-sak" class="text-3xl sm:text-4xl font-black text-emerald-400 tracking-tight">77 SAK</div>
         </div>
       </div>
 
@@ -106,15 +106,15 @@
         <div class="bg-slate-800/90 border border-emerald-500/40 rounded-xl p-4 shadow-lg hover:border-emerald-400 transition">
           <div class="flex items-center justify-between text-xs text-slate-400 font-bold uppercase">
             <span>Urea (50 kg)</span>
-            <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono text-[11px]">Sel G249</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono text-[11px]">Kolom G</span>
           </div>
           <div class="mt-2 flex items-baseline justify-between">
-            <span id="final-urea" class="text-3xl sm:text-4xl font-black text-emerald-400 font-mono">32</span>
+            <span id="final-urea" class="text-3xl sm:text-4xl font-black text-emerald-400 font-mono">28</span>
             <span class="text-sm font-bold text-slate-400">SAK</span>
           </div>
           <div class="mt-3 pt-3 border-t border-slate-700/60 text-xs text-slate-400 flex items-center justify-between">
             <span>Rincian Formula:</span>
-            <span id="formula-urea" class="font-mono text-emerald-300 font-semibold">= 17 + 15</span>
+            <span id="formula-urea" class="font-mono text-emerald-300 font-semibold">= 17 + 11</span>
           </div>
         </div>
 
@@ -122,15 +122,15 @@
         <div class="bg-slate-800/90 border border-amber-500/40 rounded-xl p-4 shadow-lg hover:border-amber-400 transition">
           <div class="flex items-center justify-between text-xs text-slate-400 font-bold uppercase">
             <span>Phonska (50 kg)</span>
-            <span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-mono text-[11px]">Sel H249</span>
+            <span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-mono text-[11px]">Kolom H</span>
           </div>
           <div class="mt-2 flex items-baseline justify-between">
-            <span id="final-phonska" class="text-3xl sm:text-4xl font-black text-amber-400 font-mono">23</span>
+            <span id="final-phonska" class="text-3xl sm:text-4xl font-black text-amber-400 font-mono">28</span>
             <span class="text-sm font-bold text-slate-400">SAK</span>
           </div>
           <div class="mt-3 pt-3 border-t border-slate-700/60 text-xs text-slate-400 flex items-center justify-between">
             <span>Rincian Formula:</span>
-            <span id="formula-phonska" class="font-mono text-amber-300 font-semibold">= 8 + 15</span>
+            <span id="formula-phonska" class="font-mono text-amber-300 font-semibold">= 8 + 20</span>
           </div>
         </div>
 
@@ -138,15 +138,15 @@
         <div class="bg-slate-800/90 border border-teal-500/40 rounded-xl p-4 shadow-lg hover:border-teal-400 transition">
           <div class="flex items-center justify-between text-xs text-slate-400 font-bold uppercase">
             <span>Organik (40 kg)</span>
-            <span class="px-2 py-0.5 rounded bg-teal-500/10 text-teal-400 font-mono text-[11px]">Sel I249</span>
+            <span class="px-2 py-0.5 rounded bg-teal-500/10 text-teal-400 font-mono text-[11px]">Kolom I</span>
           </div>
           <div class="mt-2 flex items-baseline justify-between">
-            <span id="final-organik" class="text-3xl sm:text-4xl font-black text-teal-400 font-mono">16</span>
+            <span id="final-organik" class="text-3xl sm:text-4xl font-black text-teal-400 font-mono">21</span>
             <span class="text-sm font-bold text-slate-400">SAK</span>
           </div>
           <div class="mt-3 pt-3 border-t border-slate-700/60 text-xs text-slate-400 flex items-center justify-between">
             <span>Rincian Formula:</span>
-            <span id="formula-organik" class="font-mono text-teal-300 font-semibold">= 5 + 11</span>
+            <span id="formula-organik" class="font-mono text-teal-300 font-semibold">= 5 + 16</span>
           </div>
         </div>
       </div>
@@ -163,7 +163,7 @@
           <p class="text-xs text-slate-400 mt-0.5">Penjelasan bertingkat bagaimana angka sisa pupuk dihitung dari data input sheet</p>
         </div>
         <span class="px-3 py-1 rounded-lg bg-slate-700 text-xs font-medium text-slate-300">
-          Spreadsheet Baris 232 → 249
+          Sheet ALOKASI PEMBAGIAN &amp; TARGET_SISA
         </span>
       </div>
 
@@ -175,7 +175,7 @@
             <h4 class="text-sm font-bold text-white">Pengajuan ke PPL Lembeyan</h4>
           </div>
           <p class="text-xs text-slate-400 mt-1">
-            Diambil dari sheet <span class="text-blue-300 font-mono">'ALOKASI ERDKK'</span> baris 196 lalu dibagi ukuran sak (50kg / 40kg).
+            Diambil dari sheet <span class="text-blue-300 font-mono">'ALOKASI ERDKK'</span> lalu dibagi ukuran sak (50kg / 40kg).
           </p>
           <div class="mt-2 text-xs font-mono text-slate-400 space-y-0.5 bg-slate-950/50 p-2 rounded">
             <div>Urea: <code class="text-blue-300">='ALOKASI ERDKK'!O196/50</code></div>
@@ -185,17 +185,17 @@
         </div>
         <div class="lg:col-span-8 grid grid-cols-3 gap-2">
           <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 text-center">
-            <div class="text-[11px] text-slate-400 font-semibold">Urea (G234)</div>
+            <div class="text-[11px] text-slate-400 font-semibold">Urea (50 kg)</div>
             <div id="pengajuan-urea" class="text-lg font-mono font-black text-white">287 <span class="text-xs font-normal text-slate-400">SAK</span></div>
             <div id="pengajuan-urea-kg" class="text-[10px] text-slate-500">14.350 kg</div>
           </div>
           <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 text-center">
-            <div class="text-[11px] text-slate-400 font-semibold">Phonska (H234)</div>
+            <div class="text-[11px] text-slate-400 font-semibold">Phonska (50 kg)</div>
             <div id="pengajuan-phonska" class="text-lg font-mono font-black text-white">261 <span class="text-xs font-normal text-slate-400">SAK</span></div>
             <div id="pengajuan-phonska-kg" class="text-[10px] text-slate-500">13.050 kg</div>
           </div>
           <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 text-center">
-            <div class="text-[11px] text-slate-400 font-semibold">Organik (I234)</div>
+            <div class="text-[11px] text-slate-400 font-semibold">Organik (40 kg)</div>
             <div id="pengajuan-organik" class="text-lg font-mono font-black text-white">255 <span class="text-xs font-normal text-slate-400">SAK</span></div>
             <div id="pengajuan-organik-kg" class="text-[10px] text-slate-500">10.200 kg</div>
           </div>
@@ -225,17 +225,17 @@
         </div>
         <div class="lg:col-span-8 grid grid-cols-3 gap-2">
           <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 text-center">
-            <div class="text-[11px] text-slate-400 font-semibold">Urea (G238)</div>
+            <div class="text-[11px] text-slate-400 font-semibold">Urea (50 kg)</div>
             <div id="bagi-urea" class="text-lg font-mono font-black text-white">270 <span class="text-xs font-normal text-slate-400">SAK</span></div>
             <div id="bagi-urea-kg" class="text-[10px] text-slate-500">13.500 kg</div>
           </div>
           <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 text-center">
-            <div class="text-[11px] text-slate-400 font-semibold">Phonska (H238)</div>
+            <div class="text-[11px] text-slate-400 font-semibold">Phonska (50 kg)</div>
             <div id="bagi-phonska" class="text-lg font-mono font-black text-white">253 <span class="text-xs font-normal text-slate-400">SAK</span></div>
             <div id="bagi-phonska-kg" class="text-[10px] text-slate-500">12.650 kg</div>
           </div>
           <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 text-center">
-            <div class="text-[11px] text-slate-400 font-semibold">Organik (I238)</div>
+            <div class="text-[11px] text-slate-400 font-semibold">Organik (40 kg)</div>
             <div id="bagi-organik" class="text-lg font-mono font-black text-white">250 <span class="text-xs font-normal text-slate-400">SAK</span></div>
             <div id="bagi-organik-kg" class="text-[10px] text-slate-500">10.000 kg</div>
           </div>
@@ -261,17 +261,17 @@
           </p>
           <div class="grid grid-cols-3 gap-2">
             <div class="bg-slate-800 p-2.5 rounded text-center">
-              <div class="text-[10px] text-slate-400">G245 (Urea)</div>
+              <div class="text-[10px] text-slate-400">Urea (50 kg)</div>
               <div id="non-urea" class="font-mono font-bold text-purple-300">17 SAK</div>
               <div id="non-calc-urea" class="text-[9px] text-slate-500">287 - 270</div>
             </div>
             <div class="bg-slate-800 p-2.5 rounded text-center">
-              <div class="text-[10px] text-slate-400">H245 (Phonska)</div>
+              <div class="text-[10px] text-slate-400">Phonska (50 kg)</div>
               <div id="non-phonska" class="font-mono font-bold text-purple-300">8 SAK</div>
               <div id="non-calc-phonska" class="text-[9px] text-slate-500">261 - 253</div>
             </div>
             <div class="bg-slate-800 p-2.5 rounded text-center">
-              <div class="text-[10px] text-slate-400">I245 (Organik)</div>
+              <div class="text-[10px] text-slate-400">Organik (40 kg)</div>
               <div id="non-organik" class="font-mono font-bold text-purple-300">5 SAK</div>
               <div id="non-calc-organik" class="text-[9px] text-slate-500">255 - 250</div>
             </div>
@@ -286,22 +286,22 @@
           </div>
           <p class="text-xs text-slate-400 mb-3">
             Sisa fisik pupuk yang belum diambil / operasional pembagian:
-            <code class="text-cyan-300 font-mono">= J204 - J228</code>
+            <code class="text-cyan-300 font-mono">= Kuota Petani - Diambil</code>
           </p>
           <div class="grid grid-cols-3 gap-2">
             <div class="bg-slate-800 p-2.5 rounded text-center">
-              <div class="text-[10px] text-slate-400">G241 (Urea)</div>
-              <div id="sisabagi-urea" class="font-mono font-bold text-cyan-300">15 SAK</div>
+              <div class="text-[10px] text-slate-400">Urea (50 kg)</div>
+              <div id="sisabagi-urea" class="font-mono font-bold text-cyan-300">11 SAK</div>
               <div class="text-[9px] text-slate-500">Sisa Fisik</div>
             </div>
             <div class="bg-slate-800 p-2.5 rounded text-center">
-              <div class="text-[10px] text-slate-400">H241 (Phonska)</div>
-              <div id="sisabagi-phonska" class="font-mono font-bold text-cyan-300">15 SAK</div>
+              <div class="text-[10px] text-slate-400">Phonska (50 kg)</div>
+              <div id="sisabagi-phonska" class="font-mono font-bold text-cyan-300">20 SAK</div>
               <div class="text-[9px] text-slate-500">Sisa Fisik</div>
             </div>
             <div class="bg-slate-800 p-2.5 rounded text-center">
-              <div class="text-[10px] text-slate-400">I241 (Organik)</div>
-              <div id="sisabagi-organik" class="font-mono font-bold text-cyan-300">11 SAK</div>
+              <div class="text-[10px] text-slate-400">Organik (40 kg)</div>
+              <div id="sisabagi-organik" class="font-mono font-bold text-cyan-300">16 SAK</div>
               <div class="text-[9px] text-slate-500">Sisa Fisik</div>
             </div>
           </div>
@@ -320,13 +320,13 @@
             <i class="fa-solid fa-equals"></i>
           </div>
           <div>
-            <div class="text-sm font-bold text-white">Penjumlahan Final (Baris 247-249)</div>
-            <div id="final-summary-formula" class="text-xs text-slate-400 font-mono">Urea: 17 + 15 = 32 SAK | Phonska: 8 + 15 = 23 SAK | Organik: 5 + 11 = 16 SAK</div>
+            <div class="text-sm font-bold text-white">Penjumlahan Final (Live Realtime Sync)</div>
+            <div id="final-summary-formula" class="text-xs text-slate-400 font-mono">Urea: 17 + 11 = 28 SAK | Phonska: 8 + 20 = 28 SAK | Organik: 5 + 16 = 21 SAK</div>
           </div>
         </div>
         <div class="flex items-center gap-2">
           <span id="final-total-badge" class="px-3.5 py-1.5 rounded-lg bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-mono text-xs font-bold">
-            Total Sisa Cadangan: 71 SAK
+            Total Sisa Cadangan: 77 SAK
           </span>
         </div>
       </div>
@@ -344,27 +344,27 @@
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-700/60">
           <div class="text-[11px] text-slate-400 font-semibold truncate">Sudah Ambil & Setor KTP</div>
-          <div id="stat-ambil-ktp" class="text-xl font-bold font-mono text-emerald-400 mt-1">140 <span class="text-xs text-slate-400 font-normal">Petani</span></div>
+          <div id="stat-ambil-ktp" class="text-xl font-bold font-mono text-emerald-400 mt-1">146 <span class="text-xs text-slate-400 font-normal">Petani</span></div>
         </div>
         <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-700/60">
           <div class="text-[11px] text-slate-400 font-semibold truncate">Foto di Kios</div>
-          <div id="stat-foto-kios" class="text-xl font-bold font-mono text-cyan-400 mt-1">13 <span class="text-xs text-slate-400 font-normal">Petani</span></div>
+          <div id="stat-foto-kios" class="text-xl font-bold font-mono text-cyan-400 mt-1">12 <span class="text-xs text-slate-400 font-normal">Petani</span></div>
         </div>
         <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-700/60">
           <div class="text-[11px] text-slate-400 font-semibold truncate">Sudah Ambil, Belum KTP</div>
-          <div id="stat-ambil-noktp" class="text-xl font-bold font-mono text-amber-400 mt-1">4 <span class="text-xs text-slate-400 font-normal">Petani</span></div>
+          <div id="stat-ambil-noktp" class="text-xl font-bold font-mono text-amber-400 mt-1">5 <span class="text-xs text-slate-400 font-normal">Petani</span></div>
         </div>
         <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-700/60">
           <div class="text-[11px] text-slate-400 font-semibold truncate">Belum Ambil, Ada KTP</div>
-          <div id="stat-noambil-ktp" class="text-xl font-bold font-mono text-indigo-400 mt-1">9 <span class="text-xs text-slate-400 font-normal">Petani</span></div>
+          <div id="stat-noambil-ktp" class="text-xl font-bold font-mono text-indigo-400 mt-1">4 <span class="text-xs text-slate-400 font-normal">Petani</span></div>
         </div>
         <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-700/60">
           <div class="text-[11px] text-slate-400 font-semibold truncate">Belum Setor KTP</div>
-          <div id="stat-noktp" class="text-xl font-bold font-mono text-rose-400 mt-1">22 <span class="text-xs text-slate-400 font-normal">Petani</span></div>
+          <div id="stat-noktp" class="text-xl font-bold font-mono text-rose-400 mt-1">18 <span class="text-xs text-slate-400 font-normal">Petani</span></div>
         </div>
         <div class="bg-slate-900/60 p-3.5 rounded-xl border border-emerald-500/40 bg-emerald-950/20">
           <div class="text-[11px] text-emerald-400 font-semibold truncate">Total Sudah Ambil</div>
-          <div id="stat-total-ambil" class="text-xl font-bold font-mono text-emerald-300 mt-1">157 <span class="text-xs text-emerald-500 font-normal">Petani</span></div>
+          <div id="stat-total-ambil" class="text-xl font-bold font-mono text-emerald-300 mt-1">163 <span class="text-xs text-emerald-500 font-normal">Petani</span></div>
         </div>
       </div>
     </section>
@@ -388,8 +388,9 @@
       return isNaN(num) ? 0 : num;
     }
 
-    async function querySheet(range) {
-      const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent('ALOKASI PEMBAGIAN')}&range=${encodeURIComponent(range)}&t=${Date.now()}`;
+    async function querySheet(sheetName, range) {
+      let url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&t=${Date.now()}`;
+      if (range) url += `&range=${encodeURIComponent(range)}`;
       const res = await fetch(url);
       const text = await res.text();
       const jsonStr = text.replace(/^[^{]*\{/, '{').replace(/\}[^}]*$/, '}');
@@ -400,124 +401,183 @@
       const refreshIcon = document.getElementById('refresh-icon');
       const syncStatus = document.getElementById('sync-status');
       if (refreshIcon) refreshIcon.classList.add('fa-spin');
-      if (syncStatus) syncStatus.textContent = 'Memperbarui data dari Google Sheet...';
+      if (syncStatus) syncStatus.textContent = 'Menghubungkan & menyinkronkan Google Sheets...';
 
       try {
-        // 1. Ambil data Tabel Formula (F230:I250)
-        const formulaRes = await querySheet('F230:I250');
-        const rows = formulaRes.table.rows;
+        let pengajuan = null;
+        let bagi = null;
+        let sisaBagi = null;
+        let nonErdkk = null;
+        let finalSisa = null;
 
-        // Row mapping di range F230:I250
-        // row[0] = 234 (Pengajuan)
-        // row[3] = 238 (Pembagian)
-        // row[5] = 241 (Sisa bagi)
-        // row[8] = 245 (Target non-erdkk)
-        // row[11] = 249 (Target sisa final)
+        // 1. Ambil data utama dari sheet 'ALOKASI PEMBAGIAN' range B180:J350
+        // Range ini mencakup akhir daftar petani non-erdkk, total, statistik KTP, dan tabel ringkasan rumus
+        const alokasiData = await querySheet('ALOKASI PEMBAGIAN', 'B180:J350');
+        const rows = alokasiData.table.rows || [];
 
-        const pengajuan = {
-          urea: parseVal(rows[0].c[1]),
-          phonska: parseVal(rows[0].c[2]),
-          organik: parseVal(rows[0].c[3])
-        };
+        // Cari baris mulainya area ringkasan rumus (setelah TOTAL : non-erdkk atau baris status KTP)
+        let summaryStartIdx = -1;
+        for (let i = 0; i < rows.length; i++) {
+          const text = (rows[i].c || []).map(c => String(c?.v || '')).join(' ').toUpperCase();
+          if (text.includes('TOTAL :') || text.includes('SUDAH AMBIL & SETOR KTP')) {
+            summaryStartIdx = i;
+            break;
+          }
+        }
+        if (summaryStartIdx === -1) summaryStartIdx = 0;
 
-        const bagi = {
-          urea: parseVal(rows[3].c[1]),
-          phonska: parseVal(rows[3].c[2]),
-          organik: parseVal(rows[3].c[3])
-        };
+        // Kumpulkan blok data numerik pupuk (Urea, Phonska, Organik di kolom G, H, I -> index 5, 6, 7)
+        const summaryBlocks = [];
+        for (let i = summaryStartIdx; i < rows.length; i++) {
+          const c = rows[i].c || [];
+          const vG = parseVal(c[5]);
+          const vH = parseVal(c[6]);
+          const vI = parseVal(c[7]);
+          if (vG > 0 && vH > 0 && vI > 0) {
+            summaryBlocks.push({ urea: vG, phonska: vH, organik: vI });
+          }
+        }
 
-        const sisaBagi = {
-          urea: parseVal(rows[5].c[1]),
-          phonska: parseVal(rows[5].c[2]),
-          organik: parseVal(rows[5].c[3])
-        };
+        if (summaryBlocks.length >= 5) {
+          // Blok 0: Pengajuan ke PPL (287, 261, 255)
+          // Blok 1: Pembagian Pupuk (270, 253, 250)
+          // Blok 2: Sisa Semua Pupuk Pembagian Fisik (11, 20, 16)
+          // Blok 3: Target Penyisaan Non-ERDKK (17, 8, 5)
+          // Blok 4: Target Sisa Pupuk Final (28, 28, 21)
+          pengajuan = summaryBlocks[0];
+          bagi = summaryBlocks[1];
+          sisaBagi = summaryBlocks[2];
+          nonErdkk = summaryBlocks[3];
+          finalSisa = summaryBlocks[4];
+        }
 
-        const nonErdkk = {
-          urea: parseVal(rows[8].c[1]),
-          phonska: parseVal(rows[8].c[2]),
-          organik: parseVal(rows[8].c[3])
-        };
+        // 2. Fallback aman: Jika struktur sheet ALOKASI bergeser drastis, baca langsung dari 'LAPORAN_TARGET_SISA'
+        if (!finalSisa || !pengajuan || !bagi) {
+          try {
+            const targetSisaData = await querySheet('LAPORAN_TARGET_SISA');
+            const targetRows = targetSisaData.table.rows || [];
+            targetRows.forEach(r => {
+              const c = r.c || [];
+              const label = String(c[1]?.v || '').trim().toUpperCase();
+              if (label.includes('1. PENGAJUAN ALOKASI KE PPL')) {
+                pengajuan = { urea: parseVal(c[3]), phonska: parseVal(c[4]), organik: parseVal(c[5]) };
+              } else if (label.includes('2. PEMBAGIAN PUPUK')) {
+                bagi = { urea: parseVal(c[3]), phonska: parseVal(c[4]), organik: parseVal(c[5]) };
+              } else if (label.includes('TARGET SISA PENGAJUAN PPL')) {
+                nonErdkk = { urea: parseVal(c[3]), phonska: parseVal(c[4]), organik: parseVal(c[5]) };
+              } else if (label.includes('SISA SEMUA PUPUK HASIL PEMBAGIAN')) {
+                sisaBagi = { urea: parseVal(c[3]), phonska: parseVal(c[4]), organik: parseVal(c[5]) };
+              } else if (label.includes('TOTAL TARGET SISA PUPUK')) {
+                finalSisa = { urea: parseVal(c[3]), phonska: parseVal(c[4]), organik: parseVal(c[5]) };
+              }
+            });
+          } catch (fallbackErr) {
+            console.warn('Fallback LAPORAN_TARGET_SISA error:', fallbackErr);
+          }
+        }
 
-        const finalSisa = {
-          urea: parseVal(rows[11].c[1]),
-          phonska: parseVal(rows[11].c[2]),
-          organik: parseVal(rows[11].c[3])
-        };
+        // Hitung ulang jika ada komponen yang belum terisi
+        if (!nonErdkk && pengajuan && bagi) {
+          nonErdkk = {
+            urea: Math.max(0, pengajuan.urea - bagi.urea),
+            phonska: Math.max(0, pengajuan.phonska - bagi.phonska),
+            organik: Math.max(0, pengajuan.organik - bagi.organik)
+          };
+        }
+        if (!finalSisa && nonErdkk && sisaBagi) {
+          finalSisa = {
+            urea: nonErdkk.urea + sisaBagi.urea,
+            phonska: nonErdkk.phonska + sisaBagi.phonska,
+            organik: nonErdkk.organik + sisaBagi.organik
+          };
+        }
 
-        const totalSak = finalSisa.urea + finalSisa.phonska + finalSisa.organik;
+        // Render data formula sisa pupuk jika berhasil didapatkan
+        if (finalSisa && pengajuan && bagi && sisaBagi && nonErdkk) {
+          const totalSak = finalSisa.urea + finalSisa.phonska + finalSisa.organik;
 
-        // Render ke DOM
-        document.getElementById('total-sisa-sak').textContent = `${totalSak} SAK`;
-        document.getElementById('final-total-badge').textContent = `Total Sisa Cadangan: ${totalSak} SAK`;
+          document.getElementById('total-sisa-sak').textContent = `${totalSak} SAK`;
+          document.getElementById('final-total-badge').textContent = `Total Sisa Cadangan: ${totalSak} SAK`;
 
-        document.getElementById('final-urea').textContent = finalSisa.urea;
-        document.getElementById('final-phonska').textContent = finalSisa.phonska;
-        document.getElementById('final-organik').textContent = finalSisa.organik;
+          document.getElementById('final-urea').textContent = finalSisa.urea;
+          document.getElementById('final-phonska').textContent = finalSisa.phonska;
+          document.getElementById('final-organik').textContent = finalSisa.organik;
 
-        document.getElementById('formula-urea').textContent = `= ${nonErdkk.urea} + ${sisaBagi.urea}`;
-        document.getElementById('formula-phonska').textContent = `= ${nonErdkk.phonska} + ${sisaBagi.phonska}`;
-        document.getElementById('formula-organik').textContent = `= ${nonErdkk.organik} + ${sisaBagi.organik}`;
+          document.getElementById('formula-urea').textContent = `= ${nonErdkk.urea} + ${sisaBagi.urea}`;
+          document.getElementById('formula-phonska').textContent = `= ${nonErdkk.phonska} + ${sisaBagi.phonska}`;
+          document.getElementById('formula-organik').textContent = `= ${nonErdkk.organik} + ${sisaBagi.organik}`;
 
-        // Step 1 Pengajuan
-        document.getElementById('pengajuan-urea').innerHTML = `${pengajuan.urea} <span class="text-xs font-normal text-slate-400">SAK</span>`;
-        document.getElementById('pengajuan-phonska').innerHTML = `${pengajuan.phonska} <span class="text-xs font-normal text-slate-400">SAK</span>`;
-        document.getElementById('pengajuan-organik').innerHTML = `${pengajuan.organik} <span class="text-xs font-normal text-slate-400">SAK</span>`;
-        document.getElementById('pengajuan-urea-kg').textContent = `${(pengajuan.urea * 50).toLocaleString('id-ID')} kg`;
-        document.getElementById('pengajuan-phonska-kg').textContent = `${(pengajuan.phonska * 50).toLocaleString('id-ID')} kg`;
-        document.getElementById('pengajuan-organik-kg').textContent = `${(pengajuan.organik * 40).toLocaleString('id-ID')} kg`;
+          // Step 1 Pengajuan
+          document.getElementById('pengajuan-urea').innerHTML = `${pengajuan.urea} <span class="text-xs font-normal text-slate-400">SAK</span>`;
+          document.getElementById('pengajuan-phonska').innerHTML = `${pengajuan.phonska} <span class="text-xs font-normal text-slate-400">SAK</span>`;
+          document.getElementById('pengajuan-organik').innerHTML = `${pengajuan.organik} <span class="text-xs font-normal text-slate-400">SAK</span>`;
+          document.getElementById('pengajuan-urea-kg').textContent = `${(pengajuan.urea * 50).toLocaleString('id-ID')} kg`;
+          document.getElementById('pengajuan-phonska-kg').textContent = `${(pengajuan.phonska * 50).toLocaleString('id-ID')} kg`;
+          document.getElementById('pengajuan-organik-kg').textContent = `${(pengajuan.organik * 40).toLocaleString('id-ID')} kg`;
 
-        // Step 2 Pembagian
-        document.getElementById('bagi-urea').innerHTML = `${bagi.urea} <span class="text-xs font-normal text-slate-400">SAK</span>`;
-        document.getElementById('bagi-phonska').innerHTML = `${bagi.phonska} <span class="text-xs font-normal text-slate-400">SAK</span>`;
-        document.getElementById('bagi-organik').innerHTML = `${bagi.organik} <span class="text-xs font-normal text-slate-400">SAK</span>`;
-        document.getElementById('bagi-urea-kg').textContent = `${(bagi.urea * 50).toLocaleString('id-ID')} kg`;
-        document.getElementById('bagi-phonska-kg').textContent = `${(bagi.phonska * 50).toLocaleString('id-ID')} kg`;
-        document.getElementById('bagi-organik-kg').textContent = `${(bagi.organik * 40).toLocaleString('id-ID')} kg`;
+          // Step 2 Pembagian
+          document.getElementById('bagi-urea').innerHTML = `${bagi.urea} <span class="text-xs font-normal text-slate-400">SAK</span>`;
+          document.getElementById('bagi-phonska').innerHTML = `${bagi.phonska} <span class="text-xs font-normal text-slate-400">SAK</span>`;
+          document.getElementById('bagi-organik').innerHTML = `${bagi.organik} <span class="text-xs font-normal text-slate-400">SAK</span>`;
+          document.getElementById('bagi-urea-kg').textContent = `${(bagi.urea * 50).toLocaleString('id-ID')} kg`;
+          document.getElementById('bagi-phonska-kg').textContent = `${(bagi.phonska * 50).toLocaleString('id-ID')} kg`;
+          document.getElementById('bagi-organik-kg').textContent = `${(bagi.organik * 40).toLocaleString('id-ID')} kg`;
 
-        // Step 3 Komponen A & B
-        document.getElementById('non-urea').textContent = `${nonErdkk.urea} SAK`;
-        document.getElementById('non-phonska').textContent = `${nonErdkk.phonska} SAK`;
-        document.getElementById('non-organik').textContent = `${nonErdkk.organik} SAK`;
-        document.getElementById('non-calc-urea').textContent = `${pengajuan.urea} - ${bagi.urea}`;
-        document.getElementById('non-calc-phonska').textContent = `${pengajuan.phonska} - ${bagi.phonska}`;
-        document.getElementById('non-calc-organik').textContent = `${pengajuan.organik} - ${bagi.organik}`;
+          // Step 3 Komponen A & B
+          document.getElementById('non-urea').textContent = `${nonErdkk.urea} SAK`;
+          document.getElementById('non-phonska').textContent = `${nonErdkk.phonska} SAK`;
+          document.getElementById('non-organik').textContent = `${nonErdkk.organik} SAK`;
+          document.getElementById('non-calc-urea').textContent = `${pengajuan.urea} - ${bagi.urea}`;
+          document.getElementById('non-calc-phonska').textContent = `${pengajuan.phonska} - ${bagi.phonska}`;
+          document.getElementById('non-calc-organik').textContent = `${pengajuan.organik} - ${bagi.organik}`;
 
-        document.getElementById('sisabagi-urea').textContent = `${sisaBagi.urea} SAK`;
-        document.getElementById('sisabagi-phonska').textContent = `${sisaBagi.phonska} SAK`;
-        document.getElementById('sisabagi-organik').textContent = `${sisaBagi.organik} SAK`;
+          document.getElementById('sisabagi-urea').textContent = `${sisaBagi.urea} SAK`;
+          document.getElementById('sisabagi-phonska').textContent = `${sisaBagi.phonska} SAK`;
+          document.getElementById('sisabagi-organik').textContent = `${sisaBagi.organik} SAK`;
 
-        document.getElementById('final-summary-formula').textContent = 
-          `Urea: ${nonErdkk.urea} + ${sisaBagi.urea} = ${finalSisa.urea} SAK | Phonska: ${nonErdkk.phonska} + ${sisaBagi.phonska} = ${finalSisa.phonska} SAK | Organik: ${nonErdkk.organik} + ${sisaBagi.organik} = ${finalSisa.organik} SAK`;
+          document.getElementById('final-summary-formula').textContent = 
+            `Urea: ${nonErdkk.urea} + ${sisaBagi.urea} = ${finalSisa.urea} SAK | Phonska: ${nonErdkk.phonska} + ${sisaBagi.phonska} = ${finalSisa.phonska} SAK | Organik: ${nonErdkk.organik} + ${sisaBagi.organik} = ${finalSisa.organik} SAK`;
+        }
 
-        // 2. Ambil data Status Petani (B231:D240)
-        const ktpRes = await querySheet('B231:D240');
-        const ktpRows = ktpRes.table.rows;
-        ktpRows.forEach(row => {
-          const label = String(row.c[1]?.v || '').toUpperCase();
-          const val = Math.round(row.c[2]?.v || 0);
+        // 3. Ambil data Status Petani & KTP secara dinamis
+        const stats = { ambil_ktp: 0, foto_kios: 0, ambil_noktp: 0, noambil_ktp: 0, noktp: 0, total_ambil: 0 };
+        rows.forEach(r => {
+          const cells = r.c || [];
+          const label = String(cells[1]?.v || '').trim().toUpperCase();
+          const val = parseVal(cells[2]);
+          if (!label) return;
 
-          if (label.includes('SUDAH AMBIL & SETOR KTP')) {
-            document.getElementById('stat-ambil-ktp').innerHTML = `${val} <span class="text-xs text-slate-400 font-normal">Petani</span>`;
-          } else if (label.includes('FOTO DI KIOS')) {
-            document.getElementById('stat-foto-kios').innerHTML = `${val} <span class="text-xs text-slate-400 font-normal">Petani</span>`;
-          } else if (label.includes('SUDAH AMBIL & BELUM SETOR KTP')) {
-            document.getElementById('stat-ambil-noktp').innerHTML = `${val} <span class="text-xs text-slate-400 font-normal">Petani</span>`;
-          } else if (label.includes('BELUM AMBIL & SUDAH SETOR KTP')) {
-            document.getElementById('stat-noambil-ktp').innerHTML = `${val} <span class="text-xs text-slate-400 font-normal">Petani</span>`;
+          if (label.includes('SUDAH AMBIL') && label.includes('BELUM') && label.includes('SETOR KTP')) {
+            stats.ambil_noktp = val;
+          } else if (label.includes('BELUM AMBIL') && label.includes('SUDAH SETOR KTP')) {
+            stats.noambil_ktp = val;
+          } else if (label.includes('SUDAH AMBIL') && label.includes('SETOR KTP')) {
+            stats.ambil_ktp = val;
+          } else if (label.includes('FOTO') && label.includes('KIOS')) {
+            stats.foto_kios = val;
           } else if (label === 'BELUM SETOR KTP') {
-            document.getElementById('stat-noktp').innerHTML = `${val} <span class="text-xs text-slate-400 font-normal">Petani</span>`;
+            stats.noktp = val;
           } else if (label.includes('TOTAL SEMUA')) {
-            document.getElementById('stat-total-ambil').innerHTML = `${val} <span class="text-xs text-emerald-500 font-normal">Petani</span>`;
+            stats.total_ambil = val;
           }
         });
 
+        if (stats.ambil_ktp > 0 || stats.total_ambil > 0) {
+          document.getElementById('stat-ambil-ktp').innerHTML = `${stats.ambil_ktp} <span class="text-xs text-slate-400 font-normal">Petani</span>`;
+          document.getElementById('stat-foto-kios').innerHTML = `${stats.foto_kios} <span class="text-xs text-slate-400 font-normal">Petani</span>`;
+          document.getElementById('stat-ambil-noktp').innerHTML = `${stats.ambil_noktp} <span class="text-xs text-slate-400 font-normal">Petani</span>`;
+          document.getElementById('stat-noambil-ktp').innerHTML = `${stats.noambil_ktp} <span class="text-xs text-slate-400 font-normal">Petani</span>`;
+          document.getElementById('stat-noktp').innerHTML = `${stats.noktp} <span class="text-xs text-slate-400 font-normal">Petani</span>`;
+          document.getElementById('stat-total-ambil').innerHTML = `${stats.total_ambil} <span class="text-xs text-emerald-500 font-normal">Petani</span>`;
+        }
+
         if (syncStatus) {
           const now = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-          syncStatus.textContent = `Tersinkronisasi otomatis (${now})`;
+          syncStatus.textContent = `Tersinkronisasi otomatis (${now}) · Live Google Sheet`;
         }
       } catch (err) {
         console.warn('Live sync fallback:', err);
-        if (syncStatus) syncStatus.textContent = 'Mode Offline (Menggunakan Data Terakhir)';
+        if (syncStatus) syncStatus.textContent = 'Mode Offline (Menggunakan Data Cache Terakhir)';
       } finally {
         if (refreshIcon) refreshIcon.classList.remove('fa-spin');
       }
@@ -526,6 +586,10 @@
     // Muat data saat halaman dibuka
     window.addEventListener('DOMContentLoaded', () => {
       fetchSheetData();
+      // Auto-refresh setiap 60 detik jika halaman dibiarkan terbuka
+      setInterval(() => {
+        fetchSheetData();
+      }, 60000);
     });
   </script>
 
