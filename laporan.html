@@ -78,6 +78,12 @@
       display: grid !important;
       grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     }
+
+    /* Smooth touch scrolling di HP mode portrait & landscape */
+    .overflow-x-auto {
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+    }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen p-2.5 sm:p-5 lg:p-8 font-sans">
@@ -890,19 +896,19 @@
 
       const rowsHtml = filtered.map((f, i) => `
         <tr class="hover:bg-slate-50">
-          <td class="border border-slate-400 p-1 text-center font-mono text-[10px]">${i + 1}</td>
-          <td class="border border-slate-400 p-1 text-center font-mono text-[10px] text-slate-600">${esc(f.nik || '-')}</td>
-          <td class="border border-slate-400 p-1 font-bold text-slate-900">${esc(f.nama)} ${f.isNon ? '<span class="text-[9px] font-normal text-blue-700 italic">(Non-eRDKK)</span>' : ''}</td>
-          <td class="border border-slate-400 p-1 text-center text-[10.5px]">
+          <td class="border border-slate-400 p-1 text-center font-mono text-[10px] whitespace-nowrap">${i + 1}</td>
+          <td class="border border-slate-400 p-1 text-center font-mono text-[10px] text-slate-600 whitespace-nowrap">${esc(f.nik || '-')}</td>
+          <td class="border border-slate-400 p-1 font-bold text-slate-900 min-w-[130px]">${esc(f.nama)} ${f.isNon ? '<span class="text-[9px] font-normal text-blue-700 italic">(Non-eRDKK)</span>' : ''}</td>
+          <td class="border border-slate-400 p-1 text-center text-[10.5px] whitespace-nowrap">
             <span class="px-1.5 py-0.5 rounded font-bold ${f.kloter.includes('Kloter') ? 'bg-purple-100 text-purple-800' : 'bg-slate-100 text-slate-600'}">${esc(f.kloter)}</span>
           </td>
-          <td class="border border-slate-400 p-1 text-[10px]">${badgeStatus(f.status)}</td>
-          <td class="border border-slate-400 p-1 text-right font-mono text-[10.5px]">${f.u}</td>
-          <td class="border border-slate-400 p-1 text-right font-mono text-[10.5px]">${f.p}</td>
-          <td class="border border-slate-400 p-1 text-right font-mono text-[10.5px]">${f.o}</td>
-          <td class="border border-slate-400 p-1 text-right font-mono font-bold text-[10.5px] text-slate-900">${f.totSak}</td>
-          <td class="border border-slate-400 p-1 text-right font-mono font-semibold text-[10.5px] ${f.uang > 0 ? 'text-emerald-800' : 'text-slate-500'}">${f.uang > 0 ? rupiah(f.uang) : '-'}</td>
-          <td class="border border-slate-400 p-1 text-center text-[10px] text-slate-500">${esc(f.ket || '')}</td>
+          <td class="border border-slate-400 p-1 text-[10px] whitespace-nowrap">${badgeStatus(f.status)}</td>
+          <td class="border border-slate-400 p-1 text-right font-mono text-[10.5px] whitespace-nowrap">${f.u}</td>
+          <td class="border border-slate-400 p-1 text-right font-mono text-[10.5px] whitespace-nowrap">${f.p}</td>
+          <td class="border border-slate-400 p-1 text-right font-mono text-[10.5px] whitespace-nowrap">${f.o}</td>
+          <td class="border border-slate-400 p-1 text-right font-mono font-bold text-[10.5px] text-slate-900 whitespace-nowrap">${f.totSak}</td>
+          <td class="border border-slate-400 p-1 text-right font-mono font-semibold text-[10.5px] whitespace-nowrap ${f.uang > 0 ? 'text-emerald-800' : 'text-slate-500'}">${f.uang > 0 ? rupiah(f.uang) : '-'}</td>
+          <td class="border border-slate-400 p-1 text-center text-[10px] text-slate-500 whitespace-nowrap">${esc(f.ket || '')}</td>
         </tr>
       `).join('');
 
@@ -929,33 +935,41 @@
           ['Total Tagihan', rupiah(totUang), 'Akumulasi Nilai Rupiah', 'text-emerald-900']
         ], 'bg-slate-50')}
 
-        <div class="overflow-x-auto -mx-1 sm:mx-0 my-2 rounded-lg">
+        <!-- Indikator Geser Tabel di HP (No-Print) -->
+        <div class="no-print sm:hidden flex items-center justify-between text-[11px] text-emerald-800 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1.5 rounded-xl my-2">
+          <span class="flex items-center gap-1.5 font-bold">
+            <i class="fa-solid fa-arrows-left-right text-emerald-600"></i> Geser tabel ke samping (scroll)
+          </span>
+          <span class="text-[10px] text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-md font-semibold">11 Kolom Data</span>
+        </div>
+
+        <div class="overflow-x-auto -mx-1 sm:mx-0 my-2 rounded-lg" style="-webkit-overflow-scrolling: touch;">
           <table class="w-full min-w-[750px] text-xs border border-slate-900">
             <thead class="bg-slate-100 font-bold">
               <tr>
                 <th class="${TH} text-center w-8">No</th>
-                <th class="${TH} text-center w-32">NIK</th>
-                <th class="${TH} text-left">Nama Petani</th>
-                <th class="${TH} text-center w-28">Kloter Surat Kuasa</th>
-                <th class="${TH} text-left">Status Penebusan / Kios</th>
-                <th class="${TH} text-right w-14">Urea</th>
-                <th class="${TH} text-right w-14">NPK</th>
-                <th class="${TH} text-right w-14">Org</th>
-                <th class="${TH} text-right w-16">Total Sak</th>
-                <th class="${TH} text-right w-24">Tagihan (Rp)</th>
-                <th class="${TH} text-center w-24">Paraf / Ket</th>
+                <th class="${TH} text-center w-32 whitespace-nowrap">NIK</th>
+                <th class="${TH} text-left min-w-[130px]">Nama Petani</th>
+                <th class="${TH} text-center w-28 whitespace-nowrap">Kloter Surat Kuasa</th>
+                <th class="${TH} text-left whitespace-nowrap">Status Penebusan / Kios</th>
+                <th class="${TH} text-right w-14 whitespace-nowrap">Urea</th>
+                <th class="${TH} text-right w-14 whitespace-nowrap">NPK</th>
+                <th class="${TH} text-right w-14 whitespace-nowrap">Org</th>
+                <th class="${TH} text-right w-16 whitespace-nowrap">Total Sak</th>
+                <th class="${TH} text-right w-24 whitespace-nowrap">Tagihan (Rp)</th>
+                <th class="${TH} text-center w-24 whitespace-nowrap">Paraf / Ket</th>
               </tr>
             </thead>
             <tbody>
               ${rowsHtml || '<tr><td colspan="11" class="p-6 text-center text-slate-400 italic">Tidak ada data petani yang sesuai dengan filter yang dipilih.</td></tr>'}
               <tr class="bg-slate-100 font-black border-t-2 border-slate-900">
-                <td colspan="5" class="${TD} uppercase text-right">TOTAL TERPILIH (${filtered.length} PETANI):</td>
-                <td class="${TD} text-right font-mono">${totU}</td>
-                <td class="${TD} text-right font-mono">${totP}</td>
-                <td class="${TD} text-right font-mono">${totO}</td>
-                <td class="${TD} text-right font-mono font-bold text-slate-900">${totU + totP + totO}</td>
-                <td class="${TD} text-right font-mono font-bold text-emerald-900">${rupiah(totUang)}</td>
-                <td class="${TD} text-center text-slate-500">-</td>
+                <td colspan="5" class="${TD} uppercase text-right whitespace-nowrap">TOTAL TERPILIH (${filtered.length} PETANI):</td>
+                <td class="${TD} text-right font-mono whitespace-nowrap">${totU}</td>
+                <td class="${TD} text-right font-mono whitespace-nowrap">${totP}</td>
+                <td class="${TD} text-right font-mono whitespace-nowrap">${totO}</td>
+                <td class="${TD} text-right font-mono font-bold text-slate-900 whitespace-nowrap">${totU + totP + totO}</td>
+                <td class="${TD} text-right font-mono font-bold text-emerald-900 whitespace-nowrap">${rupiah(totUang)}</td>
+                <td class="${TD} text-center text-slate-500 whitespace-nowrap">-</td>
               </tr>
             </tbody>
           </table>
