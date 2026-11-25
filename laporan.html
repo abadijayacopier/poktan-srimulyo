@@ -40,14 +40,25 @@
   <style>
     @media print {
       .no-print { display: none !important; }
-      body { background: white !important; color: black !important; padding: 0 !important; }
-      .print-page { box-shadow: none !important; border: none !important; margin: 0 !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; }
+      body { background: white !important; color: black !important; padding: 0 !important; margin: 0 !important; }
+      .print-page {
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        background: white !important;
+      }
       .page-break { page-break-after: always; }
       table { border-collapse: collapse !important; width: 100% !important; }
       th, td { border-color: #333 !important; }
-      .overflow-x-auto { overflow: visible !important; }
-      .kartu-grid { display: grid !important; }
-      .ttd-grid { display: grid !important; }
+      thead { display: table-header-group !important; }
+      tr { page-break-inside: avoid !important; break-inside: avoid !important; }
+      .overflow-x-auto { overflow: visible !important; width: 100% !important; }
+      .kartu-grid { display: grid !important; page-break-inside: avoid !important; break-inside: avoid !important; }
+      .ttd-grid { display: grid !important; page-break-inside: avoid !important; break-inside: avoid !important; }
     }
 
     /* Mode Penyusunan PDF oleh html2pdf */
@@ -59,24 +70,66 @@
     body.pdf-exporting .no-print {
       display: none !important;
     }
-    body.pdf-exporting .print-page {
+    body.pdf-exporting .overflow-x-auto {
+      overflow: visible !important;
+      width: 100% !important;
+    }
+    body.pdf-exporting thead {
+      display: table-header-group !important;
+    }
+    body.pdf-exporting tr {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    body.pdf-exporting .ttd-grid {
+      display: grid !important;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Mode PDF Khusus Landscape (A4 Lebar 1060px) */
+    body.pdf-exporting-landscape .print-page {
+      box-shadow: none !important;
+      border: none !important;
+      border-radius: 0 !important;
+      margin: 0 !important;
+      padding: 6mm 8mm !important;
+      width: 1060px !important;
+      min-width: 1060px !important;
+      max-width: 1060px !important;
+      box-sizing: border-box !important;
+      background: white !important;
+    }
+    body.pdf-exporting-landscape .kartu-grid {
+      display: grid !important;
+      grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    }
+    body.pdf-exporting-landscape table {
+      width: 100% !important;
+      min-width: 100% !important;
+      table-layout: auto !important;
+    }
+
+    /* Mode PDF Khusus Portrait (A4 Tinggi 794px) */
+    body.pdf-exporting-portrait .print-page {
       box-shadow: none !important;
       border: none !important;
       border-radius: 0 !important;
       margin: 0 !important;
       padding: 8mm 10mm !important;
+      width: 794px !important;
+      min-width: 794px !important;
+      max-width: 794px !important;
+      box-sizing: border-box !important;
+      background: white !important;
+    }
+    body.pdf-exporting-portrait .kartu-grid {
+      display: grid !important;
+    }
+    body.pdf-exporting-portrait table {
       width: 100% !important;
-      max-width: 100% !important;
-    }
-    body.pdf-exporting .overflow-x-auto {
-      overflow: visible !important;
-    }
-    body.pdf-exporting .kartu-grid {
-      display: grid !important;
-    }
-    body.pdf-exporting .ttd-grid {
-      display: grid !important;
-      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      min-width: 100% !important;
     }
 
     /* Smooth touch scrolling di HP mode portrait & landscape */
@@ -215,6 +268,34 @@
     const DOCS = ['laporan_cetak', 'rekap_kloter', 'non_erdkk', 'target_sisa', 'filter_penebusan'];
     const LOADING_HTML = '<div class="py-24 text-center text-slate-500 text-sm"><i class="fa-solid fa-spinner fa-spin text-2xl text-emerald-600 mb-3 block"></i>Mengambil data terbaru dari Google Sheets...</div>';
 
+    function aturOrientasiCetak(id) {
+      let st = document.getElementById('print-orientation-style');
+      if (!st) {
+        st = document.createElement('style');
+        st.id = 'print-orientation-style';
+        document.head.appendChild(st);
+      }
+      if (id === 'filter_penebusan') {
+        st.innerHTML = `
+          @page { size: A4 landscape; margin: 8mm 8mm; }
+          @media print {
+            .kartu-grid { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; }
+            .ttd-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+            table { width: 100% !important; min-width: 100% !important; font-size: 8.5pt !important; }
+            th, td { padding: 3px 5px !important; }
+          }
+        `;
+      } else {
+        st.innerHTML = `
+          @page { size: A4 portrait; margin: 8mm 10mm; }
+          @media print {
+            .ttd-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+            table { width: 100% !important; }
+          }
+        `;
+      }
+    }
+
     function pilihLaporan(id) {
       DOCS.forEach(docId => {
         const el = document.getElementById('doc-' + docId);
@@ -226,6 +307,7 @@
       const targetTab = document.getElementById('tab-' + id);
       if (targetDoc) targetDoc.classList.remove('hidden');
       if (targetTab) { targetTab.classList.remove('border-slate-200'); targetTab.classList.add('border-emerald-600', 'active-tab'); }
+      aturOrientasiCetak(id);
       if (history.replaceState) history.replaceState(null, '', '#' + id);
     }
 
@@ -918,7 +1000,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs border border-slate-300 p-2.5 rounded-lg bg-slate-50/70">
           <div>
             <div><b>Filter Status:</b> <span class="uppercase">${esc(stFilter || 'Semua Status Penebusan')}</span></div>
-            <div class="mt-0.5"><b>Filter Kloter:</b> <span>${esc(kloterFilter || 'Semua Kloter &amp; Mandiri')}</span></div>
+            <div class="mt-0.5"><b>Filter Kloter:</b> <span>${esc(kloterFilter || 'Semua Kloter & Mandiri')}</span></div>
           </div>
           <div class="sm:text-right">
             <div><b>Kategori Data:</b> <span>${katFilter === 'ERDKK' ? 'Petani e-RDKK MT3 2026' : (katFilter === 'NON_ERDKK' ? 'Petani Non-eRDKK (Cadangan)' : 'Semua Petani (e-RDKK + Non-eRDKK)')}</span></div>
@@ -996,8 +1078,11 @@
         btn.disabled = true;
       }
 
-      document.body.classList.add('pdf-exporting');
-      await new Promise(r => setTimeout(r, 120));
+      const isLandscape = activeDocId === 'filter_penebusan';
+      const exportClass = isLandscape ? 'pdf-exporting-landscape' : 'pdf-exporting-portrait';
+
+      document.body.classList.add('pdf-exporting', exportClass);
+      await new Promise(r => setTimeout(r, 150));
 
       const judulFile = {
         'laporan_cetak': 'LAPORAN_PERTANGGUNGJAWABAN_PENYALURAN_PUPUK_POKTAN_SRI_MULYO.pdf',
@@ -1008,12 +1093,19 @@
       }[activeDocId] || 'DOKUMEN_LAPORAN_POKTAN_SRI_MULYO.pdf';
 
       const opt = {
-        margin: [6, 8, 6, 8],
+        margin: isLandscape ? [6, 8, 6, 8] : [8, 10, 8, 10],
         filename: judulFile,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, logging: false },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: activeDocId === 'filter_penebusan' ? 'landscape' : 'portrait' },
-        pagebreak: { mode: ['css', 'legacy'] }
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          windowWidth: isLandscape ? 1200 : 900,
+          scrollX: 0,
+          scrollY: 0
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: isLandscape ? 'landscape' : 'portrait' },
+        pagebreak: { mode: ['css', 'legacy'], avoid: ['tr', '.ttd-grid', '.kartu-grid'] }
       };
 
       try {
@@ -1022,7 +1114,7 @@
         console.error(err);
         alert('Gagal menyusun PDF: ' + err.message);
       } finally {
-        document.body.classList.remove('pdf-exporting');
+        document.body.classList.remove('pdf-exporting', 'pdf-exporting-landscape', 'pdf-exporting-portrait');
         if (btn) {
           btn.innerHTML = origText;
           btn.disabled = false;
@@ -1068,7 +1160,8 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       const hash = window.location.hash.replace('#', '');
-      if (DOCS.includes(hash)) pilihLaporan(hash);
+      const initialTab = DOCS.includes(hash) ? hash : 'laporan_cetak';
+      pilihLaporan(initialTab);
       sinkronUlangData();
     });
     // Saat pengguna kembali ke tab ini (mis. habis mengedit spreadsheet), data otomatis diperbarui
