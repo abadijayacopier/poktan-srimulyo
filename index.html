@@ -785,7 +785,7 @@
             </button>
 
             <!-- 2. SUDAH AMBIL -->
-            <button type="button" onclick="setAlokasiCardFilter('SUDAH AMBIL')" 
+            <button type="button" id="kpi-btn-alokasi-2" onclick="setAlokasiCardFilter('SUDAH AMBIL')" 
                     class="alokasi-kpi bg-white p-3.5 rounded-2xl border border-blue-200/90 shadow-sm hover:shadow-md hover:border-blue-300 transition text-left flex flex-col justify-between group">
               <div class="flex items-center justify-between mb-1.5">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-blue-700">Sudah Ambil</span>
@@ -798,15 +798,20 @@
             </button>
 
             <!-- 3. BELUM AMBIL -->
-            <button type="button" onclick="setAlokasiCardFilter('BELUM AMBIL')" 
+            <button type="button" id="kpi-btn-alokasi-3" onclick="setAlokasiCardFilter('BELUM AMBIL')" 
                     class="alokasi-kpi bg-white p-3.5 rounded-2xl border border-rose-200/90 shadow-sm hover:shadow-md hover:border-rose-300 transition text-left flex flex-col justify-between group">
               <div class="flex items-center justify-between mb-1.5">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-rose-700">Belum Ambil</span>
                 <span class="w-7 h-7 rounded-lg bg-rose-50 text-rose-700 flex items-center justify-center text-xs group-hover:bg-rose-100 transition"><i class="fa-solid fa-clock"></i></span>
               </div>
               <div>
-                <div class="text-lg sm:text-xl font-black text-rose-800 tracking-tight"><span id="alokasi-belum-ambil">0</span> <span class="text-xs font-normal text-rose-600">Petani</span></div>
-                <div class="text-[11px] font-semibold text-rose-700 truncate mt-0.5"><span id="al-belum-ambil-sak" class="font-mono font-bold">0</span> Sak</div>
+                <div class="text-xs font-black text-slate-900 tracking-tight flex items-center gap-1 whitespace-nowrap">
+                  <span class="bg-rose-50 text-rose-900 px-1 py-0.5 rounded border border-rose-100 font-mono text-[11px]">U:<b id="al-belum-ambil-u">0</b></span>
+                  <span class="bg-rose-50 text-rose-900 px-1 py-0.5 rounded border border-rose-100 font-mono text-[11px]">P:<b id="al-belum-ambil-p">0</b></span>
+                  <span class="bg-rose-50 text-rose-900 px-1 py-0.5 rounded border border-rose-100 font-mono text-[11px]">O:<b id="al-belum-ambil-o">0</b></span>
+                  <span class="text-[10px] font-bold text-slate-500 font-sans ml-0.5">Sak</span>
+                </div>
+                <div id="kpi-sub-alokasi-3" class="text-[10px] font-semibold text-rose-700 truncate mt-1"><span id="alokasi-belum-ambil" class="font-bold">0</span> Petani · <span id="al-belum-ambil-sak" class="font-mono font-bold">0</span> Sak</div>
               </div>
             </button>
 
@@ -818,8 +823,13 @@
                 <span id="kpi-icon-alokasi-4" class="w-7 h-7 rounded-lg bg-violet-50 text-violet-700 flex items-center justify-center text-xs group-hover:bg-violet-100 transition"><i class="fa-solid fa-id-card-clip"></i></span>
               </div>
               <div>
-                <div class="text-lg sm:text-xl font-black text-violet-800 tracking-tight"><span id="alokasi-setor-ktp">0</span> <span class="text-xs font-normal text-violet-600">Petani</span></div>
-                <div class="text-[11px] font-semibold text-violet-700 truncate mt-0.5"><span id="al-setor-ktp-sak" class="font-mono font-bold">0</span> Sak</div>
+                <div class="text-xs font-black text-slate-900 tracking-tight flex items-center gap-1 whitespace-nowrap">
+                  <span class="bg-violet-50 text-violet-900 px-1 py-0.5 rounded border border-violet-100 font-mono text-[11px]">U:<b id="al-setor-ktp-u">0</b></span>
+                  <span class="bg-violet-50 text-violet-900 px-1 py-0.5 rounded border border-violet-100 font-mono text-[11px]">P:<b id="al-setor-ktp-p">0</b></span>
+                  <span class="bg-violet-50 text-violet-900 px-1 py-0.5 rounded border border-violet-100 font-mono text-[11px]">O:<b id="al-setor-ktp-o">0</b></span>
+                  <span class="text-[10px] font-bold text-slate-500 font-sans ml-0.5">Sak</span>
+                </div>
+                <div id="kpi-sub-alokasi-4" class="text-[10px] font-semibold text-violet-700 truncate mt-1"><span id="alokasi-setor-ktp" class="font-bold">0</span> Petani · <span id="al-setor-ktp-sak" class="font-mono font-bold">0</span> Sak</div>
               </div>
             </button>
 
@@ -831,8 +841,13 @@
                 <span id="kpi-icon-alokasi-5" class="w-7 h-7 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center text-xs group-hover:bg-amber-100 transition"><i class="fa-solid fa-triangle-exclamation"></i></span>
               </div>
               <div>
-                <div class="text-lg sm:text-xl font-black text-amber-800 tracking-tight"><span id="alokasi-belum-setor-ktp">0</span> <span class="text-xs font-normal text-amber-600">Petani</span></div>
-                <div class="text-[11px] font-semibold text-amber-700 truncate mt-0.5"><span id="al-belum-setor-ktp-sak" class="font-mono font-bold">0</span> Sak</div>
+                <div class="text-xs font-black text-slate-900 tracking-tight flex items-center gap-1 whitespace-nowrap">
+                  <span class="bg-amber-50 text-amber-900 px-1 py-0.5 rounded border border-amber-100 font-mono text-[11px]">U:<b id="al-belum-setor-ktp-u">0</b></span>
+                  <span class="bg-amber-50 text-amber-900 px-1 py-0.5 rounded border border-amber-100 font-mono text-[11px]">P:<b id="al-belum-setor-ktp-p">0</b></span>
+                  <span class="bg-amber-50 text-amber-900 px-1 py-0.5 rounded border border-amber-100 font-mono text-[11px]">O:<b id="al-belum-setor-ktp-o">0</b></span>
+                  <span class="text-[10px] font-bold text-slate-500 font-sans ml-0.5">Sak</span>
+                </div>
+                <div id="kpi-sub-alokasi-5" class="text-[10px] font-semibold text-amber-700 truncate mt-1"><span id="alokasi-belum-setor-ktp" class="font-bold">0</span> Petani · <span id="al-belum-setor-ktp-sak" class="font-mono font-bold">0</span> Sak</div>
               </div>
             </button>
 
@@ -844,8 +859,13 @@
                 <span id="kpi-icon-alokasi-6" class="w-7 h-7 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center text-xs group-hover:bg-teal-100 transition"><i class="fa-solid fa-file-signature"></i></span>
               </div>
               <div>
-                <div class="text-lg sm:text-xl font-black text-teal-800 tracking-tight"><span id="alokasi-surat-kuasa">0</span> <span class="text-xs font-normal text-teal-600">Petani</span></div>
-                <div class="text-[11px] font-semibold text-teal-700 truncate mt-0.5"><span id="al-surat-kuasa-sak" class="font-mono font-bold">0</span> Sak</div>
+                <div class="text-xs font-black text-slate-900 tracking-tight flex items-center gap-1 whitespace-nowrap">
+                  <span class="bg-teal-50 text-teal-900 px-1 py-0.5 rounded border border-teal-100 font-mono text-[11px]">U:<b id="al-surat-kuasa-u">0</b></span>
+                  <span class="bg-teal-50 text-teal-900 px-1 py-0.5 rounded border border-teal-100 font-mono text-[11px]">P:<b id="al-surat-kuasa-p">0</b></span>
+                  <span class="bg-teal-50 text-teal-900 px-1 py-0.5 rounded border border-teal-100 font-mono text-[11px]">O:<b id="al-surat-kuasa-o">0</b></span>
+                  <span class="text-[10px] font-bold text-slate-500 font-sans ml-0.5">Sak</span>
+                </div>
+                <div id="kpi-sub-alokasi-6" class="text-[10px] font-semibold text-teal-700 truncate mt-1"><span id="alokasi-surat-kuasa" class="font-bold">0</span> Petani · <span id="al-surat-kuasa-sak" class="font-mono font-bold">0</span> Sak</div>
               </div>
             </button>
 
@@ -2398,29 +2418,38 @@
 
       // Hitung Petani & Sak per Status
       const stats = {
-        'SUDAH AMBIL': { petani: 0, sak: 0 },
-        'BELUM AMBIL': { petani: 0, sak: 0 },
-        'SETOR KTP': { petani: 0, sak: 0 },
-        'BELUM SETOR KTP': { petani: 0, sak: 0 },
-        'SURAT KUASA': { petani: 0, sak: 0 },
-        'SUDAH MASUK USULAN': { petani: 0, sak: 0 },
-        'PENGAJUAN DATA BARU': { petani: 0, sak: 0 },
-        'BELUM USULAN': { petani: 0, sak: 0 }
+        'SUDAH AMBIL': { petani: 0, sak: 0, u: 0, p: 0, o: 0 },
+        'BELUM AMBIL': { petani: 0, sak: 0, u: 0, p: 0, o: 0 },
+        'SETOR KTP': { petani: 0, sak: 0, u: 0, p: 0, o: 0 },
+        'BELUM SETOR KTP': { petani: 0, sak: 0, u: 0, p: 0, o: 0 },
+        'SURAT KUASA': { petani: 0, sak: 0, u: 0, p: 0, o: 0 },
+        'SUDAH MASUK USULAN': { petani: 0, sak: 0, u: 0, p: 0, o: 0 },
+        'PENGAJUAN DATA BARU': { petani: 0, sak: 0, u: 0, p: 0, o: 0 },
+        'BELUM USULAN': { petani: 0, sak: 0, u: 0, p: 0, o: 0 }
       };
 
       alokasiRows.forEach(r => {
         const s5 = String(r.values?.[5] || '').toUpperCase();
         const s13 = String(r.values?.[13] || '').toUpperCase();
-        const rowSak = parseSak(r.values[9]) + parseSak(r.values[10]) + parseSak(r.values[11]);
+        const u = parseSak(r.values[9]);
+        const p = parseSak(r.values[10]);
+        const o = parseSak(r.values[11]);
+        const rowSak = u + p + o;
 
         // Pengambilan pupuk (cek kolom 5 & 13)
         const isSudahAmbil = s5.includes('SUDAH AMBIL') || s13.includes('SDH AMBIL') || s13.includes('SUDAH AMBIL');
         if (isSudahAmbil) {
           stats['SUDAH AMBIL'].petani++;
           stats['SUDAH AMBIL'].sak += rowSak;
+          stats['SUDAH AMBIL'].u += u;
+          stats['SUDAH AMBIL'].p += p;
+          stats['SUDAH AMBIL'].o += o;
         } else {
           stats['BELUM AMBIL'].petani++;
           stats['BELUM AMBIL'].sak += rowSak;
+          stats['BELUM AMBIL'].u += u;
+          stats['BELUM AMBIL'].p += p;
+          stats['BELUM AMBIL'].o += o;
         }
 
         // Status usulan / Non-eRDKK
@@ -2428,27 +2457,45 @@
         if (comb.includes('SUDAH MASUK USULAN') || comb.includes('MASUK USULAN')) {
           stats['SUDAH MASUK USULAN'].petani++;
           stats['SUDAH MASUK USULAN'].sak += rowSak;
+          stats['SUDAH MASUK USULAN'].u += u;
+          stats['SUDAH MASUK USULAN'].p += p;
+          stats['SUDAH MASUK USULAN'].o += o;
         }
         if (comb.includes('PENGAJUAN DATA BARU') || comb.includes('PENGAJUAN')) {
           stats['PENGAJUAN DATA BARU'].petani++;
           stats['PENGAJUAN DATA BARU'].sak += rowSak;
+          stats['PENGAJUAN DATA BARU'].u += u;
+          stats['PENGAJUAN DATA BARU'].p += p;
+          stats['PENGAJUAN DATA BARU'].o += o;
         }
         if (comb.includes('BELUM USULAN')) {
           stats['BELUM USULAN'].petani++;
           stats['BELUM USULAN'].sak += rowSak;
+          stats['BELUM USULAN'].u += u;
+          stats['BELUM USULAN'].p += p;
+          stats['BELUM USULAN'].o += o;
         }
 
         // Status e-RDKK KTP / Kuasa
         if (comb.includes('BELUM SETOR KTP')) {
           stats['BELUM SETOR KTP'].petani++;
           stats['BELUM SETOR KTP'].sak += rowSak;
+          stats['BELUM SETOR KTP'].u += u;
+          stats['BELUM SETOR KTP'].p += p;
+          stats['BELUM SETOR KTP'].o += o;
         } else if (comb.includes('SETOR KTP')) {
           stats['SETOR KTP'].petani++;
           stats['SETOR KTP'].sak += rowSak;
+          stats['SETOR KTP'].u += u;
+          stats['SETOR KTP'].p += p;
+          stats['SETOR KTP'].o += o;
         }
         if (comb.includes('SURAT KUASA')) {
           stats['SURAT KUASA'].petani++;
           stats['SURAT KUASA'].sak += rowSak;
+          stats['SURAT KUASA'].u += u;
+          stats['SURAT KUASA'].p += p;
+          stats['SURAT KUASA'].o += o;
         }
       });
 
@@ -2457,11 +2504,19 @@
       const elSudahSak = document.getElementById('al-sudah-ambil-sak');
       if (elSudah) elSudah.textContent = stats['SUDAH AMBIL'].petani;
       if (elSudahSak) elSudahSak.textContent = formatNumber(stats['SUDAH AMBIL'].sak);
+      const btnKpi2 = document.getElementById('kpi-btn-alokasi-2');
+      if (btnKpi2) btnKpi2.setAttribute('title', `Sudah Ambil: ${stats['SUDAH AMBIL'].petani} Petani · Urea: ${stats['SUDAH AMBIL'].u} Sak, Phonska: ${stats['SUDAH AMBIL'].p} Sak, Organik: ${stats['SUDAH AMBIL'].o} Sak`);
 
       const elBelum = document.getElementById('alokasi-belum-ambil');
       const elBelumSak = document.getElementById('al-belum-ambil-sak');
       if (elBelum) elBelum.textContent = stats['BELUM AMBIL'].petani;
       if (elBelumSak) elBelumSak.textContent = formatNumber(stats['BELUM AMBIL'].sak);
+      const elBelumU = document.getElementById('al-belum-ambil-u');
+      const elBelumP = document.getElementById('al-belum-ambil-p');
+      const elBelumO = document.getElementById('al-belum-ambil-o');
+      if (elBelumU) elBelumU.textContent = stats['BELUM AMBIL'].u;
+      if (elBelumP) elBelumP.textContent = stats['BELUM AMBIL'].p;
+      if (elBelumO) elBelumO.textContent = stats['BELUM AMBIL'].o;
 
       // Sesuaikan judul & nilai Card 4, 5, 6 sesuai Tab (e-RDKK vs Non-eRDKK)
       const btnKpi4 = document.getElementById('kpi-btn-alokasi-4');
@@ -2469,18 +2524,27 @@
       const iconKpi4 = document.getElementById('kpi-icon-alokasi-4');
       const elVal4 = document.getElementById('alokasi-setor-ktp');
       const elValSak4 = document.getElementById('al-setor-ktp-sak');
+      const elVal4U = document.getElementById('al-setor-ktp-u');
+      const elVal4P = document.getElementById('al-setor-ktp-p');
+      const elVal4O = document.getElementById('al-setor-ktp-o');
 
       const btnKpi5 = document.getElementById('kpi-btn-alokasi-5');
       const titleKpi5 = document.getElementById('kpi-title-alokasi-5');
       const iconKpi5 = document.getElementById('kpi-icon-alokasi-5');
       const elVal5 = document.getElementById('alokasi-belum-setor-ktp');
       const elValSak5 = document.getElementById('al-belum-setor-ktp-sak');
+      const elVal5U = document.getElementById('al-belum-setor-ktp-u');
+      const elVal5P = document.getElementById('al-belum-setor-ktp-p');
+      const elVal5O = document.getElementById('al-belum-setor-ktp-o');
 
       const btnKpi6 = document.getElementById('kpi-btn-alokasi-6');
       const titleKpi6 = document.getElementById('kpi-title-alokasi-6');
       const iconKpi6 = document.getElementById('kpi-icon-alokasi-6');
       const elVal6 = document.getElementById('alokasi-surat-kuasa');
       const elValSak6 = document.getElementById('al-surat-kuasa-sak');
+      const elVal6U = document.getElementById('al-surat-kuasa-u');
+      const elVal6P = document.getElementById('al-surat-kuasa-p');
+      const elVal6O = document.getElementById('al-surat-kuasa-o');
 
       if (alokasiJenis === 'NON_ERDKK') {
         if (titleKpi4) titleKpi4.textContent = 'Sudah Usulan';
@@ -2488,36 +2552,54 @@
         if (btnKpi4) btnKpi4.setAttribute('onclick', "setAlokasiCardFilter('SUDAH MASUK USULAN')");
         if (elVal4) elVal4.textContent = stats['SUDAH MASUK USULAN'].petani;
         if (elValSak4) elValSak4.textContent = formatNumber(stats['SUDAH MASUK USULAN'].sak);
+        if (elVal4U) elVal4U.textContent = stats['SUDAH MASUK USULAN'].u;
+        if (elVal4P) elVal4P.textContent = stats['SUDAH MASUK USULAN'].p;
+        if (elVal4O) elVal4O.textContent = stats['SUDAH MASUK USULAN'].o;
 
         if (titleKpi5) titleKpi5.textContent = 'Pengajuan Baru';
         if (iconKpi5) iconKpi5.innerHTML = '<i class="fa-solid fa-user-plus"></i>';
         if (btnKpi5) btnKpi5.setAttribute('onclick', "setAlokasiCardFilter('PENGAJUAN DATA BARU')");
         if (elVal5) elVal5.textContent = stats['PENGAJUAN DATA BARU'].petani;
         if (elValSak5) elValSak5.textContent = formatNumber(stats['PENGAJUAN DATA BARU'].sak);
+        if (elVal5U) elVal5U.textContent = stats['PENGAJUAN DATA BARU'].u;
+        if (elVal5P) elVal5P.textContent = stats['PENGAJUAN DATA BARU'].p;
+        if (elVal5O) elVal5O.textContent = stats['PENGAJUAN DATA BARU'].o;
 
         if (titleKpi6) titleKpi6.textContent = 'Belum Usulan';
         if (iconKpi6) iconKpi6.innerHTML = '<i class="fa-solid fa-hourglass-start"></i>';
         if (btnKpi6) btnKpi6.setAttribute('onclick', "setAlokasiCardFilter('BELUM USULAN')");
         if (elVal6) elVal6.textContent = stats['BELUM USULAN'].petani;
         if (elValSak6) elValSak6.textContent = formatNumber(stats['BELUM USULAN'].sak);
+        if (elVal6U) elVal6U.textContent = stats['BELUM USULAN'].u;
+        if (elVal6P) elVal6P.textContent = stats['BELUM USULAN'].p;
+        if (elVal6O) elVal6O.textContent = stats['BELUM USULAN'].o;
       } else {
         if (titleKpi4) titleKpi4.textContent = 'Setor KTP';
         if (iconKpi4) iconKpi4.innerHTML = '<i class="fa-solid fa-id-card-clip"></i>';
         if (btnKpi4) btnKpi4.setAttribute('onclick', "setAlokasiCardFilter('SETOR KTP')");
         if (elVal4) elVal4.textContent = stats['SETOR KTP'].petani;
         if (elValSak4) elValSak4.textContent = formatNumber(stats['SETOR KTP'].sak);
+        if (elVal4U) elVal4U.textContent = stats['SETOR KTP'].u;
+        if (elVal4P) elVal4P.textContent = stats['SETOR KTP'].p;
+        if (elVal4O) elVal4O.textContent = stats['SETOR KTP'].o;
 
         if (titleKpi5) titleKpi5.textContent = 'Belum Setor KTP';
         if (iconKpi5) iconKpi5.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
         if (btnKpi5) btnKpi5.setAttribute('onclick', "setAlokasiCardFilter('BELUM SETOR KTP')");
         if (elVal5) elVal5.textContent = stats['BELUM SETOR KTP'].petani;
         if (elValSak5) elValSak5.textContent = formatNumber(stats['BELUM SETOR KTP'].sak);
+        if (elVal5U) elVal5U.textContent = stats['BELUM SETOR KTP'].u;
+        if (elVal5P) elVal5P.textContent = stats['BELUM SETOR KTP'].p;
+        if (elVal5O) elVal5O.textContent = stats['BELUM SETOR KTP'].o;
 
         if (titleKpi6) titleKpi6.textContent = 'Surat Kuasa';
         if (iconKpi6) iconKpi6.innerHTML = '<i class="fa-solid fa-file-signature"></i>';
         if (btnKpi6) btnKpi6.setAttribute('onclick', "setAlokasiCardFilter('SURAT KUASA')");
         if (elVal6) elVal6.textContent = stats['SURAT KUASA'].petani;
         if (elValSak6) elValSak6.textContent = formatNumber(stats['SURAT KUASA'].sak);
+        if (elVal6U) elVal6U.textContent = stats['SURAT KUASA'].u;
+        if (elVal6P) elVal6P.textContent = stats['SURAT KUASA'].p;
+        if (elVal6O) elVal6O.textContent = stats['SURAT KUASA'].o;
       }
 
       // Card 7: Sisa Pupuk Gudang jika e-RDKK, atau Total Alokasi Pupuk Sak jika Non-eRDKK
