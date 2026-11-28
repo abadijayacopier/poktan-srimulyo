@@ -2794,11 +2794,11 @@
         const rowBg=ri%2===0?'bg-white':'bg-slate-50/70';
         const bio=getErdkkBiodata(r.values?.[1],r.values?.[2]);
         const bioCells=[
-          {val:bio.tempatLahir||'-',w:'w-[110px] min-w-[110px]',align:'text-left',label:'Tempat Lahir (ALOKASI ERDKK)'},
-          {val:bio.tanggalLahir||'-',w:'w-[105px] min-w-[105px]',align:'text-center font-mono',label:'Tanggal Lahir (ALOKASI ERDKK)'},
-          {val:bio.ibuKandung||'-',w:'w-[140px] min-w-[140px]',align:'text-left font-semibold',label:'Nama Ibu Kandung (ALOKASI ERDKK)'},
-          {val:bio.alamat||'-',w:'w-[145px] min-w-[145px]',align:'text-left',label:'Alamat (ALOKASI ERDKK)'}
-        ].map(b=>'<td class="'+b.w+' border-b border-r border-slate-200/90 px-2 py-1.5 align-middle bg-emerald-50/20"><input value="'+escAl(b.val)+'" title="'+escAl(b.val)+' · '+b.label+'" aria-label="'+b.label+'" class="w-full min-w-0 rounded-md border border-emerald-200/60 bg-emerald-50/40 text-slate-700 cursor-not-allowed px-2 py-1 text-[11.5px] leading-snug outline-none '+b.align+'" readonly tabindex="-1"></td>').join('');
+          {val:bio.tempatLahir||'-',w:'w-[110px] min-w-[110px]',align:'text-left font-semibold text-slate-800',label:'Tempat Lahir (ALOKASI ERDKK)'},
+          {val:bio.tanggalLahir||'-',w:'w-[105px] min-w-[105px]',align:'text-center font-semibold text-slate-800',label:'Tanggal Lahir (ALOKASI ERDKK)'},
+          {val:bio.ibuKandung||'-',w:'w-[140px] min-w-[140px]',align:'text-left font-semibold text-slate-800',label:'Nama Ibu Kandung (ALOKASI ERDKK)'},
+          {val:bio.alamat||'-',w:'w-[145px] min-w-[145px]',align:'text-left font-semibold text-slate-800',label:'Alamat (ALOKASI ERDKK)'}
+        ].map(b=>'<td class="'+b.w+' border-b border-r border-slate-200/90 px-2 py-1.5 align-middle bg-inherit"><input value="'+escAl(b.val)+'" title="'+escAl(b.val)+' · '+b.label+'" aria-label="'+b.label+'" class="w-full min-w-0 rounded-md border border-slate-200/60 bg-slate-100/70 cursor-not-allowed px-2 py-1 text-[12px] leading-snug outline-none '+b.align+'" readonly tabindex="-1"></td>').join('');
         return '<tr class="group '+rowBg+' hover:!bg-emerald-50/70 transition-colors">'+r.values.map((v,i)=>{const width=i===0?'w-[46px] min-w-[46px]':i===1?'w-[175px] min-w-[175px]':i===2?'w-[165px] min-w-[165px]':i===3?'w-[80px] min-w-[80px]':i===4?'w-[80px] min-w-[80px]':i===5?'w-[170px] min-w-[170px]':i>=6&&i<=8?'w-[80px] min-w-[80px]':i>=9&&i<=11?'w-[84px] min-w-[84px]':i===12?'w-[100px] min-w-[100px]':'w-[140px] min-w-[140px]';const locked=i===0||i===1||i===2||i===3||i===6||i===7||i===8;const align=i===0||(i>=9&&i<=11)?'text-center':(i>=6&&i<=8)||i===12?'text-right':'text-left';if(i===5)return '<td class="'+width+' border-b border-r border-slate-200/90 px-2 py-1.5 align-middle bg-inherit">'+renderAlStatusPicker(r.row,v)+'</td>';const cellHtml='<td class="'+width+' border-b border-r border-slate-200/90 px-2 py-1.5 align-middle bg-inherit"><input data-row="'+r.row+'" data-col="'+i+'" value="'+escAl(v)+'" title="'+escAl(v)+(locked?' · Hanya baca':'')+'" aria-label="'+(['No (hanya baca)','NIK (hanya baca)','Nama Petani (hanya baca)','Lahan Revisi (hanya baca)','Revisi Lahan Asli','Status','Urea (hanya baca)','Phonska (hanya baca)','Organik (hanya baca)','Sak Urea','Sak Phonska','Sak Organik','Uang','Keterangan'][i])+'" class="w-full min-w-0 rounded-md border '+(locked?'border-slate-200/60 bg-slate-100/70 text-slate-600 cursor-not-allowed':'border-slate-200/80 bg-white hover:border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-slate-800 shadow-2xs')+' px-2 py-1 text-[12px] leading-snug outline-none '+align+' '+(i===0?'font-semibold text-slate-500':i===1?'font-mono tracking-tight text-slate-700':i===2?'font-bold text-slate-900':i>=6&&i<=11?'font-semibold text-slate-800':i===12?'font-bold text-emerald-800':'')+'" '+(locked?'readonly tabindex="-1"':'')+'></td>';return i===2?(cellHtml+bioCells):cellHtml;}).join('')+'<td class="w-[90px] min-w-[90px] border-b border-slate-200/90 px-2 py-1.5 align-middle bg-inherit no-print"><div class="flex flex-nowrap items-center justify-center gap-1.5"><button type="button" title="Edit baris" aria-label="Edit baris" onclick="editAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 shadow-2xs transition"><i class="fa-solid fa-pen-to-square text-[11px]"></i></button><button type="button" title="Simpan perubahan" aria-label="Simpan perubahan" onclick="saveAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-700 text-white shadow-2xs hover:bg-emerald-800 transition"><i class="fa-solid fa-floppy-disk text-[11px]"></i></button>'+(alokasiJenis==='NON_ERDKK'?'<button type="button" title="Hapus data" aria-label="Hapus data" onclick="deleteAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-rose-600 text-white hover:bg-rose-700 shadow-2xs transition"><i class="fa-solid fa-trash text-[11px]"></i></button>':'')+'</div></td></tr>';
       }).join('');
 
@@ -4184,18 +4184,18 @@
         const ibu = bio.ibuKandung || '—';
         const alamat = bio.alamat || '—';
         return `
-          <tr class="hover:bg-slate-50/80 transition-colors">
-            <td class="py-3 px-3.5 text-center font-bold text-slate-500">${p.no}</td>
-            <td class="py-3 px-3.5 font-mono text-slate-700 tracking-tight">${p.nik}</td>
-            <td class="py-3 px-3.5 font-bold text-slate-900">${p.nama}</td>
-            <td class="py-3 px-3.5 text-slate-700 whitespace-nowrap">${escAl(ttl)}</td>
-            <td class="py-3 px-3.5 font-semibold text-emerald-900 uppercase">${escAl(ibu)}</td>
-            <td class="py-3 px-3.5 text-slate-600">${escAl(alamat)}</td>
-            <td class="py-3 px-3.5"><span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${badgeClass}">${p.status}</span></td>
-            <td class="py-3 px-3.5 text-slate-500">${p.penerimaKuasa !== '-' ? p.penerimaKuasa : '<span class="text-slate-400 italic">—</span>'}</td>
-            <td class="py-3 px-3.5 text-right font-mono font-semibold ${p.urea > 0 ? 'text-slate-800' : 'text-slate-400'}">${formatNumber(p.urea)} Kg</td>
-            <td class="py-3 px-3.5 text-right font-mono font-semibold ${p.npk > 0 ? 'text-slate-800' : 'text-slate-400'}">${formatNumber(p.npk)} Kg</td>
-            <td class="py-3 px-3.5 text-right font-mono font-semibold ${p.organik > 0 ? 'text-slate-800' : 'text-slate-400'}">${formatNumber(p.organik)} Kg</td>
+          <tr class="hover:bg-slate-50/80 transition-colors text-xs font-sans text-slate-900">
+            <td class="py-3 px-3.5 text-center font-semibold">${p.no}</td>
+            <td class="py-3 px-3.5 font-semibold tracking-tight">${p.nik}</td>
+            <td class="py-3 px-3.5 font-bold">${p.nama}</td>
+            <td class="py-3 px-3.5 font-semibold whitespace-nowrap">${escAl(ttl)}</td>
+            <td class="py-3 px-3.5 font-semibold uppercase">${escAl(ibu)}</td>
+            <td class="py-3 px-3.5 font-semibold uppercase">${escAl(alamat)}</td>
+            <td class="py-3 px-3.5"><span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${badgeClass}">${p.status}</span></td>
+            <td class="py-3 px-3.5 font-semibold">${p.penerimaKuasa !== '-' ? p.penerimaKuasa : '<span class="text-slate-400 italic">—</span>'}</td>
+            <td class="py-3 px-3.5 text-right font-semibold ${p.urea > 0 ? 'text-slate-900' : 'text-slate-400'}">${formatNumber(p.urea)} Kg</td>
+            <td class="py-3 px-3.5 text-right font-semibold ${p.npk > 0 ? 'text-slate-900' : 'text-slate-400'}">${formatNumber(p.npk)} Kg</td>
+            <td class="py-3 px-3.5 text-right font-semibold ${p.organik > 0 ? 'text-slate-900' : 'text-slate-400'}">${formatNumber(p.organik)} Kg</td>
           </tr>
         `;
       });

@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pusat Cetak Dokumen Laporan Resmi - Poktan Sri Mulyo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -38,6 +41,9 @@
     })();
   </script>
   <style>
+    body, table, th, td {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
     @media print {
       .no-print { display: none !important; }
       body { background: white !important; color: black !important; padding: 0 !important; margin: 0 !important; }
@@ -991,33 +997,33 @@
 
       const badgeStatus = (st) => {
         const s = String(st || '').toUpperCase();
-        if (s.includes('BELUM AMBIL')) return '<span class="inline-block px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-red-100 text-red-800">' + esc(st) + '</span>';
-        if (s.includes('SUDAH AMBIL')) return '<span class="inline-block px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-blue-100 text-blue-800">' + esc(st) + '</span>';
-        if (s.includes('SETOR KTP')) return '<span class="inline-block px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-purple-100 text-purple-800">' + esc(st) + '</span>';
-        if (s.includes('FOTO')) return '<span class="inline-block px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-teal-100 text-teal-800">' + esc(st) + '</span>';
-        if (s.includes('SURAT')) return '<span class="inline-block px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-sky-100 text-sky-800">' + esc(st) + '</span>';
-        return '<span class="inline-block px-1.5 py-0.5 rounded text-[9.5px] font-semibold bg-slate-100 text-slate-700">' + esc(st || '-') + '</span>';
+        if (s.includes('BELUM AMBIL')) return '<span class="inline-block px-1.5 py-0.5 rounded text-xs font-bold bg-red-100 text-red-800">' + esc(st) + '</span>';
+        if (s.includes('SUDAH AMBIL')) return '<span class="inline-block px-1.5 py-0.5 rounded text-xs font-bold bg-blue-100 text-blue-800">' + esc(st) + '</span>';
+        if (s.includes('SETOR KTP')) return '<span class="inline-block px-1.5 py-0.5 rounded text-xs font-bold bg-purple-100 text-purple-800">' + esc(st) + '</span>';
+        if (s.includes('FOTO')) return '<span class="inline-block px-1.5 py-0.5 rounded text-xs font-bold bg-teal-100 text-teal-800">' + esc(st) + '</span>';
+        if (s.includes('SURAT')) return '<span class="inline-block px-1.5 py-0.5 rounded text-xs font-bold bg-sky-100 text-sky-800">' + esc(st) + '</span>';
+        return '<span class="inline-block px-1.5 py-0.5 rounded text-xs font-bold bg-slate-100 text-slate-700">' + esc(st || '-') + '</span>';
       };
 
       const rowsHtml = filtered.map((f, i) => `
-        <tr class="hover:bg-slate-50">
-          <td class="border border-slate-400 p-1 text-center font-mono text-[10px] whitespace-nowrap">${i + 1}</td>
-          <td class="border border-slate-400 p-1 text-center font-mono text-[10px] text-slate-600 whitespace-nowrap">${esc(f.nik || '-')}</td>
-          <td class="border border-slate-400 p-1 font-bold text-slate-900 min-w-[125px]">${esc(f.nama)} ${f.isNon ? '<span class="text-[9px] font-normal text-blue-700 italic">(Non-eRDKK)</span>' : ''}</td>
-          <td class="border border-slate-400 p-1 text-[10px] text-slate-700 whitespace-nowrap">${esc(f.tempatLahir || '-')}</td>
-          <td class="border border-slate-400 p-1 text-center font-mono text-[10px] text-slate-700 whitespace-nowrap">${esc(f.tanggalLahir || '-')}</td>
-          <td class="border border-slate-400 p-1 font-semibold text-[10px] text-slate-800 uppercase whitespace-nowrap">${esc(f.ibuKandung || '-')}</td>
-          <td class="border border-slate-400 p-1 text-[10px] text-slate-700 min-w-[100px]">${esc(f.alamat || '-')}</td>
-          <td class="border border-slate-400 p-1 text-center text-[10px] whitespace-nowrap">
-            <span class="px-1.5 py-0.5 rounded font-bold ${f.kloter.includes('Kloter') ? 'bg-purple-100 text-purple-800' : 'bg-slate-100 text-slate-600'}">${esc(f.kloter)}</span>
+        <tr class="hover:bg-slate-50 text-xs font-sans text-slate-900">
+          <td class="border border-slate-400 p-1.5 text-center font-semibold whitespace-nowrap">${i + 1}</td>
+          <td class="border border-slate-400 p-1.5 text-center font-semibold whitespace-nowrap">${esc(f.nik || '-')}</td>
+          <td class="border border-slate-400 p-1.5 font-bold min-w-[125px]">${esc(f.nama)} ${f.isNon ? '<span class="text-xs font-normal text-blue-700 italic">(Non-eRDKK)</span>' : ''}</td>
+          <td class="border border-slate-400 p-1.5 font-semibold uppercase whitespace-nowrap">${esc(f.tempatLahir || '-')}</td>
+          <td class="border border-slate-400 p-1.5 text-center font-semibold whitespace-nowrap">${esc(f.tanggalLahir || '-')}</td>
+          <td class="border border-slate-400 p-1.5 font-semibold uppercase whitespace-nowrap">${esc(f.ibuKandung || '-')}</td>
+          <td class="border border-slate-400 p-1.5 font-semibold uppercase min-w-[100px]">${esc(f.alamat || '-')}</td>
+          <td class="border border-slate-400 p-1.5 text-center whitespace-nowrap">
+            <span class="px-1.5 py-0.5 rounded text-xs font-bold ${f.kloter.includes('Kloter') ? 'bg-purple-100 text-purple-800' : 'bg-slate-100 text-slate-700'}">${esc(f.kloter)}</span>
           </td>
-          <td class="border border-slate-400 p-1 text-[10px] whitespace-nowrap">${badgeStatus(f.status)}</td>
-          <td class="border border-slate-400 p-1 text-right font-mono text-[10.5px] whitespace-nowrap">${f.u}</td>
-          <td class="border border-slate-400 p-1 text-right font-mono text-[10.5px] whitespace-nowrap">${f.p}</td>
-          <td class="border border-slate-400 p-1 text-right font-mono text-[10.5px] whitespace-nowrap">${f.o}</td>
-          <td class="border border-slate-400 p-1 text-right font-mono font-bold text-[10.5px] text-slate-900 whitespace-nowrap">${f.totSak}</td>
-          <td class="border border-slate-400 p-1 text-right font-mono font-semibold text-[10.5px] whitespace-nowrap ${f.uang > 0 ? 'text-emerald-800' : 'text-slate-500'}">${f.uang > 0 ? rupiah(f.uang) : '-'}</td>
-          <td class="border border-slate-400 p-1 text-center text-[10px] text-slate-500 whitespace-nowrap">${esc(f.ket || '')}</td>
+          <td class="border border-slate-400 p-1.5 whitespace-nowrap">${badgeStatus(f.status)}</td>
+          <td class="border border-slate-400 p-1.5 text-right font-semibold whitespace-nowrap">${f.u}</td>
+          <td class="border border-slate-400 p-1.5 text-right font-semibold whitespace-nowrap">${f.p}</td>
+          <td class="border border-slate-400 p-1.5 text-right font-semibold whitespace-nowrap">${f.o}</td>
+          <td class="border border-slate-400 p-1.5 text-right font-bold whitespace-nowrap">${f.totSak}</td>
+          <td class="border border-slate-400 p-1.5 text-right font-bold whitespace-nowrap ${f.uang > 0 ? 'text-emerald-800' : 'text-slate-500'}">${f.uang > 0 ? rupiah(f.uang) : '-'}</td>
+          <td class="border border-slate-400 p-1.5 text-center font-semibold whitespace-nowrap">${esc(f.ket || '')}</td>
         </tr>
       `).join('');
 
