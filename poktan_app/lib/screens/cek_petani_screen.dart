@@ -176,18 +176,110 @@ class _CekPetaniScreenState extends State<CekPetaniScreen> {
 
               const SizedBox(height: 16),
 
+              // Biodata Petani e-RDKK Card
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: GojekColors.primarySoft,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: GojekColors.primary.withValues(alpha: 0.2)),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.cake_outlined, size: 15, color: GojekColors.primaryDark),
+                        const SizedBox(width: 6),
+                        const Text('Tempat, Tgl Lahir: ', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: GojekColors.textSecondary)),
+                        Expanded(
+                          child: Text(
+                            '${farmer.tempatLahir}, ${farmer.tanggalLahir}',
+                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: GojekColors.textPrimary),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        const Icon(Icons.family_restroom, size: 15, color: GojekColors.primaryDark),
+                        const SizedBox(width: 6),
+                        const Text('Nama Ibu Kandung: ', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: GojekColors.textSecondary)),
+                        Expanded(
+                          child: Text(
+                            farmer.ibuKandung.toUpperCase(),
+                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: GojekColors.textPrimary),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        const Icon(Icons.home_outlined, size: 15, color: GojekColors.primaryDark),
+                        const SizedBox(width: 6),
+                        const Text('Alamat Domisili: ', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: GojekColors.textSecondary)),
+                        Expanded(
+                          child: Text(
+                            farmer.alamat,
+                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: GojekColors.textPrimary),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 14),
+
               // Detail Informasi Tambahan
-              _buildInfoRow('Luas Lahan e-RDKK', '${farmer.lahan} Ha'),
+              _buildInfoRow('Luas Lahan e-RDKK', '${farmer.lahan} Hektar (Ha)'),
               if (farmer.revisi.isNotEmpty)
-                _buildInfoRow('Luas Revisi', '${farmer.revisi} Ha'),
-              _buildInfoRow('Status Verifikasi', farmer.status),
+                _buildInfoRow('Luas Lahan Revisi Fisik', '${farmer.revisi} Hektar (Ha)'),
+              _buildInfoRow('Status Penebusan Kios', farmer.status),
               if (farmer.uang.isNotEmpty)
                 _buildInfoRow('Nominal Pembayaran', farmer.uang),
               if (farmer.ket.isNotEmpty)
-                _buildInfoRow('Catatan Khusus', farmer.ket),
-              _buildInfoRow('Kelompok Tani', 'Poktan Sri Mulyo, Ds. Kediren'),
+                _buildInfoRow('Catatan Khusus Kios', farmer.ket),
+              _buildInfoRow('Kelompok Tani', 'Poktan Sri Mulyo, Ds. Kediren, Lembeyan'),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 12),
+
+              // Disclaimer Resmi Kementerian Pertanian
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: GojekColors.background,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: GojekColors.border),
+                ),
+                child: const Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.gavel, size: 16, color: GojekColors.primaryDark),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Alokasi Resmi Dari Kementerian Pertanian',
+                            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: GojekColors.textPrimary),
+                          ),
+                          SizedBox(height: 2),
+                          Text(
+                            'Dihitung dari luas lahan e-RDKK, bukan wewenang pengurus kelompok tani atau kios merubah alokasi tersebut tanpa dasar regulasi pusat.',
+                            style: TextStyle(fontSize: 10, color: GojekColors.textSecondary, height: 1.3),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 16),
 
               // Tombol Tindakan
               Row(
@@ -200,14 +292,31 @@ class _CekPetaniScreenState extends State<CekPetaniScreen> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
                       icon: const Icon(Icons.copy, size: 18, color: GojekColors.primary),
-                      label: const Text('Salin Data', style: TextStyle(color: GojekColors.primary, fontWeight: FontWeight.w700)),
+                      label: const Text('Salin Bukti', style: TextStyle(color: GojekColors.primary, fontWeight: FontWeight.w700)),
                       onPressed: () {
-                        final text = 'Data Petani Poktan Sri Mulyo:\nNama: ${farmer.nama}\nNIK: ${farmer.nik}\nUrea: ${farmer.ureaSak} Sak (${farmer.urea} kg)\nNPK: ${farmer.npkSak} Sak (${farmer.npk} kg)\nOrganik: ${farmer.organikSak} Sak (${farmer.organik} kg)\nStatus: ${farmer.status}';
+                        final text = '''BUKTI ALOKASI PUPUK BERSUBSIDI MT3 2026
+KELOMPOK TANI "SRI MULYO" DESA KEDIREN
+==================================
+Nama Petani : ${farmer.nama}
+NIK KTP     : ${farmer.nik}
+Ibu Kandung : ${farmer.ibuKandung}
+Alamat      : ${farmer.alamat}
+Luas Lahan  : ${farmer.lahan} Ha
+----------------------------------
+Alokasi Pupuk:
+• Urea      : ${farmer.ureaSak} Sak (${farmer.urea} kg)
+• NPK       : ${farmer.npkSak} Sak (${farmer.npk} kg)
+• Organik   : ${farmer.organikSak} Sak (${farmer.organik} kg)
+----------------------------------
+Status Kios : ${farmer.status}
+Nominal     : ${farmer.uang.isNotEmpty ? farmer.uang : '-'}
+==================================
+Titik Serah: Kios Poktan Sri Mulyo, Kediren''';
                         Clipboard.setData(ClipboardData(text: text));
                         Navigator.pop(ctx);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Rincian petani berhasil disalin!'),
+                            content: Text('Rincian bukti alokasi resmi berhasil disalin!'),
                             backgroundColor: GojekColors.primaryDark,
                           ),
                         );

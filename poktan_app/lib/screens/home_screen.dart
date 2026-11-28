@@ -14,6 +14,7 @@ import 'pupuk_stok_screen.dart';
 import 'tanya_tani_screen.dart';
 
 import '../services/auth_service.dart';
+import 'laporan_screen.dart';
 import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -325,15 +326,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           GojekServiceIcon(
                             title: 'GoLEP',
-                            icon: Icons.calculate,
+                            icon: Icons.water_drop,
                             backgroundColor: const Color(0xFF00B0FF), // Cyan
-                            badgeText: 'Dosis',
+                            badgeText: 'Pompa',
                             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const KalkulatorLepScreen())),
                           ),
                           GojekServiceIcon(
                             title: 'GoPanduan',
                             icon: Icons.menu_book,
                             backgroundColor: const Color(0xFFFFB800), // Gojek Yellow
+                            badgeText: 'Dosis',
                             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PanduanTaniScreen())),
                           ),
                           GojekServiceIcon(
@@ -347,7 +349,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             title: 'GoLaporan',
                             icon: Icons.pie_chart,
                             backgroundColor: const Color(0xFFEE2737), // Gojek Red
-                            onTap: () => _showLaporanModal(),
+                            badgeText: 'Resmi',
+                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const LaporanScreen())),
                           ),
                         ],
                       ),
@@ -455,44 +458,6 @@ class _HomeScreenState extends State<HomeScreen> {
   },
 );
 }
-
-  void _showLaporanModal() {
-    final stats = _dataService.getStats();
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => Container(
-        padding: const EdgeInsets.all(24),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('GoLaporan · Ringkasan Penyaluran', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
-            const SizedBox(height: 14),
-            Text('• Total Petani Terdata : ${stats['total']} Petani'),
-            Text('• Sudah Menebus Pupuk : ${stats['sudah']} Petani (${(stats['persen'] as double).toStringAsFixed(1)}%)'),
-            Text('• Belum Menebus       : ${stats['belum']} Petani'),
-            Text('• Total Pupuk Urea     : ${stats['sakUrea']} Sak'),
-            Text('• Total Pupuk NPK      : ${stats['sakNpk']} Sak'),
-            Text('• Total Pupuk Organik  : ${stats['sakOrganik']} Sak'),
-            const SizedBox(height: 18),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: GojekColors.primary),
-                onPressed: () => Navigator.pop(ctx),
-                child: const Text('Tutup', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _buildPromoCard({
     required String title,

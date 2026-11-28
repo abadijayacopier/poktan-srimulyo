@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import '../models/farmer.dart';
 import '../models/kloter.dart';
+import '../models/penggarap.dart';
 
 class DataService {
   static final DataService _instance = DataService._internal();
@@ -10,11 +11,13 @@ class DataService {
   DataService._internal();
 
   List<Farmer> _farmers = [];
+  List<Penggarap> _penggaraps = [];
   bool _isLoading = false;
   DateTime? _lastSync;
   String _syncSource = 'Offline Seed';
 
   List<Farmer> get farmers => _farmers;
+  List<Penggarap> get penggaraps => _penggaraps;
   bool get isLoading => _isLoading;
   DateTime? get lastSync => _lastSync;
   String get syncSource => _syncSource;
@@ -28,6 +31,13 @@ class DataService {
       _farmers = list.map((item) => Farmer.fromJson(item)).toList();
       _syncSource = 'Data Lokal (${_farmers.length} Petani)';
       _lastSync = DateTime.now();
+
+      // Load Penggarap seed
+      try {
+        final penggarapStr = await rootBundle.loadString('assets/data/penggarap_seed.json');
+        final List<dynamic> pList = json.decode(penggarapStr);
+        _penggaraps = pList.map((item) => Penggarap.fromJson(item)).toList();
+      } catch (_) {}
     } catch (e) {
       // Fallback data jika asset belum siap
       _farmers = _generateFallbackSeed();
