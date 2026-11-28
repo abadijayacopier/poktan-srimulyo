@@ -1,4 +1,5 @@
 *.apk
+!poktan-srimulyo-release.apk
 *.aab
 build/
 .gradle/
