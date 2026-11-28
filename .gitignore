@@ -1,0 +1,9 @@
+*.apk
+*.aab
+build/
+.gradle/
+.idea/
+*.iml
+.dart_tool/
+poktan_app/build/
+poktan_app/.dart_tool/
