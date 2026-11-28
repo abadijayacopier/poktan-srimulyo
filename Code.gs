@@ -57,8 +57,24 @@ function doPost(e) {
       return createJsonResponse(getRencanaTani_());
     }
 
+    if (action === 'getKuasaPenggarapPublik') {
+      return createJsonResponse(getKuasaPenggarap_());
+    }
+
     const role = getSessionRole_(payload.token);
     if (!role) return createJsonResponse({ sukses: false, pesan: 'Sesi login tidak valid atau sudah berakhir. Silakan login kembali.' });
+
+    if (action === 'getKuasaPenggarap') {
+      return createJsonResponse(getKuasaPenggarap_());
+    }
+    if (action === 'saveKuasaPenggarap') {
+      if (role !== 'admin') return createJsonResponse({ sukses: false, pesan: 'Akses ditolak. Hanya administrator dapat mengubah data kuasa penggarap.' });
+      return createJsonResponse(saveKuasaPenggarap_(payload.row, payload.values));
+    }
+    if (action === 'addKuasaPenggarap') {
+      if (role !== 'admin') return createJsonResponse({ sukses: false, pesan: 'Akses ditolak. Hanya administrator dapat menambah data kuasa penggarap.' });
+      return createJsonResponse(addKuasaPenggarap_(payload));
+    }
 
     if (action === 'getData') {
       return createJsonResponse({ sukses: true, role: role, data: getDashboardData() });
@@ -662,6 +678,117 @@ function saveAlokasiPembagian_(rowNumber, values) {
     SpreadsheetApp.flush();
     logToSheet_('Ubah Alokasi', 'Memperbarui baris ke-' + rowNumber, '-', 'Sistem', 'Dashboard', 'Sukses', 'admin', 'admin');
     return { sukses: true, pesan: 'Data alokasi berhasil diperbarui.', row: row };
+  } finally { lock.releaseLock(); }
+}
+
+/**
+ * Modul Surat Kuasa Penggarap (Sinkronisasi Otomatis dengan ALOKASI ERDKK & ALOKASI PEMBAGIAN)
+ */
+function getKuasaPenggarap_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('SURAT KUASA PENGGARAP');
+  if (!sheet) return { sukses: true, rows: [] };
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 6) return { sukses: true, rows: [] };
+  const values = sheet.getRange(6, 1, lastRow - 5, 18).getDisplayValues();
+  const rows = values.map((r, i) => ({
+    row: i + 6,
+    no: r[0],
+    nikPemilik: String(r[1] || '').trim(),
+    namaPemilik: String(r[2] || '').trim(),
+    alamatPemilik: String(r[3] || '').trim(),
+    luasLahan: String(r[4] || '').trim(),
+    nikPenggarap: String(r[5] || '').trim(),
+    namaPenggarap: String(r[6] || '').trim(),
+    alamatPenggarap: String(r[7] || '').trim(),
+    statusGarap: String(r[8] || '').trim(),
+    ureaKg: Number(r[9]) || 0,
+    phonskaKg: Number(r[10]) || 0,
+    organikKg: Number(r[11]) || 0,
+    sakUrea: Number(r[12]) || 0,
+    sakPhonska: Number(r[13]) || 0,
+    sakOrganik: Number(r[14]) || 0,
+    totalBiaya: Number(r[15]) || 0,
+    statusPenebusan: String(r[16] || '').trim(),
+    statusBerkas: String(r[17] || '').trim()
+  })).filter(x => x.nikPemilik || x.namaPenggarap);
+  return { sukses: true, rows: rows };
+}
+
+function saveKuasaPenggarap_(rowNumber, values) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('SURAT KUASA PENGGARAP');
+    if (!sheet) throw new Error("Tab 'SURAT KUASA PENGGARAP' tidak ditemukan.");
+    const row = Number(rowNumber);
+    if (!Number.isInteger(row) || row < 6 || row > sheet.getLastRow()) throw new Error('Nomor baris tidak valid.');
+    if (!Array.isArray(values) || values.length !== 18) throw new Error('Format data harus 18 kolom (A:R).');
+    const safe = values.map((v, i) => {
+      const value = String(v == null ? '' : v).trim();
+      return (i === 1 || i === 5) ? (value ? "'" + value : '') : value;
+    });
+    sheet.getRange(row, 1, 1, 18).setValues([safe]);
+    SpreadsheetApp.flush();
+    logToSheet_('Ubah Kuasa Penggarap', 'Memperbarui baris ke-' + rowNumber, '-', 'Sistem', 'Dashboard', 'Sukses', 'admin', 'admin');
+    return { sukses: true, pesan: 'Data Kuasa Penggarap berhasil diperbarui.', row: row };
+  } finally { lock.releaseLock(); }
+}
+
+function addKuasaPenggarap_(payload) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('SURAT KUASA PENGGARAP');
+    if (!sheet) throw new Error("Tab 'SURAT KUASA PENGGARAP' tidak ditemukan.");
+    const nextRow = Math.max(sheet.getLastRow() + 1, 6);
+    const p = payload.data || payload;
+    const nikPemilik = String(p.nikPemilik || '').trim();
+    const nikPenggarap = String(p.nikPenggarap || '-').trim();
+    const namaPenggarap = String(p.namaPenggarap || '').trim();
+    const alamatPenggarap = String(p.alamatPenggarap || '').trim();
+    const statusGarap = String(p.statusGarap || 'Penggarap Sawah').trim();
+    const statusBerkas = String(p.statusBerkas || 'Lengkap').trim();
+
+    // Kolom rumus otomatis yang tersinkronisasi dengan ALOKASI ERDKK & ALOKASI PEMBAGIAN
+    const formulaNo = `=IF(B${nextRow}<>""; ROW()-5; "")`;
+    const formulaNama = `=IF(B${nextRow}=""; ""; IFERROR(INDEX('ALOKASI ERDKK'!$C$2:$C$250; MATCH(B${nextRow}; 'ALOKASI ERDKK'!$B$2:$B$250; 0)); "NIK TIDAK TERDAFTAR"))`;
+    const formulaAlamat = `=IF(B${nextRow}=""; ""; IFERROR(INDEX('ALOKASI ERDKK'!$G$2:$G$250; MATCH(B${nextRow}; 'ALOKASI ERDKK'!$B$2:$B$250; 0)); ""))`;
+    const formulaLuas = `=IF(B${nextRow}=""; ""; IFERROR(INDEX('ALOKASI ERDKK'!$H$2:$H$250; MATCH(B${nextRow}; 'ALOKASI ERDKK'!$B$2:$B$250; 0)); 0))`;
+    const formulaUrea = `=IF(B${nextRow}=""; 0; IFERROR(INDEX('ALOKASI ERDKK'!$K$2:$K$250; MATCH(B${nextRow}; 'ALOKASI ERDKK'!$B$2:$B$250; 0)); 0))`;
+    const formulaPhonska = `=IF(B${nextRow}=""; 0; IFERROR(INDEX('ALOKASI ERDKK'!$N$2:$N$250; MATCH(B${nextRow}; 'ALOKASI ERDKK'!$B$2:$B$250; 0)); 0))`;
+    const formulaOrganik = `=IF(B${nextRow}=""; 0; IFERROR(INDEX('ALOKASI ERDKK'!$Q$2:$Q$250; MATCH(B${nextRow}; 'ALOKASI ERDKK'!$B$2:$B$250; 0)); 0))`;
+    const formulaSakUrea = `=IF(J${nextRow}=0; 0; ROUNDUP(J${nextRow}/50))`;
+    const formulaSakPhonska = `=IF(K${nextRow}=0; 0; ROUNDUP(K${nextRow}/50))`;
+    const formulaSakOrganik = `=IF(L${nextRow}=0; 0; ROUNDUP(L${nextRow}/40))`;
+    const formulaTotal = `=(M${nextRow}*105000)+(N${nextRow}*110000)+(O${nextRow}*35000)`;
+    const formulaStatusPenebusan = `=IF(B${nextRow}=""; ""; IFERROR(INDEX('ALOKASI PEMBAGIAN'!$F$2:$F$250; MATCH(B${nextRow}; 'ALOKASI PEMBAGIAN'!$B$2:$B$250; 0)); "BELUM AMBIL"))`;
+
+    const newRowValues = [
+      formulaNo,
+      "'" + nikPemilik,
+      formulaNama,
+      formulaAlamat,
+      formulaLuas,
+      nikPenggarap ? ("'" + nikPenggarap) : '-',
+      namaPenggarap,
+      alamatPenggarap,
+      statusGarap,
+      formulaUrea,
+      formulaPhonska,
+      formulaOrganik,
+      formulaSakUrea,
+      formulaSakPhonska,
+      formulaSakOrganik,
+      formulaTotal,
+      formulaStatusPenebusan,
+      statusBerkas
+    ];
+
+    sheet.getRange(nextRow, 1, 1, 18).setValues([newRowValues]);
+    SpreadsheetApp.flush();
+    logToSheet_('Tambah Kuasa Penggarap', 'Menambahkan penggarap untuk NIK ' + nikPemilik, '-', 'Sistem', 'Dashboard', 'Sukses', 'admin', 'admin');
+    return { sukses: true, pesan: 'Berhasil menambahkan Surat Kuasa Penggarap baru!', row: nextRow };
   } finally { lock.releaseLock(); }
 }
 
