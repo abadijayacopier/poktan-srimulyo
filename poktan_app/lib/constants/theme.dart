@@ -12,6 +12,7 @@ class GojekColors {
   static const Color red = Color(0xFFEE2737);
   static const Color redSoft = Color(0xFFFDEDEE);
   static const Color blue = Color(0xFF0081A0);
+  static const Color blueDark = Color(0xFF005E75);
   static const Color blueSoft = Color(0xFFE5F7FB);
   static const Color orange = Color(0xFFFF6B00);
   static const Color orangeSoft = Color(0xFFFFF0E6);

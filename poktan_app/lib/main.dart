@@ -3,8 +3,10 @@ import 'package:flutter/services.dart';
 import 'constants/theme.dart';
 import 'screens/cek_petani_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/login_screen.dart';
 import 'screens/profil_screen.dart';
 import 'screens/tanya_tani_screen.dart';
+import 'services/auth_service.dart';
 import 'services/data_service.dart';
 
 void main() async {
@@ -22,16 +24,39 @@ void main() async {
   runApp(const PoktanSriMulyoApp());
 }
 
-class PoktanSriMulyoApp extends StatelessWidget {
+class PoktanSriMulyoApp extends StatefulWidget {
   const PoktanSriMulyoApp({super.key});
 
   @override
+  State<PoktanSriMulyoApp> createState() => _PoktanSriMulyoAppState();
+}
+
+class _PoktanSriMulyoAppState extends State<PoktanSriMulyoApp> {
+  final AuthService _authService = AuthService();
+  bool _enteredApp = false;
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Poktan Sri Mulyo',
-      debugShowCheckedModeBanner: false,
-      theme: GojekTheme.lightTheme,
-      home: const MainNavigationShell(),
+    return ListenableBuilder(
+      listenable: _authService,
+      builder: (context, _) {
+        final showLogin = !_enteredApp && !_authService.isLoggedIn;
+
+        return MaterialApp(
+          title: 'Poktan Sri Mulyo',
+          debugShowCheckedModeBanner: false,
+          theme: GojekTheme.lightTheme,
+          home: showLogin
+              ? LoginScreen(
+                  onLoginSuccess: () {
+                    setState(() {
+                      _enteredApp = true;
+                    });
+                  },
+                )
+              : const MainNavigationShell(),
+        );
+      },
     );
   }
 }
