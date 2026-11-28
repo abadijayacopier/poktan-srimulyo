@@ -1010,11 +1010,15 @@
 
               <!-- 2. TAMPILAN TABEL SPREADSHEET (DESKTOP) -->
               <div id="alokasi-table-scroll" class="hidden relative overflow-x-auto max-h-[640px] rounded-xl border border-slate-200">
-                <table class="w-full min-w-[1430px] table-fixed border-separate border-spacing-0 text-left text-xs">
+                <table class="w-full min-w-[1930px] table-fixed border-separate border-spacing-0 text-left text-xs">
                   <colgroup>
                     <col style="width:46px">
                     <col style="width:175px">
                     <col style="width:165px">
+                    <col style="width:110px">
+                    <col style="width:105px">
+                    <col style="width:140px">
+                    <col style="width:145px">
                     <col style="width:80px">
                     <col style="width:80px">
                     <col style="width:170px">
@@ -1033,6 +1037,10 @@
                       <th class="bg-slate-50 px-3 py-3 text-center">No</th>
                       <th class="bg-slate-50 px-3 py-3 text-left">NIK</th>
                       <th class="bg-slate-50 px-3 py-3 text-left">Nama Petani</th>
+                      <th class="bg-emerald-50/70 px-2.5 py-3 text-left text-emerald-900">Tempat Lahir</th>
+                      <th class="bg-emerald-50/70 px-2.5 py-3 text-center text-emerald-900">Tgl Lahir</th>
+                      <th class="bg-emerald-50/70 px-2.5 py-3 text-left text-emerald-900">Nama Ibu Kandung</th>
+                      <th class="bg-emerald-50/70 px-2.5 py-3 text-left text-emerald-900">Alamat</th>
                       <th class="bg-slate-50 px-2.5 py-3 text-center">Alokasi ERDKK</th>
                       <th class="bg-slate-50 px-2.5 py-3 text-center">Lahan Asli</th>
                       <th class="bg-slate-50 px-3 py-3 text-left">Status</th>
@@ -1428,6 +1436,9 @@
                   <th class="py-3 px-3.5 text-center w-14">No</th>
                   <th class="py-3 px-3.5">NIK</th>
                   <th class="py-3 px-3.5">Nama Petani</th>
+                  <th class="py-3 px-3.5">Tempat, Tgl Lahir</th>
+                  <th class="py-3 px-3.5">Ibu Kandung</th>
+                  <th class="py-3 px-3.5">Alamat</th>
                   <th class="py-3 px-3.5">Status Penebusan</th>
                   <th class="py-3 px-3.5">Penerima Kuasa</th>
                   <th class="py-3 px-3.5 text-right">Urea (Kg)</th>
@@ -1702,6 +1713,30 @@
           <div class="text-right">
             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">TAGIHAN / UANG</span>
             <span id="det-uang" class="text-sm font-black text-emerald-800 font-mono">-</span>
+          </div>
+        </div>
+
+        <!-- Biodata Resmi e-RDKK (Tempat/Tgl Lahir, Ibu Kandung, Alamat) -->
+        <div id="det-biodata-box" class="rounded-2xl border border-emerald-200/80 bg-emerald-50/40 p-3.5 space-y-2.5">
+          <div class="flex items-center justify-between border-b border-emerald-200/60 pb-1.5">
+            <span class="text-[10px] font-extrabold text-emerald-900 uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fa-solid fa-address-card text-emerald-600"></i> Biodata Resmi e-RDKK
+            </span>
+            <span class="text-[10px] font-semibold text-emerald-700">Sheet: ALOKASI ERDKK</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2.5 text-xs">
+            <div>
+              <span class="text-[10px] font-bold text-slate-400 uppercase block">Tempat, Tanggal Lahir</span>
+              <span id="det-ttl" class="font-bold text-slate-800">-</span>
+            </div>
+            <div>
+              <span class="text-[10px] font-bold text-slate-400 uppercase block">Nama Ibu Kandung</span>
+              <span id="det-ibu" class="font-bold text-slate-800 uppercase">-</span>
+            </div>
+            <div class="col-span-2 pt-1 border-t border-emerald-100">
+              <span class="text-[10px] font-bold text-slate-400 uppercase block">Alamat / Domisili</span>
+              <span id="det-alamat" class="font-semibold text-slate-800">-</span>
+            </div>
           </div>
         </div>
 
@@ -2206,6 +2241,76 @@
     }
     function switchAlokasiType(type,rerender=true){alokasiJenis=type;if(rerender&&alokasiAllRows.length)applyAlokasiPartition();else if(alokasiAllRows.length)applyAlokasiPartition();}
     async function alokasiApi(action,extra={}){if(!authSession||authSession.role!=='admin')throw Error('Akses ditolak.');const r=await fetch(GAS_API_URL,{method:'POST',redirect:'follow',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,token:authSession.token,...extra})});const j=await r.json();if(!j.sukses)throw Error(j.pesan||'Permintaan gagal');return j;}
+    // =====================================================
+    // BIODATA RESMI DARI SHEET "ALOKASI ERDKK"
+    // (Tempat Lahir, Tanggal Lahir, Nama Ibu Kandung, Alamat)
+    // =====================================================
+    let erdkkBioByNik = {};
+    let erdkkBioByNama = {};
+    let erdkkBioLoaded = false;
+
+    function loadCachedErdkkBiodata() {
+      try {
+        const raw = localStorage.getItem('poktan_erdkk_biodata_v1');
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.byNik && parsed.byNama) {
+          erdkkBioByNik = parsed.byNik;
+          erdkkBioByNama = parsed.byNama;
+        }
+      } catch (e) {}
+    }
+    loadCachedErdkkBiodata();
+
+    function getErdkkBiodata(nik, nama) {
+      const kNik = String(nik || '').replace(/^'/, '').trim();
+      const kNama = String(nama || '').replace(/\s+/g, ' ').trim().toUpperCase();
+      if (kNik && erdkkBioByNik[kNik]) return erdkkBioByNik[kNik];
+      if (kNama && erdkkBioByNama[kNama]) return erdkkBioByNama[kNama];
+      return { tempatLahir: '', tanggalLahir: '', ibuKandung: '', alamat: '' };
+    }
+
+    async function fetchErdkkBiodataGviz() {
+      try {
+        const url = 'https://docs.google.com/spreadsheets/d/1c7R1klPcFSZ7W1PLaZyayZxBUOrVyLh-Lwc24Cf6CEY/gviz/tq?tqx=out:json&sheet=ALOKASI%20ERDKK&range=A2:G240&headers=0&_=' + Date.now();
+        const res = await fetch(url);
+        const text = await res.text();
+        const raw = text.replace(/^[^{]*\{/, '{').replace(/\}[^}]*$/, '}');
+        const j = JSON.parse(raw);
+        if (!j.table || !j.table.rows) return;
+        const byNik = {};
+        const byNama = {};
+        j.table.rows.forEach(r => {
+          const c = r.c || [];
+          const val = idx => (c[idx] ? (c[idx].f !== undefined ? String(c[idx].f) : (c[idx].v !== null && c[idx].v !== undefined ? String(c[idx].v) : '')) : '').replace(/\s+/g, ' ').trim();
+          const nik = val(1).replace(/^'/, '');
+          const nama = val(2).toUpperCase();
+          if (!nik && !nama) return;
+          if (nik === 'NIK' || nama === 'NAMA') return;
+          const bio = {
+            tempatLahir: val(3),
+            tanggalLahir: val(4),
+            ibuKandung: val(5),
+            alamat: val(6)
+          };
+          if (nik) byNik[nik] = bio;
+          if (nama) byNama[nama] = bio;
+        });
+        if (Object.keys(byNik).length > 0 || Object.keys(byNama).length > 0) {
+          erdkkBioByNik = byNik;
+          erdkkBioByNama = byNama;
+          erdkkBioLoaded = true;
+          try {
+            localStorage.setItem('poktan_erdkk_biodata_v1', JSON.stringify({ ts: Date.now(), byNik, byNama }));
+          } catch (e) {}
+          if (alokasiAllRows && alokasiAllRows.length) renderAlokasiTable();
+          if (globalData && globalData.petani) filterPetani();
+        }
+      } catch (e) {
+        console.warn('Gagal memuat biodata ALOKASI ERDKK:', e);
+      }
+    }
+
     async function fetchAlokasiGviz(){
       const url='https://docs.google.com/spreadsheets/d/1c7R1klPcFSZ7W1PLaZyayZxBUOrVyLh-Lwc24Cf6CEY/gviz/tq?tqx=out:json&sheet=ALOKASI%20PEMBAGIAN&range=A2:N245&headers=0';
       const res=await fetch(url);
@@ -2249,6 +2354,7 @@
           }
         }
         if(loaded){
+          fetchErdkkBiodataGviz();
           applyAlokasiPartition();
         }
       }catch(e){
@@ -2404,7 +2510,9 @@
       updateAlokasiStatusFilterDropdown();
       const q=(document.getElementById('al-search').value||'').trim().toLowerCase(),st=document.getElementById('al-status-filter').value;
       const filtered=alokasiRows.filter(r=>{
-        const matchText=!q||r.values.some(v=>String(v??'').toLowerCase().includes(q));
+        const bio=getErdkkBiodata(r.values?.[1],r.values?.[2]);
+        const bioStr=[bio.tempatLahir,bio.tanggalLahir,bio.ibuKandung,bio.alamat].join(' ').toLowerCase();
+        const matchText=!q||r.values.some(v=>String(v??'').toLowerCase().includes(q))||bioStr.includes(q);
         return matchText && matchStatusFilter(r, st);
       });
       const total=filtered.length;
@@ -2682,7 +2790,17 @@
       document.getElementById('al-page-info').textContent=total?('Menampilkan seluruh '+total+' data petani'):'Tidak ada data';
 
       // 1. Render Table View (Spreadsheet)
-      document.getElementById('alokasi-tbody').innerHTML=filtered.map((r,ri)=>{const rowBg=ri%2===0?'bg-white':'bg-slate-50/70';return '<tr class="group '+rowBg+' hover:!bg-emerald-50/70 transition-colors">'+r.values.map((v,i)=>{const width=i===0?'w-[46px] min-w-[46px]':i===1?'w-[175px] min-w-[175px]':i===2?'w-[165px] min-w-[165px]':i===3?'w-[80px] min-w-[80px]':i===4?'w-[80px] min-w-[80px]':i===5?'w-[170px] min-w-[170px]':i>=6&&i<=8?'w-[80px] min-w-[80px]':i>=9&&i<=11?'w-[84px] min-w-[84px]':i===12?'w-[100px] min-w-[100px]':'w-[140px] min-w-[140px]';const locked=i===0||i===1||i===2||i===3||i===6||i===7||i===8;const align=i===0||(i>=9&&i<=11)?'text-center':(i>=6&&i<=8)||i===12?'text-right':'text-left';if(i===5)return '<td class="'+width+' border-b border-r border-slate-200/90 px-2 py-1.5 align-middle bg-inherit">'+renderAlStatusPicker(r.row,v)+'</td>';return '<td class="'+width+' border-b border-r border-slate-200/90 px-2 py-1.5 align-middle bg-inherit"><input data-row="'+r.row+'" data-col="'+i+'" value="'+escAl(v)+'" title="'+escAl(v)+(locked?' · Hanya baca':'')+'" aria-label="'+(['No (hanya baca)','NIK (hanya baca)','Nama Petani (hanya baca)','Lahan Revisi (hanya baca)','Revisi Lahan Asli','Status','Urea (hanya baca)','Phonska (hanya baca)','Organik (hanya baca)','Sak Urea','Sak Phonska','Sak Organik','Uang','Keterangan'][i])+'" class="w-full min-w-0 rounded-md border '+(locked?'border-slate-200/60 bg-slate-100/70 text-slate-600 cursor-not-allowed':'border-slate-200/80 bg-white hover:border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-slate-800 shadow-2xs')+' px-2 py-1 text-[12px] leading-snug outline-none '+align+' '+(i===0?'font-semibold text-slate-500':i===1?'font-mono tracking-tight text-slate-700':i===2?'font-bold text-slate-900':i>=6&&i<=11?'font-semibold text-slate-800':i===12?'font-bold text-emerald-800':'')+'" '+(locked?'readonly tabindex="-1"':'')+'></td>';}).join('')+'<td class="w-[90px] min-w-[90px] border-b border-slate-200/90 px-2 py-1.5 align-middle bg-inherit no-print"><div class="flex flex-nowrap items-center justify-center gap-1.5"><button type="button" title="Edit baris" aria-label="Edit baris" onclick="editAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 shadow-2xs transition"><i class="fa-solid fa-pen-to-square text-[11px]"></i></button><button type="button" title="Simpan perubahan" aria-label="Simpan perubahan" onclick="saveAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-700 text-white shadow-2xs hover:bg-emerald-800 transition"><i class="fa-solid fa-floppy-disk text-[11px]"></i></button>'+(alokasiJenis==='NON_ERDKK'?'<button type="button" title="Hapus data" aria-label="Hapus data" onclick="deleteAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-rose-600 text-white hover:bg-rose-700 shadow-2xs transition"><i class="fa-solid fa-trash text-[11px]"></i></button>':'')+'</div></td></tr>';}).join('');
+      document.getElementById('alokasi-tbody').innerHTML=filtered.map((r,ri)=>{
+        const rowBg=ri%2===0?'bg-white':'bg-slate-50/70';
+        const bio=getErdkkBiodata(r.values?.[1],r.values?.[2]);
+        const bioCells=[
+          {val:bio.tempatLahir||'-',w:'w-[110px] min-w-[110px]',align:'text-left',label:'Tempat Lahir (ALOKASI ERDKK)'},
+          {val:bio.tanggalLahir||'-',w:'w-[105px] min-w-[105px]',align:'text-center font-mono',label:'Tanggal Lahir (ALOKASI ERDKK)'},
+          {val:bio.ibuKandung||'-',w:'w-[140px] min-w-[140px]',align:'text-left font-semibold',label:'Nama Ibu Kandung (ALOKASI ERDKK)'},
+          {val:bio.alamat||'-',w:'w-[145px] min-w-[145px]',align:'text-left',label:'Alamat (ALOKASI ERDKK)'}
+        ].map(b=>'<td class="'+b.w+' border-b border-r border-slate-200/90 px-2 py-1.5 align-middle bg-emerald-50/20"><input value="'+escAl(b.val)+'" title="'+escAl(b.val)+' · '+b.label+'" aria-label="'+b.label+'" class="w-full min-w-0 rounded-md border border-emerald-200/60 bg-emerald-50/40 text-slate-700 cursor-not-allowed px-2 py-1 text-[11.5px] leading-snug outline-none '+b.align+'" readonly tabindex="-1"></td>').join('');
+        return '<tr class="group '+rowBg+' hover:!bg-emerald-50/70 transition-colors">'+r.values.map((v,i)=>{const width=i===0?'w-[46px] min-w-[46px]':i===1?'w-[175px] min-w-[175px]':i===2?'w-[165px] min-w-[165px]':i===3?'w-[80px] min-w-[80px]':i===4?'w-[80px] min-w-[80px]':i===5?'w-[170px] min-w-[170px]':i>=6&&i<=8?'w-[80px] min-w-[80px]':i>=9&&i<=11?'w-[84px] min-w-[84px]':i===12?'w-[100px] min-w-[100px]':'w-[140px] min-w-[140px]';const locked=i===0||i===1||i===2||i===3||i===6||i===7||i===8;const align=i===0||(i>=9&&i<=11)?'text-center':(i>=6&&i<=8)||i===12?'text-right':'text-left';if(i===5)return '<td class="'+width+' border-b border-r border-slate-200/90 px-2 py-1.5 align-middle bg-inherit">'+renderAlStatusPicker(r.row,v)+'</td>';const cellHtml='<td class="'+width+' border-b border-r border-slate-200/90 px-2 py-1.5 align-middle bg-inherit"><input data-row="'+r.row+'" data-col="'+i+'" value="'+escAl(v)+'" title="'+escAl(v)+(locked?' · Hanya baca':'')+'" aria-label="'+(['No (hanya baca)','NIK (hanya baca)','Nama Petani (hanya baca)','Lahan Revisi (hanya baca)','Revisi Lahan Asli','Status','Urea (hanya baca)','Phonska (hanya baca)','Organik (hanya baca)','Sak Urea','Sak Phonska','Sak Organik','Uang','Keterangan'][i])+'" class="w-full min-w-0 rounded-md border '+(locked?'border-slate-200/60 bg-slate-100/70 text-slate-600 cursor-not-allowed':'border-slate-200/80 bg-white hover:border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 text-slate-800 shadow-2xs')+' px-2 py-1 text-[12px] leading-snug outline-none '+align+' '+(i===0?'font-semibold text-slate-500':i===1?'font-mono tracking-tight text-slate-700':i===2?'font-bold text-slate-900':i>=6&&i<=11?'font-semibold text-slate-800':i===12?'font-bold text-emerald-800':'')+'" '+(locked?'readonly tabindex="-1"':'')+'></td>';return i===2?(cellHtml+bioCells):cellHtml;}).join('')+'<td class="w-[90px] min-w-[90px] border-b border-slate-200/90 px-2 py-1.5 align-middle bg-inherit no-print"><div class="flex flex-nowrap items-center justify-center gap-1.5"><button type="button" title="Edit baris" aria-label="Edit baris" onclick="editAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 shadow-2xs transition"><i class="fa-solid fa-pen-to-square text-[11px]"></i></button><button type="button" title="Simpan perubahan" aria-label="Simpan perubahan" onclick="saveAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-700 text-white shadow-2xs hover:bg-emerald-800 transition"><i class="fa-solid fa-floppy-disk text-[11px]"></i></button>'+(alokasiJenis==='NON_ERDKK'?'<button type="button" title="Hapus data" aria-label="Hapus data" onclick="deleteAlokasiRow('+r.row+')" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-rose-600 text-white hover:bg-rose-700 shadow-2xs transition"><i class="fa-solid fa-trash text-[11px]"></i></button>':'')+'</div></td></tr>';
+      }).join('');
 
       // 2. Render Card View (Modern Mobile Card sesuai contoh user)
       const cardsListEl = document.getElementById('alokasi-cards-list');
@@ -2797,6 +2915,12 @@
         ? (nik.substring(0, 6) + '********' + nik.substring(nik.length - 2)) 
         : (nik || '');
 
+      const bio = getErdkkBiodata(nik, nama);
+      const ttlStr = [bio.tempatLahir, bio.tanggalLahir].filter(Boolean).join(', ');
+      const ibuStr = bio.ibuKandung || '';
+      const alamatStr = bio.alamat ? (bio.alamat + ' · Desa Kediren') : 'Desa Kediren';
+      const hasBio = Boolean(ttlStr || ibuStr || bio.alamat);
+
       return `
         <div class="bg-white rounded-3xl border border-slate-200/90 p-4 sm:p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between gap-3 relative overflow-hidden group">
           
@@ -2810,10 +2934,10 @@
                 <h4 class="text-sm font-black text-slate-900 uppercase tracking-tight truncate leading-tight">
                   ${escAl(nama)}
                 </h4>
-                <p class="text-[11px] text-slate-400 font-medium mt-0.5 truncate flex items-center gap-1">
+                <p class="text-[11px] text-slate-500 font-medium mt-0.5 truncate flex items-center gap-1" title="${escAl(alamatStr)}">
                   <i class="fa-solid fa-location-dot text-[10px] text-emerald-600"></i>
-                  <span>Desa Kediren</span>
-                  ${maskedNik ? `<span class="font-mono text-slate-500 ml-1">· ${maskedNik}</span>` : ''}
+                  <span class="truncate">${escAl(alamatStr)}</span>
+                  ${maskedNik ? `<span class="font-mono text-slate-400 ml-1 shrink-0">· ${maskedNik}</span>` : ''}
                 </p>
               </div>
             </div>
@@ -2821,6 +2945,20 @@
               ${statusChips}
             </div>
           </div>
+
+          ${hasBio ? `
+            <!-- Biodata e-RDKK: Tempat/Tgl Lahir & Ibu Kandung -->
+            <div class="grid grid-cols-2 gap-2 px-3 py-2 rounded-xl bg-emerald-50/40 border border-emerald-100/80 text-[11px]">
+              <div class="truncate" title="Tempat, Tanggal Lahir: ${escAl(ttlStr || '-')}">
+                <span class="text-[9px] font-bold text-slate-400 uppercase block">Tempat, Tgl Lahir</span>
+                <span class="font-bold text-slate-800">${escAl(ttlStr || '-')}</span>
+              </div>
+              <div class="truncate" title="Ibu Kandung: ${escAl(ibuStr || '-')}">
+                <span class="text-[9px] font-bold text-slate-400 uppercase block">Ibu Kandung</span>
+                <span class="font-bold text-emerald-900 uppercase">${escAl(ibuStr || '-')}</span>
+              </div>
+            </div>
+          ` : ''}
 
           <!-- Body: Key-Value Grid (Sesuai Layout Nomor Meter & Tarif di Contoh User) -->
           <div class="grid grid-cols-2 gap-3 py-2.5 border-t border-b border-slate-100 text-left">
@@ -2898,6 +3036,15 @@
 
       document.getElementById('det-petani-nama').textContent = v[2] || '-';
       document.getElementById('det-petani-nik').textContent = v[1] ? ('NIK: ' + v[1]) : 'NIK Belum Terdaftar';
+
+      const bio = getErdkkBiodata(v[1], v[2]);
+      const ttlStr = [bio.tempatLahir, bio.tanggalLahir].filter(Boolean).join(', ') || '-';
+      const elDetTtl = document.getElementById('det-ttl');
+      const elDetIbu = document.getElementById('det-ibu');
+      const elDetAlamat = document.getElementById('det-alamat');
+      if (elDetTtl) elDetTtl.textContent = ttlStr;
+      if (elDetIbu) elDetIbu.textContent = bio.ibuKandung || '-';
+      if (elDetAlamat) elDetAlamat.textContent = bio.alamat ? (bio.alamat + ' · Desa Kediren, Kec. Lembeyan, Magetan') : 'Desa Kediren, Kec. Lembeyan, Magetan';
 
       const statuses = alStatusList(v[5]);
       document.getElementById('det-status-badge').innerHTML = statuses.length > 0 
@@ -3572,6 +3719,7 @@
       // Kloter 1 - 10 (Menampilkan seluruh 10 kloter termasuk kloter 9 & 10)
       renderTableKloter(data.kloter);
       syncLiveKloterKuasa();
+      if (!erdkkBioLoaded) fetchErdkkBiodataGviz();
 
       filterPetani();
     }
@@ -4016,10 +4164,13 @@
       let count = 0;
 
       const rows = globalData.petani.filter(p => {
+        const bio = getErdkkBiodata(p.nik, p.nama);
+        const bioStr = [bio.tempatLahir, bio.tanggalLahir, bio.ibuKandung, bio.alamat].join(' ').toLowerCase();
         const matchSearch = p.nik.includes(q) || 
                             p.nama.toLowerCase().includes(q) || 
                             String(p.status || '').toLowerCase().includes(q) ||
-                            String(p.penerimaKuasa || '').toLowerCase().includes(q);
+                            String(p.penerimaKuasa || '').toLowerCase().includes(q) ||
+                            bioStr.includes(q);
         const matchStatus = !statusFilter || p.status.includes(statusFilter);
         return matchSearch && matchStatus;
       }).map(p => {
@@ -4028,11 +4179,18 @@
         const badgeClass = isKloter
           ? 'bg-emerald-100 text-emerald-800'
           : 'bg-amber-100 text-amber-800';
+        const bio = getErdkkBiodata(p.nik, p.nama);
+        const ttl = [bio.tempatLahir, bio.tanggalLahir].filter(Boolean).join(', ') || '—';
+        const ibu = bio.ibuKandung || '—';
+        const alamat = bio.alamat || '—';
         return `
           <tr class="hover:bg-slate-50/80 transition-colors">
             <td class="py-3 px-3.5 text-center font-bold text-slate-500">${p.no}</td>
             <td class="py-3 px-3.5 font-mono text-slate-700 tracking-tight">${p.nik}</td>
             <td class="py-3 px-3.5 font-bold text-slate-900">${p.nama}</td>
+            <td class="py-3 px-3.5 text-slate-700 whitespace-nowrap">${escAl(ttl)}</td>
+            <td class="py-3 px-3.5 font-semibold text-emerald-900 uppercase">${escAl(ibu)}</td>
+            <td class="py-3 px-3.5 text-slate-600">${escAl(alamat)}</td>
             <td class="py-3 px-3.5"><span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${badgeClass}">${p.status}</span></td>
             <td class="py-3 px-3.5 text-slate-500">${p.penerimaKuasa !== '-' ? p.penerimaKuasa : '<span class="text-slate-400 italic">—</span>'}</td>
             <td class="py-3 px-3.5 text-right font-mono font-semibold ${p.urea > 0 ? 'text-slate-800' : 'text-slate-400'}">${formatNumber(p.urea)} Kg</td>

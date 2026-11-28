@@ -248,6 +248,28 @@
           </div>
         </div>
 
+        <!-- Biodata Petani e-RDKK (Tempat/Tgl Lahir, Nama Ibu Kandung, Alamat) -->
+        <div id="res-biodata-card" class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 rounded-2xl bg-emerald-50/50 border border-emerald-200/80">
+          <div>
+            <span class="text-[10px] font-bold text-emerald-800 uppercase tracking-wider block">
+              <i class="fa-solid fa-calendar-day text-emerald-600 mr-1"></i> Tempat, Tanggal Lahir
+            </span>
+            <span id="res-ttl" class="text-xs sm:text-sm font-extrabold text-slate-900 mt-0.5 block">-</span>
+          </div>
+          <div>
+            <span class="text-[10px] font-bold text-emerald-800 uppercase tracking-wider block">
+              <i class="fa-solid fa-person-dress text-emerald-600 mr-1"></i> Nama Ibu Kandung
+            </span>
+            <span id="res-ibu" class="text-xs sm:text-sm font-extrabold text-slate-900 uppercase mt-0.5 block">-</span>
+          </div>
+          <div>
+            <span class="text-[10px] font-bold text-emerald-800 uppercase tracking-wider block">
+              <i class="fa-solid fa-location-dot text-emerald-600 mr-1"></i> Alamat / Domisili
+            </span>
+            <span id="res-alamat" class="text-xs sm:text-sm font-extrabold text-slate-900 mt-0.5 block">-</span>
+          </div>
+        </div>
+
         <!-- Luas Lahan & Status Penebusan Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <!-- Luas Lahan Terdaftar -->
@@ -529,6 +551,21 @@
               <td class="py-1.5 font-mono font-bold text-sm tracking-wider" id="p-nik">-</td>
             </tr>
             <tr class="border-b border-slate-200">
+              <td class="py-1.5 font-bold text-slate-700">Tempat, Tanggal Lahir</td>
+              <td>:</td>
+              <td class="py-1.5 font-bold" id="p-ttl">-</td>
+            </tr>
+            <tr class="border-b border-slate-200">
+              <td class="py-1.5 font-bold text-slate-700">Nama Ibu Kandung</td>
+              <td>:</td>
+              <td class="py-1.5 font-bold uppercase" id="p-ibu">-</td>
+            </tr>
+            <tr class="border-b border-slate-200">
+              <td class="py-1.5 font-bold text-slate-700">Alamat / Domisili</td>
+              <td>:</td>
+              <td class="py-1.5 font-medium" id="p-alamat">-</td>
+            </tr>
+            <tr class="border-b border-slate-200">
               <td class="py-1.5 font-bold text-slate-700">Kelompok Tani / Desa</td>
               <td>:</td>
               <td class="py-1.5 font-medium">Poktan Sri Mulyo · Desa Kediren, Kec. Lembeyan, Magetan</td>
@@ -741,8 +778,67 @@
       }
     }
 
+    // Map Biodata dari sheet ALOKASI ERDKK (Tempat Lahir, Tgl Lahir, Ibu Kandung, Alamat)
+    let erdkkBioByNik = {};
+    let erdkkBioByNama = {};
+    try {
+      const cachedBio = JSON.parse(localStorage.getItem('poktan_erdkk_biodata_v1') || 'null');
+      if (cachedBio && cachedBio.byNik) {
+        erdkkBioByNik = cachedBio.byNik;
+        erdkkBioByNama = cachedBio.byNama || {};
+      }
+    } catch (e) {}
+
+    function getBioPetani(nik, nama) {
+      const kNik = String(nik || '').replace(/^'/, '').trim();
+      const kNama = String(nama || '').replace(/\s+/g, ' ').trim().toUpperCase();
+      if (kNik && erdkkBioByNik[kNik]) return erdkkBioByNik[kNik];
+      if (kNama && erdkkBioByNama[kNama]) return erdkkBioByNama[kNama];
+      return { tempatLahir: '', tanggalLahir: '', ibuKandung: '', alamat: '' };
+    }
+
+    async function fetchErdkkBiodata() {
+      const bioUrl = 'https://docs.google.com/spreadsheets/d/1c7R1klPcFSZ7W1PLaZyayZxBUOrVyLh-Lwc24Cf6CEY/gviz/tq?tqx=out:json&sheet=ALOKASI%20ERDKK&range=A2:G240&headers=0&_=' + Date.now();
+      try {
+        const res = await fetch(bioUrl);
+        if (!res.ok) return;
+        const text = await res.text();
+        const jsonStr = text.replace(/^[^{]*/, '').replace(/[^}]*$/, '');
+        const data = JSON.parse(jsonStr);
+        if (data.table && Array.isArray(data.table.rows)) {
+          const byNik = {};
+          const byNama = {};
+          data.table.rows.forEach(r => {
+            const c = r.c || [];
+            const val = idx => (c[idx] ? (c[idx].f !== undefined ? String(c[idx].f) : (c[idx].v !== null && c[idx].v !== undefined ? String(c[idx].v) : '')) : '').replace(/\s+/g, ' ').trim();
+            const nik = val(1).replace(/^'/, '');
+            const nama = val(2).toUpperCase();
+            if (!nik && !nama) return;
+            if (nik === 'NIK' || nama === 'NAMA') return;
+            const bio = {
+              tempatLahir: val(3),
+              tanggalLahir: val(4),
+              ibuKandung: val(5),
+              alamat: val(6)
+            };
+            if (nik) byNik[nik] = bio;
+            if (nama) byNama[nama] = bio;
+          });
+          if (Object.keys(byNik).length > 0) {
+            erdkkBioByNik = byNik;
+            erdkkBioByNama = byNama;
+            try {
+              localStorage.setItem('poktan_erdkk_biodata_v1', JSON.stringify({ ts: Date.now(), byNik, byNama }));
+            } catch (e) {}
+            if (selectedPetani) renderTerdaftar(selectedPetani);
+          }
+        }
+      } catch (e) {}
+    }
+
     // Background fetch dari Google Sheet GViz
     async function fetchLatestSheetData() {
+      fetchErdkkBiodata();
       const gvizUrl = 'https://docs.google.com/spreadsheets/d/1c7R1klPcFSZ7W1PLaZyayZxBUOrVyLh-Lwc24Cf6CEY/gviz/tq?tqx=out:json&sheet=ALOKASI%20PEMBAGIAN&range=A2:N245&headers=0';
       try {
         const res = await fetch(gvizUrl);
@@ -955,6 +1051,18 @@
       };
 
       setTxt('res-nama', item.nama || '-');
+
+      // Biodata dari sheet ALOKASI ERDKK
+      const bio = getBioPetani(item.nik, item.nama);
+      const ttlStr = [bio.tempatLahir, bio.tanggalLahir].filter(Boolean).join(', ') || '-';
+      const ibuStr = bio.ibuKandung || '-';
+      const alamatStr = bio.alamat ? (bio.alamat + ' · Desa Kediren') : 'Desa Kediren, Kec. Lembeyan';
+      setTxt('res-ttl', ttlStr);
+      setTxt('res-ibu', ibuStr);
+      setTxt('res-alamat', alamatStr);
+      setTxt('p-ttl', ttlStr);
+      setTxt('p-ibu', ibuStr);
+      setTxt('p-alamat', alamatStr);
 
       // NIK & Sensor
       isNikSensored = true;
