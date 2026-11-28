@@ -277,12 +277,12 @@
       }
       if (id === 'filter_penebusan') {
         st.innerHTML = `
-          @page { size: A4 landscape; margin: 8mm 8mm; }
+          @page { size: A4 landscape; margin: 6mm 6mm; }
           @media print {
             .kartu-grid { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; }
             .ttd-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
-            table { width: 100% !important; min-width: 100% !important; font-size: 8.5pt !important; }
-            th, td { padding: 3px 5px !important; }
+            table { width: 100% !important; min-width: 100% !important; font-size: 7.5pt !important; }
+            th, td { padding: 2.5px 4px !important; }
           }
         `;
       } else {
@@ -689,7 +689,7 @@
       return isNaN(n) ? 0 : n;
     }
 
-    function initFilterPenebusanDoc(alokasiRows, kloterRows, tanggal) {
+    function initFilterPenebusanDoc(alokasiRows, kloterRows, tanggal, erdkkRows = []) {
       tanggalFilterPenebusan = tanggal;
       const kloterMap = new Map();
       kloterRows.forEach(r => {
@@ -700,6 +700,22 @@
         if (nama) kloterMap.set(nama, kl);
       });
 
+      const bioMap = new Map();
+      (erdkkRows || []).forEach(r => {
+        const nik = T(r, 1).replace(/^'/, '').trim();
+        const nama = T(r, 2).toUpperCase().trim();
+        if (!nik && !nama) return;
+        if (nik === 'NIK' || nama === 'NAMA') return;
+        const bio = {
+          tempatLahir: T(r, 3),
+          tanggalLahir: T(r, 4),
+          ibuKandung: T(r, 5),
+          alamat: T(r, 6)
+        };
+        if (nik) bioMap.set(nik, bio);
+        if (nama) bioMap.set(nama, bio);
+      });
+
       dataFilterPenebusan = [];
       let isNon = false;
       alokasiRows.forEach((r, idx) => {
@@ -707,7 +723,7 @@
         if (nama.toUpperCase().includes('TIDAK MASUK ERDKK')) { isNon = true; return; }
         if (nama.toUpperCase().startsWith('TOTAL')) return;
         const no = T(r, 0);
-        const nik = T(r, 1);
+        const nik = T(r, 1).replace(/^'/, '').trim();
         if (!nama) return;
         if (!isNon && (!no || !/^\d+$/.test(no))) return;
         if (isNon && !T(r, 5) && !T(r, 4)) return;
@@ -715,6 +731,11 @@
         const status = T(r, 5);
         const ket = T(r, 13);
         const kloter = kloterMap.get(nik) || kloterMap.get(nama.toUpperCase()) || (isNon ? 'Non-eRDKK (Cadangan)' : 'Mandiri / Belum');
+        const bio = bioMap.get(nik) || bioMap.get(nama.toUpperCase()) || { tempatLahir: '', tanggalLahir: '', ibuKandung: '', alamat: '' };
+        const tempatLahir = bio.tempatLahir || '-';
+        const tanggalLahir = bio.tanggalLahir || '-';
+        const ibuKandung = bio.ibuKandung || '-';
+        const alamat = bio.alamat || (isNon && T(r, 3) ? T(r, 3) : '-');
         const u = num(V(r, 9));
         const p = num(V(r, 10));
         const o = num(V(r, 11));
@@ -722,7 +743,8 @@
 
         dataFilterPenebusan.push({
           no: isNon ? (dataFilterPenebusan.length + 1) : parseInt(no, 10),
-          nik, nama, isNon, status, ket, kloter, u, p, o, totSak: u + p + o, uang
+          nik, nama, tempatLahir, tanggalLahir, ibuKandung, alamat,
+          isNon, status, ket, kloter, u, p, o, totSak: u + p + o, uang
         });
       });
 
@@ -883,8 +905,9 @@
         if (katFilter === 'ERDKK' && f.isNon) return false;
         if (katFilter === 'NON_ERDKK' && !f.isNon) return false;
 
-        // Filter Search
-        if (q && !f.nama.toLowerCase().includes(q) && !f.nik.toLowerCase().includes(q)) return false;
+        // Filter Search (NIK, Nama, Ibu Kandung, Alamat, Tempat/Tgl Lahir)
+        const bioSearch = [f.nama, f.nik, f.tempatLahir, f.tanggalLahir, f.ibuKandung, f.alamat].join(' ').toLowerCase();
+        if (q && !bioSearch.includes(q)) return false;
 
         // Filter Kloter
         if (kloterFilter === 'HANYA_KLOTER') {
@@ -980,8 +1003,12 @@
         <tr class="hover:bg-slate-50">
           <td class="border border-slate-400 p-1 text-center font-mono text-[10px] whitespace-nowrap">${i + 1}</td>
           <td class="border border-slate-400 p-1 text-center font-mono text-[10px] text-slate-600 whitespace-nowrap">${esc(f.nik || '-')}</td>
-          <td class="border border-slate-400 p-1 font-bold text-slate-900 min-w-[130px]">${esc(f.nama)} ${f.isNon ? '<span class="text-[9px] font-normal text-blue-700 italic">(Non-eRDKK)</span>' : ''}</td>
-          <td class="border border-slate-400 p-1 text-center text-[10.5px] whitespace-nowrap">
+          <td class="border border-slate-400 p-1 font-bold text-slate-900 min-w-[125px]">${esc(f.nama)} ${f.isNon ? '<span class="text-[9px] font-normal text-blue-700 italic">(Non-eRDKK)</span>' : ''}</td>
+          <td class="border border-slate-400 p-1 text-[10px] text-slate-700 whitespace-nowrap">${esc(f.tempatLahir || '-')}</td>
+          <td class="border border-slate-400 p-1 text-center font-mono text-[10px] text-slate-700 whitespace-nowrap">${esc(f.tanggalLahir || '-')}</td>
+          <td class="border border-slate-400 p-1 font-semibold text-[10px] text-slate-800 uppercase whitespace-nowrap">${esc(f.ibuKandung || '-')}</td>
+          <td class="border border-slate-400 p-1 text-[10px] text-slate-700 min-w-[100px]">${esc(f.alamat || '-')}</td>
+          <td class="border border-slate-400 p-1 text-center text-[10px] whitespace-nowrap">
             <span class="px-1.5 py-0.5 rounded font-bold ${f.kloter.includes('Kloter') ? 'bg-purple-100 text-purple-800' : 'bg-slate-100 text-slate-600'}">${esc(f.kloter)}</span>
           </td>
           <td class="border border-slate-400 p-1 text-[10px] whitespace-nowrap">${badgeStatus(f.status)}</td>
@@ -1022,30 +1049,34 @@
           <span class="flex items-center gap-1.5 font-bold">
             <i class="fa-solid fa-arrows-left-right text-emerald-600"></i> Geser tabel ke samping (scroll)
           </span>
-          <span class="text-[10px] text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-md font-semibold">11 Kolom Data</span>
+          <span class="text-[10px] text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-md font-semibold">15 Kolom Data</span>
         </div>
 
         <div class="overflow-x-auto -mx-1 sm:mx-0 my-2 rounded-lg" style="-webkit-overflow-scrolling: touch;">
-          <table class="w-full min-w-[750px] text-xs border border-slate-900">
+          <table class="w-full min-w-[1050px] text-xs border border-slate-900">
             <thead class="bg-slate-100 font-bold">
               <tr>
                 <th class="${TH} text-center w-8">No</th>
                 <th class="${TH} text-center w-32 whitespace-nowrap">NIK</th>
-                <th class="${TH} text-left min-w-[130px]">Nama Petani</th>
-                <th class="${TH} text-center w-28 whitespace-nowrap">Kloter Surat Kuasa</th>
+                <th class="${TH} text-left min-w-[125px]">Nama Petani</th>
+                <th class="${TH} text-left whitespace-nowrap">Tempat Lahir</th>
+                <th class="${TH} text-center whitespace-nowrap">Tgl Lahir</th>
+                <th class="${TH} text-left whitespace-nowrap">Nama Ibu Kandung</th>
+                <th class="${TH} text-left min-w-[100px]">Alamat</th>
+                <th class="${TH} text-center w-24 whitespace-nowrap">Kloter</th>
                 <th class="${TH} text-left whitespace-nowrap">Status Penebusan / Kios</th>
-                <th class="${TH} text-right w-14 whitespace-nowrap">Urea</th>
-                <th class="${TH} text-right w-14 whitespace-nowrap">NPK</th>
-                <th class="${TH} text-right w-14 whitespace-nowrap">Org</th>
-                <th class="${TH} text-right w-16 whitespace-nowrap">Total Sak</th>
+                <th class="${TH} text-right w-12 whitespace-nowrap">Urea</th>
+                <th class="${TH} text-right w-12 whitespace-nowrap">NPK</th>
+                <th class="${TH} text-right w-12 whitespace-nowrap">Org</th>
+                <th class="${TH} text-right w-14 whitespace-nowrap">Tot Sak</th>
                 <th class="${TH} text-right w-24 whitespace-nowrap">Tagihan (Rp)</th>
-                <th class="${TH} text-center w-24 whitespace-nowrap">Paraf / Ket</th>
+                <th class="${TH} text-center w-20 whitespace-nowrap">Paraf / Ket</th>
               </tr>
             </thead>
             <tbody>
-              ${rowsHtml || '<tr><td colspan="11" class="p-6 text-center text-slate-400 italic">Tidak ada data petani yang sesuai dengan filter yang dipilih.</td></tr>'}
+              ${rowsHtml || '<tr><td colspan="15" class="p-6 text-center text-slate-400 italic">Tidak ada data petani yang sesuai dengan filter yang dipilih.</td></tr>'}
               <tr class="bg-slate-100 font-black border-t-2 border-slate-900">
-                <td colspan="5" class="${TD} uppercase text-right whitespace-nowrap">TOTAL TERPILIH (${filtered.length} PETANI):</td>
+                <td colspan="9" class="${TD} uppercase text-right whitespace-nowrap">TOTAL TERPILIH (${filtered.length} PETANI):</td>
                 <td class="${TD} text-right font-mono whitespace-nowrap">${totU}</td>
                 <td class="${TD} text-right font-mono whitespace-nowrap">${totP}</td>
                 <td class="${TD} text-right font-mono whitespace-nowrap">${totO}</td>
@@ -1133,7 +1164,10 @@
       if (btn) btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-emerald-600"></i> Memperbarui...';
       DOCS.forEach(d => { const el = document.getElementById('doc-' + d); if (el && !el.dataset.loaded) el.innerHTML = LOADING_HTML; });
       try {
-        const [cetak, kloter, non, sisa, alokasi] = await Promise.all(['LAPORAN_CETAK', 'REKAP_KLOTER_CETAK', 'LAPORAN_NON_ERDKK', 'LAPORAN_TARGET_SISA', 'ALOKASI PEMBAGIAN'].map(muatSheet));
+        const [cetak, kloter, non, sisa, alokasi, erdkk] = await Promise.all([
+          ...['LAPORAN_CETAK', 'REKAP_KLOTER_CETAK', 'LAPORAN_NON_ERDKK', 'LAPORAN_TARGET_SISA', 'ALOKASI PEMBAGIAN'].map(muatSheet),
+          muatSheet('ALOKASI ERDKK').catch(() => [])
+        ]);
         const tanggal = cariTanggal(non, kloter, cetak, sisa, alokasi);
         const ne = hitungNonErdkk(non);
         const set = (id, html) => { const el = document.getElementById('doc-' + id); el.innerHTML = html; el.dataset.loaded = '1'; };
@@ -1141,7 +1175,7 @@
         set('rekap_kloter', renderRekapKloter(kloter, tanggal));
         set('non_erdkk', renderNonErdkk(ne, tanggal));
         set('target_sisa', renderTargetSisa(sisa, tanggal));
-        set('filter_penebusan', initFilterPenebusanDoc(alokasi, kloter, tanggal));
+        set('filter_penebusan', initFilterPenebusanDoc(alokasi, kloter, tanggal, erdkk));
         applyFilterPenebusanLaporan();
         errBox.classList.add('hidden');
         const jam = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
